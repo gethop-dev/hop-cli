@@ -38,8 +38,8 @@ Resources:
       Engine: "postgres"
       EngineVersion: "12.5"
       DBName: "popbl"
-      MasterUsername: "postgres"
-      MasterUserPassword: "safepassword" # Don't hardcode passwords
+      # MasterUsername: "postgres"
+      # MasterUserPassword: "safepassword" # Don't hardcode passwords
       DBInstanceClass: "db.t2.micro"
       AllocatedStorage: "5"
       StorageType: "gp2"
