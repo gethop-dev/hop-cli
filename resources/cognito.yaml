@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "Cognito infrastructure for the microservices architecture"
+Description: "Cognito setup"
 Parameters:
   ProjectName:
     Description: "Project name"
@@ -11,43 +11,52 @@ Parameters:
       - "dev"
       - "test"
       - "prod"
+  PasswordMinimumLength:
+    Type: "Number"
+    Default: 8
+  PasswordRequireLowercase:
+    Type: "String"
+    Default: true
+  PasswordRequireUppercase:
+    Type: "String"
+    Default: false
+  PasswordRequireNumbers:
+    Type: "String"
+    Default: false
+  PasswordRequireSymbols:
+    Type: "String"
+    Default: false
 Resources:
   UserPool:
     Type: "AWS::Cognito::UserPool"
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       UserPoolName: !Sub "${ProjectName}-${Environment}"
       UsernameAttributes:
         - "email"
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: true
-      Schema:
-        - Name: "address"
-          Mutable: true
-          Required: false
-          AttributeDataType: "String"
-        - Name: "name"
-          Mutable: true
-          Required: false
-          AttributeDataType: "String"
-        - Name: "role"
-          Mutable: false
-          Required: false
-          AttributeDataType: "String"
+      Policies:
+        PasswordPolicy:
+          MinimumLength: !Ref "PasswordMinimumLength"
+          RequireLowercase: !Ref "PasswordRequireLowercase"
+          RequireUppercase: !Ref "PasswordRequireUppercase"
+          RequireNumbers: !Ref "PasswordRequireNumbers"
+          RequireSymbols: !Ref "PasswordRequireSymbols"
   UserPoolSPAClient:
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
       ClientName: "spa"
-      #IdTokenValidity: 1 # in hours
-      #AccessTokenValidity: 1 # in hours
-      RefreshTokenValidity: 1 # in days
+      IdTokenValidity: 1
+      AccessTokenValidity: 1
+      RefreshTokenValidity: 1
       AllowedOAuthFlows:
         - "implicit"
       AllowedOAuthScopes:
         - "email"
         - "openid"
       ExplicitAuthFlows:
-        - "ALLOW_ADMIN_USER_PASSWORD_AUTH"
-        - "ALLOW_USER_PASSWORD_AUTH"
         - "ALLOW_REFRESH_TOKEN_AUTH"
         - "ALLOW_USER_SRP_AUTH"
       CallbackURLs:
@@ -57,15 +66,9 @@ Resources:
       GenerateSecret: false
       UserPoolId: !Ref "UserPool"
       ReadAttributes:
-        - "address"
-        - "name"
         - "email"
-        - "custom:role"
       WriteAttributes:
-        - "address"
-        - "name"
         - "email"
-        - "custom:role"
 Outputs:
   UserPoolId:
     Value: !Ref "UserPool"
