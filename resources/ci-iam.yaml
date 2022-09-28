@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CI IAM User, Groups and Policies"
+
+Resources:
+  CI:
+    Type: AWS::IAM::Group
+    Properties:
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
+        - arn:aws:iam::aws:policy/AdministratorAccess-AWSElasticBeanstalk
+  bitbucket:
+    Type: AWS::IAM::User
+    Properties:
+      Path: /
+      Groups:
+        - !Ref "CI"
