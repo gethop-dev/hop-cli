@@ -32,16 +32,8 @@ Resources:
               - "s3:PutObject"
               - "s3:ListBucket"
               - "s3:DeleteObject"
-            Resource:
-              - !Join
-                - ''
-                - - "arn::aws:s3:::"
-                  - !Ref "S3bucket"
-                  - "/*"
-              - !Join
-                - ''
-                - - "arn::aws:s3:::"
-                  - !Ref "S3bucket"
+            Resource: !GetAtt "S3bucket.Arn"
+            
 Outputs:
   S3bucket:
     Value: !Ref "S3bucket"
