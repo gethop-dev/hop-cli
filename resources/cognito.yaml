@@ -69,6 +69,20 @@ Resources:
         - "email"
       WriteAttributes:
         - "email"
+  IAMManagedPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties: 
+      ManagedPolicyName: !Sub "${ProjectName}-${Environment}-env-cognito"
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: 
+            - "cognito-idp:AdminCreateUser"
+            - "cognito-idp:AdminDeleteUser"
+            - "cognito-idp:AdminUpdateUserAttributes"
+            Resource: !GetAtt "UserPool.Arn"
+
 Outputs:
   UserPoolId:
     Value: !Ref "UserPool"
@@ -76,3 +90,5 @@ Outputs:
     Value: !Ref "UserPoolSPAClient"
   UserPoolURL:
     Value: !GetAtt "UserPool.ProviderURL"
+  IAMManagedPolicyARN:
+    Value: !Ref "IAMManagedPolicy"
