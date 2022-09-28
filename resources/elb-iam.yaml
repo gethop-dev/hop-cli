@@ -43,14 +43,14 @@ Resources:
     Condition: "IsDevEnv"
     Properties:
       RoleName: !Sub "${ProjectName}-${Environment}-elb-role"
-      AssumeRolePolicyDocument: 
+      AssumeRolePolicyDocument:
         Version: "2012-10-17"
-        Statement: 
+        Statement:
           - Effect: "Allow"
-            Principal:  
-              AWS: 
+            Principal:
+              AWS:
                 - !GetAtt "LocalDevUser.Arn"
-            Action: 
+            Action:
               - "sts:AssumeRole"
       ManagedPolicyArns:
         - !Ref "S3PolicyARN"
@@ -62,14 +62,14 @@ Resources:
     Condition: "IsTestOrProdEnv"
     Properties:
       RoleName: !Sub "${ProjectName}-${Environment}-elb-role"
-      AssumeRolePolicyDocument: 
+      AssumeRolePolicyDocument:
         Version: "2012-10-17"
-        Statement: 
+        Statement:
           - Effect: "Allow"
-            Principal:  
-              Service: 
+            Principal:
+              Service:
                 - "ec2.amazonaws.com"
-            Action: 
+            Action:
               - "sts:AssumeRole"
       ManagedPolicyArns:
         - !Ref "S3PolicyARN"
@@ -78,7 +78,8 @@ Resources:
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
-
+# TODO: We need to check if we can output these secrets to a file
+# after the stack is created.
 Outputs:
   LocalDevUserAccessKeyID:
     Condition: "IsDevEnv"
