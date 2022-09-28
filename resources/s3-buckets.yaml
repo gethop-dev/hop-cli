@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: ""
+
+Parameters:
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Server environment"
+    Type: "String"
+    AllowedValues:
+      - "dev"
+      - "test"
+      - "prod"
+
+Resources:
+  S3bucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: "Private"
+      BucketName: !Sub "${ProjectName}-${Environment}-env"
+  S3bucketPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: !Sub "${ProjectName}-${Environment}-s3-access-policy"
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - "s3:GetObject"
+              - "s3:PutObject"
+              - "s3:DeleteObject"
+            Resource: !Join
+              - ''
+              - - "arn:aws:s3:::"
+                - !Ref "S3bucket"
+                - "/*"
+Outputs:
+  S3bucket:
+    Value: !Ref "S3bucket"
+  S3bucketPolicy:
+    Value: !Ref "S3bucketPolicy"

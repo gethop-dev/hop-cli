@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Cloudformation Learning Session example"
+
+Parameters:
+  TemplateBucketURL:
+    Description: "URL of the bucket used for storing Cloudformation templates"
+    Type: "String"
+    Default: "https://s3.amazonaws.com/cloudformation-ls-template-bucket"
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Server environment"
+    Type: "String"
+    AllowedValues:
+      - "dev"
+      - "test"
+      - "prod"
+
+Resources:
+  VPC:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/resources/vpc.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        VpcCIDR: "10.1.0.0/16"
+        Subnet1CIDR: "10.1.1.0/24"
+        Subnet2CIDR: "10.1.2.0/24"
+  ECR:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/resources/ecr.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+  S3Buckets:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/resources/s3-buckets.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+  Cognito:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/resources/cognito.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+  RDS:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/resources/rds.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        VpcId: !GetAtt "VPC.Outputs.VPC"
+        Subnets: !Join
+          - ','
+          - - !GetAtt "VPC.Outputs.PublicSubnet1"
+            - !GetAtt "VPC.Outputs.PublicSubnet2"
+  ElasticBeanstalk:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/resources/elastic.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        VpcId: !GetAtt "VPC.Outputs.VPC"
+        Subnets: !Join
+          - ','
+          - - !GetAtt "VPC.Outputs.PublicSubnet1"
+            - !GetAtt "VPC.Outputs.PublicSubnet2"
+        S3Bucket: !GetAtt "S3Buckets.Outputs.S3bucket"
+        UserPoolSPAClientId: !GetAtt "Cognito.Outputs.UserPoolSPAClientId"
+        UserPoolURL: !GetAtt "Cognito.Outputs.UserPoolURL"
+        RDSAddress: !GetAtt "RDS.Outputs.RDSAddress"

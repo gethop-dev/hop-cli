@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Deskribapena"
+Parameters:
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Server environment"
+    Type: "String"
+    AllowedValues:
+      - "dev"
+      - "test"
+      - "prod"
+  VpcCIDR:
+    Description: "Please enter the IP range (CIDR notation) for this VPC"
+    Type: "String"
+  Subnet1CIDR:
+    Description: ""
+    Type: "String"
+  Subnet2CIDR:
+    Description: ""
+    Type: "String"
+Resources:
+  VPC:
+    Type: "AWS::EC2::VPC"
+    Properties:
+      CidrBlock: !Ref "VpcCIDR"
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${ProjectName}-${Environment}"
+  InternetGateway:
+    Type: "AWS::EC2::InternetGateway"
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${ProjectName}-${Environment}"
+  GatewayTointernet:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      VpcId: !Ref "VPC"
+      InternetGatewayId: !Ref "InternetGateway"
+  PublicSubnet1:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref "VPC"
+      CidrBlock: !Ref "Subnet1CIDR"
+      AvailabilityZone: !Select [ '0', !GetAZs ]
+      MapPublicIpOnLaunch: "True"
+      Tags:
+      - Key: "Name"
+        Value: !Sub "${ProjectName}-${Environment}-PublicSubnet1"
+  PublicSubnet2:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref "VPC"
+      CidrBlock: !Ref "Subnet2CIDR"
+      AvailabilityZone: !Select [ '1', !GetAZs ]
+      MapPublicIpOnLaunch: "True"
+      Tags:
+      - Key: "Name"
+        Value: !Sub "${ProjectName}-${Environment}-PublicSubnet2"
+  PublicRouteTable1:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId: !Ref "VPC"
+      Tags:
+      - Key: "Name"
+        Value: !Sub "${Environment}-PublicRoute1"
+  PublicRouteIGW1:
+    Type: "AWS::EC2::Route"
+    Properties:
+      RouteTableId: !Ref "PublicRouteTable1"
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref "InternetGateway"
+  PublicSubnet1RouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref "PublicSubnet1"
+      RouteTableId: !Ref "PublicRouteTable1"
+  PublicSubnet2RouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref "PublicSubnet2"
+      RouteTableId: !Ref "PublicRouteTable1"
+
+Outputs:
+  VPC:
+    Value: !Ref "VPC"
+  PublicSubnet1:
+    Value: !Ref "PublicSubnet1"
+  PublicSubnet2:
+    Value: !Ref "PublicSubnet2"

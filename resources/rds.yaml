@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: ""
+Parameters:
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Server environment"
+    Type: "String"
+    AllowedValues:
+      - "dev"
+      - "test"
+      - "prod"
+  VpcId:
+    Type: "String"
+  Subnets:
+    Type: "List<AWS::EC2::Subnet::Id>"
+Resources:
+  DatabaseSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "RDS Microservices security group"
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: "0.0.0.0/0"
+      VpcId: !Ref "VpcId"
+  DatabaseSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      SubnetIds: !Ref "Subnets"
+      DBSubnetGroupName: !Sub "${ProjectName}-${Environment}"
+      DBSubnetGroupDescription: "Subnet group for the DB"
+  Database:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      VPCSecurityGroups:
+        - !Ref "DatabaseSecurityGroup"
+      Engine: "postgres"
+      EngineVersion: "12.5"
+      DBName: "popbl"
+      MasterUsername: "postgres"
+      MasterUserPassword: "safepassword" # Don't hardcode passwords
+      DBInstanceClass: "db.t2.micro"
+      AllocatedStorage: "5"
+      StorageType: "gp2"
+      DBSubnetGroupName: !Ref "DatabaseSubnetGroup"
+      MultiAZ: false
+Outputs:
+  RDSAddress:
+    Description: "RDS database address"
+    Value: !GetAtt "Database.Endpoint.Address"
+  RDSSecurityGroup:
+    Description: "RDS security group"
+    Value: !Ref "DatabaseSecurityGroup"

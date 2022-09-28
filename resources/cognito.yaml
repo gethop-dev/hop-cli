@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Cognito infrastructure for the microservices architecture"
+Parameters:
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Server environment"
+    Type: "String"
+    AllowedValues:
+      - "dev"
+      - "test"
+      - "prod"
+Resources:
+  UserPool:
+    Type: "AWS::Cognito::UserPool"
+    Properties:
+      UserPoolName: !Sub "${ProjectName}-${Environment}"
+      UsernameAttributes:
+        - "email"
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+      Schema:
+        - Name: "address"
+          Mutable: true
+          Required: false
+          AttributeDataType: "String"
+        - Name: "name"
+          Mutable: true
+          Required: false
+          AttributeDataType: "String"
+        - Name: "role"
+          Mutable: false
+          Required: false
+          AttributeDataType: "String"
+  UserPoolSPAClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: "spa"
+      #IdTokenValidity: 1 # in hours
+      #AccessTokenValidity: 1 # in hours
+      RefreshTokenValidity: 1 # in days
+      AllowedOAuthFlows:
+        - "implicit"
+      AllowedOAuthScopes:
+        - "email"
+        - "openid"
+      ExplicitAuthFlows:
+        - "ALLOW_ADMIN_USER_PASSWORD_AUTH"
+        - "ALLOW_USER_PASSWORD_AUTH"
+        - "ALLOW_REFRESH_TOKEN_AUTH"
+        - "ALLOW_USER_SRP_AUTH"
+      CallbackURLs:
+        - "http://localhost"
+      SupportedIdentityProviders:
+        - "COGNITO"
+      GenerateSecret: false
+      UserPoolId: !Ref "UserPool"
+      ReadAttributes:
+        - "address"
+        - "name"
+        - "email"
+        - "custom:role"
+      WriteAttributes:
+        - "address"
+        - "name"
+        - "email"
+        - "custom:role"
+Outputs:
+  UserPoolId:
+    Value: !Ref "UserPool"
+  UserPoolSPAClientId:
+    Value: !Ref "UserPoolSPAClient"
+  UserPoolURL:
+    Value: !GetAtt "UserPool.ProviderURL"

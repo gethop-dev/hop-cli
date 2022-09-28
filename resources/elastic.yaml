@@ -1,0 +1,123 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  VpcId:
+    Description: "VPC Id"
+    Type: "String"
+  S3Bucket:
+    Description: "S3 Bucket"
+    Type: "String"
+  Subnets:
+    Type: "String"
+  Environment:
+    Description: "Server environment"
+    Type: "String"
+    AllowedValues:
+      - "dev"
+      - "test"
+      - "prod"
+  UserPoolURL:
+    Type: "String"
+  UserPoolSPAClientId:
+    Type: "String"
+  RDSAddress:
+    Type: "String"
+Resources:
+  ElasticApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      ApplicationName: !Sub "${ProjectName}-${Environment}"
+  GrafanaURL:
+    TYPE: AWS::ElasticBeanstalk::ConfigurationTemplateOptionSetting
+    Properties:
+      Elastic !Ref "ElasticConfigurationTemplate"
+  ElasticConfigurationTemplate:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      ApplicationName: !Ref "ElasticApplication"
+      SolutionStackName: "64bit Amazon Linux 2018.03 v2.25.0 running Multi-container Docker 19.03.13-ce (Generic)"
+      OptionSettings:
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: LoadBalanced
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: "1"
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: "1"
+        - Namespace: aws:ec2:vpc
+          OptionName: AssociatePublicIpAddress
+          Value: "true"
+        - Namespace: aws:ec2:vpc
+          OptionName: VPCId
+          Value: !Ref "VpcId"
+        - Namespace: aws:ec2:vpc
+          OptionName: Subnets
+          Value: !Ref "Subnets"
+        - Namespace: aws:ec2:vpc
+          OptionName: ELBSubnets
+          Value: !Ref "Subnets"
+        - Namespace: aws:elasticbeanstalk:managedactions:platformupdate
+          OptionName: UpdateLevel
+          Value: "minor"
+        - Namespace: aws:elasticbeanstalk:sns:topics
+          OptionName: NotificationEndpoint
+          Value: "devops@magnet.coop"
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: InstanceType
+          Value: "t2.micro"
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: LoadBalancerType
+          Value: "application"
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: ServiceRole
+          Value: !Ref "InstanceProfileRole"
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref "InstanceProfile"
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: S3_BUCKET_NAME
+          Value: !Ref "S3Bucket"
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: OIDC_AUDIENCE
+          Value: !Ref "UserPoolSPAClientId"
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: OIDC_ISSUER_URL
+          Value: !Ref "UserPoolURL"
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: OIDC_JWKS_URI
+          Value: !Sub "${UserPoolURL}/.well-known/jwks.json"
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: JDBC_URL
+          Value: !Ref "RDSAddress"
+  ElasticEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref "ElasticApplication"
+      TemplateName: !Ref "ElasticConfigurationTemplate"
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+        - !Ref "InstanceProfileRole"
+  InstanceProfileRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: "/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
+        - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
+        - "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
