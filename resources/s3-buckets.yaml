@@ -38,6 +38,10 @@ Resources:
                 - - "arn::aws:s3:::"
                   - !Ref "S3bucket"
                   - "/*"
+              - !Join
+                - ''
+                - - "arn::aws:s3:::"
+                  - !Ref "S3bucket"
 Outputs:
   S3bucket:
     Value: !Ref "S3bucket"
