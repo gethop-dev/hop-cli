@@ -1,26 +1,35 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: ""
+Description: "ECR respositories and LifecyclePolicy"
 
 Parameters:
   ProjectName:
     Description: "Project name"
     Type: "String"
+  LifecyclePolicyRuleText:
+    Type: "String"
+    Default: |
+      {
+        "rulePriority": 1,
+        "description": "Only keep latest 28 images",
+        "selection": {
+        "tagStatus": "any",
+        "countType": "imageCountMoreThan",
+        "countNumber": 28 },
+        "action": { "type": "expire" }
+      }
 
+# TODO: maybe we could put the LifecyclePolicyText in a parameter.
+# Or even make each repository have their own LifecyclePolicy parameter.
 Resources:
-  EcrRepository:
+  LeinImageRepository:
+    Type: "AWS::ECR::Repository"
+    Properties:
+       RepositoryName: !Sub "${ProjectName}/lein"
+       LifecyclePolicy:
+         LifecyclePolicyText: !Sub "{\"rules\": [${LifecyclePolicyRuleText}]}"
+  AppImageRepository:
     Type: "AWS::ECR::Repository"
     Properties:
        RepositoryName: !Sub "${ProjectName}"
        LifecyclePolicy:
-         LifecyclePolicyText: |
-          {
-            "rules": [
-              {
-                 "rulePriority": 1,
-                 "description": "Only keep latest 28 images",
-                 "selection": {
-                   "tagStatus": "any",
-                   "countType": "imageCountMoreThan",
-                   "countNumber": 28 },
-                 "action": { "type": "expire" }}]
-          }
+         LifecyclePolicyText: !Sub "{\"rules\": [${LifecyclePolicyRuleText}]}"
