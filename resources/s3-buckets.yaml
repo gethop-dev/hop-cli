@@ -22,7 +22,7 @@ Resources:
   S3bucketPolicy:
     Type: "AWS::IAM::ManagedPolicy"
     Properties:
-      ManagedPolicyName: !Sub "${ProjectName}-${Environment}-s3-access-policy"
+      ManagedPolicyName: !Sub "${ProjectName}-${Environment}-env-s3"
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -30,12 +30,14 @@ Resources:
             Action:
               - "s3:GetObject"
               - "s3:PutObject"
+              - "s3:ListBucket"
               - "s3:DeleteObject"
-            Resource: !Join
-              - ''
-              - - "arn:aws:s3:::"
-                - !Ref "S3bucket"
-                - "/*"
+            Resource:
+              - !Join
+                - ''
+                - - "arn::aws:s3:::"
+                  - !Ref "S3bucket"
+                  - "/*"
 Outputs:
   S3bucket:
     Value: !Ref "S3bucket"

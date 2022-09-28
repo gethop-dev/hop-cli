@@ -29,10 +29,6 @@ Resources:
     Type: AWS::ElasticBeanstalk::Application
     Properties:
       ApplicationName: !Sub "${ProjectName}-${Environment}"
-  GrafanaURL:
-    TYPE: AWS::ElasticBeanstalk::ConfigurationTemplateOptionSetting
-    Properties:
-      Elastic !Ref "ElasticConfigurationTemplate"
   ElasticConfigurationTemplate:
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate
     Properties:
