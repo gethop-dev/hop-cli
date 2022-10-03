@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: ""
+Description: "Database setup in RDS"
 Parameters:
   ProjectName:
     Description: "Project name"
@@ -11,6 +11,20 @@ Parameters:
       - "dev"
       - "test"
       - "prod"
+  DatabaseName:
+    Description: "Database name"
+    Type: "String"
+    Default: "ebdb"
+  DatabaseEngineVersion:
+    Description: "Database Engine version"
+    Type: "String"
+  DatabaseInstanceClass:
+    Description: "Database instance class"
+    Type: "String"
+    Default: "db.t3.micro"
+  RDSMonitoringRoleARN:
+    Description: "ARN for RDS monitoring role"
+    Type: "String"
   VpcId:
     Type: "String"
   Subnets:
@@ -36,15 +50,21 @@ Resources:
       VPCSecurityGroups:
         - !Ref "DatabaseSecurityGroup"
       Engine: "postgres"
-      EngineVersion: "12.5"
-      DBName: "popbl"
+      EngineVersion: !Ref "DatabaseEngineVersion"
+      DBName: !Ref "DatabaseName"
+      DBInstanceIdentifier: !Sub "${ProjectName}-${Environment}"
       # MasterUsername: "postgres"
       # MasterUserPassword: "safepassword" # Don't hardcode passwords
-      DBInstanceClass: "db.t2.micro"
-      AllocatedStorage: "5"
+      DBInstanceClass: !Ref "DatabaseInstanceClass"
+      AllocatedStorage: "20"
       StorageType: "gp2"
       DBSubnetGroupName: !Ref "DatabaseSubnetGroup"
       MultiAZ: false
+      BackupRetentionPeriod: 7
+      PreferredBackupWindow: "0224:00-0224:30"
+      EnablePerformanceInsights: true
+      MonitoringInterval: 60
+      MonitoringRoleArn: !Ref "RDSMonitoringRoleARN"
 Outputs:
   RDSAddress:
     Description: "RDS database address"

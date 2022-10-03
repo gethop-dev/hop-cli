@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Certificate Manager"
+Parameters:
+  DomainName:
+    Description: "Domain name"
+    Type: "String"
+
+Resources:
+  Certificate:
+    Type: "AWS::CertificateManager::Certificate"
+    Properties:
+      DomainName: !Ref "DomainName"
+      ValidationMethod: "DNS"

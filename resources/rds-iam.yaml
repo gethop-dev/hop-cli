@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "RDS IAM Role for CloudWatch"
+
+Resources:
+  RDSMonitoringRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "rds-monitoring-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "monitoring.rds.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+
+Outputs:
+  RDSMonitoringRoleARN:
+    Description: "ARN for RDS monitoring role"
+    Value: !GetAtt "RDSMonitoringRole.Arn"
