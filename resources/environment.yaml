@@ -35,6 +35,14 @@ Parameters:
     Type: "String"
   ElbSecurityGroupId:
     Type: "String"
+  DatabaseUsername:
+    Description: "Username for master user in RDS database"
+    Type: "String"
+    Default: "postgres"
+  DatabasePassword:
+    Description: "Password for master user in RDS database"
+    Type: "String"
+    NoEcho: true
 
 Conditions:
   IsDevEnv: !Equals ["dev", !Ref "Environment"]
@@ -67,6 +75,8 @@ Resources:
         ProjectName: !Ref "ProjectName"
         Environment: !Ref "Environment"
         DatabaseEngineVersion: !Ref "DatabaseEngineVersion"
+        DatabaseUsername: !Ref "DatabaseUsername"
+        DatabasePassword: !Ref "DatabasePassword"
         RDSMonitoringRoleARN: !Ref "RDSMonitoringRoleARN"
         VpcId: !Ref "VpcId"
         SubnetIds: !Join [",", !Ref "SubnetIds"]

@@ -21,6 +21,14 @@ Parameters:
     Description: "Database instance class"
     Type: "String"
     Default: "db.t3.micro"
+  DatabaseUsername:
+    Description: "Username for master user in RDS database"
+    Type: "String"
+    Default: "postgres"
+  DatabasePassword:
+    Description: "Password for master user in RDS database"
+    Type: "String"
+    NoEcho: true
   RDSMonitoringRoleARN:
     Description: "ARN for RDS monitoring role"
     Type: "String"
@@ -64,8 +72,8 @@ Resources:
       EngineVersion: !Ref "DatabaseEngineVersion"
       DBName: !Ref "DatabaseName"
       DBInstanceIdentifier: !Sub "${ProjectName}-${Environment}"
-      # MasterUsername: "postgres"
-      # MasterUserPassword: "safepassword" # Don't hardcode passwords
+      MasterUsername: !Ref "DatabaseUsername"
+      MasterUserPassword: !Ref "DatabasePassword"
       DBInstanceClass: !Ref "DatabaseInstanceClass"
       AllocatedStorage: "20"
       StorageType: "gp2"
