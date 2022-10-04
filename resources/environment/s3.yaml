@@ -12,6 +12,8 @@ Parameters:
       - "dev"
       - "test"
       - "prod"
+  ConsumerRoleName:
+    Type: "String"
 
 Resources:
   S3bucket:
@@ -38,6 +40,8 @@ Resources:
               - "s3:ListBucket"
               - "s3:DeleteObject"
             Resource: !GetAtt "S3bucket.Arn"
+      Roles:
+        - !Ref "ConsumerRoleName"
 
 Outputs:
   S3bucket:

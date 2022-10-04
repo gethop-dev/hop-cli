@@ -3,10 +3,6 @@ Parameters:
   ProjectName:
     Description: "Project name"
     Type: "String"
-  S3PolicyARN:
-    Type: "String"
-  CognitoPolicyARN:
-    Type: "String"
   LocalDevUserARN:
     Type: "String"
 
@@ -25,6 +21,8 @@ Resources:
             Action:
               - "sts:AssumeRole"
       ManagedPolicyArns:
-        - !Ref "S3PolicyARN"
-        - !Ref "CognitoPolicyARN"
         - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+
+Outputs:
+  RoleName:
+    Value: !Ref "DevRole"

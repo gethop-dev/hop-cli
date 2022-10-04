@@ -26,6 +26,8 @@ Parameters:
   PasswordRequireSymbols:
     Type: "String"
     Default: false
+  ConsumerRoleName:
+    Type: "String"
 Resources:
   UserPool:
     Type: "AWS::Cognito::UserPool"
@@ -87,6 +89,8 @@ Resources:
             - "cognito-idp:AdminDeleteUser"
             - "cognito-idp:AdminUpdateUserAttributes"
             Resource: !GetAtt "UserPool.Arn"
+      Roles:
+        - !Ref "ConsumerRoleName"
 
 Outputs:
   UserPoolId:

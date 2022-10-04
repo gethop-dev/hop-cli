@@ -25,10 +25,6 @@ Parameters:
     Type: "String"
   LoadBalancerARN:
     Type: "String"
-  S3PolicyARN:
-    Type: "String"
-  CognitoPolicyARN:
-    Type: "String"
   EbApplicationName:
     Type: "String"
   RdsSecurityGroupId:
@@ -176,9 +172,11 @@ Resources:
             Action:
               - "sts:AssumeRole"
       ManagedPolicyArns:
-        - !Ref "S3PolicyARN"
-        - !Ref "CognitoPolicyARN"
         - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
+
+Outputs:
+  RoleName:
+    Value: !Ref "InstanceRole"

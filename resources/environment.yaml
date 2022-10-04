@@ -43,21 +43,31 @@ Parameters:
     Description: "Password for master user in RDS database"
     Type: "String"
     NoEcho: true
+  IncludeCognito:
+    Type: "String"
+    Default: "false"
+  IncludeS3:
+    Type: "String"
+    Default: "false"
 
 Conditions:
   IsDevEnv: !Equals ["dev", !Ref "Environment"]
   IsTestOrProdEnv: !Or
     - !Equals ["prod", !Ref "Environment"]
     - !Equals ["test", !Ref "Environment"]
+  IncludeCognitoCond: !Equals ["true", !Ref "IncludeCognito"]
+  IncludeS3Cond: !Equals ["true", !Ref "IncludeS3"]
 
 Resources:
   Cognito:
     Type: "AWS::CloudFormation::Stack"
+    Condition: "IncludeCognitoCond"
     Properties:
       TemplateURL: !Sub "${TemplateBucketURL}/environment/cognito.yaml"
       Parameters:
         ProjectName: !Ref "ProjectName"
         Environment: !Ref "Environment"
+        ConsumerRoleName: !If ["IsDevEnv", !GetAtt "IamLocalUser.Outputs.RoleName", !GetAtt "EB.Outputs.RoleName"]
   EC2:
     Type: "AWS::CloudFormation::Stack"
     Condition: "IsTestOrProdEnv"
@@ -82,11 +92,13 @@ Resources:
         SubnetIds: !Join [",", !Ref "SubnetIds"]
   S3:
     Type: "AWS::CloudFormation::Stack"
+    Condition: "IncludeS3Cond"
     Properties:
       TemplateURL: !Sub "${TemplateBucketURL}/environment/s3.yaml"
       Parameters:
         ProjectName: !Ref "ProjectName"
         Environment: !Ref "Environment"
+        ConsumerRoleName: !If ["IsDevEnv", !GetAtt "IamLocalUser.Outputs.RoleName", !GetAtt "EB.Outputs.RoleName"]
   EB:
     Type: "AWS::CloudFormation::Stack"
     Condition: "IsTestOrProdEnv"
@@ -107,14 +119,6 @@ Resources:
           Fn::GetAtt:
             - EC2
             - Outputs.EC2KeyPairName
-        S3PolicyARN:
-          Fn::GetAtt:
-            - S3
-            - Outputs.S3PolicyARN
-        CognitoPolicyARN:
-          Fn::GetAtt:
-            - Cognito
-            - Outputs.CognitoPolicyARN
   IamLocalUser:
     Type: "AWS::CloudFormation::Stack"
     Condition: "IsDevEnv"
@@ -123,11 +127,3 @@ Resources:
       Parameters:
         ProjectName: !Ref "ProjectName"
         LocalDevUserARN: !Ref "LocalDevUserARN"
-        S3PolicyARN:
-          Fn::GetAtt:
-            - S3
-            - Outputs.S3PolicyARN
-        CognitoPolicyARN:
-          Fn::GetAtt:
-            - Cognito
-            - Outputs.CognitoPolicyARN
