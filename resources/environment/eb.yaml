@@ -114,7 +114,7 @@ Resources:
           Value: !Ref "EbSecurityGroup"
         # Notifications
         - Namespace: aws:elasticbeanstalk:sns:topics
-          OptionName: NotificationEndpoint
+          OptionName: Notification Endpoint
           Value: !Ref "NotificationsEmail"
         # Load balancer
         - Namespace: aws:elasticbeanstalk:environment
