@@ -1,31 +1,28 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "CI IAM User, Groups and Policies"
 
+Parameters:
+  ResourceNamePrefix:
+    Type: "String"
+
 Resources:
-  CI:
+  CIGroup:
     Type: AWS::IAM::Group
     Properties:
+      GroupName: !Sub "${ResourceNamePrefix}-ci"
       Path: /
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
         - "arn:aws:iam::aws:policy/AdministratorAccess-AWSElasticBeanstalk"
-  # We are using Bitbucket as the name of the CI user but it applies
-  # to any other CI solution.
-  bitbucket:
+  CIUser:
     Type: AWS::IAM::User
     Properties:
+      UserName: "ci"
       Path: /
       Groups:
-        - !Ref "CI"
-  BitbucketAccessKey:
+        - !Ref "CIGroup"
+  CIUserAccessKey:
     Type: "AWS::IAM::AccessKey"
     Properties:
       Status: "Active"
-      UserName: !Ref "bitbucket"
-# TODO: We need to check if we can output these secrets to a file
-# after the stack is created.
-Outputs:
-  BitbucketAccessKeyID:
-    Value: !Ref "BitbucketAccessKey"
-  BitbucketSecretAccessKey:
-    Value: !GetAtt "BitbucketAccessKey.SecretAccessKey"
+      UserName: !Ref "CIUser"

@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Cloudformation template for setting up a new AWS project"
+
+Parameters:
+  TemplateBucketURL:
+    Description: "URL of the bucket used for storing Cloudformation templates"
+    Type: "String"
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  VpcId:
+    Type: "String"
+  PublicRouteTable1Id:
+    Type: "String"
+  Subnet1CIDR:
+    Type: "String"
+  Subnet2CIDR:
+    Type: "String"
+  Subnet3CIDR:
+    Type: "String"
+
+Resources:
+  ECR:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/project/ecr.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+  EB:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/project/eb.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+  VPC:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/project/vpc.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        VpcId: !Ref "VpcId"
+        PublicRouteTable1Id: !Ref "PublicRouteTable1Id"
+        Subnet1CIDR: !Ref "Subnet1CIDR"
+        Subnet2CIDR: !Ref "Subnet2CIDR"
+        Subnet3CIDR: !Ref "Subnet3CIDR"
+  ELB:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/project/elb.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        VpcId: !Ref "VpcId"
+        SubnetIds: !Join
+          - ','
+          - - Fn::GetAtt:
+              - VPC
+              - Outputs.PublicSubnetId1
+            - Fn::GetAtt:
+              - VPC
+              - Outputs.PublicSubnetId2
+
+Outputs:
+  LoadBalancerARN:
+    Value: !GetAtt "ELB.Outputs.ElbARN"
+  ElbSecurityGroupId:
+    Value: !GetAtt "ELB.Outputs.ElbSecurityGroupId"
+  EbApplicationName:
+    Value: !GetAtt "EB.Outputs.EbApplicationName"
+  PublicSubnetIds:
+    Value: !Join [",",[!GetAtt "VPC.Outputs.PublicSubnetId1",
+                       !GetAtt "VPC.Outputs.PublicSubnetId2",
+                       !GetAtt "VPC.Outputs.PublicSubnetId3"]]

@@ -8,7 +8,6 @@ Parameters:
     Description: "Server environment"
     Type: "String"
     AllowedValues:
-      - "dev"
       - "test"
       - "prod"
   DatabaseName:
@@ -27,23 +26,35 @@ Parameters:
     Type: "String"
   VpcId:
     Type: "String"
-  Subnets:
+  SubnetIds:
     Type: "List<AWS::EC2::Subnet::Id>"
+
 Resources:
   DatabaseSecurityGroup:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
-      GroupDescription: "RDS Microservices security group"
-      SecurityGroupEgress:
-        - IpProtocol: "-1"
-          CidrIp: "0.0.0.0/0"
+      GroupName: !Sub "${ProjectName}-${Environment}-rds-sg"
+      GroupDescription: "RDS database security group"
       VpcId: !Ref "VpcId"
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${ProjectName}-${Environment}-rds-sg"
+        - Key: "project-name"
+          Value: !Ref "ProjectName"
+        - Key: "environment"
+          Value: !Ref "Environment"
+
   DatabaseSubnetGroup:
     Type: "AWS::RDS::DBSubnetGroup"
     Properties:
-      SubnetIds: !Ref "Subnets"
-      DBSubnetGroupName: !Sub "${ProjectName}-${Environment}"
-      DBSubnetGroupDescription: "Subnet group for the DB"
+      SubnetIds: !Ref "SubnetIds"
+      DBSubnetGroupName: !Sub "${ProjectName}-${Environment}-subnet-group"
+      DBSubnetGroupDescription: !Sub "${ProjectName}-${Environment}-subnet-group"
+      Tags:
+        - Key: "project-name"
+          Value: !Ref "ProjectName"
+        - Key: "environment"
+          Value: !Ref "Environment"
   Database:
     Type: "AWS::RDS::DBInstance"
     Properties:
@@ -53,22 +64,30 @@ Resources:
       EngineVersion: !Ref "DatabaseEngineVersion"
       DBName: !Ref "DatabaseName"
       DBInstanceIdentifier: !Sub "${ProjectName}-${Environment}"
-      # MasterUsername: "postgres"
-      # MasterUserPassword: "safepassword" # Don't hardcode passwords
+      MasterUsername: "postgres"
+      MasterUserPassword: "safepassword" # Don't hardcode passwords
       DBInstanceClass: !Ref "DatabaseInstanceClass"
       AllocatedStorage: "20"
       StorageType: "gp2"
       DBSubnetGroupName: !Ref "DatabaseSubnetGroup"
       MultiAZ: false
       BackupRetentionPeriod: 7
-      PreferredBackupWindow: "0224:00-0224:30"
+      PreferredBackupWindow: "02:00-02:30"
       EnablePerformanceInsights: true
       MonitoringInterval: 60
       MonitoringRoleArn: !Ref "RDSMonitoringRoleARN"
+      AutoMinorVersionUpgrade: true
+      PreferredMaintenanceWindow: "Sat:05:00-Sat:05:30"
+      DeletionProtection: false #TODO Set to true once we finish
+      Tags:
+        - Key: "project-name"
+          Value: !Ref "ProjectName"
+        - Key: "environment"
+          Value: !Ref "Environment"
 Outputs:
   RDSAddress:
     Description: "RDS database address"
     Value: !GetAtt "Database.Endpoint.Address"
-  RDSSecurityGroup:
+  RdsSecurityGroupId:
     Description: "RDS security group"
     Value: !Ref "DatabaseSecurityGroup"

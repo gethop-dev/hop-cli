@@ -1,0 +1,123 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Cloudformation template for setting up a new AWS project environment"
+
+Parameters:
+  TemplateBucketURL:
+    Description: "URL of the bucket used for storing Cloudformation templates"
+    Type: "String"
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Project name"
+    Type: "String"
+    AllowedValues:
+      - "dev"
+      - "test"
+      - "prod"
+  DatabaseEngineVersion:
+    Type: "String"
+  RDSMonitoringRoleARN:
+    Type: "String"
+  VpcId:
+    Type: "String"
+  SubnetIds:
+    Type: "List<AWS::EC2::Subnet::Id>"
+  NotificationsEmail:
+    Type: "String"
+  EbServiceRoleARN:
+    Type: "String"
+  EbApplicationName:
+    Type: "String"
+  LoadBalancerARN:
+    Type: "String"
+  LocalDevUserARN:
+    Type: "String"
+  ElbSecurityGroupId:
+    Type: "String"
+
+Conditions:
+  IsDevEnv: !Equals ["dev", !Ref "Environment"]
+  IsTestOrProdEnv: !Or
+    - !Equals ["prod", !Ref "Environment"]
+    - !Equals ["test", !Ref "Environment"]
+
+Resources:
+  Cognito:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/cognito.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+  EC2:
+    Type: "AWS::CloudFormation::Stack"
+    Condition: "IsTestOrProdEnv"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/ec2.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+  RDS:
+    Type: "AWS::CloudFormation::Stack"
+    Condition: "IsTestOrProdEnv"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/rds.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        DatabaseEngineVersion: !Ref "DatabaseEngineVersion"
+        RDSMonitoringRoleARN: !Ref "RDSMonitoringRoleARN"
+        VpcId: !Ref "VpcId"
+        SubnetIds: !Join [",", !Ref "SubnetIds"]
+  S3:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/s3.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+  EB:
+    Type: "AWS::CloudFormation::Stack"
+    Condition: "IsTestOrProdEnv"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/eb.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        VpcId: !Ref "VpcId"
+        SubnetIds: !Join [",", !Ref "SubnetIds"]
+        ServiceRoleARN: !Ref "EbServiceRoleARN"
+        NotificationsEmail: !Ref "NotificationsEmail"
+        LoadBalancerARN: !Ref "LoadBalancerARN"
+        EbApplicationName: !Ref "EbApplicationName"
+        RdsSecurityGroupId: !GetAtt "RDS.Outputs.RdsSecurityGroupId"
+        ElbSecurityGroupId: !Ref "ElbSecurityGroupId"
+        InstanceEC2KeyName:
+          Fn::GetAtt:
+            - EC2
+            - Outputs.EC2KeyPairName
+        S3PolicyARN:
+          Fn::GetAtt:
+            - S3
+            - Outputs.S3PolicyARN
+        CognitoPolicyARN:
+          Fn::GetAtt:
+            - Cognito
+            - Outputs.CognitoPolicyARN
+  IamLocalUser:
+    Type: "AWS::CloudFormation::Stack"
+    Condition: "IsDevEnv"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/iam-local-user.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        LocalDevUserARN: !Ref "LocalDevUserARN"
+        S3PolicyARN:
+          Fn::GetAtt:
+            - S3
+            - Outputs.S3PolicyARN
+        CognitoPolicyARN:
+          Fn::GetAtt:
+            - Cognito
+            - Outputs.CognitoPolicyARN

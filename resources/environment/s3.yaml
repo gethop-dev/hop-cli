@@ -19,6 +19,11 @@ Resources:
     Properties:
       AccessControl: "Private"
       BucketName: !Sub "${ProjectName}-${Environment}-env"
+      Tags:
+        - Key: "project-name"
+          Value: !Ref "ProjectName"
+        - Key: "environment"
+          Value: !Ref "Environment"
   S3bucketPolicy:
     Type: "AWS::IAM::ManagedPolicy"
     Properties:
@@ -33,9 +38,9 @@ Resources:
               - "s3:ListBucket"
               - "s3:DeleteObject"
             Resource: !GetAtt "S3bucket.Arn"
-            
+
 Outputs:
   S3bucket:
     Value: !Ref "S3bucket"
-  S3bucketPolicy:
+  S3PolicyARN:
     Value: !Ref "S3bucketPolicy"

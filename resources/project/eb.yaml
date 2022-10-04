@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Template for creating the EB application"
+
+Parameters:
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+
+Resources:
+  ElasticApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      ApplicationName: !Sub "${ProjectName}-app"
+
+Outputs:
+  EbApplicationName:
+    Value: !Ref "ElasticApplication"

@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Templates for creating the VPC and basic routing table"
+Parameters:
+  VpcCIDR:
+    Description: "IP range (CIDR notation) for the VPC"
+    Type: "String"
+  ResourceNamePrefix:
+    Type: "String"
+Resources:
+  VPC:
+    Type: "AWS::EC2::VPC"
+    Properties:
+      CidrBlock: !Ref "VpcCIDR"
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${ResourceNamePrefix}-vpc"
+  InternetGateway:
+    Type: "AWS::EC2::InternetGateway"
+    Properties:
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${ResourceNamePrefix}-ig"
+  GatewayTointernet:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      VpcId: !Ref "VPC"
+      InternetGatewayId: !Ref "InternetGateway"
+  PublicRouteTable1:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId: !Ref "VPC"
+      Tags:
+      - Key: "Name"
+        Value: !Sub "${ResourceNamePrefix}-public-route-table-1"
+  PublicRouteIGW1:
+    Type: "AWS::EC2::Route"
+    Properties:
+      RouteTableId: !Ref "PublicRouteTable1"
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref "InternetGateway"
+
+Outputs:
+  VpcId:
+    Value: !Ref "VPC"
+  InternetGateway:
+    Value: !Ref "InternetGateway"
+  PublicRouteTable1Id:
+    Value: !Ref "PublicRouteTable1"

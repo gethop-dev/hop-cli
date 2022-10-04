@@ -44,6 +44,10 @@ Resources:
           RequireUppercase: !Ref "PasswordRequireUppercase"
           RequireNumbers: !Ref "PasswordRequireNumbers"
           RequireSymbols: !Ref "PasswordRequireSymbols"
+      UserPoolTags:
+        project-name: !Ref "ProjectName"
+        environment: !Ref "Environment"
+
   UserPoolSPAClient:
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
@@ -69,15 +73,16 @@ Resources:
         - "email"
       WriteAttributes:
         - "email"
+
   IAMManagedPolicy:
     Type: "AWS::IAM::ManagedPolicy"
-    Properties: 
+    Properties:
       ManagedPolicyName: !Sub "${ProjectName}-${Environment}-env-cognito"
       PolicyDocument:
         Version: 2012-10-17
         Statement:
           - Effect: Allow
-            Action: 
+            Action:
             - "cognito-idp:AdminCreateUser"
             - "cognito-idp:AdminDeleteUser"
             - "cognito-idp:AdminUpdateUserAttributes"
@@ -90,5 +95,5 @@ Outputs:
     Value: !Ref "UserPoolSPAClient"
   UserPoolURL:
     Value: !GetAtt "UserPool.ProviderURL"
-  IAMManagedPolicyARN:
+  CognitoPolicyARN:
     Value: !Ref "IAMManagedPolicy"

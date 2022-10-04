@@ -1,11 +1,15 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "RDS IAM Role for CloudWatch"
+Description: "RDS IAM Role for RDS monitoring"
+
+Parameters:
+  ResourceNamePrefix:
+    Type: "String"
 
 Resources:
   RDSMonitoringRole:
     Type: "AWS::IAM::Role"
     Properties:
-      RoleName: "rds-monitoring-role"
+      RoleName: !Sub "${ResourceNamePrefix}-rds-monitoring-role"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:

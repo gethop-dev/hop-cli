@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "RDS IAM Role for CloudWatch"
+Parameters:
+  ResourceNamePrefix:
+    Type: "String"
+Resources:
+  LocalDevUser:
+    Type: "AWS::IAM::User"
+    Properties:
+      UserName: !Sub "${ResourceNamePrefix}-local-dev"
+
+Outputs:
+  LocalDevUserARN:
+    Value: !Ref "LocalDevUser"

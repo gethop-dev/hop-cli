@@ -9,17 +9,21 @@ Parameters:
     Description: "Server environment"
     Type: "String"
     AllowedValues:
-      - "dev"
       - "test"
       - "prod"
 
 # The generated KeyPair is stored in AWS System Manager Parameter Store
 # in the path /ec2/keypair/{key_pair_id}.
-Resources: 
+Resources:
   EC2KeyPair:
     Type: 'AWS::EC2::KeyPair'
     Properties:
-      KeyName: !Sub "${ProjectName}-${Environment}" 
+      KeyName: !Sub "${ProjectName}-${Environment}"
+      Tags:
+        - Key: "project-name"
+          Value: !Ref "ProjectName"
+        - Key: "environment"
+          Value: !Ref "Environment"
 
 Outputs:
   EC2KeyPairName:

@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Cloudformation template for setting up the AWS account"
+
+Parameters:
+  TemplateBucketURL:
+    Description: "URL of the bucket used for storing Cloudformation templates"
+    Type: "String"
+  ResourceNamePrefix:
+    Description: "String that will be concatenated to every resource's name created by the template"
+    Type: "String"
+  VpcCIDR:
+    Description: "IP range (CIDR notation) for the VPC"
+    Type: "String"
+
+Resources:
+  IamCI:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/account/iam-ci.yaml"
+      Parameters:
+        ResourceNamePrefix: !Ref "ResourceNamePrefix"
+  IamLocalDevUser:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/account/iam-local-dev-user.yaml"
+      Parameters:
+        ResourceNamePrefix: !Ref "ResourceNamePrefix"
+  IamRds:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/account/iam-rds.yaml"
+      Parameters:
+        ResourceNamePrefix: !Ref "ResourceNamePrefix"
+  IamEb:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/account/iam-eb.yaml"
+      Parameters:
+        ResourceNamePrefix: !Ref "ResourceNamePrefix"
+  Vpc:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/account/vpc.yaml"
+      Parameters:
+        VpcCIDR: !Ref "VpcCIDR"
+        ResourceNamePrefix: !Ref "ResourceNamePrefix"
+
+Outputs:
+  VpcId:
+    Value: !GetAtt "Vpc.Outputs.VpcId"
+  PublicRouteTable1Id:
+    Value: !GetAtt "Vpc.Outputs.PublicRouteTable1Id"
+  EbServiceRoleARN:
+    Value: !GetAtt "IamEb.Outputs.EbServiceRoleARN"
+  LocalDevUserARN:
+    Value: !GetAtt "IamLocalDevUser.Outputs.LocalDevUserARN"

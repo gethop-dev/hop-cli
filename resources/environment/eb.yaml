@@ -1,0 +1,184 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Server environment"
+    Type: "String"
+    AllowedValues:
+      - "test"
+      - "prod"
+  VpcId:
+    Description: "VPC Id"
+    Type: "String"
+  SubnetIds:
+    Type: "List<AWS::EC2::Subnet::Id>"
+  InstanceType:
+    Type: "String"
+    Default: "t3.micro"
+  ServiceRoleARN:
+    Type: "String"
+  InstanceEC2KeyName:
+    Type: "String"
+  NotificationsEmail:
+    Type: "String"
+  LoadBalancerARN:
+    Type: "String"
+  S3PolicyARN:
+    Type: "String"
+  CognitoPolicyARN:
+    Type: "String"
+  EbApplicationName:
+    Type: "String"
+  RdsSecurityGroupId:
+    Type: "String"
+  ElbSecurityGroupId:
+    Type: "String"
+
+Resources:
+  EbSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupName: !Sub "${ProjectName}-${Environment}-eb-sg"
+      GroupDescription: !Sub "${ProjectName}-${Environment}-eb-sg"
+      VpcId: !Ref "VpcId"
+      SecurityGroupIngress:
+        - Description: "Load balancer"
+          IpProtocol: "tcp"
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref "ElbSecurityGroupId"
+      Tags:
+        - Key: "Name"
+          Value: !Sub "${ProjectName}-${Environment}-eb-sg"
+        - Key: "project-name"
+          Value: !Ref "ProjectName"
+        - Key: "environment"
+          Value: !Ref "Environment"
+
+  EbToRdsSecurityGroupRule:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref "RdsSecurityGroupId"
+      SourceSecurityGroupId: !Ref "EbSecurityGroup"
+      IpProtocol: "tcp"
+      FromPort: 5432
+      ToPort: 5432
+      Description: !Sub "${ProjectName}-${Environment}-eb"
+
+  ElasticConfigurationTemplate:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      ApplicationName: !Ref "EbApplicationName"
+      SolutionStackName: "64bit Amazon Linux 2 v3.4.19 running Docker"
+      OptionSettings:
+        # Capacity
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: "LoadBalanced"
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: "1"
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: "1"
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: InstanceType
+          Value: !Ref "InstanceType"
+        # Network
+        - Namespace: aws:ec2:vpc
+          OptionName: VPCId
+          Value: !Ref "VpcId"
+        - Namespace: aws:ec2:vpc
+          OptionName: AssociatePublicIpAddress
+          Value: "true"
+        - Namespace: aws:ec2:vpc
+          OptionName: Subnets
+          Value: !Join [",", !Ref "SubnetIds"]
+        - Namespace: aws:ec2:vpc
+          OptionName: ELBSubnets
+          Value: !Join [",", !Ref "SubnetIds"]
+        # Security
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: ServiceRole
+          Value: !Ref "ServiceRoleARN"
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref "InstanceProfile"
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: EC2KeyName
+          Value: !Ref "InstanceEC2KeyName"
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SecurityGroups
+          Value: !Ref "EbSecurityGroup"
+        # Notifications
+        - Namespace: aws:elasticbeanstalk:sns:topics
+          OptionName: NotificationEndpoint
+          Value: !Ref "NotificationsEmail"
+        # Load balancer
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: LoadBalancerIsShared
+          Value: "true"
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: LoadBalancerType
+          Value: "application"
+        - Namespace: aws:elbv2:loadbalancer
+          OptionName: SharedLoadBalancer
+          Value: !Ref "LoadBalancerARN"
+        - Namespace: aws:elbv2:loadbalancer
+          OptionName: SecurityGroups
+          Value: !Ref "ElbSecurityGroupId"
+        # Software
+        - Namespace: aws:elasticbeanstalk:managedactions
+          OptionName: ManagedActionsEnabled
+          Value: "true"
+        - Namespace: aws:elasticbeanstalk:managedactions
+          OptionName: PreferredStartTime
+          Value: "Sat:03:00"
+        - Namespace: aws:elasticbeanstalk:managedactions:platformupdate
+          OptionName: UpdateLevel
+          Value: "minor"
+        - Namespace: aws:elasticbeanstalk:hostmanager
+          OptionName: LogPublicationControl
+          Value: "true"
+
+  ElasticEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref "EbApplicationName"
+      TemplateName: !Ref "ElasticConfigurationTemplate"
+      EnvironmentName: !Sub "${ProjectName}-${Environment}"
+      Tags:
+        - Key: "project-name"
+          Value: !Ref "ProjectName"
+        - Key: "environment"
+          Value: !Ref "Environment"
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+        - !Ref "InstanceRole"
+
+  InstanceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Sub "${ProjectName}-${Environment}-eb-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - !Ref "S3PolicyARN"
+        - !Ref "CognitoPolicyARN"
+        - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+        - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
+        - "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
+        - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
