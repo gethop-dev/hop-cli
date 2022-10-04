@@ -64,8 +64,8 @@ Resources:
       EngineVersion: !Ref "DatabaseEngineVersion"
       DBName: !Ref "DatabaseName"
       DBInstanceIdentifier: !Sub "${ProjectName}-${Environment}"
-      MasterUsername: "postgres"
-      MasterUserPassword: "safepassword" # Don't hardcode passwords
+      # MasterUsername: "postgres"
+      # MasterUserPassword: "safepassword" # Don't hardcode passwords
       DBInstanceClass: !Ref "DatabaseInstanceClass"
       AllocatedStorage: "20"
       StorageType: "gp2"
