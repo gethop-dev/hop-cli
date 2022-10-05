@@ -100,9 +100,20 @@ Resources:
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
           Value: !Ref "InstanceProfile"
+          # NOTE: At the moment it is not possible to avoid the
+          # creation of the default security group that opens the SSH
+          # port to the outside world. To avoid this security hole the
+          # only thing we can do is to add a dummy rule that blocks any
+          # outside SSH connection.
+          # There is an open issue for this
+          # and the AWS people say it will be fixed soon:
+          # https://github.com/aws/elastic-beanstalk-roadmap/issues/44
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
           Value: !Ref "EbSecurityGroup"
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SSHSourceRestriction
+          Value !Sub "tcp, 22, 22, ${EbSecurityGroup}"
         # Notifications
         - Namespace: aws:elasticbeanstalk:sns:topics
           OptionName: Notification Endpoint
