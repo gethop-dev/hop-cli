@@ -113,7 +113,7 @@ Resources:
           Value: !Ref "EbSecurityGroup"
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SSHSourceRestriction
-          Value !Sub "tcp, 22, 22, ${EbSecurityGroup}"
+          Value: !Sub "tcp, 22, 22, ${EbSecurityGroup}"
         # Notifications
         - Namespace: aws:elasticbeanstalk:sns:topics
           OptionName: Notification Endpoint
