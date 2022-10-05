@@ -1,12 +1,12 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "IAM role for the AEB service"
+Description: "IAM role for the EB service"
 
 Parameters:
   ResourceNamePrefix:
     Type: "String"
 
 Resources:
-  AebServiceRole:
+  EbServiceRole:
     Type: "AWS::IAM::Role"
     Properties:
       RoleName: !Sub "${ResourceNamePrefix}-aws-elasticbeanstalk-service-role"
@@ -28,4 +28,4 @@ Resources:
 
 Outputs:
   EbServiceRoleARN:
-    Value: !GetAtt "AebServiceRole.Arn"
+    Value: !GetAtt "EbServiceRole.Arn"
