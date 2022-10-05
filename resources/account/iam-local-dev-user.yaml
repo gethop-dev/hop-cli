@@ -11,4 +11,4 @@ Resources:
 
 Outputs:
   LocalDevUserARN:
-    Value: !Ref "LocalDevUser"
+    Value: !GetAtt "LocalDevUser.Arn"

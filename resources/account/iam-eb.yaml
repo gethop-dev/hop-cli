@@ -28,4 +28,4 @@ Resources:
 
 Outputs:
   EbServiceRoleARN:
-    Value: !Ref "AebServiceRole"
+    Value: !GetAtt "AebServiceRole.Arn"
