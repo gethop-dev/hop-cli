@@ -19,8 +19,6 @@ Parameters:
     Default: "t3.micro"
   ServiceRoleARN:
     Type: "String"
-  InstanceEC2KeyName:
-    Type: "String"
   NotificationsEmail:
     Type: "String"
   LoadBalancerARN:
@@ -103,9 +101,6 @@ Resources:
           OptionName: IamInstanceProfile
           Value: !Ref "InstanceProfile"
         - Namespace: aws:autoscaling:launchconfiguration
-          OptionName: EC2KeyName
-          Value: !Ref "InstanceEC2KeyName"
-        - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
           Value: !Ref "EbSecurityGroup"
         # Notifications
@@ -176,6 +171,7 @@ Resources:
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
+        - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 
 Outputs:
   RoleName:
