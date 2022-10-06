@@ -1,0 +1,8 @@
+{:paths ["src"]
+ :min-bb-version "0.4.0"
+ :pods {org.babashka/aws {:version "0.1.2"}}
+ :deps {metosin/malli {:mvn/version "0.8.9"}
+        org.babashka/cli {:mvn/version "0.4.38"}}
+ :tasks {aws {:doc "AWS utility scripts"
+              :requires ([hop.aws.cli :as cli])
+              :task (apply cli/-main *command-line-args*)}}}
