@@ -9,6 +9,8 @@ Parameters:
     Type: "String"
   SubnetIds:
     Type: "List<AWS::EC2::Subnet::Id>"
+  ElbCertificateArn:
+    Type: "String"
 
 Resources:
   LoadBalancerSecurityGroup:
@@ -49,6 +51,20 @@ Resources:
            Path: "/#{path}"
            Query: "#{query}"
            StatusCode: "HTTP_301"
+
+  LoadBalancerHttpsListener:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      LoadBalancerArn: !Ref "LoadBalancer"
+      Port: 443
+      Protocol: "HTTPS"
+      SslPolicy: "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
+      Certificates:
+        - CertificateArn: !Ref "ElbCertificateArn"
+      DefaultActions:
+       - Type: "fixed-response"
+         FixedResponseConfig:
+           StatusCode: 404
 
   LoadBalancer:
     Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"

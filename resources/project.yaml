@@ -18,6 +18,8 @@ Parameters:
     Type: "String"
   Subnet3CIDR:
     Type: "String"
+  ElbCertificateArn:
+    Type: "String"
 
 Resources:
   ECR:
@@ -58,6 +60,7 @@ Resources:
             - Fn::GetAtt:
               - VPC
               - Outputs.PublicSubnetId2
+        ElbCertificateArn: !Ref "ElbCertificateArn"
 
 Outputs:
   LoadBalancerARN:

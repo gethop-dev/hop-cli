@@ -131,6 +131,9 @@ Resources:
         - Namespace: aws:elbv2:loadbalancer
           OptionName: SecurityGroups
           Value: !Ref "ElbSecurityGroupId"
+        - Namespace: aws:elbv2:listener:443
+          OptionName: Rules
+          Value: "default"
         # Software
         - Namespace: aws:elasticbeanstalk:managedactions
           OptionName: ManagedActionsEnabled
