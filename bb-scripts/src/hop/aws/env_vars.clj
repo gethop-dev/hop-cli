@@ -87,12 +87,20 @@
             :error-details result})))}]
    (tht/thread-transactions {})))
 
+(defn- non-env-var-line?
+  [line]
+  (or
+   ;; Empty lines or with just whitespace
+   (re-matches #"^\s*$" line)
+   ;; Comment lines with optional initial whitespace
+   (re-matches #"^\s*#.*$" line)))
+
 (defn sync-env-vars
   [{:keys [file] :as config}]
   (let [string-env-vars (->>
                          (fs/file file)
                          (fs/read-all-lines)
-                         (filter (comp not #(str/starts-with? % "#"))))]
+                         (remove non-env-var-line?))]
     (if-not (m/validate string-env-vars-schema string-env-vars)
       (do
         (prn "File contains invalid environment variable format: ")
@@ -106,7 +114,7 @@
                 file-env-vars (map string-env-var->env-var string-env-vars)
                 env-var-diff (get-env-var-diff ssm-env-vars file-env-vars)
                 result (sync-env-vars* config env-var-diff)]
-            result))))))
+            (assoc result :sync-details env-var-diff)))))))
 
 (defn download-env-vars
   [{:keys [file] :as config}]
