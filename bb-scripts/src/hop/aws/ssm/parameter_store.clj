@@ -1,7 +1,7 @@
 (ns hop.aws.ssm.parameter-store
   (:require [clojure.set :as set]
             [clojure.string :as str]
-            [pod.babashka.aws :as aws]))
+            [com.grzm.awyeah.client.api :as aws]))
 
 (defonce ssm-client
   (aws/client {:api :ssm}))

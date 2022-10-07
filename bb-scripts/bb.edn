@@ -1,8 +1,13 @@
 {:paths ["src"]
  :min-bb-version "0.4.0"
- :pods {org.babashka/aws {:version "0.1.2"}}
  :deps {metosin/malli {:mvn/version "0.8.9"}
-        org.babashka/cli {:mvn/version "0.4.38"}}
+        org.babashka/cli {:mvn/version "0.4.38"}
+        com.cognitect.aws/endpoints {:mvn/version "1.1.12.307"}
+        com.cognitect.aws/ssm {:mvn/version "823.2.1216.0"}
+        com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
+                             :git/sha "0fa7dd51f801dba615e317651efda8c597465af6"}
+        org.babashka/spec.alpha {:git/url "https://github.com/babashka/spec.alpha"
+                                 :git/sha "433b0778e2c32f4bb5d0b48e5a33520bee28b906"}}
  :tasks {aws {:doc "AWS utility scripts"
               :requires ([hop.aws.cli :as cli])
               :task (apply cli/-main *command-line-args*)}}}
