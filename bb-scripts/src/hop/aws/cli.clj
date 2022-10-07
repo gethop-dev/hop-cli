@@ -9,8 +9,9 @@
                   :require true}
    :environment {:alias :e
                  :require true}
-   :kms-key-id {:alias :k
-                :require true}})
+   :kms-key-alias {:alias :k
+                   :desc "Alias for the KMS key, or key id"
+                   :require true}})
 
 (defn- generic-error-handler
   [{:keys [msg]}]

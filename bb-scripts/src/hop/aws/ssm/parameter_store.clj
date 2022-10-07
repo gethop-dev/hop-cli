@@ -28,12 +28,12 @@
       (update :name api-name->name)))
 
 (defn put-parameter
-  [{:keys [project-name environment kms-key-id] :as config} opts {:keys [name value]}]
+  [{:keys [project-name environment kms-key-alias] :as config} opts {:keys [name value]}]
   (let [request {:Name (name->api-name config name)
                  :Value value
                  :Type "SecureString"
                  :Tier "Standard"
-                 :KeyId kms-key-id}
+                 :KeyId kms-key-alias}
         request (cond-> request
                   (:new? opts)
                   (assoc :Tags
