@@ -16,9 +16,7 @@
 
 (def param-name-conversion
   {:Value :value
-   :Name :name
-   :Version :version
-   :LastModifiedDate :updated-at})
+   :Name :name})
 
 (defn- api-param->param
   [api-param]

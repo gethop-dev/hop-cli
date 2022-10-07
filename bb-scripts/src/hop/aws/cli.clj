@@ -1,5 +1,6 @@
 (ns hop.aws.cli
   (:require [babashka.cli :as cli]
+            [clojure.pprint :refer [pprint]]
             [hop.aws.env-vars :as env-vars]))
 
 (def cli-spec
@@ -22,11 +23,11 @@
 
 (defn- sync-env-vars-handler
   [{:keys [opts]}]
-  (println (env-vars/sync-env-vars opts)))
+  (pprint (env-vars/sync-env-vars opts)))
 
 (defn- download-env-vars-handler
   [{:keys [opts]}]
-  (println (env-vars/download-env-vars opts)))
+  (pprint (env-vars/download-env-vars opts)))
 
 (def cli-table
   [{:cmds ["sync-env-vars"]

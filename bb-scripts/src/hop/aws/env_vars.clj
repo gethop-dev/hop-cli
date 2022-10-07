@@ -78,10 +78,7 @@
      (fn txn-2 [_]
        (let [result (ssm.parameter-store/delete-parameters config to-delete)]
          (if (:success? result)
-           {:success? true
-            :deleted-env-vars (count to-delete)
-            :updated-env-vars (count to-update)
-            :created-env-vars (count to-create)}
+           {:success? true}
            {:success? false
             :reason :could-not-delete-env-vars
             :error-details result})))}]
