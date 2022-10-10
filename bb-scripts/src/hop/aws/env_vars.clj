@@ -2,15 +2,20 @@
   (:require [babashka.fs :as fs]
             [clojure.pprint :as pprint]
             [clojure.string :as str]
+            [hop.aws.ssm.eb :as ssm.eb]
             [hop.aws.ssm.parameter-store :as ssm.parameter-store]
             [hop.aws.util.thread-transactions :as tht]
-            [malli.core :as m]))
+            [malli.core :as m])
+  (:import (java.util Date)))
 
 (def string-env-vars-schema
   [:sequential
    [:and
     [:string {:min 1}]
     [:re #"^[A-Z_0-9]+=.+$"]]])
+
+(def ^:const last-ssm-script-update-env-var
+  "LAST_SSM_SCRIPT_ENV_UPDATE")
 
 (defn- string-env-var->env-var
   [s]
@@ -123,3 +128,8 @@
                         (map env-var->string-env-var)
                         (fs/write-lines file))]
         {:success? (boolean result)}))))
+
+(defn apply-env-var-changes-handler
+  [config]
+  (ssm.eb/update-env-variable config {:name last-ssm-script-update-env-var
+                                      :value (.toString (Date.))}))
