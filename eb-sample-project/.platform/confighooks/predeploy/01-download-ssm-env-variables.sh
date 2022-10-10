@@ -1,1 +1,1 @@
-.platform/hooks/predeploy/01-download-ssm-env-variables.sh
+../../hooks/predeploy/01-download-ssm-env-variables.sh

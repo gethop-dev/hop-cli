@@ -13,7 +13,7 @@ if [ ! -d "${DOWNLOAD_DIR}" ];
 then
     mkdir --parents "${DOWNLOAD_DIR}"
     curl --location --output "${DOWNLOAD_PATH}" "https://github.com/babashka/babashka/releases/download/v${BABASHKA_VERSION}/babashka-${BABASHKA_VERSION}-linux-amd64.tar.gz"
-    tar --extract --file "${DOWNLOAD_PATH}"
+    tar --extract --directory "${DOWNLOAD_DIR}" --file "${DOWNLOAD_PATH}"
     chmod +x "${DOWNLOAD_DIR}/bb"
 fi
 
