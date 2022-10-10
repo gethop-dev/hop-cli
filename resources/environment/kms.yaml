@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: ""
+
+Parameters:
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Server environment"
+    Type: "String"
+    AllowedValues:
+      - "dev"
+      - "test"
+      - "prod"
+  ConsumerRoleARN:
+    Type: "String"
+
+Resources:
+  KmsKey:
+    Type: "AWS::KMS::Key"
+    Properties:
+      KeySpec: "SYMMETRIC_DEFAULT"
+      KeyUsage: "ENCRYPT_DECRYPT"
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "Grant all permissions"
+            Effect: "Allow"
+            Action: "kms:*"
+            Resource: "*"
+            Principal:
+              AWS: 
+                - !Ref "ConsumerRoleARN"
+                - !Join ["", ["arn:aws:iam::", !Ref "AWS::AccountId", ":root"]]
+      Tags:
+        - Key: "project-name"
+          Value: !Ref "ProjectName"
+        - Key: "environment"
+          Value: !Ref "Environment"
+  KmsKeyAlias:
+    Type: "AWS::KMS::Alias"
+    Properties:
+      AliasName: !Sub "alias/${ProjectName}-${Environment}"
+      TargetKeyId: !Ref "KmsKey"
+
+Outputs:
+  KmsKeyAlias:
+    Value: !Ref "KmsKeyAlias"

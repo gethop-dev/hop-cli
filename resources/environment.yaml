@@ -51,7 +51,6 @@ Parameters:
     Default: "false"
 
 Conditions:
-  IsDevEnv: !Equals ["dev", !Ref "Environment"]
   IsTestOrProdEnv: !Or
     - !Equals ["prod", !Ref "Environment"]
     - !Equals ["test", !Ref "Environment"]
@@ -67,7 +66,7 @@ Resources:
       Parameters:
         ProjectName: !Ref "ProjectName"
         Environment: !Ref "Environment"
-        ConsumerRoleName: !If ["IsDevEnv", !GetAtt "IamLocalUser.Outputs.RoleName", !GetAtt "EB.Outputs.RoleName"]
+        ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
   RDS:
     Type: "AWS::CloudFormation::Stack"
     Condition: "IsTestOrProdEnv"
@@ -90,7 +89,23 @@ Resources:
       Parameters:
         ProjectName: !Ref "ProjectName"
         Environment: !Ref "Environment"
-        ConsumerRoleName: !If ["IsDevEnv", !GetAtt "IamLocalUser.Outputs.RoleName", !GetAtt "EB.Outputs.RoleName"]
+        ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
+  IAM:
+    Type: "AWS::CloudFormation::Stack"
+    Properties: 
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/iam.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        LocalDevUserARN: !Ref "LocalDevUserARN"
+  KMS:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/kms.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        ConsumerRoleARN: !GetAtt "IAM.Outputs.ConsumerRoleARN"
   EB:
     Type: "AWS::CloudFormation::Stack"
     Condition: "IsTestOrProdEnv"
@@ -107,11 +122,5 @@ Resources:
         EbApplicationName: !Ref "EbApplicationName"
         RdsSecurityGroupId: !GetAtt "RDS.Outputs.RdsSecurityGroupId"
         ElbSecurityGroupId: !Ref "ElbSecurityGroupId"
-  IamLocalUser:
-    Type: "AWS::CloudFormation::Stack"
-    Condition: "IsDevEnv"
-    Properties:
-      TemplateURL: !Sub "${TemplateBucketURL}/environment/iam-local-user.yaml"
-      Parameters:
-        ProjectName: !Ref "ProjectName"
-        LocalDevUserARN: !Ref "LocalDevUserARN"
+        KmsKeyAlias: !GetAtt "KMS.Outputs.KmsKeyAlias"
+        InstanceRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"

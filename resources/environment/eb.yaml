@@ -29,6 +29,10 @@ Parameters:
     Type: "String"
   ElbSecurityGroupId:
     Type: "String"
+  KmsKeyAlias:
+    Type: "String"
+  InstanceRoleName:
+    Type: "String"
 
 Resources:
   EbSecurityGroup:
@@ -147,6 +151,16 @@ Resources:
         - Namespace: aws:elasticbeanstalk:hostmanager
           OptionName: LogPublicationControl
           Value: "true"
+        # Environment variables
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: PROJECT_NAME
+          Value: !Ref "ProjectName"
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: ENVIRONMENT
+          Value: !Ref "Environment"
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: KMS_KEY_ALIAS
+          Value: !Ref "KmsKeyAlias"
 
   ElasticEnvironment:
     Type: AWS::ElasticBeanstalk::Environment
@@ -165,28 +179,4 @@ Resources:
     Properties:
       Path: /
       Roles:
-        - !Ref "InstanceRole"
-
-  InstanceRole:
-    Type: "AWS::IAM::Role"
-    Properties:
-      RoleName: !Sub "${ProjectName}-${Environment}-eb-role"
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: "Allow"
-            Principal:
-              Service:
-                - "ec2.amazonaws.com"
-            Action:
-              - "sts:AssumeRole"
-      ManagedPolicyArns:
-        - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-        - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
-        - "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
-        - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
-        - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-
-Outputs:
-  RoleName:
-    Value: !Ref "InstanceRole"
+        - !Ref "InstanceRoleName"
