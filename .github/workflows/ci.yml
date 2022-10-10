@@ -45,7 +45,7 @@ jobs:
 
       - name: Install Babashka
         run: |
-          curl -L --output bb.tar.gz https://github.com/babashka/babashka/releases/download/v0.10.163/babashka-0.10.163-linux-amd64.tar.gz
+          curl --location --output bb.tar.gz "https://github.com/babashka/babashka/releases/download/v0.10.163/babashka-0.10.163-linux-amd64.tar.gz"
           tar xf bb.tar.gz
           chmod +x ./bb
 
@@ -55,7 +55,7 @@ jobs:
       - name: Build Uberjar
         run: |
           cd bb-scripts
-          ../bb uberjar ssm-parameter-store-sync.jar -m hop.aws.cli
+          ../bb uberjar ssm-parameter-store-sync.jar --main hop.aws.cli
 
       - name: Release Uberjar
         uses: softprops/action-gh-release@v1
