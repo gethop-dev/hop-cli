@@ -24,3 +24,39 @@ jobs:
         run: |
           cfn-lint --version
           cfn-lint resources/**/*.yaml --format=pretty
+  babashka-ssm-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install clj-kondo
+        uses: DeLaGuardo/setup-clj-kondo@master
+        with:
+          version: '2022.10.05'
+
+      - name: Install Babashka
+        run: |
+          curl --output bb.tar.gz https://github.com/babashka/babashka/releases/download/v0.10.163/babashka-0.10.163-linux-amd64.tar.gz
+          tar xf bb.tar.gz
+          chmod +x ./bb
+
+      - name: Lint
+        run: clj-kondo --lint bb-scripts/src
+
+      - name: Build Uberjar
+        run: |
+          ./bb uberjar ssm-parameter-store-sync.jar -m hop.aws.cli
+
+      - name: Release Uberjar
+        uses: softprops/action-gh-release@v1
+        if: contains(github.ref, 'refs/tags/')
+        with:
+          files: ssm-parameter-store-sync.jar
