@@ -1,6 +1,5 @@
 (ns hop.aws.env-vars
-  (:require [babashka.cli :as cli]
-            [babashka.fs :as fs]
+  (:require [babashka.fs :as fs]
             [clojure.pprint :as pprint]
             [clojure.string :as str]
             [hop.aws.ssm.parameter-store :as ssm.parameter-store]
