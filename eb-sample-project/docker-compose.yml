@@ -1,0 +1,12 @@
+version: "2.4"
+
+services:
+  nginx:
+    image: nginx:1.21.3-alpine
+    mem_limit: 128m
+    ports:
+      - "80:80"
+    volumes:
+      - /var/app/current/proxy/conf.d:/etc/nginx/conf.d:ro
+    env_file:
+      - .env
