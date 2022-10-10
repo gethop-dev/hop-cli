@@ -53,10 +53,11 @@ jobs:
 
       - name: Build Uberjar
         run: |
-          ./bb uberjar ssm-parameter-store-sync.jar -m hop.aws.cli
+          cd bb-scripts
+          ../bb uberjar ssm-parameter-store-sync.jar -m hop.aws.cli
 
       - name: Release Uberjar
         uses: softprops/action-gh-release@v1
         if: contains(github.ref, 'refs/tags/')
         with:
-          files: ssm-parameter-store-sync.jar
+          files: bb-scripts/ssm-parameter-store-sync.jar
