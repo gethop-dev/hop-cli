@@ -44,7 +44,7 @@ jobs:
 
       - name: Install Babashka
         run: |
-          curl --output bb.tar.gz https://github.com/babashka/babashka/releases/download/v0.10.163/babashka-0.10.163-linux-amd64.tar.gz
+          curl -L --output bb.tar.gz https://github.com/babashka/babashka/releases/download/v0.10.163/babashka-0.10.163-linux-amd64.tar.gz
           tar xf bb.tar.gz
           chmod +x ./bb
 
