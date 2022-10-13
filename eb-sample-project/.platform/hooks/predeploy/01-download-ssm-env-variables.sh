@@ -13,28 +13,15 @@ set -eu -o pipefail
 # project. Finally we append the SSMPS result to the same .env file
 # which will be copied by the EB system to the current folder.
 NEW_ENV_FILE_PATH="${PWD}/.env"
+PROJECT_NAME="$(awk --field-separator '=' '/^PROJECT_NAME=/ {gsub("^ +$", "", $2); print $2}' "${NEW_ENV_FILE_PATH}")"
+ENVIRONMENT="$(awk --field-separator '=' '/^ENVIRONMENT=/ {gsub("^ +$", "", $2); print $2}' "${NEW_ENV_FILE_PATH}")"
+KMS_KEY_ALIAS="$(awk --field-separator '=' '/^KMS_KEY_ALIAS=/ {gsub("^ +$", "", $2); print $2}' "${NEW_ENV_FILE_PATH}")"
 
-# TODO: there is probably a better way of doing this.
-while read line; do
-    if [[ ! ${line:0:1} = "#" ]]; then
-        KEY=${line%=*}
-        VALUE=${line#*=}
-        case ${KEY} in
-            "PROJECT_NAME")
-                PROJECT_NAME="${VALUE}"
-                ;;
-            "ENVIRONMENT")
-                ENVIRONMENT="${VALUE}"
-                ;;
-            "KMS_KEY_ALIAS")
-                KMS_KEY_ALIAS="${VALUE}"
-                ;;
-            *)
-                echo "Skipping environment variable ${KEY}"
-                ;;
-        esac
-    fi
-done < ${NEW_ENV_FILE_PATH}
+if [[ -z "${PROJECT_NAME}" || -z "${ENVIRONMENT}" || "${KMS_KEY_ALIAS}" ]]; then
+    echo "Some environment variable(s) required by the CLI has an empty value."
+    echo "Aborting..."
+    exit 1
+fi
 
 TEMP_FILE=$(mktemp)
 
