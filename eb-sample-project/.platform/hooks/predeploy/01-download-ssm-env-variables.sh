@@ -17,7 +17,7 @@ PROJECT_NAME="$(awk --field-separator '=' '/^PROJECT_NAME=/ {gsub("^ +$", "", $2
 ENVIRONMENT="$(awk --field-separator '=' '/^ENVIRONMENT=/ {gsub("^ +$", "", $2); print $2}' "${NEW_ENV_FILE_PATH}")"
 KMS_KEY_ALIAS="$(awk --field-separator '=' '/^KMS_KEY_ALIAS=/ {gsub("^ +$", "", $2); print $2}' "${NEW_ENV_FILE_PATH}")"
 
-if [[ -z "${PROJECT_NAME}" || -z "${ENVIRONMENT}" || "${KMS_KEY_ALIAS}" ]]; then
+if [[ -z "${PROJECT_NAME}" || -z "${ENVIRONMENT}" || -z "${KMS_KEY_ALIAS}" ]]; then
     echo "Some environment variable(s) required by the CLI has an empty value."
     echo "Aborting..."
     exit 1
