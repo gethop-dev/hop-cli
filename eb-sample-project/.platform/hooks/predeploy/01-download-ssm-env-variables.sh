@@ -13,9 +13,17 @@ set -eu -o pipefail
 # project. Finally we append the SSMPS result to the same .env file
 # which will be copied by the EB system to the current folder.
 NEW_ENV_FILE_PATH="${PWD}/.env"
-PROJECT_NAME="$(awk --field-separator '=' '/^PROJECT_NAME=/ {gsub("^ +$", "", $2); print $2}' "${NEW_ENV_FILE_PATH}")"
-ENVIRONMENT="$(awk --field-separator '=' '/^ENVIRONMENT=/ {gsub("^ +$", "", $2); print $2}' "${NEW_ENV_FILE_PATH}")"
-KMS_KEY_ALIAS="$(awk --field-separator '=' '/^KMS_KEY_ALIAS=/ {gsub("^ +$", "", $2); print $2}' "${NEW_ENV_FILE_PATH}")"
+
+get_var() {
+    awk --field-separator '=' \
+        --assign=var="^${1}=" \
+        '$0~var {gsub("^ +$", "", $2); print $2}' \
+        "${NEW_ENV_FILE_PATH}"
+}
+
+PROJECT_NAME="$(get_var "PROJECT_NAME")"
+ENVIRONMENT="$(get_var "ENVIRONMENT")"
+KMS_KEY_ALIAS="$(get_var "KMS_KEY_ALIAS")"
 
 if [[ -z "${PROJECT_NAME}" || -z "${ENVIRONMENT}" || -z "${KMS_KEY_ALIAS}" ]]; then
     echo "Some environment variable(s) required by the CLI has an empty value."
@@ -29,5 +37,9 @@ trap "rm -f ${TEMP_FILE}" EXIT ERR
 
 bb /usr/local/ssm-parameter-store-sync/ssm-parameter-store-sync.jar \
    download-env-vars \
-   -p "${PROJECT_NAME}" -e "${ENVIRONMENT}" -k "${KMS_KEY_ALIAS}" -f "${TEMP_FILE}"
-cat "${TEMP_FILE}" >> ${NEW_ENV_FILE_PATH}
+   --project-name "${PROJECT_NAME}" \
+   --environment "${ENVIRONMENT}" \
+   --kms-key-alias "${KMS_KEY_ALIAS}" \
+   --file "${TEMP_FILE}"
+
+cat "${TEMP_FILE}" >> "${NEW_ENV_FILE_PATH}"
