@@ -98,6 +98,14 @@ Resources:
         ProjectName: !Ref "ProjectName"
         Environment: !Ref "Environment"
         LocalDevUserARN: !Ref "LocalDevUserARN"
+  SSM:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/iam-ssm.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
   KMS:
     Type: "AWS::CloudFormation::Stack"
     Properties:

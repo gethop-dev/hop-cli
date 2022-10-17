@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Server environment"
+    Type: "String"
+    AllowedValues:
+      - "test"
+      - "prod"
+  ConsumerRoleName:
+    Type: "String"
+
+Resources:
+  SSMPSPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: !Sub "${ProjectName}-${Environment}-env-ssm-ps"
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - "ssm:GetParametersByPath"
+            Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${ProjectName}/${Environment}/env-variables"
+      Roles:
+        - !Ref "ConsumerRoleName"

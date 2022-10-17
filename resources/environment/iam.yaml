@@ -40,7 +40,6 @@ Resources:
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
         - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
         - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-        - "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
 
   DevRole:
     Type: "AWS::IAM::Role"
