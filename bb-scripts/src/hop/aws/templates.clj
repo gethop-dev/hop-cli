@@ -80,8 +80,10 @@
       ;;FIXME This will fail if bucket is not empty. We need a strategy for it.
       (fn rollback-fn-2-delete-bucket
         [{:keys [bucket-name] :as prev-result}]
-        (s3.bucket/delete-bucket config bucket-name)
-        (dissoc prev-result :bucket-name))}
+        (let [result (s3.bucket/delete-bucket config bucket-name)]
+          (when-not (:success? result)
+            (println "An error has occurred when deleting a bucket."))
+          (dissoc prev-result :bucket-name)))}
      {:txn-fn
       (fn txn-3-upload-files
         [{:keys [bucket-name]}]
