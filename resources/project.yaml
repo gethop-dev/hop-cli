@@ -69,7 +69,7 @@ Outputs:
     Value: !GetAtt "ELB.Outputs.ElbSecurityGroupId"
   EbApplicationName:
     Value: !GetAtt "EB.Outputs.EbApplicationName"
-  PublicSubnetIds:
+  SubnetIds:
     Value: !Join [",",[!GetAtt "VPC.Outputs.PublicSubnetId1",
                        !GetAtt "VPC.Outputs.PublicSubnetId2",
                        !GetAtt "VPC.Outputs.PublicSubnetId3"]]
