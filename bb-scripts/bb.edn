@@ -12,6 +12,6 @@
                                  :git/sha "433b0778e2c32f4bb5d0b48e5a33520bee28b906"}
         com.cognitect.aws/s3 {:mvn/version "822.2.1145.0"}
         com.cognitect.aws/sts {:mvn/version "822.2.1145.0"}}
- :tasks {aws {:doc "AWS utility scripts"
-              :requires ([hop.aws.cli :as cli])
-              :task (apply cli/-main *command-line-args*)}}}
+ :tasks {aws-util {:doc "AWS utility scripts"
+                   :requires ([hop.aws.cli :as cli])
+                   :task (apply cli/-main *command-line-args*)}}}

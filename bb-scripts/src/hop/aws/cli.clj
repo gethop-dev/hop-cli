@@ -41,8 +41,8 @@
                 :desc "Stack capability."}})
 
 (def cli-spec
-  {:sync-env-vars common-cli-spec
-   :download-env-vars common-cli-spec
+  {:sync-env-vars (select-keys common-cli-spec [:project-name :environment :file :kms-key-alias])
+   :download-env-vars (select-keys common-cli-spec [:project-name :environment :file :kms-key-alias])
    :apply-env-var-changes (select-keys common-cli-spec [:project-name :environment])
    :create-cf-templates-bucket (select-keys common-cli-spec [:directory-path :region])
    :create-cf-stack (select-keys common-cli-spec [:project-name :environment
@@ -78,36 +78,58 @@
   [{:keys [opts]}]
   (pprint (env-vars/apply-env-var-changes-handler opts)))
 
-(defn- create-cf-templates-bucket-handler
+(defn- update-cf-templates-handler
   [{:keys [opts]}]
-  (pprint (templates/create-cf-templates-bucket-handler opts)))
+  (pprint (templates/update-cf-templates-handler opts)))
 
 (defn- create-cf-stack
   [{:keys [opts]}]
   (let [parsed-opts (update opts :parameters stdin-parameters->parameters)]
     (pprint (templates/create-cf-stack parsed-opts))))
 
-(def cli-table
+(declare print-help)
+
+(defn- cli-cmd-table
+  []
   [{:cmds ["sync-env-vars"]
     :fn sync-env-vars-handler
     :spec (get cli-spec :sync-env-vars)
-    :error-fn generic-error-handler}
+    :error-fn generic-error-handler
+    :desc "Synchronize local environment variables with AWS SSMPS"}
    {:cmds ["download-env-vars"]
     :fn download-env-vars-handler
     :spec (get cli-spec :download-env-vars)
-    :error-fn generic-error-handler}
+    :error-fn generic-error-handler
+    :desc "Download environment variables from AWS SSMPS"}
    {:cmds ["apply-env-var-changes"]
     :fn apply-env-var-changes-handler
     :spec (get cli-spec :apply-env-var-changes)
-    :error-fn generic-error-handler}
-   {:cmds ["create-cf-templates-bucket"]
-    :fn create-cf-templates-bucket-handler
+    :error-fn generic-error-handler
+    :desc "Apply environment variables changes in a AWS Elasticbeanstalk environment"}
+   {:cmds ["update-cf-templates"]
+    :fn update-cf-templates-handler
     :spec (get cli-spec :create-cf-templates-bucket)
-    :error-fn generic-error-handler}
+    :error-fn generic-error-handler
+    :desc "Updates CF templates in the specified bucket. If the bucket doesn't exist it is created"}
    {:cmds ["create-cf-stack"]
     :fn create-cf-stack
     :spec (get cli-spec :create-cf-stack)
-    :error-fn generic-error-handler}])
+    :error-fn generic-error-handler
+    :desc "Creates a Cloudformation stack"}
+   {:cmds []
+    :fn print-help}])
+
+(defn- print-help
+  [_]
+  (let [max-cmd-len (reduce #(max %1 (-> %2 :cmds first count)) 0 (cli-cmd-table))]
+    (println "Usage: aws-util <subcommand> <options>")
+    (println)
+    (println "Subcommands")
+    (doseq [{:keys [cmds desc]} (cli-cmd-table)
+            :when (seq cmds)
+            :let [format-str (str "  %-" max-cmd-len "s  %s")
+                  cmd (first cmds)]]
+      (println (format format-str cmd desc)))))
 
 (defn -main [& args]
-  (cli/dispatch cli-table args {:coerce {:depth :long}}))
+  (cli/dispatch (cli-cmd-table) args))

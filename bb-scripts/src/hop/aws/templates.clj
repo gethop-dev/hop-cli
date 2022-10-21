@@ -53,7 +53,7 @@
   [config bucket-name]
   (:success? (s3.bucket/head-bucket config {:bucket-name bucket-name})))
 
-(defn create-cf-templates-bucket-handler
+(defn update-cf-templates-handler
   [config]
   (->
     [{:txn-fn
