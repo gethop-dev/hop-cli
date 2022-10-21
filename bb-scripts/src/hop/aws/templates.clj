@@ -1,6 +1,7 @@
 (ns hop.aws.templates
   (:require [babashka.fs :as fs]
             [clojure.string :as str]
+            [hop.aws.cloudformation.stack :as cf.stack]
             [hop.aws.s3.bucket :as s3.bucket]
             [hop.aws.sts.identity :as sts.identity]
             [hop.aws.util.thread-transactions :as tht]))
@@ -94,3 +95,18 @@
              :error-details results}
             {:success? true})))}]
     (tht/thread-transactions {})))
+
+(defn create-cf-stack
+  [{:keys [dependee-stack-names parameters] :as config}]
+  (if-not (seq dependee-stack-names)
+    (cf.stack/create-stack config)
+    (let [describe-stack-results (map #(cf.stack/describe-stack config {:stack-name %}) dependee-stack-names)]
+      (if-not (every? :success? describe-stack-results)
+        {:success? false
+         :error-details (remove :success? describe-stack-results)}
+        (let [stacks (map :stack describe-stack-results)
+              new-stack-parameters (reduce (fn [acc {:keys [Outputs]}]
+                                             (merge acc Outputs))
+                                           parameters
+                                           stacks)]
+          (cf.stack/create-stack (assoc config :parameters new-stack-parameters)))))))

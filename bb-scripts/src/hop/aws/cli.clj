@@ -1,6 +1,7 @@
 (ns hop.aws.cli
   (:require [babashka.cli :as cli]
             [clojure.pprint :refer [pprint]]
+            [clojure.string :as str]
             [hop.aws.env-vars :as env-vars]
             [hop.aws.templates :as templates]))
 
@@ -19,13 +20,44 @@
                  :require true}
    :kms-key-alias {:alias :k
                    :desc "Alias for the KMS key, or key id"
-                   :require true}})
+                   :require true}
+   :stack-name {:alias :s
+                :desc "AWS Cloudformation stack name."
+                :require true}
+   :s3-bucket-name {:alias :b
+                    :desc "S3 Bucket name where Cloudformation templates are stored."
+                    :require true}
+   :master-template {:alias :m
+                     :desc "Cloudformation stack master template filename."
+                     :require true}
+   :parameters {:alias :pa
+                :coerce []
+                :desc "Cloudformation stack parameters."}
+   :dependee-stack-names {:alias :ds
+                          :coerce []
+                          :desc "The stack names that the new stack depends on."}
+   :capability {:alias :c
+                :coerce :keyword
+                :desc "Stack capability."}})
 
 (def cli-spec
   {:sync-env-vars common-cli-spec
    :download-env-vars common-cli-spec
    :apply-env-var-changes (select-keys common-cli-spec [:project-name :environment])
-   :create-cf-templates-bucket (select-keys common-cli-spec [:directory-path :region])})
+   :create-cf-templates-bucket (select-keys common-cli-spec [:directory-path :region])
+   :create-cf-stack (select-keys common-cli-spec [:project-name :environment
+                                                  :stack-name :s3-bucket-name
+                                                  :master-template :parameters
+                                                  :dependee-stack-names :region
+                                                  :capability])})
+
+(defn- stdin-parameters->parameters
+  [stdin-parameters]
+  (reduce (fn [acc s]
+            (let [[k v] (str/split s #"=" 2)]
+              (assoc acc (keyword k) v)))
+          {}
+          stdin-parameters))
 
 (defn- generic-error-handler
   [{:keys [msg spec]}]
@@ -50,6 +82,11 @@
   [{:keys [opts]}]
   (pprint (templates/create-cf-templates-bucket-handler opts)))
 
+(defn- create-cf-stack
+  [{:keys [opts]}]
+  (let [parsed-opts (update opts :parameters stdin-parameters->parameters)]
+    (pprint (templates/create-cf-stack parsed-opts))))
+
 (def cli-table
   [{:cmds ["sync-env-vars"]
     :fn sync-env-vars-handler
@@ -66,6 +103,10 @@
    {:cmds ["create-cf-templates-bucket"]
     :fn create-cf-templates-bucket-handler
     :spec (get cli-spec :create-cf-templates-bucket)
+    :error-fn generic-error-handler}
+   {:cmds ["create-cf-stack"]
+    :fn create-cf-stack
+    :spec (get cli-spec :create-cf-stack)
     :error-fn generic-error-handler}])
 
 (defn -main [& args]
