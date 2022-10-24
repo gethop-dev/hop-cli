@@ -12,8 +12,6 @@ Parameters:
     Type: "String"
   Subnet2CIDR:
     Type: "String"
-  Subnet3CIDR:
-    Type: "String"
 
 Resources:
   PublicSubnet1:
@@ -40,18 +38,6 @@ Resources:
       - Key: "project-name"
         Value: !Ref "ProjectName"
 
-  PublicSubnet3:
-    Type: "AWS::EC2::Subnet"
-    Properties:
-      VpcId: !Ref "VpcId"
-      CidrBlock: !Ref "Subnet3CIDR"
-      AvailabilityZone: !Select [ '2', !GetAZs ]
-      Tags:
-      - Key: "Name"
-        Value: !Sub "${ProjectName}-public-subnet-3"
-      - Key: "project-name"
-        Value: !Ref "ProjectName"
-
   PublicSubnet1RouteTableAssociation:
     Type: "AWS::EC2::SubnetRouteTableAssociation"
     Properties:
@@ -64,16 +50,8 @@ Resources:
       SubnetId: !Ref "PublicSubnet2"
       RouteTableId: !Ref "PublicRouteTable1Id"
 
-  PublicSubnet3RouteTableAssociation:
-    Type: "AWS::EC2::SubnetRouteTableAssociation"
-    Properties:
-      SubnetId: !Ref "PublicSubnet3"
-      RouteTableId: !Ref "PublicRouteTable1Id"
-
 Outputs:
   PublicSubnetId1:
     Value: !Ref "PublicSubnet1"
   PublicSubnetId2:
     Value: !Ref "PublicSubnet2"
-  PublicSubnetId3:
-    Value: !Ref "PublicSubnet3"

@@ -16,8 +16,6 @@ Parameters:
     Type: "String"
   Subnet2CIDR:
     Type: "String"
-  Subnet3CIDR:
-    Type: "String"
   ElbCertificateArn:
     Type: "String"
 
@@ -44,7 +42,6 @@ Resources:
         PublicRouteTable1Id: !Ref "PublicRouteTable1Id"
         Subnet1CIDR: !Ref "Subnet1CIDR"
         Subnet2CIDR: !Ref "Subnet2CIDR"
-        Subnet3CIDR: !Ref "Subnet3CIDR"
   ELB:
     Type: "AWS::CloudFormation::Stack"
     Properties:
@@ -71,5 +68,4 @@ Outputs:
     Value: !GetAtt "EB.Outputs.EbApplicationName"
   SubnetIds:
     Value: !Join [",",[!GetAtt "VPC.Outputs.PublicSubnetId1",
-                       !GetAtt "VPC.Outputs.PublicSubnetId2",
-                       !GetAtt "VPC.Outputs.PublicSubnetId3"]]
+                       !GetAtt "VPC.Outputs.PublicSubnetId2"]]
