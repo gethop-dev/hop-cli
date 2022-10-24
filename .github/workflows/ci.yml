@@ -24,7 +24,7 @@ jobs:
         run: |
           cfn-lint --version
           cfn-lint resources/**/*.yaml --format=pretty
-  babashka-ssm-script:
+  cli-build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
