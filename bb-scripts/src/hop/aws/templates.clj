@@ -1,5 +1,7 @@
 (ns hop.aws.templates
   (:require [babashka.fs :as fs]
+            [clojure.data :as data]
+            [clojure.java.io :as io]
             [clojure.string :as str]
             [hop.aws.cloudformation.stack :as cf.stack]
             [hop.aws.s3.bucket :as s3.bucket]
@@ -46,7 +48,7 @@
     (keep (fn [file]
             (s3.bucket/put-object config {:bucket-name bucket-name
                                           :key (compose-file-key file directory-path)
-                                          :body (.getPath file)}))
+                                          :body (io/input-stream file)}))
           files)))
 
 (defn bucket-exists?
