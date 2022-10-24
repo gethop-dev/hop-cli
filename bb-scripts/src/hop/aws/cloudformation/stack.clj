@@ -21,16 +21,16 @@
   [capability]
   (vector (name capability)))
 
+(defn get-template-bucket-url
+  [s3-bucket-name]
+  (format "https://%s.s3.amazonaws.com" s3-bucket-name))
+
 (defn- get-template-url
   [s3-bucket-name master-template]
   (format "https://%s.s3.amazonaws.com/%s" s3-bucket-name master-template))
 
-(defn- get-template-bucket-url
-  [s3-bucket-name]
-  (format "https://%s.s3.amazonaws.com" s3-bucket-name))
-
 (defn describe-stack
-  [_ {:keys [stack-name]}]
+  [{:keys [stack-name]}]
   (let [request {:StackName stack-name}
         opts {:op :DescribeStacks
               :request request}
@@ -46,11 +46,12 @@
 
 (defn create-stack
   [{:keys [project-name environment stack-name parameters capability s3-bucket-name master-template]}]
-  (let [template-bucket-url (get-template-bucket-url s3-bucket-name)
-        request {:StackName stack-name
-                 :Parameters (parameters->api-parameters (assoc parameters :TemplateBucketURL template-bucket-url))
+  (let [request {:StackName stack-name
+                 :Parameters (parameters->api-parameters parameters)
                  :Capabilities (capability->api-capabilities capability)
-                 :Tags (cond-> [{:Key "project-name" :Value project-name}]
+                 :Tags (cond-> []
+                         (seq project-name)
+                         (conj {:Key "project-name" :Value project-name})
                          (seq environment)
                          (conj {:Key "environment" :Value environment}))
                  :TemplateURL (get-template-url s3-bucket-name master-template)}
@@ -61,4 +62,28 @@
       {:success? false
        :error-details result}
       {:success? true
+       :stack-id (:StackId result)})))
+
+(defn- api-template-summary->template-summary
+  [{:keys [Parameters Capabilities]}]
+  {:capabilities (map keyword Capabilities)
+   :parameters
+   (map
+    (fn [{:keys [ParameterKey DefaultValue]}]
+      {:key (keyword ParameterKey)
+       :required? (nil? DefaultValue)})
+        Parameters)})
+
+(defn get-template-summary
+  [{:keys [s3-bucket-name master-template]}]
+  (let [template-url (get-template-url s3-bucket-name master-template)
+        request {:TemplateURL template-url}
+        opts {:op :GetTemplateSummary
+              :request request}
+        result (aws/invoke cf-client opts)]
+    (if (:cognitect.anomalies/category result)
+      {:success? false
+       :error-details result}
+      {:success? true
+       :template-summary (api-template-summary->template-summary result)
        :stack-id (:StackId result)})))

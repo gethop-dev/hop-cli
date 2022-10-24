@@ -98,17 +98,68 @@
             {:success? true})))}]
     (tht/thread-transactions {})))
 
+(defn- build-available-parameters
+  [{:keys [project-name environment parameters s3-bucket-name] :as config}]
+  (cond-> parameters
+    project-name
+    (assoc :ProjectName project-name)
+
+    environment
+    (assoc :Environment environment)
+
+    s3-bucket-name
+    (assoc :TemplateBucketURL (cf.stack/get-template-bucket-url s3-bucket-name))))
+
+(defn- ensure-template-params
+  [config]
+  (let [result (cf.stack/get-template-summary config)]
+    (if-not (:success? result)
+      {:success? false
+       :reason :could-not-get-template-summary
+       :error-details result}
+      (let [available-parameters (build-available-parameters config)
+            available-parameter-keys (set (keys available-parameters))
+            template-parameters (get-in result [:template-summary :parameters])
+            required-parameter-keys (->> template-parameters
+                                         (filter :required?)
+                                         (map :key)
+                                         (set))
+            all-parameter-keys  (set (map :key template-parameters))
+            param-diff (data/diff required-parameter-keys available-parameter-keys)]
+        (if (seq (get param-diff 0))
+          {:success? false
+           :reason :required-parameter-missing
+           :error-details {:missing-keys (get param-diff 0)}}
+          {:success? true
+           :parameters (select-keys available-parameters all-parameter-keys)})))))
+
+(defn- create-cf-stack*
+  [config]
+  (let [result (ensure-template-params config)]
+    (if (:success? result)
+      (cf.stack/create-stack (assoc config :parameters (:parameters result)))
+      result)))
+
+(defn- get-dependee-outputs
+  [{:keys [dependee-stack-names]}]
+  (let [describe-stack-results
+        (map #(cf.stack/describe-stack {:stack-name %}) dependee-stack-names)]
+    (if-not (every? :success? describe-stack-results)
+      {:success? false
+       :error-details (remove :success? describe-stack-results)}
+      {:success? true
+       :outputs
+       (->> describe-stack-results
+            (map (comp :Outputs :stack))
+            (reduce merge {}))})))
+
 (defn create-cf-stack
-  [{:keys [dependee-stack-names parameters] :as config}]
+  [{:keys [dependee-stack-names] :as config}]
   (if-not (seq dependee-stack-names)
-    (cf.stack/create-stack config)
-    (let [describe-stack-results (map #(cf.stack/describe-stack config {:stack-name %}) dependee-stack-names)]
-      (if-not (every? :success? describe-stack-results)
+    (create-cf-stack* config)
+    (let [result (get-dependee-outputs config)]
+      (if (:success? result)
+        (create-cf-stack* (update config :parameters merge (:outputs result)))
         {:success? false
-         :error-details (remove :success? describe-stack-results)}
-        (let [stacks (map :stack describe-stack-results)
-              new-stack-parameters (reduce (fn [acc {:keys [Outputs]}]
-                                             (merge acc Outputs))
-                                           parameters
-                                           stacks)]
-          (cf.stack/create-stack (assoc config :parameters new-stack-parameters)))))))
+         :reason :could-not-get-dependee-outputs
+         :error-details result}))))
