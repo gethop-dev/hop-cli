@@ -99,7 +99,7 @@
     (tht/thread-transactions {})))
 
 (defn- build-available-parameters
-  [{:keys [project-name environment parameters s3-bucket-name] :as config}]
+  [{:keys [project-name environment parameters s3-bucket-name]}]
   (cond-> parameters
     project-name
     (assoc :ProjectName project-name)
