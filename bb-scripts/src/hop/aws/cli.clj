@@ -45,11 +45,14 @@
    :download-env-vars (select-keys common-cli-spec [:project-name :environment :file :kms-key-alias])
    :apply-env-var-changes (select-keys common-cli-spec [:project-name :environment])
    :create-cf-templates-bucket (select-keys common-cli-spec [:directory-path :region])
-   :create-cf-stack (select-keys common-cli-spec [:project-name :environment
-                                                  :stack-name :s3-bucket-name
-                                                  :master-template :parameters
-                                                  :dependee-stack-names :region
-                                                  :capability])})
+   :create-cf-stack (-> common-cli-spec
+                        (select-keys [:project-name :environment
+                                      :stack-name :s3-bucket-name
+                                      :master-template :parameters
+                                      :dependee-stack-names :region
+                                      :capability])
+                        (assoc-in [:project-name :require] false)
+                        (assoc-in [:environment :require] false))})
 
 (defn- stdin-parameters->parameters
   [stdin-parameters]
