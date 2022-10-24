@@ -7,6 +7,7 @@ Parameters:
     Description: "Server environment"
     Type: "String"
     AllowedValues:
+      - "dev"
       - "test"
       - "prod"
   ConsumerRoleName:
