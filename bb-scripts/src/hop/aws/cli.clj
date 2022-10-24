@@ -3,6 +3,7 @@
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [hop.aws.env-vars :as env-vars]
+            [hop.aws.ssl :as ssl]
             [hop.aws.templates :as templates]))
 
 (def common-cli-spec
@@ -90,6 +91,10 @@
   (let [parsed-opts (update opts :parameters stdin-parameters->parameters)]
     (pprint (templates/create-cf-stack parsed-opts))))
 
+(defn- create-and-upload-self-signed-certificate-handler
+  [_]
+  (pprint (ssl/create-and-upload-self-signed-certificate)))
+
 (declare print-help)
 
 (defn- cli-cmd-table
@@ -119,6 +124,11 @@
     :spec (get cli-spec :create-cf-stack)
     :error-fn generic-error-handler
     :desc "Creates a Cloudformation stack"}
+   {:cmds ["create-and-upload-self-signed-certificate"]
+    :fn create-and-upload-self-signed-certificate-handler
+    :spec {}
+    :error-fn generic-error-handler
+    :desc "Creates an uploads a SSL self-signed certificate to ACM"}
    {:cmds []
     :fn print-help}])
 
