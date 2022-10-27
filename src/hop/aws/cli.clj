@@ -4,7 +4,9 @@
             [clojure.string :as str]
             [hop.aws.env-vars :as env-vars]
             [hop.aws.ssl :as ssl]
-            [hop.aws.templates :as templates]))
+            [hop.aws.templates :as templates]
+            [hop.util.error :as error]
+            [hop.util.help :as help]))
 
 (def common-cli-spec
   {:file {:alias :f
@@ -63,13 +65,6 @@
           {}
           stdin-parameters))
 
-(defn- generic-error-handler
-  [{:keys [msg spec]}]
-  (println "An error has occurred:" msg)
-  (println "Usage:")
-  (println (cli/format-opts {:spec spec}))
-  (System/exit 1))
-
 (defn- sync-env-vars-handler
   [{:keys [opts]}]
   (pprint (env-vars/sync-env-vars opts)))
@@ -95,54 +90,46 @@
   [_]
   (pprint (ssl/create-and-upload-self-signed-certificate)))
 
-(declare print-help)
+(declare print-help-handler)
 
 (defn- cli-cmd-table
   []
   [{:cmds ["sync-env-vars"]
     :fn sync-env-vars-handler
     :spec (get cli-spec :sync-env-vars)
-    :error-fn generic-error-handler
+    :error-fn error/generic-error-handler
     :desc "Synchronize local environment variables with AWS SSMPS"}
    {:cmds ["download-env-vars"]
     :fn download-env-vars-handler
     :spec (get cli-spec :download-env-vars)
-    :error-fn generic-error-handler
+    :error-fn error/generic-error-handler
     :desc "Download environment variables from AWS SSMPS"}
    {:cmds ["apply-env-var-changes"]
     :fn apply-env-var-changes-handler
     :spec (get cli-spec :apply-env-var-changes)
-    :error-fn generic-error-handler
+    :error-fn error/generic-error-handler
     :desc "Apply environment variables changes in a AWS Elasticbeanstalk environment"}
    {:cmds ["update-cf-templates"]
     :fn update-cf-templates-handler
     :spec (get cli-spec :create-cf-templates-bucket)
-    :error-fn generic-error-handler
+    :error-fn error/generic-error-handler
     :desc "Updates CF templates in the specified bucket. If the bucket doesn't exist it is created"}
    {:cmds ["create-cf-stack"]
     :fn create-cf-stack
     :spec (get cli-spec :create-cf-stack)
-    :error-fn generic-error-handler
+    :error-fn error/generic-error-handler
     :desc "Creates a Cloudformation stack"}
    {:cmds ["create-and-upload-self-signed-certificate"]
     :fn create-and-upload-self-signed-certificate-handler
     :spec {}
-    :error-fn generic-error-handler
+    :error-fn error/generic-error-handler
     :desc "Creates an uploads a SSL self-signed certificate to ACM"}
    {:cmds []
-    :fn print-help}])
+    :fn print-help-handler}])
 
-(defn- print-help
+(defn- print-help-handler
   [_]
-  (let [max-cmd-len (reduce #(max %1 (-> %2 :cmds first count)) 0 (cli-cmd-table))]
-    (println "Usage: aws-util <subcommand> <options>")
-    (println)
-    (println "Subcommands")
-    (doseq [{:keys [cmds desc]} (cli-cmd-table)
-            :when (seq cmds)
-            :let [format-str (str "  %-" max-cmd-len "s  %s")
-                  cmd (first cmds)]]
-      (println (format format-str cmd desc)))))
+  (help/print-help (cli-cmd-table)))
 
 (defn -main [& args]
   (cli/dispatch (cli-cmd-table) args))
