@@ -1,11 +1,9 @@
 (ns hop.bootstrap.settings-reader
   (:require [babashka.fs :as fs]
             [clojure.edn :as edn]
-            [clojure.walk :as walk]
-            [malli.core :as m]
             [clojure.java.io :as io]
-            [malli.error :as me]
-            [malli.transform :as mt])
+            [clojure.walk :as walk]
+            [malli.core :as m])
   (:import (java.io PushbackReader)))
 
 (def setting-name-schema
