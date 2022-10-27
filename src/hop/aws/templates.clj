@@ -5,11 +5,7 @@
             [clojure.string :as str]
             [hop.aws.cloudformation.stack :as cf.stack]
             [hop.aws.s3.bucket :as s3.bucket]
-            [hop.aws.sts.identity :as sts.identity]
             [hop.util.thread-transactions :as tht]))
-
-(def ^:const cloudformation-templates-s3-prefix
-  "cloudformation-templates-")
 
 (def ^:const cloudformation-template-ext
   ".yaml")
