@@ -197,26 +197,3 @@
 
               :error-details result}))))}]
    (tht/thread-transactions {})))
-
-
-(def ^:const foo-config
-  {:project/name "hop"
-   :aws/cloudformation-templates-bucket-name "cloudformation-templates-223330293187"
-   :aws.account/enabled false
-   :aws.account/stack-name "hop-account"
-   :aws.project/enabled true
-   :aws.project/stack-name "hop-project"
-   :aws.account.vpc/cidr "172.31.0.0/16"
-   :aws.account/resource-name-prefix "hop"
-   :aws.project.vpc.subnet1/cidr "172.31.0.0/24"
-   :aws.project.vpc.subnet2/cidr "172.31.1.0/24"
-   :aws.environment.test/enabled true
-   :aws.environment.test/stack-name "hop-test-env"
-   :aws.environment.test.database/version "12"
-   :aws.environment.test.database/password "password"
-   :aws.environment.test/notification-email "devops@magnet.coop"
-   :aws.environment.prod/enabled true
-   :aws.environment.prod/stack-name "hop-prod-env"
-   :aws.environment.prod.database/version "12"
-   :aws.environment.prod.database/password "password"
-   :aws.environment.prod/notification-email "devops@magnet.coop"})

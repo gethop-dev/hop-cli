@@ -1,0 +1,190 @@
+[{:name :project
+  :docstring [:a]
+  :min-hop-version "1"
+  :tag "Project"
+  :type :plain-group
+  :value [{:name :name
+           :docstring [:a]
+           :min-hop-version "1"
+           :tag "Project Name"
+           :type :string
+           :value "test"}]}
+ {:name :aws
+  :docstring [:a]
+  :min-hop-version "1"
+  :tag "AWS infrastructure"
+  :type :plain-group
+  :value [{:name :cloudformation-templates-bucket-name
+           :docstring [:a]
+           :min-hop-version "1"
+           :tag "Cloudformation Template Bucket"
+           :type :string
+           :value "cloudformation-templates-223330293187"}
+          {:name :account
+           :docstring [:a]
+           :min-hop-version "1"
+           :tag "Account"
+           :type :plain-group
+           :value [{:name :enabled
+                    :docstring [:a]
+                    :min-hop-version "1"
+                    :tag "Enabled"
+                    :type :boolean
+                    :value false}
+                   {:name :resource-name-prefix
+                    :docstring [:a]
+                    :min-hop-version "1"
+                    :tag "Resource name prefix"
+                    :type :string
+                    :value "hop"}
+                   {:name :vpc
+                    :docstring [:a]
+                    :min-hop-version "1"
+                    :tag "VPC"
+                    :type :plain-group
+                    :value [{:name :cidr
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "VPC CIDR"
+                             :type :string
+                             :value "172.31.0.0/16"}]}]}
+          {:name :project
+           :docstring [:a]
+           :min-hop-version "1"
+           :tag "Project"
+           :type :plain-group
+           :value [{:name :enabled
+                    :docstring [:a]
+                    :min-hop-version "1"
+                    :tag "Enabled"
+                    :type :boolean
+                    :value false}
+                   {:name :vpc
+                    :docstring [:a]
+                    :min-hop-version "1"
+                    :tag "VPC"
+                    :type :plain-group
+                    :value [{:name :subnet-1
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Subnet 1"
+                             :type :plain-group
+                             :value [{:name :cidr
+                                      :docstring [:a]
+                                      :min-hop-version "1"
+                                      :tag "CIDR"
+                                      :type :string
+                                      :value "172.31.0.0/24"}]}
+                            {:name :subnet-2
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Subnet 2"
+                             :type :plain-group
+                             :value [{:name :cidr
+                                      :docstring [:a]
+                                      :min-hop-version "1"
+                                      :tag "CIDR"
+                                      :type :string
+                                      :value "172.31.1.0/24"}]}]}]}
+          {:name :environment
+           :docstring [:a]
+           :min-hop-version "1"
+           :tag "Environment"
+           :type :plain-group
+           :value [{:name :dev
+                    :docstring [:a]
+                    :min-hop-version "1"
+                    :tag "Dev"
+                    :type :plain-group
+                    :value [{:name :enabled
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Enabled"
+                             :type :boolean
+                             :value true}
+                            {:name :stack-name
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Stack-name"
+                             :type :string
+                             :value "hop-test-dev"}]}
+                   {:name :test
+                    :docstring [:a]
+                    :min-hop-version "1"
+                    :tag "Test"
+                    :type :plain-group
+                    :value [{:name :enabled
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Enabled"
+                             :type :boolean
+                             :value false}
+                            {:name :stack-name
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Stack-name"
+                             :type :string
+                             :value "hop-test-test"}
+                            {:name :notifications-email
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Notifications email"
+                             :type :string
+                             :value "devops+test@magnet.coop"}
+                            {:name :database
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Database"
+                             :type :plain-group
+                             :value [{:name :version
+                                      :docstring [:a]
+                                      :min-hop-version "1"
+                                      :tag "Version"
+                                      :type :string
+                                      :value "12"}
+                                     {:name :password
+                                      :docstring [:a]
+                                      :min-hop-version "1"
+                                      :tag "Password"
+                                      :type :string
+                                      :value "safePassword123#@"}]}]}
+                   {:name :prod
+                    :docstring [:a]
+                    :min-hop-version "1"
+                    :tag "Prod"
+                    :type :plain-group
+                    :value [{:name :enabled
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Enabled"
+                             :type :boolean
+                             :value false}
+                            {:name :stack-name
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Stack-name"
+                             :type :string
+                             :value "hop-project-prod"}
+                            {:name :notifications-email
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Notifications email"
+                             :type :string
+                             :value "devops+prod@magnet.coop"}
+                            {:name :database
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "Database"
+                             :type :plain-group
+                             :value [{:name :version
+                                      :docstring [:a]
+                                      :min-hop-version "1"
+                                      :tag "Version"
+                                      :type :string
+                                      :value "12"}
+                                     {:name :password
+                                      :docstring [:a]
+                                      :min-hop-version "1"
+                                      :tag "Password"
+                                      :type :string
+                                      :value "safePassword123#@"}]}]}]}]}]
