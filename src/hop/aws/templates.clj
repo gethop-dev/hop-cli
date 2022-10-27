@@ -6,7 +6,7 @@
             [hop.aws.cloudformation.stack :as cf.stack]
             [hop.aws.s3.bucket :as s3.bucket]
             [hop.aws.sts.identity :as sts.identity]
-            [hop.aws.util.thread-transactions :as tht]))
+            [hop.util.thread-transactions :as tht]))
 
 (def ^:const cloudformation-templates-s3-prefix
   "cloudformation-templates-")
@@ -41,13 +41,13 @@
 
 (defn upload-files
   [{:keys [directory-path] :as config} {:keys [bucket-name]}]
-  (let [files (->> directory-path
-                   fs/file
+  (let [directory-file (fs/file directory-path)
+        files (->> directory-file
                    file-seq
                    (filter template-file?))]
     (keep (fn [file]
             (s3.bucket/put-object config {:bucket-name bucket-name
-                                          :key (compose-file-key file directory-path)
+                                          :key (compose-file-key file (str directory-file))
                                           :body (io/input-stream file)}))
           files)))
 
@@ -55,48 +55,38 @@
   [config bucket-name]
   (:success? (s3.bucket/head-bucket config {:bucket-name bucket-name})))
 
-(defn update-cf-templates-handler
-  [config]
+(defn update-cf-templates
+  [{:keys [bucket-name] :as config}]
   (->
-    [{:txn-fn
-      (fn txn-1-get-caller-identity
-        [_]
-        (let [result (sts.identity/get-caller-identity)]
-          (if-not (:success? result)
-            result
-            {:success? true
-             :caller-identity (:caller-identity result)})))}
-     {:txn-fn
-      (fn txn-2-create-bucket
-        [{:keys [caller-identity]}]
-        (let [caller-account-number (:Account caller-identity)
-              bucket-name (str cloudformation-templates-s3-prefix caller-account-number)]
-          (if (bucket-exists? config bucket-name)
-            {:success? true
-             :bucket-name bucket-name}
-            (let [result (s3.bucket/create-bucket config {:bucket-name bucket-name})]
-              (if-not (:success? result)
-                result
-                {:success? true
-                 :bucket-name bucket-name})))))
-      :rollback-fn
+   [{:txn-fn
+     (fn txn-1-create-bucket
+       [_]
+       (if (bucket-exists? config bucket-name)
+         {:success? true
+          :bucket-name bucket-name}
+         (let [result (s3.bucket/create-bucket config {:bucket-name bucket-name})]
+           (if-not (:success? result)
+             result
+             {:success? true
+              :bucket-name bucket-name}))))
+     :rollback-fn
       ;;FIXME This will fail if bucket is not empty. We need a strategy for it.
-      (fn rollback-fn-2-delete-bucket
-        [{:keys [bucket-name] :as prev-result}]
-        (let [result (s3.bucket/delete-bucket config bucket-name)]
-          (when-not (:success? result)
-            (println "An error has occurred when deleting a bucket."))
-          (dissoc prev-result :bucket-name)))}
-     {:txn-fn
-      (fn txn-3-upload-files
-        [{:keys [bucket-name]}]
-        (let [results (upload-files config {:bucket-name bucket-name})]
-          (if-not (every? :success? results)
-            {:success? false
-             :bucket-name bucket-name
-             :error-details results}
-            {:success? true})))}]
-    (tht/thread-transactions {})))
+     (fn rollback-fn-1-delete-bucket
+       [{:keys [bucket-name] :as prev-result}]
+       (let [result (s3.bucket/delete-bucket config bucket-name)]
+         (when-not (:success? result)
+           (println "An error has occurred when deleting a bucket."))
+         (dissoc prev-result :bucket-name)))}
+    {:txn-fn
+     (fn txn-2-upload-files
+       [{:keys [bucket-name]}]
+       (let [results (upload-files config {:bucket-name bucket-name})]
+         (if-not (every? :success? results)
+           {:success? false
+            :bucket-name bucket-name
+            :error-details results}
+           {:success? true})))}]
+   (tht/thread-transactions {})))
 
 (defn- build-available-parameters
   [{:keys [project-name environment parameters s3-bucket-name]}]
@@ -150,7 +140,7 @@
       {:success? true
        :outputs
        (->> describe-stack-results
-            (map (comp :Outputs :stack))
+            (map (comp :outputs :stack))
             (reduce merge {}))})))
 
 (defn create-cf-stack
@@ -163,3 +153,7 @@
         {:success? false
          :reason :could-not-get-dependee-outputs
          :error-details result}))))
+
+(defn describe-stack
+  [opts]
+  (cf.stack/describe-stack opts))

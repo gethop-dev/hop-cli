@@ -23,8 +23,8 @@ jobs:
       - name: Print the Cloud Formation Linter Version & run Linter.
         run: |
           cfn-lint --version
-          cfn-lint resources/**/*.yaml --format=pretty
-  cli-build:
+          cfn-lint resources/infrastructure/cloudformation-templates/**/*.yaml --format=pretty
+  cli:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -50,15 +50,14 @@ jobs:
           chmod +x ./bb
 
       - name: Lint
-        run: clj-kondo --lint bb-scripts/src
+        run: clj-kondo --lint src
 
       - name: Build Uberjar
         run: |
-          cd bb-scripts
-          ../bb uberjar ssm-parameter-store-sync.jar --main hop.aws.cli
+          ./bb uberjar hop-aws.jar --main hop.aws.cli
 
       - name: Release Uberjar
         uses: softprops/action-gh-release@v1
         if: contains(github.ref, 'refs/tags/')
         with:
-          files: bb-scripts/ssm-parameter-store-sync.jar
+          files: hop-aws.jar

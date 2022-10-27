@@ -4,7 +4,7 @@
             [clojure.string :as str]
             [hop.aws.ssm.eb :as ssm.eb]
             [hop.aws.ssm.parameter-store :as ssm.parameter-store]
-            [hop.aws.util.thread-transactions :as tht]
+            [hop.util.thread-transactions :as tht]
             [malli.core :as m])
   (:import (java.util Date)))
 

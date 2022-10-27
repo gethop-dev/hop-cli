@@ -12,7 +12,6 @@ Parameters:
     Description: "Project name"
     Type: "String"
     AllowedValues:
-      - "dev"
       - "test"
       - "prod"
   DatabaseEngineVersion:
@@ -30,8 +29,6 @@ Parameters:
   EbApplicationName:
     Type: "String"
   LoadBalancerARN:
-    Type: "String"
-  LocalDevUserARN:
     Type: "String"
   ElbSecurityGroupId:
     Type: "String"
@@ -51,9 +48,6 @@ Parameters:
     Default: "false"
 
 Conditions:
-  IsTestOrProdEnv: !Or
-    - !Equals ["prod", !Ref "Environment"]
-    - !Equals ["test", !Ref "Environment"]
   IncludeCognitoCond: !Equals ["true", !Ref "IncludeCognito"]
   IncludeS3Cond: !Equals ["true", !Ref "IncludeS3"]
 
@@ -69,7 +63,6 @@ Resources:
         ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
   RDS:
     Type: "AWS::CloudFormation::Stack"
-    Condition: "IsTestOrProdEnv"
     Properties:
       TemplateURL: !Sub "${TemplateBucketURL}/environment/rds.yaml"
       Parameters:
@@ -92,12 +85,11 @@ Resources:
         ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
   IAM:
     Type: "AWS::CloudFormation::Stack"
-    Properties: 
-      TemplateURL: !Sub "${TemplateBucketURL}/environment/iam.yaml"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/cloud-iam.yaml"
       Parameters:
         ProjectName: !Ref "ProjectName"
         Environment: !Ref "Environment"
-        LocalDevUserARN: !Ref "LocalDevUserARN"
   SSM:
     Type: "AWS::CloudFormation::Stack"
     Properties:
@@ -116,7 +108,6 @@ Resources:
         ConsumerRoleARN: !GetAtt "IAM.Outputs.ConsumerRoleARN"
   EB:
     Type: "AWS::CloudFormation::Stack"
-    Condition: "IsTestOrProdEnv"
     Properties:
       TemplateURL: !Sub "${TemplateBucketURL}/environment/eb.yaml"
       Parameters:

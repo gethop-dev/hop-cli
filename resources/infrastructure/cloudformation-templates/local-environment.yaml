@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Cloudformation template for setting up a new AWS project environment"
+
+Parameters:
+  TemplateBucketURL:
+    Description: "URL of the bucket used for storing Cloudformation templates"
+    Type: "String"
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Project name"
+    Type: "String"
+    AllowedValues:
+      - "dev"
+  LocalDevUserARN:
+    Type: "String"
+  IncludeCognito:
+    Type: "String"
+    Default: "false"
+  IncludeS3:
+    Type: "String"
+    Default: "false"
+
+Conditions:
+  IncludeCognitoCond: !Equals ["true", !Ref "IncludeCognito"]
+  IncludeS3Cond: !Equals ["true", !Ref "IncludeS3"]
+
+Resources:
+  Cognito:
+    Type: "AWS::CloudFormation::Stack"
+    Condition: "IncludeCognitoCond"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/cognito.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
+  S3:
+    Type: "AWS::CloudFormation::Stack"
+    Condition: "IncludeS3Cond"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/s3.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
+  IAM:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/local-iam.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        LocalDevUserARN: !Ref "LocalDevUserARN"
+  SSM:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/iam-ssm.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
+  KMS:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/kms.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        ConsumerRoleARN: !GetAtt "IAM.Outputs.ConsumerRoleARN"

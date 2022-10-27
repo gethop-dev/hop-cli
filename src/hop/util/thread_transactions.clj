@@ -1,9 +1,10 @@
-(ns hop.aws.util.thread-transactions)
+(ns hop.util.thread-transactions)
 
 (defn- safe-run [f m]
   (try
     (f m)
     (catch Throwable e
+      (prn e)
       (merge m {:success? false
                 :error-details {:reason (class e)
                                 :message (.getMessage e)}}))))

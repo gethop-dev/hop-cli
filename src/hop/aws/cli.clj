@@ -84,7 +84,7 @@
 
 (defn- update-cf-templates-handler
   [{:keys [opts]}]
-  (pprint (templates/update-cf-templates-handler opts)))
+  (pprint (templates/update-cf-templates opts)))
 
 (defn- create-cf-stack
   [{:keys [opts]}]
