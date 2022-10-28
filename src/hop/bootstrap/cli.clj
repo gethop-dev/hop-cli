@@ -21,7 +21,7 @@
 
 (defn- cli-cmd-table
   []
-  [{:cmds ["settings-file-path"]
+  [{:cmds ["bootstrap"]
     :fn bootstrap-handler
     :spec (get cli-spec :bootstrap)
     :error-fn error/generic-error-handler

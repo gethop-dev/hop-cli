@@ -3,7 +3,7 @@
 (defn print-help
   [cmds]
   (let [max-cmd-len (reduce #(max %1 (-> %2 :cmds first count)) 0 cmds)]
-    (println "Usage: aws-util <subcommand> <options>")
+    (println "Usage: <subcommand> <options>")
     (println)
     (println "Subcommands")
     (doseq [{:keys [cmds desc]} cmds

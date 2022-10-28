@@ -15,4 +15,7 @@
         com.cognitect.aws/acm {:mvn/version "825.2.1233.0"}}
  :tasks {aws-util {:doc "AWS utility scripts"
                    :requires ([hop.aws.cli :as cli])
-                   :task (apply cli/-main *command-line-args*)}}}
+                   :task (apply cli/-main *command-line-args*)}
+         bootstrap {:doc "HOP Bootstrap"
+                    :requires ([hop.bootstrap.cli :as cli])
+                    :task (apply cli/-main *command-line-args*)}}}

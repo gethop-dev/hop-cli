@@ -31,6 +31,12 @@
                     :tag "Enabled"
                     :type :boolean
                     :value false}
+                   {:name :stack-name
+                    :docstring [:a]
+                    :min-hop-version "1"
+                    :tag "Stack-name"
+                    :type :string
+                    :value "hop-account"}
                    {:name :resource-name-prefix
                     :docstring [:a]
                     :min-hop-version "1"
@@ -59,6 +65,12 @@
                     :tag "Enabled"
                     :type :boolean
                     :value false}
+                   {:name :stack-name
+                    :docstring [:a]
+                    :min-hop-version "1"
+                    :tag "Stack-name"
+                    :type :string
+                    :value "hop-project"}
                    {:name :vpc
                     :docstring [:a]
                     :min-hop-version "1"
