@@ -25,10 +25,10 @@
            :min-hop-version "1"
            :tag "Account"
            :type :plain-group
-           :value [{:name :enabled
+           :value [{:name :provision
                     :docstring [:a]
                     :min-hop-version "1"
-                    :tag "Enabled"
+                    :tag "Provision"
                     :type :boolean
                     :value false}
                    {:name :stack-name
@@ -59,10 +59,10 @@
            :min-hop-version "1"
            :tag "Project"
            :type :plain-group
-           :value [{:name :enabled
+           :value [{:name :provision
                     :docstring [:a]
                     :min-hop-version "1"
-                    :tag "Enabled"
+                    :tag "Provision"
                     :type :boolean
                     :value false}
                    {:name :stack-name
@@ -108,10 +108,10 @@
                     :min-hop-version "1"
                     :tag "Dev"
                     :type :plain-group
-                    :value [{:name :enabled
+                    :value [{:name :provision
                              :docstring [:a]
                              :min-hop-version "1"
-                             :tag "Enabled"
+                             :tag "Provision"
                              :type :boolean
                              :value true}
                             {:name :stack-name
@@ -125,10 +125,10 @@
                     :min-hop-version "1"
                     :tag "Test"
                     :type :plain-group
-                    :value [{:name :enabled
+                    :value [{:name :provision
                              :docstring [:a]
                              :min-hop-version "1"
-                             :tag "Enabled"
+                             :tag "Provision"
                              :type :boolean
                              :value false}
                             {:name :stack-name
@@ -165,10 +165,10 @@
                     :min-hop-version "1"
                     :tag "Prod"
                     :type :plain-group
-                    :value [{:name :enabled
+                    :value [{:name :provision
                              :docstring [:a]
                              :min-hop-version "1"
-                             :tag "Enabled"
+                             :tag "Provision"
                              :type :boolean
                              :value false}
                             {:name :stack-name

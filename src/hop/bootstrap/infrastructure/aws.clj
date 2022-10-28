@@ -114,7 +114,7 @@
     {:txn-fn
      (fn provision-account
        [_]
-       (if-not (get config :aws.account/enabled)
+       (if-not (get config :aws.account/provision)
          {:success? true}
          (let [result (provision-cfn-stack config (:account cfn-templates))]
            (if (:success? result)
@@ -143,7 +143,7 @@
     {:txn-fn
      (fn provision-project
        [{:keys [config]}]
-       (if-not (get config :aws.project/enabled)
+       (if-not (get config :aws.project/provision)
          (do
            (println "Skipping cloudformation project type stack creation...")
            {:success? true
@@ -158,7 +158,7 @@
     {:txn-fn
      (fn provision-dev-env
        [{:keys [config]}]
-       (if-not (get config :aws.environment.dev/enabled)
+       (if-not (get config :aws.environment.dev/provision)
          (do
            (println "Skipping cloudformation dev type stack creation...")
            {:success? true
@@ -173,7 +173,7 @@
     {:txn-fn
      (fn provision-test-env
        [{:keys [config]}]
-       (if-not (get config :aws.environment.test/enabled)
+       (if-not (get config :aws.environment.test/provision)
          (do
            (println "Skipping cloudformation test type stack creation...")
            {:success? true
@@ -188,7 +188,7 @@
     {:txn-fn
      (fn provision-prod-env
        [{:keys [config]}]
-       (if-not (get config :aws.environment.prod/enabled)
+       (if-not (get config :aws.environment.prod/provision)
          (do
            (println "Skipping cloudformation prod type stack creation...")
            {:success? true})
