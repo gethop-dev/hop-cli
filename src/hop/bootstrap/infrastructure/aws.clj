@@ -17,7 +17,7 @@
               :aws.account/resource-name-prefix :ResourceNamePrefix}}
 
    :project {:master-template "project.yaml"
-             :dependee-stack-names ["hop-account"]
+             :dependee-stack-kws [:aws.account/stack-name]
              :capability :CAPABILITY_NAMED_IAM
              :stack-name-kw :aws.project/stack-name
              :parameter-mapping
@@ -28,14 +28,14 @@
               :aws.project.elb/certificate-arn :ElbCertificateArn}}
 
    :dev-env {:master-template "local-environment.yaml"
-             :dependee-stack-names ["hop-account" "hop-project"]
+             :dependee-stack-kws [:aws.account/stack-name :aws.project/stack-name]
              :capability :CAPABILITY_NAMED_IAM
              :stack-name-kw :aws.environment.dev/stack-name
              :environment "dev"
              :parameter-mapping {}}
 
    :test-env {:master-template "cloud-environment.yaml"
-              :dependee-stack-names ["hop-account" "hop-project"]
+              :dependee-stack-kws [:aws.account/stack-name :aws.project/stack-name]
               :capability :CAPABILITY_NAMED_IAM
               :stack-name-kw :aws.environment.test/stack-name
               :environment "test"
@@ -45,7 +45,7 @@
                :aws.environment.test.database/password :DatabasePassword}}
 
    :prod-env {:master-template "cloud-environment.yaml"
-              :dependee-stack-names ["hop-account" "hop-project"]
+              :dependee-stack-kws [:aws.account/stack-name :aws.project/stack-name]
               :capability :CAPABILITY_NAMED_IAM
               :stack-name-kw :aws.environment.prod/stack-name
               :environment "prod"
@@ -74,8 +74,10 @@
          :error-details result}))))
 
 (defn- provision-cfn-stack
-  [config {:keys [parameter-mapping stack-name-kw] :as template-opts}]
+  [config {:keys [parameter-mapping stack-name-kw dependee-stack-kws] :as template-opts}]
   (let [stack-name (get config stack-name-kw)
+        dependee-stack-names (mapv #(get config %)
+                                   dependee-stack-kws)
         project-name (:project/name config)
         bucket-name (:aws/cloudformation-templates-bucket-name config)
         parameters (-> config
@@ -85,7 +87,8 @@
                     :project-name project-name
                     :parameters parameters
                     :stack-name stack-name
-                    :s3-bucket-name bucket-name)
+                    :s3-bucket-name bucket-name
+                    :dependee-stack-names dependee-stack-names)
         _log (println (format "Provisioning cloudformation %s stack..." stack-name))
         result (aws.templates/create-cf-stack opts)]
     (if (:success? result)
