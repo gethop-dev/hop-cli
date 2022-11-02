@@ -14,12 +14,17 @@
   :min-hop-version "1"
   :tag "AWS infrastructure"
   :type :plain-group
-  :value [{:name :cloudformation-templates-bucket-name
+  :value [{:name :cloudformation
            :docstring [:a]
            :min-hop-version "1"
-           :tag "Cloudformation Template Bucket"
-           :type :string
-           :value "cloudformation-templates-223330293187"}
+           :tag "Account"
+           :type :plain-group
+           :value [{:name :template-bucket-name
+                    :docstring [:a]
+                    :min-hop-version "1"
+                    :tag "Cloudformation Template Bucket"
+                    :type :string
+                    :value "cloudformation-templates-223330293187"}]}
           {:name :account
            :docstring [:a]
            :min-hop-version "1"

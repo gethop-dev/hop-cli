@@ -79,7 +79,7 @@
         dependee-stack-names (mapv #(get config %)
                                    dependee-stack-kws)
         project-name (:project/name config)
-        bucket-name (:aws/cloudformation-templates-bucket-name config)
+        bucket-name (:aws.cloudformation/template-bucket-name config)
         parameters (-> config
                        (select-keys (keys parameter-mapping))
                        (set/rename-keys parameter-mapping))
@@ -102,7 +102,7 @@
      (fn upload-cloudformation-templates
        [_]
        (println (format "Uploading cloudformation templates to %s bucket..." (:aws/cloudformation-templates-bucket-name config)))
-       (let [bucket-name (:aws/cloudformation-templates-bucket-name config)
+       (let [bucket-name (:aws.cloudformation/template-bucket-name config)
              opts {:bucket-name bucket-name
                    :directory-path cfn-templates-path}
              result (aws.templates/update-cf-templates opts)]
