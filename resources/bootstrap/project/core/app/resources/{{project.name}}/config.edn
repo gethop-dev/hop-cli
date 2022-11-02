@@ -1,0 +1,26 @@
+{{=<< >>=}}
+{:duct.profile/base
+ {:duct.core/project-ns <<project.name>>
+
+  <<#project.persistence?>>
+  [:<<project.name>>.boundary.adapter.persistence/sql
+   :<<project.name>>.boundary.adapter.persistence/postgres]
+  #ig/ref :duct.database/sql
+
+  :duct.database.sql/hikaricp
+  {:jdbc-url #duct/env ["JDBC_DATABASE_URL" Str]
+   :logger nil ;; We don't want log entries for sql sentences (not event ragtime ones!)
+   :minimum-idle 10
+   :maximum-pool-size 25}
+
+  [:duct.migrator/ragtime :<<project.name>>/prod]
+  {:database #ig/ref :duct.database/sql
+   :logger #ig/ref :duct/logger
+   :strategy :raise-error
+   :migrations-table "ragtime_migrations"
+   :migrations []}
+  <</project.persistence?>>}
+
+ :duct.profile/dev #duct/include "dev.edn"
+ :duct.profile/local #duct/include "local.edn"
+ :duct.profile/prod {}}

@@ -58,7 +58,7 @@
                              :min-hop-version "1"
                              :tag "VPC CIDR"
                              :type :string
-                             :value "172.31.0.0/16"}]}]}
+                             :value "172.31.0.0/16"}]}}]
           {:name :project
            :docstring [:a]
            :min-hop-version "1"
