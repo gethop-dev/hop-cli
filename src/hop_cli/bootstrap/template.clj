@@ -1,4 +1,4 @@
-(ns hop.bootstrap.template
+(ns hop-cli.bootstrap.template
   (:require [babashka.fs :as fs]
             [cljstache.core :as cljstache]
             [clojure.string :as str]))

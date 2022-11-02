@@ -1,4 +1,4 @@
-(ns hop.util.thread-transactions)
+(ns hop-cli.util.thread-transactions)
 
 (defn- safe-run [f m]
   (try

@@ -1,4 +1,4 @@
-(ns hop.aws.ssm.eb
+(ns hop-cli.aws.ssm.eb
   (:require [com.grzm.awyeah.client.api :as aws]))
 
 (defonce eb-client

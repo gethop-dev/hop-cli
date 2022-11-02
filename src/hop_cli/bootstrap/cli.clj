@@ -1,9 +1,9 @@
-(ns hop.bootstrap.cli
+(ns hop-cli.bootstrap.cli
   (:require [babashka.cli :as cli]
             [clojure.pprint :refer [pprint]]
-            [hop.bootstrap.main :as main]
-            [hop.util.error :as error]
-            [hop.util.help :as help]))
+            [hop-cli.bootstrap.main :as main]
+            [hop-cli.util.error :as error]
+            [hop-cli.util.help :as help]))
 
 (def common-cli-spec
   {:settings-file-path {:alias :s
@@ -21,7 +21,7 @@
 
 (defn- cli-cmd-table
   []
-  [{:cmds ["bootstrap"]
+  [{:cmds ["new-project"]
     :fn bootstrap-handler
     :spec (get cli-spec :bootstrap)
     :error-fn error/generic-error-handler
@@ -31,7 +31,8 @@
 
 (defn- print-help-handler
   [_]
-  (help/print-help (cli-cmd-table)))
+  (help/print-help (cli-cmd-table) "bootstrap"))
 
-(defn -main [& args]
+(defn main
+  [args]
   (cli/dispatch (cli-cmd-table) args))

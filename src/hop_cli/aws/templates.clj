@@ -1,11 +1,11 @@
-(ns hop.aws.templates
+(ns hop-cli.aws.templates
   (:require [babashka.fs :as fs]
             [clojure.data :as data]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [hop.aws.cloudformation.stack :as cf.stack]
-            [hop.aws.s3.bucket :as s3.bucket]
-            [hop.util.thread-transactions :as tht]))
+            [hop-cli.aws.cloudformation.stack :as cf.stack]
+            [hop-cli.aws.s3.bucket :as s3.bucket]
+            [hop-cli.util.thread-transactions :as tht]))
 
 (def ^:const cloudformation-template-ext
   ".yaml")

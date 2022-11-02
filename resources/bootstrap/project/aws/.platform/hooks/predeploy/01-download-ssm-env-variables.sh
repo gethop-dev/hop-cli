@@ -35,7 +35,8 @@ TEMP_FILE=$(mktemp)
 
 trap "rm -f ${TEMP_FILE}" EXIT ERR
 
-bb /usr/local/ssm-parameter-store-sync/ssm-parameter-store-sync.jar \
+bb /usr/local/hop-cli/hop-cli.jar \
+   aws \
    download-env-vars \
    --project-name "${PROJECT_NAME}" \
    --environment "${ENVIRONMENT}" \

@@ -1,12 +1,12 @@
-(ns hop.aws.cli
+(ns hop-cli.aws.cli
   (:require [babashka.cli :as cli]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
-            [hop.aws.env-vars :as env-vars]
-            [hop.aws.ssl :as ssl]
-            [hop.aws.templates :as templates]
-            [hop.util.error :as error]
-            [hop.util.help :as help]))
+            [hop-cli.aws.env-vars :as env-vars]
+            [hop-cli.aws.ssl :as ssl]
+            [hop-cli.aws.templates :as templates]
+            [hop-cli.util.error :as error]
+            [hop-cli.util.help :as help]))
 
 (def common-cli-spec
   {:file {:alias :f
@@ -129,7 +129,7 @@
 
 (defn- print-help-handler
   [_]
-  (help/print-help (cli-cmd-table)))
+  (help/print-help (cli-cmd-table) "aws"))
 
-(defn -main [& args]
+(defn main [args]
   (cli/dispatch (cli-cmd-table) args))

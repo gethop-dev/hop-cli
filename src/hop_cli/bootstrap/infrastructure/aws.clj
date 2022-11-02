@@ -1,9 +1,9 @@
-(ns hop.bootstrap.infrastructure.aws
+(ns hop-cli.bootstrap.infrastructure.aws
   (:require [clojure.java.io :as io]
             [clojure.set :as set]
-            [hop.aws.ssl :as aws.ssl]
-            [hop.aws.templates :as aws.templates]
-            [hop.util.thread-transactions :as tht]))
+            [hop-cli.aws.ssl :as aws.ssl]
+            [hop-cli.aws.templates :as aws.templates]
+            [hop-cli.util.thread-transactions :as tht]))
 
 (def ^:const cfn-templates-path
   (io/resource "infrastructure/cloudformation-templates"))

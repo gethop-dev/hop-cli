@@ -1,4 +1,4 @@
-(ns hop.bootstrap.settings-reader
+(ns hop-cli.bootstrap.settings-reader
   (:require [babashka.fs :as fs]
             [clojure.edn :as edn]
             [clojure.java.io :as io]

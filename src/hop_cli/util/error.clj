@@ -1,4 +1,4 @@
-(ns hop.util.error
+(ns hop-cli.util.error
   (:require [babashka.cli :as cli]))
 
 (defn generic-error-handler

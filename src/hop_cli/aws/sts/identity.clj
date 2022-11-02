@@ -1,4 +1,4 @@
-(ns hop.aws.sts.identity
+(ns hop-cli.aws.sts.identity
   (:require [com.grzm.awyeah.client.api :as aws]))
 
 (defonce sts-client

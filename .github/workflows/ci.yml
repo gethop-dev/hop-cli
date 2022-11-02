@@ -54,10 +54,10 @@ jobs:
 
       - name: Build Uberjar
         run: |
-          ./bb uberjar hop-aws.jar --main hop.aws.cli
+          ./bb uberjar hop-cli.jar --main hop-cli.main
 
       - name: Release Uberjar
         uses: softprops/action-gh-release@v1
         if: contains(github.ref, 'refs/tags/')
         with:
-          files: hop-aws.jar
+          files: hop-cli.jar

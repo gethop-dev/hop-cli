@@ -1,4 +1,4 @@
-(ns hop.aws.cloudformation.stack
+(ns hop-cli.aws.cloudformation.stack
   (:require [clojure.set :as set]
             [com.grzm.awyeah.client.api :as aws]))
 

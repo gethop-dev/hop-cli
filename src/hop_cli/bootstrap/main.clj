@@ -1,7 +1,7 @@
-(ns hop.bootstrap.main
-  (:require [hop.bootstrap.infrastructure.aws :as aws]
-            [hop.bootstrap.settings-reader :as sr]
-            [hop.util.thread-transactions :as tht]))
+(ns hop-cli.bootstrap.main
+  (:require [hop-cli.bootstrap.infrastructure.aws :as aws]
+            [hop-cli.bootstrap.settings-reader :as sr]
+            [hop-cli.util.thread-transactions :as tht]))
 
 (defn bootstrap-hop
   [settings-file-path]

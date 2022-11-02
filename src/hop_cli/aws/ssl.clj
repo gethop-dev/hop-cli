@@ -1,7 +1,7 @@
-(ns hop.aws.ssl
+(ns hop-cli.aws.ssl
   (:require [clojure.java.shell :as shell]
             [clojure.string :as str]
-            [hop.aws.acm.certificate :as acm.certificate])
+            [hop-cli.aws.acm.certificate :as acm.certificate])
   (:import [java.io File]))
 
 (defn- create-self-signed-certificate

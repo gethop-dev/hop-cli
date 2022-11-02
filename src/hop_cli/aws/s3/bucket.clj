@@ -1,4 +1,4 @@
-(ns hop.aws.s3.bucket
+(ns hop-cli.aws.s3.bucket
   (:require [com.grzm.awyeah.client.api :as aws]))
 
 (defonce s3-client

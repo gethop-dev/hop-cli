@@ -1,10 +1,10 @@
-(ns hop.aws.env-vars
+(ns hop-cli.aws.env-vars
   (:require [babashka.fs :as fs]
             [clojure.pprint :as pprint]
             [clojure.string :as str]
-            [hop.aws.ssm.eb :as ssm.eb]
-            [hop.aws.ssm.parameter-store :as ssm.parameter-store]
-            [hop.util.thread-transactions :as tht]
+            [hop-cli.aws.ssm.eb :as ssm.eb]
+            [hop-cli.aws.ssm.parameter-store :as ssm.parameter-store]
+            [hop-cli.util.thread-transactions :as tht]
             [malli.core :as m])
   (:import (java.util Date)))
 
