@@ -130,7 +130,7 @@
            (println "Skipping self-signed certificate upload.")
            {:success? true})
          (let [_log (println "Creating and uploading self-signed certificate...")
-               result (aws.ssl/create-and-upload-self-signed-certificate)]
+               result (aws.ssl/create-and-upload-self-signed-certificate {})]
            (if (:success? result)
              (let [certificate-arn (:certificate-arn result)
                    updated-config (assoc config
