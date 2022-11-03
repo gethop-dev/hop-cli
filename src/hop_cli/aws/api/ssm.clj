@@ -1,4 +1,4 @@
-(ns hop-cli.aws.ssm.parameter-store
+(ns hop-cli.aws.api.ssm
   (:require [clojure.set :as set]
             [clojure.string :as str]
             [com.grzm.awyeah.client.api :as aws]))

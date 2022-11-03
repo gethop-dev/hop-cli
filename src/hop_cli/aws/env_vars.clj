@@ -2,8 +2,8 @@
   (:require [babashka.fs :as fs]
             [clojure.pprint :as pprint]
             [clojure.string :as str]
-            [hop-cli.aws.ssm.eb :as ssm.eb]
-            [hop-cli.aws.ssm.parameter-store :as ssm.parameter-store]
+            [hop-cli.aws.api.eb :as api.eb]
+            [hop-cli.aws.api.ssm :as api.ssm]
             [hop-cli.util.thread-transactions :as tht]
             [malli.core :as m])
   (:import (java.util Date)))
@@ -54,7 +54,7 @@
   (->
    [{:txn-fn
      (fn txn-1 [_]
-       (let [result (ssm.parameter-store/put-parameters config {:new? true} to-create)]
+       (let [result (api.ssm/put-parameters config {:new? true} to-create)]
          (if (:success? result)
            {:success? true}
            {:success? false
@@ -62,13 +62,13 @@
             :error-details result})))
      :rollback-fn
      (fn rollback-1 [prv-result]
-       (let [result (ssm.parameter-store/delete-parameters config to-create)]
+       (let [result (api.ssm/delete-parameters config to-create)]
          (when-not (:success? result)
            (prn "Create parameters rollback failed"))
          prv-result))}
     {:txn-fn
      (fn txn-2 [_]
-       (let [result (ssm.parameter-store/put-parameters config {} to-update)]
+       (let [result (api.ssm/put-parameters config {} to-update)]
          (if (:success? result)
            {:success? true}
            {:success? false
@@ -80,7 +80,7 @@
        prv-result)}
     {:txn-fn
      (fn txn-2 [_]
-       (let [result (ssm.parameter-store/delete-parameters config to-delete)]
+       (let [result (api.ssm/delete-parameters config to-delete)]
          (if (:success? result)
            {:success? true}
            {:success? false
@@ -106,7 +106,7 @@
       (do
         (prn "File contains invalid environment variable format: ")
         (pprint/pprint (m/explain string-env-vars-schema string-env-vars)))
-      (let [result (ssm.parameter-store/get-parameters config)]
+      (let [result (api.ssm/get-parameters config)]
         (if-not (:success? result)
           {:success? false
            :reason :could-not-get-ssm-env-vars
@@ -119,7 +119,7 @@
 
 (defn download-env-vars
   [{:keys [file] :as config}]
-  (let [result (ssm.parameter-store/get-parameters config)]
+  (let [result (api.ssm/get-parameters config)]
     (if-not (:success? result)
       {:success? false
        :reason :could-not-get-ssm-env-vars
@@ -129,7 +129,7 @@
                         (fs/write-lines file))]
         {:success? (boolean result)}))))
 
-(defn apply-env-var-changes-handler
+(defn apply-env-var-changes
   [config]
-  (ssm.eb/update-env-variable config {:name last-ssm-script-update-env-var
+  (api.eb/update-env-variable config {:name last-ssm-script-update-env-var
                                       :value (.toString (Date.))}))

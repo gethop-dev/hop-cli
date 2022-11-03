@@ -1,4 +1,4 @@
-(ns hop-cli.aws.acm.certificate
+(ns hop-cli.aws.api.acm
   (:require [com.grzm.awyeah.client.api :as aws]))
 
 (defonce acm-client

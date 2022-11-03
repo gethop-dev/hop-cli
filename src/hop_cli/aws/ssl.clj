@@ -1,7 +1,7 @@
 (ns hop-cli.aws.ssl
   (:require [clojure.java.shell :as shell]
             [clojure.string :as str]
-            [hop-cli.aws.acm.certificate :as acm.certificate])
+            [hop-cli.aws.api.acm :as api.acm])
   (:import [java.io File]))
 
 (defn- create-self-signed-certificate
@@ -20,7 +20,7 @@
       {:success? true})))
 
 (defn create-and-upload-self-signed-certificate
-  []
+  [_]
   (let [key-file (File/createTempFile "hop" ".pem")
         cert-file (File/createTempFile "hop" ".pem")]
     (try
@@ -29,7 +29,7 @@
           result
           (let [opts {:certificate (slurp cert-file)
                       :private-key (slurp key-file)}
-                result (acm.certificate/import-certificate opts)]
+                result (api.acm/import-certificate opts)]
             (if (:success? result)
               result
               {:success? false

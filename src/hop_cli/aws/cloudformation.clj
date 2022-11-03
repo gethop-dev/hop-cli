@@ -1,10 +1,10 @@
-(ns hop-cli.aws.templates
+(ns hop-cli.aws.cloudformation
   (:require [babashka.fs :as fs]
             [clojure.data :as data]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [hop-cli.aws.cloudformation.stack :as cf.stack]
-            [hop-cli.aws.s3.bucket :as s3.bucket]
+            [hop-cli.aws.api.cloudformation :as api.cf]
+            [hop-cli.aws.api.s3 :as api.s3]
             [hop-cli.util.thread-transactions :as tht]))
 
 (def ^:const cloudformation-template-ext
@@ -42,16 +42,16 @@
                    file-seq
                    (filter template-file?))]
     (keep (fn [file]
-            (s3.bucket/put-object config {:bucket-name bucket-name
+            (api.s3/put-object config {:bucket-name bucket-name
                                           :key (compose-file-key file (str directory-file))
                                           :body (io/input-stream file)}))
           files)))
 
 (defn bucket-exists?
   [config bucket-name]
-  (:success? (s3.bucket/head-bucket config {:bucket-name bucket-name})))
+  (:success? (api.s3/head-bucket config {:bucket-name bucket-name})))
 
-(defn update-cf-templates
+(defn update-templates
   [{:keys [bucket-name] :as config}]
   (->
    [{:txn-fn
@@ -60,7 +60,7 @@
        (if (bucket-exists? config bucket-name)
          {:success? true
           :bucket-name bucket-name}
-         (let [result (s3.bucket/create-bucket config {:bucket-name bucket-name})]
+         (let [result (api.s3/create-bucket config {:bucket-name bucket-name})]
            (if-not (:success? result)
              result
              {:success? true
@@ -69,7 +69,7 @@
       ;;FIXME This will fail if bucket is not empty. We need a strategy for it.
      (fn rollback-fn-1-delete-bucket
        [{:keys [bucket-name] :as prev-result}]
-       (let [result (s3.bucket/delete-bucket config bucket-name)]
+       (let [result (api.s3/delete-bucket config bucket-name)]
          (when-not (:success? result)
            (println "An error has occurred when deleting a bucket."))
          (dissoc prev-result :bucket-name)))}
@@ -94,11 +94,11 @@
     (assoc :Environment environment)
 
     s3-bucket-name
-    (assoc :TemplateBucketURL (cf.stack/get-template-bucket-url s3-bucket-name))))
+    (assoc :TemplateBucketURL (api.cf/get-template-bucket-url s3-bucket-name))))
 
 (defn- ensure-template-params
   [config]
-  (let [result (cf.stack/get-template-summary config)]
+  (let [result (api.cf/get-template-summary config)]
     (if-not (:success? result)
       {:success? false
        :reason :could-not-get-template-summary
@@ -119,17 +119,17 @@
           {:success? true
            :parameters (select-keys available-parameters all-parameter-keys)})))))
 
-(defn- create-cf-stack*
+(defn- create-stack*
   [config]
   (let [result (ensure-template-params config)]
     (if (:success? result)
-      (cf.stack/create-stack (assoc config :parameters (:parameters result)))
+      (api.cf/create-stack (assoc config :parameters (:parameters result)))
       result)))
 
 (defn- get-dependee-outputs
   [{:keys [dependee-stack-names]}]
   (let [describe-stack-results
-        (map #(cf.stack/describe-stack {:stack-name %}) dependee-stack-names)]
+        (map #(api.cf/describe-stack {:stack-name %}) dependee-stack-names)]
     (if-not (every? :success? describe-stack-results)
       {:success? false
        :error-details (remove :success? describe-stack-results)}
@@ -139,17 +139,17 @@
             (map (comp :outputs :stack))
             (reduce merge {}))})))
 
-(defn create-cf-stack
+(defn create-stack
   [{:keys [dependee-stack-names] :as config}]
   (if-not (seq dependee-stack-names)
-    (create-cf-stack* config)
+    (create-stack* config)
     (let [result (get-dependee-outputs config)]
       (if (:success? result)
-        (create-cf-stack* (update config :parameters merge (:outputs result)))
+        (create-stack* (update config :parameters merge (:outputs result)))
         {:success? false
          :reason :could-not-get-dependee-outputs
          :error-details result}))))
 
 (defn describe-stack
   [opts]
-  (cf.stack/describe-stack opts))
+  (api.cf/describe-stack opts))

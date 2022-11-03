@@ -2,60 +2,11 @@
   (:require [babashka.cli :as cli]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
+            [hop-cli.aws.cloudformation :as cloudformation]
             [hop-cli.aws.env-vars :as env-vars]
             [hop-cli.aws.ssl :as ssl]
-            [hop-cli.aws.templates :as templates]
             [hop-cli.util.error :as error]
             [hop-cli.util.help :as help]))
-
-(def common-cli-spec
-  {:file {:alias :f
-          :require true}
-   :directory-path {:alias :d
-                    :desc "Path to cloudformation templates directory"
-                    :require true}
-   :region {:alias :r
-            :desc "AWS region in which the bucket should be created"
-            :require true}
-   :project-name {:alias :p
-                  :require true}
-   :environment {:alias :e
-                 :require true}
-   :kms-key-alias {:alias :k
-                   :desc "Alias for the KMS key, or key id"
-                   :require true}
-   :stack-name {:alias :s
-                :desc "AWS Cloudformation stack name."
-                :require true}
-   :s3-bucket-name {:alias :b
-                    :desc "S3 Bucket name where Cloudformation templates are stored."
-                    :require true}
-   :master-template {:alias :m
-                     :desc "Cloudformation stack master template filename."
-                     :require true}
-   :parameters {:alias :pa
-                :coerce []
-                :desc "Cloudformation stack parameters."}
-   :dependee-stack-names {:alias :ds
-                          :coerce []
-                          :desc "The stack names that the new stack depends on."}
-   :capability {:alias :c
-                :coerce :keyword
-                :desc "Stack capability."}})
-
-(def cli-spec
-  {:sync-env-vars (select-keys common-cli-spec [:project-name :environment :file :kms-key-alias])
-   :download-env-vars (select-keys common-cli-spec [:project-name :environment :file :kms-key-alias])
-   :apply-env-var-changes (select-keys common-cli-spec [:project-name :environment])
-   :create-cf-templates-bucket (select-keys common-cli-spec [:directory-path :region])
-   :create-cf-stack (-> common-cli-spec
-                        (select-keys [:project-name :environment
-                                      :stack-name :s3-bucket-name
-                                      :master-template :parameters
-                                      :dependee-stack-names :region
-                                      :capability])
-                        (assoc-in [:project-name :require] false)
-                        (assoc-in [:environment :require] false))})
 
 (defn- stdin-parameters->parameters
   [stdin-parameters]
@@ -65,65 +16,106 @@
           {}
           stdin-parameters))
 
-(defn- sync-env-vars-handler
-  [{:keys [opts]}]
-  (pprint (env-vars/sync-env-vars opts)))
+(defn- generic-handler-wrapper
+  [handler-fn {:keys [opts]}]
+  (pprint (handler-fn opts)))
 
-(defn- download-env-vars-handler
-  [{:keys [opts]}]
-  (pprint (env-vars/download-env-vars opts)))
-
-(defn- apply-env-var-changes-handler
-  [{:keys [opts]}]
-  (pprint (env-vars/apply-env-var-changes-handler opts)))
-
-(defn- update-cf-templates-handler
-  [{:keys [opts]}]
-  (pprint (templates/update-cf-templates opts)))
-
-(defn- create-cf-stack
+(defn- cf-create-stack-handler
   [{:keys [opts]}]
   (let [parsed-opts (update opts :parameters stdin-parameters->parameters)]
-    (pprint (templates/create-cf-stack parsed-opts))))
-
-(defn- create-and-upload-self-signed-certificate-handler
-  [_]
-  (pprint (ssl/create-and-upload-self-signed-certificate)))
+    (pprint (cloudformation/create-stack parsed-opts))))
 
 (declare print-help-handler)
 
 (defn- cli-cmd-table
   []
-  [{:cmds ["sync-env-vars"]
-    :fn sync-env-vars-handler
-    :spec (get cli-spec :sync-env-vars)
+  [;; Environment Variable manager
+   {:cmds ["env-vars" "sync"]
+    :fn (partial generic-handler-wrapper env-vars/sync-env-vars)
     :error-fn error/generic-error-handler
-    :desc "Synchronize local environment variables with AWS SSMPS"}
-   {:cmds ["download-env-vars"]
-    :fn download-env-vars-handler
-    :spec (get cli-spec :download-env-vars)
+    :desc "Synchronize local environment variables with AWS SSMPS"
+    :spec {:project-name
+           {:alias :p :require true}
+           :environment
+           {:alias :e :require true}
+           :file
+           {:alias :f :require true}
+           :kms-key-alias
+           {:alias :k :require true
+            :desc "Alias or name of the KMS key"}}}
+
+   {:cmds ["env-vars" "download"]
+    :fn (partial generic-handler-wrapper env-vars/download-env-vars)
     :error-fn error/generic-error-handler
-    :desc "Download environment variables from AWS SSMPS"}
-   {:cmds ["apply-env-var-changes"]
-    :fn apply-env-var-changes-handler
-    :spec (get cli-spec :apply-env-var-changes)
+    :desc "Download environment variables from AWS SSMPS"
+    :spec {:project-name
+           {:alias :p :require true}
+           :environment
+           {:alias :e :require true}
+           :file
+           {:alias :f :require true}
+           :kms-key-alias
+           {:alias :k :require true
+            :desc "Alias or name of the KMS key"}}}
+
+   {:cmds ["env-vars" "apply-changes"]
+    :fn (partial generic-handler-wrapper env-vars/apply-env-var-changes)
     :error-fn error/generic-error-handler
-    :desc "Apply environment variables changes in a AWS Elasticbeanstalk environment"}
-   {:cmds ["update-cf-templates"]
-    :fn update-cf-templates-handler
-    :spec (get cli-spec :create-cf-templates-bucket)
+    :desc "Apply environment variables changes in a AWS Elasticbeanstalk environment"
+    :spec {:project-name
+           {:alias :p :require true}
+           :environment
+           {:alias :e :require true}}}
+
+   ;; Cloudformation
+   {:cmds ["cloudformation" "update-templates"]
+    :fn (partial generic-handler-wrapper cloudformation/update-templates)
     :error-fn error/generic-error-handler
-    :desc "Updates CF templates in the specified bucket. If the bucket doesn't exist it is created"}
-   {:cmds ["create-cf-stack"]
-    :fn create-cf-stack
-    :spec (get cli-spec :create-cf-stack)
+    :desc "Updates CF templates in the specified bucket. If the bucket doesn't exist it is created"
+    :spec {:directory-path
+           {:alias :d :require true
+            :desc "Path to cloudformation templates directory"}}}
+
+   {:cmds ["cloudformation" "create-stack"]
+    :fn cf-create-stack-handler
     :error-fn error/generic-error-handler
-    :desc "Creates a Cloudformation stack"}
-   {:cmds ["create-and-upload-self-signed-certificate"]
-    :fn create-and-upload-self-signed-certificate-handler
-    :spec {}
+    :desc "Creates a Cloudformation stack"
+    :spec {:project-name
+           {:alias :p :require true}
+           :environment
+           {:alias :e :require true}
+           :stack-name
+           {:alias :s
+            :require true}
+           :s3-bucket-name
+           {:alias :b
+            :desc "S3 Bucket name where Cloudformation templates are stored."
+            :require true}
+           :master-template
+           {:alias :m
+            :desc "Master template filename."
+            :require true}
+           :parameters
+           {:alias :pa
+            :coerce []
+            :desc "Stack parameters."}
+           :dependee-stack-names
+           {:alias :ds
+            :coerce []
+            :desc "The stack names that the new stack depends on."}
+           :capability
+           {:alias :c
+            :coerce :keyword
+            :desc "Stack capability."}}}
+
+   ;; SSL manager
+   {:cmds ["ssl" "create-and-upload-self-signed-certificate"]
+    :fn (partial generic-handler-wrapper ssl/create-and-upload-self-signed-certificate)
     :error-fn error/generic-error-handler
-    :desc "Creates an uploads a SSL self-signed certificate to ACM"}
+    :desc "Creates an uploads a SSL self-signed certificate to ACM"
+    :spec {}}
+
+   ;; Help
    {:cmds []
     :fn print-help-handler}])
 

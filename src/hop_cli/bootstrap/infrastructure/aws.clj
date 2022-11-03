@@ -1,8 +1,8 @@
 (ns hop-cli.bootstrap.infrastructure.aws
   (:require [clojure.java.io :as io]
             [clojure.set :as set]
+            [hop-cli.aws.cloudformation :as aws.cloudformation]
             [hop-cli.aws.ssl :as aws.ssl]
-            [hop-cli.aws.templates :as aws.templates]
             [hop-cli.util.thread-transactions :as tht]))
 
 (def ^:const cfn-templates-path
@@ -57,7 +57,7 @@
 (defn wait-for-stack-completion
   [stack-name]
   (loop []
-    (let [result (aws.templates/describe-stack {:stack-name stack-name})
+    (let [result (aws.cloudformation/describe-stack {:stack-name stack-name})
           status (get-in result [:stack :status])]
       (cond
         (= status :CREATE_IN_PROGRESS)
@@ -90,7 +90,7 @@
                     :s3-bucket-name bucket-name
                     :dependee-stack-names dependee-stack-names)
         _log (println (format "Provisioning cloudformation %s stack..." stack-name))
-        result (aws.templates/create-cf-stack opts)]
+        result (aws.cloudformation/create-stack opts)]
     (if (:success? result)
       (wait-for-stack-completion stack-name)
       result)))
@@ -105,7 +105,7 @@
        (let [bucket-name (:aws.cloudformation/template-bucket-name config)
              opts {:bucket-name bucket-name
                    :directory-path cfn-templates-path}
-             result (aws.templates/update-cf-templates opts)]
+             result (aws.cloudformation/update-templates opts)]
          (if (:success? result)
            {:success? true}
            {:success? false
