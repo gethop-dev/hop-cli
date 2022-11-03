@@ -3,12 +3,13 @@
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [hop-cli.aws.cloudformation :as cloudformation]
+            [hop-cli.aws.cognito :as cognito]
             [hop-cli.aws.env-vars :as env-vars]
             [hop-cli.aws.ssl :as ssl]
             [hop-cli.util.error :as error]
             [hop-cli.util.help :as help]))
 
-(defn- stdin-parameters->parameters
+(defn- stdin-map->map
   [stdin-parameters]
   (reduce (fn [acc s]
             (let [[k v] (str/split s #"=" 2)]
@@ -22,8 +23,13 @@
 
 (defn- cf-create-stack-handler
   [{:keys [opts]}]
-  (let [parsed-opts (update opts :parameters stdin-parameters->parameters)]
+  (let [parsed-opts (update opts :parameters stdin-map->map)]
     (pprint (cloudformation/create-stack parsed-opts))))
+
+(defn- cognito-create-user-handler
+  [{:keys [opts]}]
+  (let [parsed-opts (update opts :attributes stdin-map->map)]
+    (pprint (cognito/admin-create-user parsed-opts))))
 
 (declare print-help-handler)
 
@@ -114,6 +120,51 @@
     :error-fn error/generic-error-handler
     :desc "Creates an uploads a SSL self-signed certificate to ACM"
     :spec {}}
+
+   ;; Cognito
+   {:cmds ["cognito" "admin-create-user"]
+    :fn cognito-create-user-handler
+    :error-fn error/generic-error-handler
+    :desc "Create a user in the specified Cognito identity pool"
+    :spec {:user-pool-id
+           {:alias :up :require true}
+           :username
+           {:alias :u :require true
+            :desc "Username or email"}
+           :attributes
+           {:alias :a
+            :coerce []
+            :desc "Attributes in the form of param1=value1 param2=value2..."}
+           :temporary-password
+           {:alias :p}}}
+
+   {:cmds ["cognito" "admin-set-user-password"]
+    :fn (partial generic-handler-wrapper cognito/admin-set-user-password)
+    :error-fn error/generic-error-handler
+    :desc "Change the password of the user"
+    :spec {:user-pool-id
+           {:alias :up :require true}
+           :username
+           {:alias :u :require true
+            :desc "Username or email"}
+           :password
+           {:alias :p :require true}
+           :temporary?
+           {:alias :t}}}
+
+   {:cmds ["cognito" "get-id-token"]
+    :fn (partial generic-handler-wrapper cognito/get-id-token)
+    :error-fn error/generic-error-handler
+    :desc "Get ID token for the user"
+    :spec {:user-pool-id
+           {:alias :up :require true}
+           :client-id
+           {:alias :c :require true}
+           :username
+           {:alias :u :require true
+            :desc "Username or email"}
+           :password
+           {:alias :p :require true}}}
 
    ;; Help
    {:cmds []
