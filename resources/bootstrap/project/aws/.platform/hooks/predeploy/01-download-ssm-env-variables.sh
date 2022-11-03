@@ -37,7 +37,8 @@ trap "rm -f ${TEMP_FILE}" EXIT ERR
 
 bb /usr/local/hop-cli/hop-cli.jar \
    aws \
-   download-env-vars \
+   env-vars \
+   download \
    --project-name "${PROJECT_NAME}" \
    --environment "${ENVIRONMENT}" \
    --kms-key-alias "${KMS_KEY_ALIAS}" \
