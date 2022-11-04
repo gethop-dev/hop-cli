@@ -1,6 +1,7 @@
 (ns hop-cli.bootstrap.cli
   (:require [babashka.cli :as cli]
             [clojure.pprint :refer [pprint]]
+            [hop-cli.bootstrap.infrastructure.aws :as aws]
             [hop-cli.bootstrap.main :as main]
             [hop-cli.bootstrap.settings :as settings]
             [hop-cli.util.error :as error]
@@ -9,6 +10,10 @@
 (defn- bootstrap-handler
   [{:keys [opts]}]
   (pprint (main/bootstrap-hop (:settings-file-path opts))))
+
+(defn- provision-prod-infrastructure-handler
+  [{:keys [opts]}]
+  (pprint (aws/provision-prod-infrastructure (:settings-file-path opts))))
 
 (defn- copy-settings-handler
   [{:keys [opts]}]
@@ -32,6 +37,13 @@
     :spec {:dst {:alias :d
                  :desc "Destination file or directory."
                  :require true}}}
+   {:cmds ["prod-infrastructure"]
+    :fn provision-prod-infrastructure-handler
+    :error-fn error/generic-error-handler
+    :desc "Provision a production cloud infrastructure."
+    :spec {:settings-file-path {:alias :s
+                                :desc "The HOP settings file path."
+                                :require true}}}
    {:cmds []
     :fn print-help-handler}])
 

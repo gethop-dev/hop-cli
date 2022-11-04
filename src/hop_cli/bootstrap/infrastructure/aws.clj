@@ -95,7 +95,7 @@
       (wait-for-stack-completion stack-name)
       result)))
 
-(defn provision-infrastructure
+(defn provision-initial-infrastructure
   [config]
   (->
    [{:txn-fn
@@ -114,14 +114,12 @@
     {:txn-fn
      (fn provision-account
        [_]
-       (if-not (get config :aws.account/provision)
-         {:success? true}
-         (let [result (provision-cfn-stack config (:account cfn-templates))]
-           (if (:success? result)
-             {:success? true}
-             {:success? false
-              :reason :could-not-provision-account-cfn
-              :error-details result}))))}
+       (let [result (provision-cfn-stack config (:account cfn-templates))]
+         (if (:success? result)
+           {:success? true}
+           {:success? false
+            :reason :could-not-provision-account-cfn
+            :error-details result})))}
     {:txn-fn
      (fn create-and-upload-self-signed-certificate
        [_]
@@ -143,60 +141,35 @@
     {:txn-fn
      (fn provision-project
        [{:keys [config]}]
-       (if-not (get config :aws.project/provision)
-         (do
-           (println "Skipping cloudformation project type stack creation...")
+       (let [result (provision-cfn-stack config (:project cfn-templates))]
+         (if (:success? result)
            {:success? true
-            :config config})
-         (let [result (provision-cfn-stack config (:project cfn-templates))]
-           (if (:success? result)
-             {:success? true
-              :config config}
-             {:success? false
-              :reason :could-not-provision-project-cfn
-              :error-details result}))))}
+            :config config}
+           {:success? false
+            :reason :could-not-provision-project-cfn
+            :error-details result})))}
     {:txn-fn
      (fn provision-dev-env
        [{:keys [config]}]
-       (if-not (get config :aws.environment.dev/provision)
-         (do
-           (println "Skipping cloudformation dev type stack creation...")
+       (let [result (provision-cfn-stack config (:dev-env cfn-templates))]
+         (if (:success? result)
            {:success? true
-            :config config})
-         (let [result (provision-cfn-stack config (:dev-env cfn-templates))]
-           (if (:success? result)
-             {:success? true
-              :config config}
-             {:success? false
-              :reason :could-not-provision-dev-env
-              :error-details result}))))}
+            :config config}
+           {:success? false
+            :reason :could-not-provision-dev-env
+            :error-details result})))}
     {:txn-fn
      (fn provision-test-env
        [{:keys [config]}]
-       (if-not (get config :aws.environment.test/provision)
-         (do
-           (println "Skipping cloudformation test type stack creation...")
+       (let [result (provision-cfn-stack config (:test-env cfn-templates))]
+         (if (:success? result)
            {:success? true
-            :config config})
-         (let [result (provision-cfn-stack config (:test-env cfn-templates))]
-           (if (:success? result)
-             {:success? true
-              :config config}
-             {:success? false
-              :reason :could-not-provision-test-env
-              :error-details result}))))}
-    {:txn-fn
-     (fn provision-prod-env
-       [{:keys [config]}]
-       (if-not (get config :aws.environment.prod/provision)
-         (do
-           (println "Skipping cloudformation prod type stack creation...")
-           {:success? true})
-         (let [result (provision-cfn-stack config (:prod-env cfn-templates))]
-           (if (:success? result)
-             {:success? true}
-             {:success? false
-              :reason :could-not-provision-prod-env
-
-              :error-details result}))))}]
+            :config config}
+           {:success? false
+            :reason :could-not-provision-test-env
+            :error-details result})))}]
    (tht/thread-transactions {})))
+
+(defn provision-prod-infrastructure
+  [config]
+  (provision-cfn-stack config (:prod-env cfn-templates)))

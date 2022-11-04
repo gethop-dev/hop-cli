@@ -30,13 +30,7 @@
            :min-hop-version "1"
            :tag "Account"
            :type :plain-group
-           :value [{:name :provision
-                    :docstring [:a]
-                    :min-hop-version "1"
-                    :tag "Provision"
-                    :type :boolean
-                    :value false}
-                   {:name :stack-name
+           :value [{:name :stack-name
                     :docstring [:a]
                     :min-hop-version "1"
                     :tag "Stack-name"
@@ -58,19 +52,13 @@
                              :min-hop-version "1"
                              :tag "VPC CIDR"
                              :type :string
-                             :value "172.31.0.0/16"}]}}]
+                             :value "172.31.0.0/16"}]}]}
           {:name :project
            :docstring [:a]
            :min-hop-version "1"
            :tag "Project"
            :type :plain-group
-           :value [{:name :provision
-                    :docstring [:a]
-                    :min-hop-version "1"
-                    :tag "Provision"
-                    :type :boolean
-                    :value false}
-                   {:name :stack-name
+           :value [{:name :stack-name
                     :docstring [:a]
                     :min-hop-version "1"
                     :tag "Stack-name"
@@ -113,13 +101,7 @@
                     :min-hop-version "1"
                     :tag "Dev"
                     :type :plain-group
-                    :value [{:name :provision
-                             :docstring [:a]
-                             :min-hop-version "1"
-                             :tag "Provision"
-                             :type :boolean
-                             :value true}
-                            {:name :stack-name
+                    :value [{:name :stack-name
                              :docstring [:a]
                              :min-hop-version "1"
                              :tag "Stack-name"
@@ -130,13 +112,7 @@
                     :min-hop-version "1"
                     :tag "Test"
                     :type :plain-group
-                    :value [{:name :provision
-                             :docstring [:a]
-                             :min-hop-version "1"
-                             :tag "Provision"
-                             :type :boolean
-                             :value false}
-                            {:name :stack-name
+                    :value [{:name :stack-name
                              :docstring [:a]
                              :min-hop-version "1"
                              :tag "Stack-name"
@@ -170,13 +146,7 @@
                     :min-hop-version "1"
                     :tag "Prod"
                     :type :plain-group
-                    :value [{:name :provision
-                             :docstring [:a]
-                             :min-hop-version "1"
-                             :tag "Provision"
-                             :type :boolean
-                             :value false}
-                            {:name :stack-name
+                    :value [{:name :stack-name
                              :docstring [:a]
                              :min-hop-version "1"
                              :tag "Stack-name"

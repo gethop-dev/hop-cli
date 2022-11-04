@@ -11,7 +11,7 @@
        (sr/read-settings settings-file-path))}
     {:txn-fn
      (fn provision-infrastructure [{:keys [settings]}]
-       (let [result (aws/provision-infrastructure settings)]
+       (let [result (aws/provision-initial-infrastructure settings)]
          (if (:success? result)
            {:success? true
             :settings settings}
