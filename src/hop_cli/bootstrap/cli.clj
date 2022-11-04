@@ -2,20 +2,17 @@
   (:require [babashka.cli :as cli]
             [clojure.pprint :refer [pprint]]
             [hop-cli.bootstrap.main :as main]
+            [hop-cli.bootstrap.settings :as settings]
             [hop-cli.util.error :as error]
             [hop-cli.util.help :as help]))
-
-(def common-cli-spec
-  {:settings-file-path {:alias :s
-                        :desc "The HOP settings file path."
-                        :require true}})
-
-(def cli-spec
-  {:bootstrap (select-keys common-cli-spec [:settings-file-path])})
 
 (defn- bootstrap-handler
   [{:keys [opts]}]
   (pprint (main/bootstrap-hop (:settings-file-path opts))))
+
+(defn- copy-settings-handler
+  [{:keys [opts]}]
+  (pprint (settings/copy (:dst opts))))
 
 (declare print-help-handler)
 
@@ -23,9 +20,18 @@
   []
   [{:cmds ["new-project"]
     :fn bootstrap-handler
-    :spec (get cli-spec :bootstrap)
     :error-fn error/generic-error-handler
-    :desc "Bootstraps a new HOP based project"}
+    :desc "Bootstraps a new HOP based project"
+    :spec {:settings-file-path {:alias :s
+                                :desc "The HOP settings file path."
+                                :require true}}}
+   {:cmds ["copy-settings"]
+    :fn copy-settings-handler
+    :error-fn error/generic-error-handler
+    :desc "Makes a copy of the default hop-cli configuration file."
+    :spec {:dst {:alias :d
+                 :desc "Destination file or directory."
+                 :require true}}}
    {:cmds []
     :fn print-help-handler}])
 
