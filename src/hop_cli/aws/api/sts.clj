@@ -2,7 +2,7 @@
   (:require [com.grzm.awyeah.client.api :as aws]))
 
 (defonce sts-client
-         (aws/client {:api :sts}))
+  (aws/client {:api :sts}))
 
 (defn get-caller-identity
   []

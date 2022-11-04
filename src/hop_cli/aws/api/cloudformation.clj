@@ -83,7 +83,7 @@
     (fn [{:keys [ParameterKey DefaultValue]}]
       {:key (keyword ParameterKey)
        :required? (nil? DefaultValue)})
-        Parameters)})
+    Parameters)})
 
 (defn get-template-summary
   [{:keys [s3-bucket-name master-template]}]

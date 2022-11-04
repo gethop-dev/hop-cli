@@ -2,7 +2,7 @@
   (:require [com.grzm.awyeah.client.api :as aws]))
 
 (defonce s3-client
-         (aws/client {:api :s3}))
+  (aws/client {:api :s3}))
 
 (defn head-bucket
   [_config {:keys [bucket-name]}]

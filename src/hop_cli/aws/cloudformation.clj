@@ -32,8 +32,8 @@
 (defn template-file?
   [file]
   (and
-    (.isFile file)
-    (str/ends-with? (fs/file-name file) cloudformation-template-ext)))
+   (.isFile file)
+   (str/ends-with? (fs/file-name file) cloudformation-template-ext)))
 
 (defn upload-files
   [{:keys [directory-path] :as config} {:keys [bucket-name]}]
@@ -43,8 +43,8 @@
                    (filter template-file?))]
     (keep (fn [file]
             (api.s3/put-object config {:bucket-name bucket-name
-                                          :key (compose-file-key file (str directory-file))
-                                          :body (io/input-stream file)}))
+                                       :key (compose-file-key file (str directory-file))
+                                       :body (io/input-stream file)}))
           files)))
 
 (defn bucket-exists?
