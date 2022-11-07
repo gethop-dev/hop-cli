@@ -4,11 +4,8 @@
   :min-lein-version "2.9.8"
   :dependencies [[org.clojure/clojure "1.10.3"]
                  [duct/core "0.8.0"]
-                 {{#project.persistence?}}
-                 [duct/module.sql "0.6.1"]
-                 [dev.gethop/sql-utils "0.4.13"]
-                 [org.postgresql/postgresql "42.3.3"]
-                 {{/project.persistence?}}]
+                 [metosin/reitit "0.5.18"]
+                 {{#profiles.dependencies}}{{&.}}{{/profiles.dependencies}}]
   :plugins [[duct/lein-duct "0.12.3"]
             [s3-wagon-private "1.3.4"]]
   :main ^:skip-aot {{project/name}} .main
