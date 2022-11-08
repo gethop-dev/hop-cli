@@ -1,0 +1,97 @@
+services:
+  app:
+    environment:
+      # Application database connection details
+      - JDBC_DATABASE_URL=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?user=${APP_DB_USER}&password=${APP_DB_PASSWORD}&reWriteBatchedInserts=true
+      # AWS credentials, used to access services like S3, SSM
+      # Parameter store, etc. They are taken from the environment,
+      # they shouldn't be specified in .env!!!
+      #
+      # We specify these 3 here (instead of putting them in
+      # docker-compose.dev.yml) because we need them in CI when the
+      # Clojure application needs to download dependencies from our
+      # private Maven repositories (that are hosted in a private S3
+      # bucket)
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_DEFAULT_REGION
+      # AWS credentials used to run the unit and integration tests
+      # that interact with AWS services. They may be COMPLETELY
+      # DIFFERENT than the values specified in AWS_* variables!
+      # They are taken from the environment, they shouldn't be
+      # specified in .env!!!
+      - TEST_AWS_ACCESS_KEY_ID
+      - TEST_AWS_SECRET_ACCESS_KEY
+      - TEST_AWS_DEFAULT_REGION
+      # Use the AWS_* credentials only to assume the role specified in
+      # this variable. The tests are actually run with this role ARN.
+      - AWS_ROLE_ARN
+    ports:
+      # HTTP Server port
+      - "3000:3000"
+      # Leiningen REPL port
+      - "4001:4001"
+      # Figwheel websocket port
+      - "3449:3449"
+    depends_on:
+      - {{postgres-db-host}}
+  nginx:
+    volumes:
+      - ./proxy/conf.d:/etc/nginx/conf.d:ro{{#keycloak-oidc?}}
+  {{keycloak-host}}:
+    # Command to import realms and users on startup. See
+    # https://www.keycloak.org/docs/6.0/server_admin/index.html#_export_import
+    # for details
+    command: ["-Dkeycloak.migration.action=import",
+              "-Dkeycloak.migration.provider=dir",
+              "-Dkeycloak.migration.dir=/tmp/realms-import"]
+    ports:
+      - "{{keycloak-port}}:{{keycloak-port}}"
+    volumes:
+      - ./keycloak/themes/{{keycloak-theme-name}}:/opt/jboss/keycloak/themes/{{keycloak-theme-name}}:ro
+      - ./keycloak/realms-import:/tmp/realms-import:ro
+    depends_on:
+      - {{postgres-db-host}}
+  {{grafana-host}}:
+    ports:
+      - "{{grafana-port}}:{{grafana-port}}"
+    volumes:
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+    depends_on:
+      - {{postgres-db-host}}
+  {{postgres-db-host}}:
+    image: postgres:{{postgres-image-tag}}
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      # Postgresql admin user
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      # Application database user
+      - APP_DB_USER
+      - APP_DB_PASSWORD
+      - APP_DB_SCHEMA{{#keycloak-oidc?}}
+      # Keycloak database user
+      - DB_USER
+      - DB_PASSWORD
+      - DB_SCHEMA{{/keycloak-oidc?}}{{#grafana-support?}}
+      # Grafana database user
+      - GF_DATABASE_USER
+      - GF_DATABASE_PASSWORD
+      - GF_DATABASE_SCHEMA
+      # Grafana data source user
+      - GF_DATASOURCE_USER
+      - GF_DATASOURCE_PASSWORD{{/grafana-support?}}
+    ports:
+      - "{{postgres-db-port}}:{{postgres-db-port}}" # To use pgAdmin 5432:5432 <host:container>
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d
+    healthcheck:
+      # Command to run inside the container to check its health status
+      test: ["CMD-SHELL",
+             "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

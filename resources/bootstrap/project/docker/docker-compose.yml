@@ -1,0 +1,128 @@
+services:
+  app:
+    image: {{ecr-repository-prefix}}/{{application-image-name}}:latest
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT_APP}
+    environment:
+      # Application database connection details
+      - JDBC_DATABASE_URL{{#datomic-support?}}
+      # Datomic connection details
+      - DATOMIC_DB{{/datomic-support?}}{{#cognito-oidc?}}
+      # OpenID Connect Identity Provider details
+      - OIDC_ISSUER_URL
+      - OIDC_AUDIENCE
+      - OIDC_JWKS_URI{{/cognito-oidc?}}{{#keycloak-oidc?}}
+      # OpenID Connect Identity Provider details
+      - OIDC_ISSUER_URL
+      - OIDC_AUDIENCE
+      - OIDC_JWKS_URI
+      # Keycloak configuration for the front end.
+      - KEYCLOAK_REALM
+      - KEYCLOAK_FRONTEND_URL
+      - KEYCLOAK_CLIENT_ID{{/keycloak-oidc?}}{{#grafana-support?}}
+      # Grafana integration
+      - GF_SECURITY_ADMIN_USER
+      - GF_SECURITY_ADMIN_PASSWORD
+      - GF_DATASOURCE_NAME
+      - GF_DATASOURCE_TYPE
+      - GF_DATASOURCE_ACCESS
+      - GF_DATASOURCE_URL
+      - GF_DATASOURCE_DATABASE
+      - GF_DATASOURCE_USER
+      - GF_DATASOURCE_PASSWORD
+      - GF_DATASOURCE_SSL
+      - GF_DATASOURCE_MAX_OPEN_CONNS
+      - GF_DATASOURCE_VERSION
+      - GF_DATASOURCE_TIMESCALEDB
+      - DS_MANAGER_URI
+      - DS_MANAGER_CREDENTIALS_USER
+      - DS_MANAGER_CREDENTIALS_PASSWORD
+      - OIDC_SSO_APP_1_NAME
+      - OIDC_SSO_APP_1_LOGIN_URL
+      - OIDC_SSO_APP_1_LOGIN_METHOD
+      - OIDC_SSO_APP_1_LOGOUT_URL
+      - OIDC_SSO_APP_1_LOGOUT_METHOD{{/grafana-support?}}{{#app-service-possible-dependencies}}
+    depends_on:{{#keycloak-oidc?}}
+      - {{keycloak-host}}
+      - {{grafana-host}}
+    {{/app-service-possible-dependencies}}
+  nginx:
+    image: nginx:1.21.3-alpine
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT_NGINX}
+    ports:
+      - "80:80"
+    depends_on:
+      app:
+        condition: service_started{{#keycloak-oidc?}}
+      {{keycloak-host}}:
+        condition: service_started{{/keycloak-oidc?}}{{#grafana-support?}}
+      {{grafana-host}}:
+        condition: service_started{{/grafana-support?}}
+    volumes:
+      - /var/app/current/proxy/conf.d:/etc/nginx/conf.d:ro{{#keycloak-oidc?}}
+  {{keycloak-host}}:
+    image: jboss/keycloak:{{keycloak-image-tag}}
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT_KEYCLOAK}
+    environment:
+      - KEYCLOAK_USER
+      - KEYCLOAK_PASSWORD
+      - KEYCLOAK_FRONTEND_URL
+      - PROXY_ADDRESS_FORWARDING
+      - DB_VENDOR
+      - DB_ADDR
+      - DB_DATABASE
+      - DB_SCHEMA
+      - DB_USER
+      - DB_PASSWORD
+    volumes:
+      - /var/app/current/keycloak/themes/{{keycloak-theme-name}}:/opt/jboss/keycloak/themes/{{keycloak-theme-name}}:ro{{/keycloak-oidc?}}{{#grafana-support?}}
+  {{grafana-host}}:
+    image: grafana/grafana:{{grafana-image-tag}}
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT_GRAFANA}
+    environment:
+      - GF_SERVER_DOMAIN
+      - GF_SERVER_HTTP_PORT
+      - GF_SERVER_ROOT_URL
+      - GF_AUTH_ANONYMOUS_ENABLED
+      - GF_SECURITY_ADMIN_USER
+      - GF_SECURITY_ADMIN_PASSWORD
+      - GF_SECURITY_ALLOW_EMBEDDING
+      - GF_AUTH_GENERIC_OAUTH_ENABLED
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+      - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP
+      - GF_AUTH_GENERIC_OAUTH_TOKEN_URL
+      - GF_AUTH_GENERIC_OAUTH_API_URL
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL
+      - GF_AUTH_OAUTH_AUTO_LOGIN
+      - GF_AUTH_SIGNOUT_REDIRECT_URL
+      - GF_AUTH_GENERIC_OAUTH_SCOPES
+      - GF_DATABASE_TYPE
+      - GF_DATABASE_HOST
+      - GF_DATABASE_NAME
+      - GF_DATABASE_SCHEMA
+      - GF_DATABASE_USER
+      - GF_DATABASE_PASSWORD
+      - GF_DATABASE_SSL_MODE
+      - GF_DATASOURCE_NAME
+      - GF_DATASOURCE_TYPE
+      - GF_DATASOURCE_ACCESS
+      - GF_DATASOURCE_URL
+      - GF_DATASOURCE_DATABASE
+      - GF_DATASOURCE_USER
+      - GF_DATASOURCE_PASSWORD
+      - GF_DATASOURCE_SSL
+      - GF_DATASOURCE_MAX_OPEN_CONNS
+      - GF_DATASOURCE_VERSION
+      - GF_DATASOURCE_TIMESCALEDB{{/grafana-support?}}

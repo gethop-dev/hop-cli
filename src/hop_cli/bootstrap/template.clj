@@ -2,8 +2,11 @@
   (:require [babashka.fs :as fs]
             [cljfmt.core :as cljfmt]
             [cljstache.core :as cljstache]
+            [clojure.java.io :as io]
+            [clojure.java.shell :as shell]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
+            [hop-cli.bootstrap.profile.bi.grafana :as profile.bi.grafana]
             [hop-cli.bootstrap.profile.core :as profile.core]
             [hop-cli.bootstrap.profile.persistence :as profile.persistence]
             [hop-cli.util :as util]
@@ -21,7 +24,9 @@
   (->> files
        (filter
         (fn [{:keys [copy-if]}]
-          (copy-if settings)))
+          (if copy-if
+            (copy-if settings)
+            true)))
        (mapcat :files)))
 
 (defn- copy-files!
@@ -88,13 +93,35 @@
   (cond
     (get #{:dependencies :files} k)
     (vec (concat v1 v2))
+
+    (get #{:environment-variables} k)
+    (merge-with merge v1 v2)
+
     :else
-    merge))
+    (merge v1 v2)))
+
+(defn- store-environment-variables-to-file!
+  [environment-variables target-file]
+  (prn target-file)
+  (->>
+   environment-variables
+   (map #(format "%s=%s" (name (first %)) (second %)))
+   (fs/write-lines target-file)))
+
+(defn- store-environment-variables!
+  [settings environment-variables]
+  (doseq [[environment variables] environment-variables]
+    (if (= :dev environment)
+      (store-environment-variables-to-file! variables (str (:target-project-dir settings) "/.env"))
+      (prn "Store env variables to AWS"))))
 
 (defn foo
   [settings]
   (let [profiles [(profile.core/profile settings)
-                  (profile.persistence/profile settings)]
+                  (profile.persistence/profile settings)
+                  (profile.bi.grafana/profile settings)]
         profile-data (apply util/merge-with-key merge-profile-key profiles)]
+    (clojure.pprint/pprint profile-data)
     (copy-files! settings (:files profile-data))
-    (render-templates! (assoc settings :profiles profile-data) "new-project")))
+    (render-templates! (assoc settings :profiles profile-data) (:target-project-dir settings))
+    (store-environment-variables! settings (:environment-variables profile-data))))

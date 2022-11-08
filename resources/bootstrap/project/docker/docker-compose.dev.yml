@@ -1,0 +1,21 @@
+services:
+  app:
+    build:
+      context: .
+      target: "dev"
+      command: ["lein", "repl", ":headless"]
+    environment:
+      # AWS credentials, used to access services like S3, SSM
+      # Parameter store, etc. They are taken from the environment,
+      # they shouldn't be specified in .env!!!
+      #
+      # These are the ones we only use when running the application
+      # in local development using an IAM role.
+      - AWS_SESSION_TOKEN
+      - AWS_SECURITY_TOKEN
+    volumes:
+      # User's local m2 caches specified here to avoid using them
+      # when running bitbucket pipelines. Otherwise pipelines complains
+      # that they are outside the repository path.
+      - ~/.m2:/root/.m2:delegated
+      - ~/.m2:/home/magnet/.m2:delegated
