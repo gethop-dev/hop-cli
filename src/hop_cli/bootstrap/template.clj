@@ -100,20 +100,12 @@
     :else
     (merge v1 v2)))
 
-(defn- store-environment-variables-to-file!
-  [environment-variables target-file]
-  (prn target-file)
-  (->>
-   environment-variables
-   (map #(format "%s=%s" (name (first %)) (second %)))
-   (fs/write-lines target-file)))
-
-(defn- store-environment-variables!
+(defn- write-dev-environment-variables-to-file!
   [settings environment-variables]
-  (doseq [[environment variables] environment-variables]
-    (if (= :dev environment)
-      (store-environment-variables-to-file! variables (str (:target-project-dir settings) "/.env"))
-      (prn "Store env variables to AWS"))))
+  (let [target-file (str (:target-project-dir settings) "/.env")]
+    (->> (:dev environment-variables)
+         (map #(format "%s=%s" (name (first %)) (second %)))
+         (fs/write-lines target-file))))
 
 (defn foo
   [settings]
@@ -121,7 +113,7 @@
                   (profile.persistence/profile settings)
                   (profile.bi.grafana/profile settings)]
         profile-data (apply util/merge-with-key merge-profile-key profiles)]
-    (clojure.pprint/pprint profile-data)
     (copy-files! settings (:files profile-data))
     (render-templates! (assoc settings :profiles profile-data) (:target-project-dir settings))
-    (store-environment-variables! settings (:environment-variables profile-data))))
+    (write-dev-environment-variables-to-file! settings (:environment-variables profile-data))
+    {:environment-variables (:environment-variables profile-data)}))

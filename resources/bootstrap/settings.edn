@@ -8,7 +8,7 @@
            :min-hop-version "1"
            :tag "Project Name"
            :type :string
-           :value "test"}]}
+           :value "hop"}]}
  {:name :aws
   :docstring [:a]
   :min-hop-version "1"
@@ -140,7 +140,18 @@
                                       :min-hop-version "1"
                                       :tag "Password"
                                       :type :string
-                                      :value "safePassword123#@"}]}]}
+                                      :value "safePassword123#@"}]}
+                            {:name :kms
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "KMS"
+                             :type :plain-group
+                             :value [{:name :key-alias
+                                      :docstring [:a]
+                                      :min-hop-version "1"
+                                      :tag "Key Alias"
+                                      :type :string
+                                      :value "alias/hop-test"}]}]}
                    {:name :prod
                     :docstring [:a]
                     :min-hop-version "1"
@@ -174,4 +185,15 @@
                                       :min-hop-version "1"
                                       :tag "Password"
                                       :type :string
-                                      :value "safePassword123#@"}]}]}]}]}]
+                                      :value "safePassword123#@"}]}
+                            {:name :kms
+                             :docstring [:a]
+                             :min-hop-version "1"
+                             :tag "KMS"
+                             :type :plain-group
+                             :value [{:name :key-alias
+                                      :docstring [:a]
+                                      :min-hop-version "1"
+                                      :tag "Key Alias"
+                                      :type :string
+                                      :value "alias/hop-prod"}]}]}]}]}]

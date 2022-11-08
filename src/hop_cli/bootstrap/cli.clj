@@ -9,7 +9,7 @@
 
 (defn- bootstrap-handler
   [{:keys [opts]}]
-  (pprint (main/bootstrap-hop (:settings-file-path opts))))
+  (pprint (main/bootstrap-hop opts)))
 
 (defn- provision-prod-infrastructure-handler
   [{:keys [opts]}]
@@ -29,6 +29,9 @@
     :desc "Bootstraps a new HOP based project"
     :spec {:settings-file-path {:alias :s
                                 :desc "The HOP settings file path."
+                                :require true}
+           :target-project-dir {:alias :d
+                                :desc "Target directory to create the new project."
                                 :require true}}}
    {:cmds ["copy-settings"]
     :fn copy-settings-handler
