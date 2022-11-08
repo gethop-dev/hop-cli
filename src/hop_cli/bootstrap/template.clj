@@ -2,8 +2,6 @@
   (:require [babashka.fs :as fs]
             [cljfmt.core :as cljfmt]
             [cljstache.core :as cljstache]
-            [clojure.java.io :as io]
-            [clojure.java.shell :as shell]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [hop-cli.bootstrap.profile.bi.grafana :as profile.bi.grafana]

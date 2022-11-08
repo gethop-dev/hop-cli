@@ -8,7 +8,7 @@
                   (tagged-literal 'duct/env ["GRAFANA_TEST_PASSWORD" 'Str])]}})
 
 (defn- build-env-variables
-  [settings environment]
+  [_settings _environment]
   {:DS_MANAGER_URI "uri"
    :DS_MANAGER_CREDENTIALS_USER "user"
    :DS_MANAGER_CREDENTIALS_PASSWORD "password"})

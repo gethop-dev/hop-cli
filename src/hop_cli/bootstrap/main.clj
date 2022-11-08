@@ -13,14 +13,14 @@
      (fn read-settings [_]
        (sr/read-settings settings-file-path))}
     {:txn-fn
-       (fn provision-infrastructure [{:keys [settings]}]
-         (let [result (aws/provision-initial-infrastructure settings)]
-           (if (:success? result)
-             {:success? true
-              :settings settings}
-             {:success? false
-              :reason :failed-to-provision-infrastructure
-              :error-details result})))}
+     (fn provision-infrastructure [{:keys [settings]}]
+       (let [result (aws/provision-initial-infrastructure settings)]
+         (if (:success? result)
+           {:success? true
+            :settings settings}
+           {:success? false
+            :reason :failed-to-provision-infrastructure
+            :error-details result})))}
     {:txn-fn
      (fn generate-localhost-project [{:keys [settings]}]
        {:success? true
