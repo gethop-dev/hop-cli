@@ -23,8 +23,8 @@
              :parameter-mapping
              {:aws.project.vpc/id :VpcId
               :aws.project.vpc/public-route-table-id :PublicRouteTable1Id
-              :aws.project.vpc.subnet1/cidr :Subnet1CIDR
-              :aws.project.vpc.subnet2/cidr :Subnet2CIDR
+              :aws.project.vpc.subnet-1/cidr :Subnet1CIDR
+              :aws.project.vpc.subnet-2/cidr :Subnet2CIDR
               :aws.project.elb/certificate-arn :ElbCertificateArn}}
 
    :dev-env {:master-template "local-environment.yaml"
