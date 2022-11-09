@@ -12,47 +12,87 @@
   {:account {:master-template "account.yaml"
              :capability :CAPABILITY_NAMED_IAM
              :stack-name-kw :aws.account/stack-name
-             :parameter-mapping
+             :input-parameter-mapping
              {:aws.account.vpc/cidr :VpcCIDR
-              :aws.account/resource-name-prefix :ResourceNamePrefix}}
+              :aws.account/resource-name-prefix :ResourceNamePrefix}
+             :output-parameter-mapping
+             {:EbServiceRoleARN :aws.account.iam/eb-service-role-arn
+              :LocalDevUserARN :aws.account.iam/local-dev-user-arn
+              :RDSMonitoringRoleARN :aws.account.iam/rds-monitoring-role-arm
+              :PublicRouteTable1Id :aws.account.vpc/public-route-table-id
+              :VpcId :aws.account.vpc/id}}
 
    :project {:master-template "project.yaml"
-             :dependee-stack-kws [:aws.account/stack-name]
              :capability :CAPABILITY_NAMED_IAM
              :stack-name-kw :aws.project/stack-name
-             :parameter-mapping
-             {:aws.project.vpc/id :VpcId
-              :aws.project.vpc/public-route-table-id :PublicRouteTable1Id
+             :input-parameter-mapping
+             {:aws.account.vpc/id :VpcId
+              :aws.account.vpc/public-route-table-id :PublicRouteTable1Id
               :aws.project.vpc.subnet-1/cidr :Subnet1CIDR
               :aws.project.vpc.subnet-2/cidr :Subnet2CIDR
-              :aws.project.elb/certificate-arn :ElbCertificateArn}}
+              :aws.project.elb/certificate-arn :ElbCertificateArn}
+             :output-parameter-mapping
+             {:EbApplicationName :aws.project.eb/application-name
+              :ElbSecurityGroupId :aws.project.elb/security-group-id
+              :LoadBalancerARN  :aws.project.elb/arn
+              :SubnetIds :aws.project.vpc/subnet-ids}}
 
    :dev-env {:master-template "local-environment.yaml"
-             :dependee-stack-kws [:aws.account/stack-name :aws.project/stack-name]
              :capability :CAPABILITY_NAMED_IAM
              :stack-name-kw :aws.environment.dev/stack-name
              :environment "dev"
-             :parameter-mapping {}}
+             :input-parameter-mapping
+             {:aws.account.iam/local-dev-user-arn :LocalDevUserARN}
+             :output-parameter-mapping
+             {:CognitoUserPoolId :aws.environment.dev.cognito/user-pool-id
+              :CognitoUserPoolURL :aws.environment.dev.cognito/user-pool-url
+              :CognitoSPAClientId :aws.environment.dev.cognito/spa-client-id}}
 
    :test-env {:master-template "cloud-environment.yaml"
-              :dependee-stack-kws [:aws.account/stack-name :aws.project/stack-name]
               :capability :CAPABILITY_NAMED_IAM
               :stack-name-kw :aws.environment.test/stack-name
               :environment "test"
-              :parameter-mapping
+              :input-parameter-mapping
               {:aws.environment.test/notifications-email :NotificationsEmail
                :aws.environment.test.database/version :DatabaseEngineVersion
-               :aws.environment.test.database/password :DatabasePassword}}
+               :aws.environment.test.database/password :DatabasePassword
+               :aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
+               :aws.account.vpc/id :VpcId
+               :aws.project.vpc/subnet-ids :SubnetIds
+               :aws.account.iam/eb-service-role-arn :EbServiceRoleARN
+               :aws.project.eb/application-name  :EbApplicationName
+               :aws.project.elb/arn :LoadBalancerARN
+               :aws.project.elb/security-group-id :ElbSecurityGroupId}
+              :output-parameter-mapping
+              {:CognitoUserPoolId :aws.environment.test.cognito/user-pool-id
+               :CognitoUserPoolURL :aws.environment.test.cognito/user-pool-url
+               :CognitoSPAClientId :aws.environment.test.cognito/spa-client-id
+               :RdsAddress :aws.environment.test.rds/address
+               :EbEnvironmentName :aws.environment.test.eb/environment-name
+               :EbEnvironmentURL :aws.environment.test.eb/environment-url}}
 
    :prod-env {:master-template "cloud-environment.yaml"
-              :dependee-stack-kws [:aws.account/stack-name :aws.project/stack-name]
               :capability :CAPABILITY_NAMED_IAM
               :stack-name-kw :aws.environment.prod/stack-name
               :environment "prod"
-              :parameter-mapping
-              {:aws.environment.prod/notifications-email :NotificationsEmail
-               :aws.environment.prod.database/version :DatabaseEngineVersion
-               :aws.environment.prod.database/password :DatabasePassword}}})
+              :input-parameter-mapping
+              {:aws.environment.test/notifications-email :NotificationsEmail
+               :aws.environment.test.database/version :DatabaseEngineVersion
+               :aws.environment.test.database/password :DatabasePassword
+               :aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
+               :aws.account.vpc/id :VpcId
+               :aws.project.vpc/subnet-ids :SubnetIds
+               :aws.account.iam/eb-service-role-arn :EbServiceRoleARN
+               :aws.project.eb/application-name  :EbApplicationName
+               :aws.project.elb/arn :LoadBalancerARN
+               :aws.project.elb/security-group-id :ElbSecurityGroupId}
+              :output-parameter-mapping
+              {:CognitoUserPoolId :aws.environment.test.cognito/user-pool-id
+               :CognitoUserPoolURL :aws.environment.test.cognito/user-pool-url
+               :CognitoSPAClientId :aws.environment.test.cognito/spa-client-id
+               :RdsAddress :aws.environment.test.rds/address
+               :EbEnvironmentName :aws.environment.test.eb/environment-name
+               :EbEnvironmentURL :aws.environment.test.eb/environment-url}}})
 
 (defn wait-for-stack-completion
   [stack-name]
@@ -67,43 +107,42 @@
           (recur))
 
         (= status :CREATE_COMPLETE)
-        {:success? true}
+        {:success? true
+         :outputs (get-in result [:stack :outputs])}
 
         :else
         {:success? false
          :error-details result}))))
 
-(defn does-stack-exist?
-  [settings template-opts]
-  (let [stack-name (get settings (:stack-name-kw template-opts))
-        result (aws.cloudformation/describe-stack {:stack-name stack-name})]
-    (not (and
-          (false? (:success? result))
-          (= "ValidationError" (-> result :error-details :ErrorResponse :Error :Code))))))
+(defn- select-and-rename-keys
+  [m mapping]
+  (-> m
+      (select-keys (keys mapping))
+      (set/rename-keys mapping)))
 
 (defn- provision-cfn-stack
-  [settings {:keys [parameter-mapping stack-name-kw dependee-stack-kws] :as template-opts}]
-  (if (does-stack-exist? settings template-opts)
-    {:success? false :reason :stack-already-exists}
-    (let [stack-name (get settings stack-name-kw)
-          dependee-stack-names (mapv #(get settings %)
-                                     dependee-stack-kws)
-          project-name (:project/name settings)
-          bucket-name (:aws.cloudformation/template-bucket-name settings)
-          parameters (-> settings
-                         (select-keys (keys parameter-mapping))
-                         (set/rename-keys parameter-mapping))
-          opts (assoc template-opts
-                      :project-name project-name
-                      :parameters parameters
-                      :stack-name stack-name
-                      :s3-bucket-name bucket-name
-                      :dependee-stack-names dependee-stack-names)
-          _log (println (format "Provisioning cloudformation %s stack..." stack-name))
-          result (aws.cloudformation/create-stack opts)]
-      (if (:success? result)
-        (wait-for-stack-completion stack-name)
-        result))))
+  [settings {:keys [input-parameter-mapping output-parameter-mapping stack-name-kw] :as template-opts}]
+  (let [stack-name (get settings stack-name-kw)
+        project-name (:project/name settings)
+        bucket-name (:aws.cloudformation/template-bucket-name settings)
+        parameters (select-and-rename-keys settings input-parameter-mapping)
+        opts (assoc template-opts
+                    :project-name project-name
+                    :parameters parameters
+                    :stack-name stack-name
+                    :s3-bucket-name bucket-name)
+        _log (println (format "Provisioning cloudformation %s stack..." stack-name))
+        result (aws.cloudformation/create-stack opts)]
+    (if (:success? result)
+      (let [wait-result (wait-for-stack-completion stack-name)]
+        (if-not (:success? wait-result)
+          wait-result
+          (let [outputs (:outputs wait-result)
+                new-settings (select-and-rename-keys outputs output-parameter-mapping)
+                updated-settings (merge settings new-settings)]
+            {:success? true
+             :settings updated-settings})))
+      result)))
 
 (defn provision-initial-infrastructure
   [settings]
@@ -124,24 +163,31 @@
     {:txn-fn
      (fn provision-account
        [_]
-       (let [template (:account cfn-templates)]
-         (if (does-stack-exist? settings template)
-           (do
+       (let [{:keys [stack-name-kw output-parameter-mapping] :as template-opts} (:account cfn-templates)
+             stack-name (get settings stack-name-kw)
+             result (aws.cloudformation/describe-stack {:stack-name stack-name})]
+         (if (and (:success? result) (:stack result))
+           (let [outputs (get-in result [:stack :outputs])
+                 new-settings (select-and-rename-keys outputs output-parameter-mapping)
+                 updated-settings (merge settings new-settings)]
              (println "Skipping account stack creation because it already exists")
-             {:success? true})
-           (let [result (provision-cfn-stack settings template)]
+             {:success? true
+              :settings updated-settings})
+           (let [result (provision-cfn-stack settings template-opts)]
              (if (:success? result)
-               {:success? true}
+               {:success? true
+                :settings (:settings result)}
                {:success? false
                 :reason :could-not-provision-account-cfn
                 :error-details result})))))}
     {:txn-fn
      (fn create-and-upload-self-signed-certificate
-       [_]
+       [{:keys [settings]}]
        (if (:aws.project.elb/certificate-arn settings)
          (do
            (println "Skipping self-signed certificate upload.")
-           {:success? true})
+           {:success? true
+            :settings settings})
          (let [_log (println "Creating and uploading self-signed certificate...")
                result (aws.ssl/create-and-upload-self-signed-certificate {})]
            (if (:success? result)
@@ -159,7 +205,7 @@
        (let [result (provision-cfn-stack settings (:project cfn-templates))]
          (if (:success? result)
            {:success? true
-            :settings settings}
+            :settings (:settings result)}
            {:success? false
             :reason :could-not-provision-project-cfn
             :error-details result})))}
@@ -169,7 +215,7 @@
        (let [result (provision-cfn-stack settings (:dev-env cfn-templates))]
          (if (:success? result)
            {:success? true
-            :settings settings}
+            :settings (:settings result)}
            {:success? false
             :reason :could-not-provision-dev-env
             :error-details result})))}
@@ -178,8 +224,10 @@
        [{:keys [settings]}]
        (let [result (provision-cfn-stack settings (:test-env cfn-templates))]
          (if (:success? result)
-           {:success? true
-            :settings settings}
+           (do
+             (clojure.pprint/pprint (:settings result))
+             {:success? true
+              :settings (:settings result)})
            {:success? false
             :reason :could-not-provision-test-env
             :error-details result})))}]
