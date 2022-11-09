@@ -62,7 +62,7 @@
       (cond
         (= status :CREATE_IN_PROGRESS)
         (do
-          (println (format "%s stack creation in progress. Retrying in 10 seconds..." stack-name))
+          (println (format "%s stack creation in progress. Rechecking the status in 10 seconds..." stack-name))
           (Thread/sleep 10000)
           (recur))
 
