@@ -7,7 +7,7 @@
             [clojure.string :as str]
             [hop-cli.bootstrap.profile.bi.grafana :as profile.bi.grafana]
             [hop-cli.bootstrap.profile.core :as profile.core]
-            [hop-cli.bootstrap.profile.persistence :as profile.persistence]
+            [hop-cli.bootstrap.profile.persistence.sql :as profile.persistence.sql]
             [hop-cli.util :as util]
             [hop-cli.util.file :as util.file]
             [zprint.core :as zprint]))
@@ -121,7 +121,7 @@
 (defn foo
   [settings]
   (let [profiles [(profile.core/profile settings)
-                  (profile.persistence/profile settings)
+                  (profile.persistence.sql/profile settings)
                   (profile.bi.grafana/profile settings)]
         profile-data (apply util/merge-with-key merge-profile-key profiles)]
     (copy-files! settings (:files profile-data))

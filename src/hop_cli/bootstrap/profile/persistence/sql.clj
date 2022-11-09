@@ -1,4 +1,4 @@
-(ns hop-cli.bootstrap.profile.persistence)
+(ns hop-cli.bootstrap.profile.persistence.sql)
 
 (defn- sql-config
   [settings]
@@ -32,4 +32,4 @@
    :config-edn {:base (merge (sql-config settings)
                              (hikaricp-config settings)
                              (ragtime-config settings))}
-   :files [{:src "persistence"}]})
+   :files [{:src "persistence/sql"}]})
