@@ -59,7 +59,8 @@
   [settings]
   (-> settings
       (util/expand-ns-keywords)
-      (update-in [:profiles :config-edn :base] map->edn-formatted-string)))
+      (update-in [:profiles :config-edn :base] map->edn-formatted-string)
+      (update-in [:profiles :config-edn :dev] map->edn-formatted-string)))
 
 (defn- mustache-template-renderer
   [settings]
@@ -105,7 +106,7 @@
     (get #{:dependencies :files} k)
     (vec (concat v1 v2))
 
-    (get #{:environment-variables} k)
+    (get #{:environment-variables :config-edn} k)
     (merge-with merge v1 v2)
 
     :else
