@@ -76,9 +76,9 @@
               :stack-name-kw :aws.environment.prod/stack-name
               :environment "prod"
               :input-parameter-mapping
-              {:aws.environment.test/notifications-email :NotificationsEmail
-               :aws.environment.test.database/version :DatabaseEngineVersion
-               :aws.environment.test.database/password :DatabasePassword
+              {:aws.environment.prod/notifications-email :NotificationsEmail
+               :aws.environment.prod.database/version :DatabaseEngineVersion
+               :aws.environment.prod.database/password :DatabasePassword
                :aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
                :aws.account.vpc/id :VpcId
                :aws.project.vpc/subnet-ids :SubnetIds
@@ -87,12 +87,12 @@
                :aws.project.elb/arn :LoadBalancerARN
                :aws.project.elb/security-group-id :ElbSecurityGroupId}
               :output-parameter-mapping
-              {:CognitoUserPoolId :aws.environment.test.cognito/user-pool-id
-               :CognitoUserPoolURL :aws.environment.test.cognito/user-pool-url
-               :CognitoSPAClientId :aws.environment.test.cognito/spa-client-id
-               :RdsAddress :aws.environment.test.rds/address
-               :EbEnvironmentName :aws.environment.test.eb/environment-name
-               :EbEnvironmentURL :aws.environment.test.eb/environment-url}}})
+              {:CognitoUserPoolId :aws.environment.prod.cognito/user-pool-id
+               :CognitoUserPoolURL :aws.environment.prod.cognito/user-pool-url
+               :CognitoSPAClientId :aws.environment.prod.cognito/spa-client-id
+               :RdsAddress :aws.environment.prod.rds/address
+               :EbEnvironmentName :aws.environment.prod.eb/environment-name
+               :EbEnvironmentURL :aws.environment.prod.eb/environment-url}}})
 
 (defn wait-for-stack-completion
   [stack-name]
