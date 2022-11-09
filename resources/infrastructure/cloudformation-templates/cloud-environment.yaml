@@ -123,3 +123,24 @@ Resources:
         ElbSecurityGroupId: !Ref "ElbSecurityGroupId"
         KmsKeyAlias: !GetAtt "KMS.Outputs.KmsKeyAlias"
         InstanceRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
+
+Outputs:
+  CognitoUserPoolId:
+    Condition: "IncludeCognitoCond"
+    Value: !GetAtt "Cognito.Outputs.UserPoolId"
+  CognitoUserPoolURL:
+    Condition: "IncludeCognitoCond"
+    Value: !GetAtt "Cognito.Outputs.UserPoolURL"
+  CognitoSPAClientId:
+    Condition: "IncludeCognitoCond"
+    Value: !GetAtt "Cognito.Outputs.UserPoolSPAClientId"
+  KmsKeyAlias:
+    Value: !GetAtt "KMS.Outputs.KmsKeyAlias"
+  RdsAddress:
+    Value: !GetAtt "RDS.Outputs.RDSAddress"
+  EbApplicationName:
+    Value: !Ref "EbApplicationName"
+  EbEnvironmentName:
+    Value: !GetAtt "EB.Outputs.EbEnvironmentName"
+  EbEnvironmentURL:
+    Value: !GetAtt "EB.Outputs.EbEnvironmentURL"

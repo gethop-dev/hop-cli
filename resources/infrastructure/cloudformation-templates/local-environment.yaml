@@ -69,3 +69,16 @@ Resources:
         ProjectName: !Ref "ProjectName"
         Environment: !Ref "Environment"
         ConsumerRoleARN: !GetAtt "IAM.Outputs.ConsumerRoleARN"
+
+Outputs:
+  CognitoUserPoolId:
+    Condition: "IncludeCognitoCond"
+    Value: !GetAtt "Cognito.Outputs.UserPoolId"
+  CognitoUserPoolURL:
+    Condition: "IncludeCognitoCond"
+    Value: !GetAtt "Cognito.Outputs.UserPoolURL"
+  CognitoSPAClientId:
+    Condition: "IncludeCognitoCond"
+    Value: !GetAtt "Cognito.Outputs.UserPoolSPAClientId"
+  KmsKeyAlias:
+    Value: !GetAtt "KMS.Outputs.KmsKeyAlias"

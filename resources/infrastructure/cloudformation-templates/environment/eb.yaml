@@ -180,3 +180,11 @@ Resources:
       Path: /
       Roles:
         - !Ref "InstanceRoleName"
+
+Outputs:
+  EbEnvironmentName:
+    Description: "EB environment Name"
+    Value: !Ref "ElasticEnvironment"
+  EbEnvironmentURL:
+    Description: "EB endpoint URL"
+    Value: !GetAtt "ElasticEnvironment.EndpointURL"
