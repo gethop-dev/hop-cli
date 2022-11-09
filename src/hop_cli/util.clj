@@ -1,5 +1,6 @@
 (ns hop-cli.util
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [clojure.walk :as walk]))
 
 (defn merge-with-key
   [f & maps]
@@ -25,3 +26,9 @@
          (assoc-in m keywords v))))
    {}
    m))
+
+(defn update-map-vals
+  ([m update-fn & {:keys [recursive?] :or {recursive? true}}]
+   (if recursive?
+     (walk/postwalk (fn [x] (if (map? x) (update-map-vals x update-fn :recursive? false) x)) m)
+     (reduce-kv #(assoc %1 %2 (update-fn %3)) {} m))))

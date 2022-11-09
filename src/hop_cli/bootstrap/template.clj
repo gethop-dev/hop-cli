@@ -62,8 +62,7 @@
   [settings]
   (-> settings
       (util/expand-ns-keywords)
-      (update-in [:profiles :config-edn :base] map->edn-formatted-string)
-      (update-in [:profiles :config-edn :dev] map->edn-formatted-string)))
+      (update-in [:profiles :config-edn] util/update-map-vals map->edn-formatted-string {:recursive? false})))
 
 (defn- mustache-template-renderer
   [settings]
