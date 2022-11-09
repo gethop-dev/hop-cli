@@ -32,6 +32,4 @@
    :config-edn {:base (merge (sql-config settings)
                              (hikaricp-config settings)
                              (ragtime-config settings))}
-   :files [{:files [{:src "resources/bootstrap/project/persistence"
-                     :dst "new-project"}]
-            :copy-if :project/persistence?}]})
+   :files [{:src "persistence"}]})

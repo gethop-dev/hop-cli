@@ -21,5 +21,4 @@
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
    :files [{:src "bi/grafana/grafana"
-            :dst "grafana"
-            :copy-if (constantly true)}]})
+            :dst "grafana"}]})

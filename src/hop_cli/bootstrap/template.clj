@@ -2,6 +2,7 @@
   (:require [babashka.fs :as fs]
             [cljfmt.core :as cljfmt]
             [cljstache.core :as cljstache]
+            [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
             [hop-cli.bootstrap.profile.bi.grafana :as profile.bi.grafana]
@@ -24,14 +25,25 @@
         (fn [{:keys [copy-if]}]
           (if copy-if
             (copy-if settings)
-            true)))
-       (mapcat :files)))
+            true)))))
+
+(defn- build-target-project-path
+  ([settings]
+   (build-target-project-path settings nil))
+  ([settings subpath]
+   (str (fs/normalize (:target-project-dir settings)) fs/file-separator subpath)))
+
+(defn- build-bootstrap-resource-path
+  [subpath]
+  (io/resource (str "bootstrap/profiles/" subpath)))
 
 (defn- copy-files!
   [settings files]
   (let [files-to-copy (filter-files-to-copy settings files)]
-    (doseq [{:keys [src dst]} files-to-copy]
-      (fs/copy-tree src dst {:replace-existing true}))))
+    (doseq [{:keys [src dst]} files-to-copy
+            :let [src-path (build-bootstrap-resource-path src)
+                  dst-path (build-target-project-path settings dst)]]
+      (fs/copy-tree src-path dst-path {:replace-existing true}))))
 
 (defn- kv->edn-formatted-string
   [[k v]]
@@ -68,10 +80,11 @@
     content))
 
 (defn- render-templates!
-  [settings file-path]
-  (let [renderer (mustache-template-renderer settings)]
+  [settings]
+  (let [project-path (build-target-project-path settings)
+        renderer (mustache-template-renderer settings)]
     (fs/walk-file-tree
-     file-path
+     project-path
      {:visit-file
       (fn [path _]
         (let [update-file-fn (fn [file-content]
@@ -100,7 +113,7 @@
 
 (defn- write-dev-environment-variables-to-file!
   [settings environment-variables]
-  (let [target-file (str (:target-project-dir settings) "/.env")]
+  (let [target-file (build-target-project-path settings ".env")]
     (->> (:dev environment-variables)
          (map #(format "%s=%s" (name (first %)) (second %)))
          (fs/write-lines target-file))))
@@ -112,6 +125,6 @@
                   (profile.bi.grafana/profile settings)]
         profile-data (apply util/merge-with-key merge-profile-key profiles)]
     (copy-files! settings (:files profile-data))
-    (render-templates! (assoc settings :profiles profile-data) (:target-project-dir settings))
+    (render-templates! (assoc settings :profiles profile-data))
     (write-dev-environment-variables-to-file! settings (:environment-variables profile-data))
     {:environment-variables (:environment-variables profile-data)}))
