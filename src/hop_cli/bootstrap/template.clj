@@ -5,8 +5,10 @@
             [clojure.java.io :as io]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
+            [hop-cli.bootstrap.profile.authentication.cognito :as profile.cognito]
             [hop-cli.bootstrap.profile.bi.grafana :as profile.bi.grafana]
             [hop-cli.bootstrap.profile.core :as profile.core]
+            [hop-cli.bootstrap.profile.docker :as profile.docker]
             [hop-cli.bootstrap.profile.persistence.sql :as profile.persistence.sql]
             [hop-cli.util :as util]
             [hop-cli.util.file :as util.file]
@@ -123,7 +125,9 @@
   [settings]
   (let [profiles [(profile.core/profile settings)
                   (profile.persistence.sql/profile settings)
-                  (profile.bi.grafana/profile settings)]
+                  (profile.bi.grafana/profile settings)
+                  (profile.cognito/profile settings)
+                  (profile.docker/profile settings)]
         profile-data (apply util/merge-with-key merge-profile-key profiles)]
     (copy-files! settings (:files profile-data))
     (render-templates! (assoc settings :profiles profile-data))
