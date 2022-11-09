@@ -3,8 +3,9 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 {{=<< >>=}}
-(ns <<namespace>>.api.middleware.authentication
-  (:require [buddy.auth :refer [authenticated?]]))
+(ns <<project.name>>.api.middleware.authentication
+  (:require [buddy.auth :refer [authenticated?]]
+            [<<project.name>>.api.util.responses :as util.r]))
 
 (defn authentication-required
   "This would be the middleware after `auth-middleware` to check if the
@@ -13,6 +14,4 @@
   (fn [req]
     (if (authenticated? req)
       (handler req)
-      {:status 401
-       :body {:error "Authentication required"}
-       :headers {"content-type" "application/json"}})))
+      (util.r/unauthorized {:error "Authentication required"}))))
