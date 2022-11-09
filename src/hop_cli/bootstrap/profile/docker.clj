@@ -81,6 +81,17 @@
    :GF_DATASOURCE_VERSION ""
    :GF_DATASOURCE_TIMESCALEDB ""})
 
+(defn- build-env-variables
+  [settings environment]
+  (merge
+   (build-postgres-env-variables settings environment)
+   (build-memory-limit-env-variables settings environment)
+   (build-keycloak-env-variables settings environment)
+   (build-grafana-env-variables settings environment)))
+
 (defn profile
-  [_settings]
-  {:files [{:src "docker"}]})
+  [settings]
+  {:files [{:src "docker"}]
+   :environment-variables {:dev (build-env-variables settings :dev)
+                           :test (build-env-variables settings :test)
+                           :prod (build-env-variables settings :prod)}})
