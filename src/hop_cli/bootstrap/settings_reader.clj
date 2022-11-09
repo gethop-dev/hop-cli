@@ -146,7 +146,7 @@
                       [:choices [:vector {:min 1} [:ref ::setting-schema]]]
                       [:value setting-name-schema])]
                [:multiple-choice-group
-                ;; `:single-choice-group` key is also special, as it contains a
+                ;; `:multiple-choice-group` key is also special, as it contains a
                 ;; vector of other `settings-schema` in the `:choices` key.
                 (conj setting-common-schema
                       [:choices [:vector {:min 1} [:ref ::setting-schema]]]
