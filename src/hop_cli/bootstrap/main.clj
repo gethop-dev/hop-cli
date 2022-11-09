@@ -36,7 +36,9 @@
              ssm-env-vars (->> environment-variables
                                :test
                                walk/stringify-keys
-                               (map zipmap (repeat [:name :value])))
+                               (map zipmap (repeat [:name :value]))
+                               (map #(update % :value str))
+                               (filter (comp seq :value)))
              result (api.ssm/put-parameters config {:new? true} ssm-env-vars)]
          (if (:success? result)
            result
