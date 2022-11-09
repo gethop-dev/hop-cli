@@ -119,6 +119,7 @@
   (let [target-file (build-target-project-path settings ".env")]
     (->> (:dev environment-variables)
          (map #(format "%s=%s" (name (first %)) (second %)))
+         sort
          (fs/write-lines target-file))))
 
 (defn foo
