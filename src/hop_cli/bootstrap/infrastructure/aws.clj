@@ -224,10 +224,8 @@
        [{:keys [settings]}]
        (let [result (provision-cfn-stack settings (:test-env cfn-templates))]
          (if (:success? result)
-           (do
-             (clojure.pprint/pprint (:settings result))
-             {:success? true
-              :settings (:settings result)})
+           {:success? true
+            :settings (:settings result)}
            {:success? false
             :reason :could-not-provision-test-env
             :error-details result})))}]
