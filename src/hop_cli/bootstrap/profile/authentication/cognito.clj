@@ -6,8 +6,15 @@
    {:user-pool-id (tagged-literal 'duct/env ["COGNITO_USER_POOL_ID" 'Str])}})
 
 (defn- build-env-variables
-  [_settings _environment]
-  {:COGNITO_USER_POOL_ID ""})
+  [settings environment]
+  (let [base-path (format "aws.environment.%s.cognito" (name environment))
+        pool-id (get settings (keyword base-path "user-pool-id"))
+        pool-url (get settings (keyword base-path "user-pool-url"))
+        client-id (get settings (keyword base-path "spa-client-id"))]
+    {:COGNITO_USER_POOL_ID pool-id
+     :OIDC_AUDIENCE client-id
+     :OIDC_ISSUER_URL pool-url
+     :OIDC_JWKS_URI (str pool-url "/.well-known/jwks.json")}))
 
 (defn profile
   [settings]
