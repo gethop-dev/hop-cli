@@ -73,38 +73,48 @@
         {:success? false
          :error-details result}))))
 
+(defn does-stack-exist?
+  [settings template-opts]
+  (let [stack-name (get settings (:stack-name-kw template-opts))
+        result (aws.cloudformation/describe-stack {:stack-name stack-name})]
+    (not (and
+          (false? (:success? result))
+          (= "ValidationError" (-> result :error-details :ErrorResponse :Error :Code))))))
+
 (defn- provision-cfn-stack
-  [config {:keys [parameter-mapping stack-name-kw dependee-stack-kws] :as template-opts}]
-  (let [stack-name (get config stack-name-kw)
-        dependee-stack-names (mapv #(get config %)
-                                   dependee-stack-kws)
-        project-name (:project/name config)
-        bucket-name (:aws.cloudformation/template-bucket-name config)
-        parameters (-> config
-                       (select-keys (keys parameter-mapping))
-                       (set/rename-keys parameter-mapping))
-        opts (assoc template-opts
-                    :project-name project-name
-                    :parameters parameters
-                    :stack-name stack-name
-                    :s3-bucket-name bucket-name
-                    :dependee-stack-names dependee-stack-names)
-        _log (println (format "Provisioning cloudformation %s stack..." stack-name))
-        result (aws.cloudformation/create-stack opts)]
-    (if (:success? result)
-      (wait-for-stack-completion stack-name)
-      result)))
+  [settings {:keys [parameter-mapping stack-name-kw dependee-stack-kws] :as template-opts}]
+  (if (does-stack-exist? settings template-opts)
+    {:success? false :reason :stack-already-exists}
+    (let [stack-name (get settings stack-name-kw)
+          dependee-stack-names (mapv #(get settings %)
+                                     dependee-stack-kws)
+          project-name (:project/name settings)
+          bucket-name (:aws.cloudformation/template-bucket-name settings)
+          parameters (-> settings
+                         (select-keys (keys parameter-mapping))
+                         (set/rename-keys parameter-mapping))
+          opts (assoc template-opts
+                      :project-name project-name
+                      :parameters parameters
+                      :stack-name stack-name
+                      :s3-bucket-name bucket-name
+                      :dependee-stack-names dependee-stack-names)
+          _log (println (format "Provisioning cloudformation %s stack..." stack-name))
+          result (aws.cloudformation/create-stack opts)]
+      (if (:success? result)
+        (wait-for-stack-completion stack-name)
+        result))))
 
 (defn provision-initial-infrastructure
-  [config]
+  [settings]
   (->
    [{:txn-fn
      (fn upload-cloudformation-templates
        [_]
-       (println (format "Uploading cloudformation templates to %s bucket..." (:aws/cloudformation-templates-bucket-name config)))
-       (let [bucket-name (:aws.cloudformation/template-bucket-name config)
+       (let [bucket-name (:aws.cloudformation/template-bucket-name settings)
              opts {:bucket-name bucket-name
                    :directory-path cfn-templates-path}
+             _log (println (format "Uploading cloudformation templates to %s bucket..." bucket-name))
              result (aws.cloudformation/update-templates opts)]
          (if (:success? result)
            {:success? true}
@@ -114,16 +124,21 @@
     {:txn-fn
      (fn provision-account
        [_]
-       (let [result (provision-cfn-stack config (:account cfn-templates))]
-         (if (:success? result)
-           {:success? true}
-           {:success? false
-            :reason :could-not-provision-account-cfn
-            :error-details result})))}
+       (let [template (:account cfn-templates)]
+         (if (does-stack-exist? settings template)
+           (do
+             (println "Skipping account stack creation because it already exists")
+             {:success? true})
+           (let [result (provision-cfn-stack settings template)]
+             (if (:success? result)
+               {:success? true}
+               {:success? false
+                :reason :could-not-provision-account-cfn
+                :error-details result})))))}
     {:txn-fn
      (fn create-and-upload-self-signed-certificate
        [_]
-       (if (:aws.project.elb/certificate-arn config)
+       (if (:aws.project.elb/certificate-arn settings)
          (do
            (println "Skipping self-signed certificate upload.")
            {:success? true})
@@ -131,45 +146,45 @@
                result (aws.ssl/create-and-upload-self-signed-certificate {})]
            (if (:success? result)
              (let [certificate-arn (:certificate-arn result)
-                   updated-config (assoc config
-                                         :aws.project.elb/certificate-arn certificate-arn)]
+                   updated-settings (assoc settings
+                                           :aws.project.elb/certificate-arn certificate-arn)]
                {:success? true
-                :config updated-config})
+                :settings updated-settings})
              {:success? false
               :reason :could-not-create-and-upload-self-signed-certificate
               :error-details result}))))}
     {:txn-fn
      (fn provision-project
-       [{:keys [config]}]
-       (let [result (provision-cfn-stack config (:project cfn-templates))]
+       [{:keys [settings]}]
+       (let [result (provision-cfn-stack settings (:project cfn-templates))]
          (if (:success? result)
            {:success? true
-            :config config}
+            :settings settings}
            {:success? false
             :reason :could-not-provision-project-cfn
             :error-details result})))}
     {:txn-fn
      (fn provision-dev-env
-       [{:keys [config]}]
-       (let [result (provision-cfn-stack config (:dev-env cfn-templates))]
+       [{:keys [settings]}]
+       (let [result (provision-cfn-stack settings (:dev-env cfn-templates))]
          (if (:success? result)
            {:success? true
-            :config config}
+            :settings settings}
            {:success? false
             :reason :could-not-provision-dev-env
             :error-details result})))}
     {:txn-fn
      (fn provision-test-env
-       [{:keys [config]}]
-       (let [result (provision-cfn-stack config (:test-env cfn-templates))]
+       [{:keys [settings]}]
+       (let [result (provision-cfn-stack settings (:test-env cfn-templates))]
          (if (:success? result)
            {:success? true
-            :config config}
+            :settings settings}
            {:success? false
             :reason :could-not-provision-test-env
             :error-details result})))}]
    (tht/thread-transactions {})))
 
 (defn provision-prod-infrastructure
-  [config]
-  (provision-cfn-stack config (:prod-env cfn-templates)))
+  [settings]
+  (provision-cfn-stack settings (:prod-env cfn-templates)))
