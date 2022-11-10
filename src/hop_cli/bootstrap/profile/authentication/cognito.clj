@@ -21,6 +21,11 @@
   {:dev.gethop.user-manager/cognito
    {:user-pool-id (tagged-literal 'duct/env ["COGNITO_USER_POOL_ID" 'Str])}})
 
+(defn cognito-config
+  []
+  {:cognito {:oidc {:iss (tagged-literal 'duct/env ["OIDC_ISSUER_URL"])
+                    :client-id (tagged-literal 'duct/env ["OIDC_AUDIENCE"])}}})
+
 (defn user-api-config
   [settings]
   {(keyword (str (:project/name settings) ".api/user"))
@@ -29,6 +34,16 @@
 (defn- common-config
   []
   {:auth-middleware (tagged-literal 'ig/ref :duct.middleware.buddy/authentication)})
+
+(defn- routes
+  [settings]
+  [(tagged-literal 'ig/ref (keyword (str (:project/name settings) ".api/user")))])
+
+(def ^:private load-frontend-app-code
+  "(rf/reg-event-fx
+   ::init-cognito
+   (fn [{:keys [db]} _]
+     {:dispatch [::session/set-config (get-in db [:config :cognito])]}))")
 
 (defn- build-env-variables
   [settings environment]
@@ -46,11 +61,18 @@
   {:dependencies '[[dev.gethop/session.re-frame.cognito "0.1.0-alpha"]
                    [dev.gethop/user-manager.cognito "0.1.0"]]
    :config-edn {:base (merge
-                        (cognito-adapter-config settings)
-                        (jwt-oidc-config settings)
-                        (buddy-auth-config settings)
-                        (user-api-config settings))
-                :common-config (common-config)}
+                       (cognito-adapter-config settings)
+                       (jwt-oidc-config settings)
+                       (buddy-auth-config settings)
+                       (user-api-config settings))
+                :common-config (common-config)
+                :config (cognito-config)
+                :routes (routes settings)}
+   :load-frontend-app {:requires '[[dev.gethop.session.re-frame.cognito :as session]]
+                       :events ["[:dispatch [::init-cognito]]"]
+                       :code [load-frontend-app-code]}
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
-                           :prod (build-env-variables settings :prod)}})
+                           :prod (build-env-variables settings :prod)}
+   :files [{:src "authentication/common"}
+           {:src "authentication/cognito"}]})

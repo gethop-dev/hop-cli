@@ -10,6 +10,7 @@
             [hop-cli.bootstrap.profile.bi.grafana :as profile.bi.grafana]
             [hop-cli.bootstrap.profile.core :as profile.core]
             [hop-cli.bootstrap.profile.docker :as profile.docker]
+            [hop-cli.bootstrap.profile.frontend :as profile.frontend]
             [hop-cli.bootstrap.profile.persistence.sql :as profile.persistence.sql]
             [hop-cli.util :as util]
             [hop-cli.util.file :as util.file]
@@ -48,25 +49,46 @@
                   dst-path (build-target-project-path settings dst)]]
       (fs/copy-tree src-path dst-path {:replace-existing true}))))
 
-(defn- kv->edn-formatted-string
+(defn- kv->formatted-string
   [[k v]]
   (str k "\n" (str/replace (with-out-str (pprint v)) #"," "")))
 
-(defn map->edn-formatted-string
-  [config]
-  (->> config
-       (map kv->edn-formatted-string)
+(defn map->formatted-string
+  [m]
+  (->> m
+       (map kv->formatted-string)
        (interpose "\n\n")))
+
+(defn- sequential-coll->formatted-string
+  [coll]
+  (->> coll
+       (map #(if (string? %) % (with-out-str (pprint %))))
+       (interpose "\n")))
+
+(defn coll->formatted-string
+  [coll]
+  (if (map? coll)
+    (map->formatted-string coll)
+    (sequential-coll->formatted-string coll)))
 
 (defn- settings->mustache-data
   [settings]
+  (clojure.pprint/pprint (update-in settings [:profiles :load-frontend-app] util/update-map-vals coll->formatted-string {:recursive? false}))
   (-> settings
       (util/expand-ns-keywords)
-      (update-in [:profiles :config-edn] util/update-map-vals map->edn-formatted-string {:recursive? false})))
+      (update-in [:profiles :config-edn] util/update-map-vals coll->formatted-string {:recursive? false})
+      (update-in [:profiles :load-frontend-app] util/update-map-vals coll->formatted-string {:recursive? false})))
+
+(def ^:private lambdas
+  {:to-snake-case (fn [text]
+                    (fn [render-fn]
+                      (str/replace (render-fn text) #"-" "_")))})
 
 (defn- mustache-template-renderer
   [settings]
-  (let [mustache-data (settings->mustache-data settings)]
+  (let [mustache-data (-> settings
+                          (settings->mustache-data)
+                          (assoc :lambdas lambdas))]
     (fn [content]
       (cljstache/render content mustache-data))))
 
@@ -111,6 +133,9 @@
     (get #{:environment-variables :config-edn} k)
     (merge-with merge v1 v2)
 
+    (get #{:load-frontend-app} k)
+    (merge-with concat v1 v2)
+
     :else
     (merge v1 v2)))
 
@@ -125,6 +150,7 @@
 (defn foo
   [settings]
   (let [profiles [(profile.core/profile settings)
+                  (profile.frontend/profile settings)
                   (profile.persistence.sql/profile settings)
                   (profile.bi.grafana/profile settings)
                   (profile.cognito/profile settings)
