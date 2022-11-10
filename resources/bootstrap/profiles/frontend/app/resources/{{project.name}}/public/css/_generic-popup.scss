@@ -1,0 +1,87 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/
+ */
+
+.generic-popup__backdrop {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: $z-index-med;
+  &.generic-popup__backdrop--lightbox {
+    background-color: rgba( 0, 0, 0, 0.5 );
+  }
+}
+
+.generic-popup__container {
+  padding: $spacing-big;
+  padding-top: $spacing-large;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate( -50%, -50%);
+  z-index: $z-index-max;
+  background-color: #fff;
+  min-width: 35%;
+}
+
+.generic-error-popup {
+  position: relative;
+  margin: $spacing-big $spacing-normal 0 0;
+  min-height: 100px;
+
+  &__message {
+    display: block;
+    font-size: $font-bigger;
+    margin: $spacing-normal 0;
+  }
+
+  &__desc {
+    display: block;
+    font-size: $font-small;
+    margin: $spacing-normal 0 $spacing-big 0;
+    @include color('color-2');
+  }
+
+  img {
+    position: absolute;
+    top: -16px;
+    right: -16px;
+    width: 16px;
+    cursor: pointer;
+  }
+}
+
+.generic-confirmation-popup {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: $spacing-normal;
+  padding: $spacing-small;
+
+  &__title {
+    font-weight: 400;
+    font-size: $font-large;
+    margin: 0;
+    @include color('color-1');
+  }
+
+  &__body {
+    font-size: $font-medium;
+    margin-bottom: $spacing-normal;
+  }
+
+  &__buttons {
+    display: flex;
+    gap: $spacing-normal;
+    & > * {
+      padding: $spacing-small $spacing-big;
+    }
+  }
+  &__accept-btn {
+    font-size: $font-big;
+  }
+}

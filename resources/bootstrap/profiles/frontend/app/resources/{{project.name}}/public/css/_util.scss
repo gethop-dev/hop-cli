@@ -1,0 +1,88 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/
+ */
+
+$spacing-normal: 10px;
+$spacing-medium: 15px;
+$spacing-big: 20px;
+$spacing-small: 5px;
+$spacing-large: 40px;
+$spacing-x-large: 60px;
+$radius-sharp: 2px;
+$radius: 5px;
+$radius-gentle: 10px;
+$radius-very-gentle: 20px;
+
+$font-smaller: 12px;
+$font-small: 14px;
+$font-medium: 16px;
+$font-big: 18px;
+$font-bigger: 20px;
+$font-large: 25px;
+$font-header-small-size: 18px;
+$font-header-size: 28px;
+$font-header-slogan-size: 60px;
+
+$padding: $spacing-normal;
+
+$mobile-hamburger-size: 50px;
+
+$z-index-min: -1;
+$z-index-small: 1;
+$z-index-med: 500;
+$z-index-max: 999;
+$z-index-inf: 9999;
+
+$logo-height: 50px;
+
+.u-font-weight-bold { font-weight: bold; }
+
+.u-font-size-bigger { font-size: bigger; }
+
+.u-width-1rem { width: 1rem; }
+
+.u-width-full { width: 100%; }
+.u-height-full { height: 100%; }
+
+.u-position-relative { position: relative; }
+
+.u-display-flex { display: flex; }
+.u-display-block { display: block; }
+.u-display-inline-block { display: inline-block; }
+.u-align-self-center { align-self: center; }
+
+.u-full-w { width: 100%; }
+.u-full-h { height: 100%; }
+
+.u-shadow { box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); }
+
+.u-clickable { cursor: pointer; }
+
+.u-opacity-07 { opacity: 0.7; }
+
+.u-margin-top { margin-top: $spacing-normal; }
+.u-margin-top-big { margin-top: $spacing-big; }
+.u-margin-left { margin-left: $spacing-normal; }
+.u-margin-left-big { margin-left: $spacing-big; }
+.u-margin-bottom { margin-bottom: $spacing-normal; }
+.u-margin-bottom-big { margin-bottom: $spacing-big; }
+.u-margin-right { margin-right: $spacing-normal; }
+.u-margin-right-big { margin-right: $spacing-big; }
+.u-no-margin { margin: none; }
+
+.header { font-size: $font-header-size;
+          font-weight: normal; }
+
+.header-small { font-size: $font-header-small-size;
+                font-weight: normal; }
+
+
+/** Responsive vars **/
+
+// This breakpoints chould change depending of the content
+// Consider to have more breakpoints
+$max-mobile-width: 630px;
+$max-tablet-width: 1023px;
+$max-computer-resolution-with: 1375px;

@@ -9,6 +9,12 @@
     {:production []}
     :figwheel-main {}}})
 
+(defn- sass-compiler
+  []
+  {:duct.compiler/sass
+   {:source-paths ["resources"]
+    :output-path "target/resources"}})
+
 (defn profile
   [settings]
   {:files [{:src "frontend"}]
@@ -21,4 +27,5 @@
                    [com.taoensso/tempura "1.3.0"]
                    [hydrogen/module.cljs "0.5.2"]
                    [hydrogen/module.core "0.4.2"]]
-   :config-edn {:modules (cljs-module settings)}})
+   :config-edn {:base (sass-compiler)
+                :modules (cljs-module settings)}})
