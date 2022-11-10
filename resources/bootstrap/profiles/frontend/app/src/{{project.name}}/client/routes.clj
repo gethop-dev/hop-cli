@@ -4,7 +4,8 @@
 
 {{=<< >>=}}
 (ns <<project.name>>.client.routes
-  (:require [<<project.name>>.shared.util.routing :as util.routing]
+  (:require [<<project.name>>.client.landing :as landing]
+            [<<project.name>>.shared.util.routing :as util.routing]
             [re-frame.core :as re-frame]
             [reitit.frontend :as rf]
             [reitit.frontend.controllers :as rfc]
@@ -59,4 +60,4 @@
    on-navigate
    {:use-fragment true                                      ;; using "true" for easier route debugging without SSR.
     :on-coercion-error (fn [_ _] (js/alert "Coercion error!"))})
-  (re-frame/dispatch [::push-state ::home/view]))
+  (re-frame/dispatch [::push-state ::landing/view]))

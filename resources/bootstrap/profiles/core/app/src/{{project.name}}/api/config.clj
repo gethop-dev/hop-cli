@@ -4,11 +4,12 @@
 
 {{=<< >>=}}
 (ns <<project.name>>.api.config
-  (:require [integrant.core :as ig]))
+  (:require [<<project.name>>.api.util.responses :as util.r]
+            [integrant.core :as ig]))
 
 (defn config-handler
   [config _req]
-  (r/ok config))
+  (util.r/ok config))
 
 (defmethod ig/init-key :<<project.name>>.api/config
   [_ config]
