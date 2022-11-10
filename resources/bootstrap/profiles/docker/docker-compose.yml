@@ -1,15 +1,13 @@
 services:
   app:
-    image: {{ecr-repository-prefix}}/{{application-image-name}}:latest
+    image: {{aws.project.ecr.repository}}/{{project.name}}:latest
     deploy:
       resources:
         limits:
           memory: ${MEMORY_LIMIT_APP}
     environment:
       # Application database connection details
-      - JDBC_DATABASE_URL{{#datomic-support?}}
-      # Datomic connection details
-      - DATOMIC_DB{{/datomic-support?}}{{#cognito-oidc?}}
+      - JDBC_DATABASE_URL{{#cognito-oidc?}}
       # OpenID Connect Identity Provider details
       - OIDC_ISSUER_URL
       - OIDC_AUDIENCE
@@ -45,8 +43,8 @@ services:
       - OIDC_SSO_APP_1_LOGOUT_URL
       - OIDC_SSO_APP_1_LOGOUT_METHOD{{/grafana-support?}}{{#app-service-possible-dependencies}}
     depends_on:{{#keycloak-oidc?}}
-      - {{keycloak-host}}
-      - {{grafana-host}}
+      - {{keycloak-host}}{{/keycloak-oidc?}}{{#grafana-support?}}
+      - {{grafana-host}}{{/grafana-support?}}
     {{/app-service-possible-dependencies}}
   nginx:
     image: nginx:1.21.3-alpine
