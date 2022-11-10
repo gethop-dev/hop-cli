@@ -15,6 +15,14 @@
    {:source-paths ["resources"]
     :output-path "target/resources"}})
 
+(defn- root-static-route
+  [settings]
+  {(keyword (str (:project/name settings) ".static/root")) {}})
+
+(defn- routes
+  [settings]
+  [(tagged-literal 'ig/ref (keyword (str (:project/name settings) ".static/root")))])
+
 (defn profile
   [settings]
   {:files [{:src "frontend"}]
@@ -27,5 +35,8 @@
                    [com.taoensso/tempura "1.3.0"]
                    [hydrogen/module.cljs "0.5.2"]
                    [hydrogen/module.core "0.4.2"]]
-   :config-edn {:base (sass-compiler)
+   :config-edn {:base (merge
+                       (routes settings)
+                       (root-static-route settings)
+                       (sass-compiler))
                 :modules (cljs-module settings)}})
