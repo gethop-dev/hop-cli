@@ -73,7 +73,6 @@
 
 (defn- settings->mustache-data
   [settings]
-  (clojure.pprint/pprint (update-in settings [:profiles :load-frontend-app] util/update-map-vals coll->formatted-string {:recursive? false}))
   (-> settings
       (util/expand-ns-keywords)
       (update-in [:profiles :config-edn] util/update-map-vals coll->formatted-string {:recursive? false})
