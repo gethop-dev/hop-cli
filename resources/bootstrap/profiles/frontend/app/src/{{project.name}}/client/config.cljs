@@ -3,7 +3,10 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 {{=<< >>=}}
-(ns <<project.name>>.client.config)
+(ns <<project.name>>.client.config
+  (:require [<<project.name>>.client.util :as util]
+            [ajax.core :as ajax]
+            [re-frame.core :as rf]))
 
 (rf/reg-event-fx
  ::config-loaded

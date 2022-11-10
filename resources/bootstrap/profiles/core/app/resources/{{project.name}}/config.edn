@@ -17,4 +17,7 @@
 
  :duct.profile/dev #duct/include "dev.edn"
  :duct.profile/local #duct/include "local.edn"
- :duct.profile/prod {}}
+ :duct.profile/prod {}
+
+ <<#profiles.config-edn.modules>><<&.>><</profiles.config-edn.modules>>
+ }

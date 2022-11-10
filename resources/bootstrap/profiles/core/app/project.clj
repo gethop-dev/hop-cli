@@ -8,8 +8,8 @@
                  {{#profiles.dependencies}}{{&.}}{{/profiles.dependencies}}]
   :plugins [[duct/lein-duct "0.12.3"]
             [s3-wagon-private "1.3.4"]]
-  :main ^:skip-aot {{project/name}} .main
-  :resource-paths ["resources" "target/resources" "target/resources/{{project.name}}"]
+  :main ^:skip-aot {{#lambdas.to-snake-case}}{{project.name}}{{/lambdas.to-snake-case}}.main
+  :resource-paths ["resources" "target/resources" "target/resources/{{#lambdas.to-snake-case}}{{project.name}}{{/lambdas.to-snake-case}}"]
   :middleware [lein-duct.plugin/middleware]
   :profiles {:dev [:project/dev :profiles/dev]
              :repl {:prep-tasks ^:replace ["javac" "compile"]

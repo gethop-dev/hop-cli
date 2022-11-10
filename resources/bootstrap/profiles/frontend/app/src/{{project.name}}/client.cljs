@@ -5,14 +5,28 @@
 {{=<< >>=}}
 (ns <<project.name>>.client
   (:require [<<project.name>>.client.config :as client.config]
-            [cognitect.transit :as transit]
-            [re-frame.core :as rf]))
+            [<<project.name>>.client.routes :as routes]
+            [<<project.name>>.client.view :as view]
+            [re-frame.core :as rf]
+            [reagent.dom :as rd]
+            <<#profiles.load-frontend-app.requires>><<&.>><</profiles.load-frontend-app.requires>>))
+
+<<#profiles.load-frontend-app.code>>
+<<&.>>
+<</profiles.load-frontend-app.code>>
+
+(rf/reg-event-fx
+ ::on-config-loaded
+ (fn [_ _]
+   {:fx [<<#profiles.load-frontend-app.events>>
+         <<&.>>
+         <</profiles.load-frontend-app.events>>]}))
 
 (rf/reg-event-fx
  ::load-app
  (fn [_ _]
    {:db {}
-    :dispatch [[::client.config/load-config]]}))
+    :dispatch [[::client.config/load-config [::on-config-loaded]]]}))
 
 (defn app []
   [:div.app-container
