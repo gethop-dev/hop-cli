@@ -7,6 +7,14 @@
     :credentials [(tagged-literal 'duct/env ["GRAFANA_USERNAME" 'Str])
                   (tagged-literal 'duct/env ["GRAFANA_TEST_PASSWORD" 'Str])]}})
 
+(defn- sso-apps-config
+  []
+  {:sso-apps [{:name (tagged-literal 'duct/env ["OIDC_SSO_APP_1_NAME" 'Str])
+               :login-url (tagged-literal 'duct/env ["OIDC_SSO_APP_1_LOGIN_URL" 'Str])
+               :login-method (tagged-literal 'duct/env ["OIDC_SSO_APP_1_LOGIN_METHOD" 'Str])
+               :logout-url (tagged-literal 'duct/env ["OIDC_SSO_APP_1_LOGOUT_URL" 'Str])
+               :logout-method (tagged-literal 'duct/env ["OIDC_SSO_APP_1_LOGOUT_METHOD" 'Str])}]})
+
 (defn- build-env-variables
   [_settings _environment]
   {:DS_MANAGER_URI "uri"
@@ -16,7 +24,8 @@
 (defn profile
   [settings]
   {:dependencies '[[dev.gethop/dashboard-manager.grafana "0.2.8"]]
-   :config-edn {:base (dashboard-manager-adapter-config settings)}
+   :config-edn {:base (dashboard-manager-adapter-config settings)
+                :config (sso-apps-config)}
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
