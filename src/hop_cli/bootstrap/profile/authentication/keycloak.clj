@@ -19,7 +19,7 @@
 (defn keycloak-config
   []
   {:keycloak {:realm (tagged-literal 'duct/env ["KEYCLOAK_REALM" 'Str])
-              :url (tagged-literal 'duct/env ["KEYCLOAK_URL" 'Str])
+              :url (tagged-literal 'duct/env ["KEYCLOAK_FRONTEND_URL" 'Str])
               :client-id (tagged-literal 'duct/env ["KEYCLOAK_CLIENT_ID" 'Str])}})
 
 (defn user-api-config
@@ -41,18 +41,45 @@
    (fn [{:keys [db]} _]
      {:init-and-try-to-authenticate {:oidc (get-in db [:config :keycloak])}}))")
 
-(defn- build-env-variables
+(defn- build-external-env-variables
   [settings environment]
-  (let [base-path (format "keycloak.environment.%s.realm" (name environment))
-        keycloak-realm (get settings (keyword base-path "realm"))
-        keycloak-url (get settings (keyword base-path "url"))
-        keycloak-client-id (get settings (keyword base-path "client-id"))]
+  (let [base-path (format "project.profiles.keycloak.environment.%s.external" (name environment))]
+    {:KEYCLOAK_REALM (get settings (keyword base-path "realm"))
+     :KEYCLOAK_FRONTEND_URL (get settings (keyword base-path "frontend-url"))
+     :KEYCLOAK_CLIENT_ID (get settings (keyword base-path "client-id"))}))
+
+(defn- build-container-env-variables
+  [settings environment]
+  (let [keycloak-base-path (format "project.profiles.keycloak.environment.%s.container" (name environment))
+        persistence-sql-base-path (format "project.profiles.persistence-sql.environment.%s" (name environment))
+        keycloak-realm (get settings (keyword (str keycloak-base-path ".realm/name")))
+        keycloak-frontend-url (get settings (keyword keycloak-base-path "frontend-url"))
+        keycloak-client-id (get settings (keyword keycloak-base-path "client-id"))]
+    ;; Application related environment variables
     {:KEYCLOAK_REALM keycloak-realm
-     :KEYCLOAK_URL keycloak-url
+     :KEYCLOAK_FRONTEND_URL keycloak-frontend-url
      :KEYCLOAK_CLIENT_ID keycloak-client-id
      :OIDC_AUDIENCE keycloak-client-id
-     :OIDC_ISSUER_URL (str keycloak-url "/" keycloak-realm "/" keycloak-realm)
-     :OIDC_JWKS_URI (str keycloak-url "/" keycloak-realm "/protocol/openid-connect/certs")}))
+     :OIDC_ISSUER_URL (str keycloak-frontend-url "/realms/" keycloak-realm)
+     :OIDC_JWKS_URI (str keycloak-frontend-url "/realms/" keycloak-realm "/protocol/openid-connect/certs")
+
+     ;; Keycloak service related environment variables
+     :KEYCLOAK_USER (get settings (keyword (str keycloak-base-path ".admin/username")))
+     :KEYCLOAK_PASSWORD (get settings (keyword (str keycloak-base-path ".admin/password")))
+     :KEYCLOAK_DB_VENDOR "postgres"
+     :KEYCLOAK_DB_ADDR (get settings (keyword persistence-sql-base-path "address"))
+     :KEYCLOAK_DB_PORT (get settings (keyword persistence-sql-base-path "port"))
+     :KEYCLOAK_DB_DATABASE (get settings (keyword persistence-sql-base-path "name"))
+     :KEYCLOAK_DB_USER (get settings (keyword (str keycloak-base-path ".database/username")))
+     :KEYCLOAK_DB_PASSWORD (get settings (keyword (str keycloak-base-path ".database/password")))
+     :KEYCLOAK_DB_SCHEMA (get settings (keyword (str keycloak-base-path ".database/schema")))
+     :KEYCLOAK_PROXY_ADDRESS_FORWARDING true}))
+
+(defn- build-env-variables
+  [settings environment]
+  (if (= :external (get settings (keyword "project.profiles.keycloak.environment" (name environment))))
+    (build-external-env-variables settings environment)
+    (build-container-env-variables settings environment)))
 
 (defn profile
   [settings]

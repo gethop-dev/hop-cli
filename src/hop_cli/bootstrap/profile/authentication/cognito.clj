@@ -47,7 +47,7 @@
 
 (defn- build-env-variables
   [settings environment]
-  (let [base-path (format "aws.environment.%s.cognito" (name environment))
+  (let [base-path (format "cloud-provider.aws.environment.%s.cognito" (name environment))
         pool-id (get settings (keyword base-path "user-pool-id"))
         pool-url (get settings (keyword base-path "user-pool-url"))
         client-id (get settings (keyword base-path "spa-client-id"))]

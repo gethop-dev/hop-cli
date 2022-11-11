@@ -11,88 +11,88 @@
 (def cfn-templates
   {:account {:master-template "account.yaml"
              :capability :CAPABILITY_NAMED_IAM
-             :stack-name-kw :aws.account/stack-name
+             :stack-name-kw :cloud-provider.aws.account/stack-name
              :input-parameter-mapping
-             {:aws.account.vpc/cidr :VpcCIDR
-              :aws.account/resource-name-prefix :ResourceNamePrefix}
+             {:cloud-provider.aws.account.vpc/cidr :VpcCIDR
+              :cloud-provider.aws.account/resource-name-prefix :ResourceNamePrefix}
              :output-parameter-mapping
-             {:EbServiceRoleARN :aws.account.iam/eb-service-role-arn
-              :LocalDevUserARN :aws.account.iam/local-dev-user-arn
-              :RDSMonitoringRoleARN :aws.account.iam/rds-monitoring-role-arm
-              :PublicRouteTable1Id :aws.account.vpc/public-route-table-id
-              :VpcId :aws.account.vpc/id}}
+             {:EbServiceRoleARN :cloud-provider.aws.account.iam/eb-service-role-arn
+              :LocalDevUserARN :cloud-provider.aws.account.iam/local-dev-user-arn
+              :RDSMonitoringRoleARN :cloud-provider.aws.account.iam/rds-monitoring-role-arm
+              :PublicRouteTable1Id :cloud-provider.aws.account.vpc/public-route-table-id
+              :VpcId :cloud-provider.aws.account.vpc/id}}
 
    :project {:master-template "project.yaml"
              :capability :CAPABILITY_NAMED_IAM
-             :stack-name-kw :aws.project/stack-name
+             :stack-name-kw :cloud-provider.aws.project/stack-name
              :input-parameter-mapping
-             {:aws.account.vpc/id :VpcId
-              :aws.account.vpc/public-route-table-id :PublicRouteTable1Id
-              :aws.project.vpc.subnet-1/cidr :Subnet1CIDR
-              :aws.project.vpc.subnet-2/cidr :Subnet2CIDR
-              :aws.project.elb/certificate-arn :ElbCertificateArn}
+             {:cloud-provider.aws.account.vpc/id :VpcId
+              :cloud-provider.aws.account.vpc/public-route-table-id :PublicRouteTable1Id
+              :cloud-provider.aws.project.vpc.subnet-1/cidr :Subnet1CIDR
+              :cloud-provider.aws.project.vpc.subnet-2/cidr :Subnet2CIDR
+              :cloud-provider.aws.project.elb/certificate-arn :ElbCertificateArn}
              :output-parameter-mapping
-             {:EbApplicationName :aws.project.eb/application-name
-              :ElbSecurityGroupId :aws.project.elb/security-group-id
-              :LoadBalancerARN  :aws.project.elb/arn
-              :SubnetIds :aws.project.vpc/subnet-ids}}
+             {:EbApplicationName :cloud-provider.aws.project.eb/application-name
+              :ElbSecurityGroupId :cloud-provider.aws.project.elb/security-group-id
+              :LoadBalancerARN  :cloud-provider.aws.project.elb/arn
+              :SubnetIds :cloud-provider.aws.project.vpc/subnet-ids}}
 
    :dev-env {:master-template "local-environment.yaml"
              :capability :CAPABILITY_NAMED_IAM
-             :stack-name-kw :aws.environment.dev/stack-name
+             :stack-name-kw :cloud-provider.aws.environment.dev/stack-name
              :environment "dev"
              :input-parameter-mapping
-             {:aws.account.iam/local-dev-user-arn :LocalDevUserARN}
+             {:cloud-provider.aws.account.iam/local-dev-user-arn :LocalDevUserARN}
              :output-parameter-mapping
-             {:CognitoUserPoolId :aws.environment.dev.cognito/user-pool-id
-              :CognitoUserPoolURL :aws.environment.dev.cognito/user-pool-url
-              :CognitoSPAClientId :aws.environment.dev.cognito/spa-client-id}}
+             {:CognitoUserPoolId :cloud-provider.aws.environment.dev.cognito/user-pool-id
+              :CognitoUserPoolURL :cloud-provider.aws.environment.dev.cognito/user-pool-url
+              :CognitoSPAClientId :cloud-provider.aws.environment.dev.cognito/spa-client-id}}
 
    :test-env {:master-template "cloud-environment.yaml"
               :capability :CAPABILITY_NAMED_IAM
-              :stack-name-kw :aws.environment.test/stack-name
+              :stack-name-kw :cloud-provider.aws.environment.test/stack-name
               :environment "test"
               :input-parameter-mapping
-              {:aws.environment.test/notifications-email :NotificationsEmail
-               :aws.environment.test.database/version :DatabaseEngineVersion
-               :aws.environment.test.database/password :DatabasePassword
-               :aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
-               :aws.account.vpc/id :VpcId
-               :aws.project.vpc/subnet-ids :SubnetIds
-               :aws.account.iam/eb-service-role-arn :EbServiceRoleARN
-               :aws.project.eb/application-name  :EbApplicationName
-               :aws.project.elb/arn :LoadBalancerARN
-               :aws.project.elb/security-group-id :ElbSecurityGroupId}
+              {:cloud-provider.aws.environment.test/notifications-email :NotificationsEmail
+               :cloud-provider.aws.environment.test.database/version :DatabaseEngineVersion
+               :cloud-provider.aws.environment.test.database/password :DatabasePassword
+               :cloud-provider.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
+               :cloud-provider.aws.account.vpc/id :VpcId
+               :cloud-provider.aws.project.vpc/subnet-ids :SubnetIds
+               :cloud-provider.aws.account.iam/eb-service-role-arn :EbServiceRoleARN
+               :cloud-provider.aws.project.eb/application-name  :EbApplicationName
+               :cloud-provider.aws.project.elb/arn :LoadBalancerARN
+               :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId}
               :output-parameter-mapping
-              {:CognitoUserPoolId :aws.environment.test.cognito/user-pool-id
-               :CognitoUserPoolURL :aws.environment.test.cognito/user-pool-url
-               :CognitoSPAClientId :aws.environment.test.cognito/spa-client-id
-               :RdsAddress :aws.environment.test.rds/address
-               :EbEnvironmentName :aws.environment.test.eb/environment-name
-               :EbEnvironmentURL :aws.environment.test.eb/environment-url}}
+              {:CognitoUserPoolId :cloud-provider.aws.environment.test.cognito/user-pool-id
+               :CognitoUserPoolURL :cloud-provider.aws.environment.test.cognito/user-pool-url
+               :CognitoSPAClientId :cloud-provider.aws.environment.test.cognito/spa-client-id
+               :RdsAddress :cloud-provider.aws.environment.test.rds/address
+               :EbEnvironmentName :cloud-provider.aws.environment.test.eb/environment-name
+               :EbEnvironmentURL :cloud-provider.aws.environment.test.eb/environment-url}}
 
    :prod-env {:master-template "cloud-environment.yaml"
               :capability :CAPABILITY_NAMED_IAM
-              :stack-name-kw :aws.environment.prod/stack-name
+              :stack-name-kw :cloud-provider.aws.environment.prod/stack-name
               :environment "prod"
               :input-parameter-mapping
-              {:aws.environment.prod/notifications-email :NotificationsEmail
-               :aws.environment.prod.database/version :DatabaseEngineVersion
-               :aws.environment.prod.database/password :DatabasePassword
-               :aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
-               :aws.account.vpc/id :VpcId
-               :aws.project.vpc/subnet-ids :SubnetIds
-               :aws.account.iam/eb-service-role-arn :EbServiceRoleARN
-               :aws.project.eb/application-name  :EbApplicationName
-               :aws.project.elb/arn :LoadBalancerARN
-               :aws.project.elb/security-group-id :ElbSecurityGroupId}
+              {:cloud-provider.aws.environment.prod/notifications-email :NotificationsEmail
+               :cloud-provider.aws.environment.prod.database/version :DatabaseEngineVersion
+               :cloud-provider.aws.environment.prod.database/password :DatabasePassword
+               :cloud-provider.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
+               :cloud-provider.aws.account.vpc/id :VpcId
+               :cloud-provider.aws.project.vpc/subnet-ids :SubnetIds
+               :cloud-provider.aws.account.iam/eb-service-role-arn :EbServiceRoleARN
+               :cloud-provider.aws.project.eb/application-name  :EbApplicationName
+               :cloud-provider.aws.project.elb/arn :LoadBalancerARN
+               :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId}
               :output-parameter-mapping
-              {:CognitoUserPoolId :aws.environment.prod.cognito/user-pool-id
-               :CognitoUserPoolURL :aws.environment.prod.cognito/user-pool-url
-               :CognitoSPAClientId :aws.environment.prod.cognito/spa-client-id
-               :RdsAddress :aws.environment.prod.rds/address
-               :EbEnvironmentName :aws.environment.prod.eb/environment-name
-               :EbEnvironmentURL :aws.environment.prod.eb/environment-url}}})
+              {:CognitoUserPoolId :cloud-provider.aws.environment.prod.cognito/user-pool-id
+               :CognitoUserPoolURL :cloud-provider.aws.environment.prod.cognito/user-pool-url
+               :CognitoSPAClientId :cloud-provider.aws.environment.prod.cognito/spa-client-id
+               :RdsAddress :cloud-provider.aws.environment.prod.rds/address
+               :EbEnvironmentName :cloud-provider.aws.environment.prod.eb/environment-name
+               :EbEnvironmentURL :cloud-provider.aws.environment.prod.eb/environment-url}}})
 
 (defn wait-for-stack-completion
   [stack-name]
@@ -124,7 +124,7 @@
   [settings {:keys [input-parameter-mapping output-parameter-mapping stack-name-kw] :as template-opts}]
   (let [stack-name (get settings stack-name-kw)
         project-name (:project/name settings)
-        bucket-name (:aws.cloudformation/template-bucket-name settings)
+        bucket-name (:cloud-provider.aws.cloudformation/template-bucket-name settings)
         parameters (select-and-rename-keys settings input-parameter-mapping)
         opts (assoc template-opts
                     :project-name project-name
@@ -150,7 +150,7 @@
    [{:txn-fn
      (fn upload-cloudformation-templates
        [_]
-       (let [bucket-name (:aws.cloudformation/template-bucket-name settings)
+       (let [bucket-name (:cloud-provider.aws.cloudformation/template-bucket-name settings)
              opts {:bucket-name bucket-name
                    :directory-path cfn-templates-path}
              _log (println (format "Uploading cloudformation templates to %s bucket..." bucket-name))
@@ -183,7 +183,7 @@
     {:txn-fn
      (fn create-and-upload-self-signed-certificate
        [{:keys [settings]}]
-       (if (:aws.project.elb/certificate-arn settings)
+       (if (:cloud-provider.aws.project.elb/certificate-arn settings)
          (do
            (println "Skipping self-signed certificate upload.")
            {:success? true
@@ -193,7 +193,7 @@
            (if (:success? result)
              (let [certificate-arn (:certificate-arn result)
                    updated-settings (assoc settings
-                                           :aws.project.elb/certificate-arn certificate-arn)]
+                                           :cloud-provider.aws.project.elb/certificate-arn certificate-arn)]
                {:success? true
                 :settings updated-settings})
              {:success? false
