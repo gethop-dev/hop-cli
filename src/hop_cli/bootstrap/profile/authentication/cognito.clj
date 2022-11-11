@@ -23,8 +23,8 @@
 
 (defn cognito-config
   []
-  {:cognito {:oidc {:iss (tagged-literal 'duct/env ["OIDC_ISSUER_URL"])
-                    :client-id (tagged-literal 'duct/env ["OIDC_AUDIENCE"])}}})
+  {:cognito {:iss (tagged-literal 'duct/env ["OIDC_ISSUER_URL"])
+             :client-id (tagged-literal 'duct/env ["OIDC_AUDIENCE"])}})
 
 (defn user-api-config
   [settings]
@@ -43,7 +43,7 @@
   "(rf/reg-event-fx
    ::init-cognito
    (fn [{:keys [db]} _]
-     {:dispatch [::session/set-config (get-in db [:config :cognito])]}))")
+     {:dispatch [::session/set-config {:oidc (get-in db [:config :cognito])}]}))")
 
 (defn- build-env-variables
   [settings environment]
