@@ -30,3 +30,7 @@ Resources:
       Tags:
         - Key: "project-name"
           Value: !Ref "ProjectName"
+
+Outputs:
+  EcrRepositoryURL:
+    Value: !GetAtt "AppImageRepository.RepositoryUri"

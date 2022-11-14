@@ -38,7 +38,8 @@
              {:EbApplicationName :cloud-provider.aws.project.eb/application-name
               :ElbSecurityGroupId :cloud-provider.aws.project.elb/security-group-id
               :LoadBalancerARN  :cloud-provider.aws.project.elb/arn
-              :SubnetIds :cloud-provider.aws.project.vpc/subnet-ids}}
+              :SubnetIds :cloud-provider.aws.project.vpc/subnet-ids
+              :EcrRepositoryURL :project.docker.registry/repository-url}}
 
    :dev-env {:master-template "local-environment.yaml"
              :capability :CAPABILITY_NAMED_IAM

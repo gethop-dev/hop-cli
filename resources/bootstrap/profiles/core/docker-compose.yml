@@ -1,6 +1,6 @@
 services:
   app:
-    image: {{aws.project.ecr.repository}}/{{project.name}}:latest
+    image: {{project.docker.registry.repository-url}}:latest
     deploy:
       resources:
         limits:
