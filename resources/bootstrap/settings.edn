@@ -293,329 +293,344 @@
                                :min-hop-version "1"
                                :tag "Environment"
                                :type :plain-group
-                               :value [{:name :dev
+                               :value [{:name :to-develop
+                                        :type :single-choice-group
                                         :docstring [:a]
                                         :min-hop-version "1"
-                                        :tag "Dev Environment"
-                                        :type :single-choice-group
+                                        :tag "Development-related options"
                                         :value :container
                                         :choices [{:name :external
+                                                   :type :plain-group
                                                    :docstring [:a]
                                                    :min-hop-version "1"
-                                                   :tag "External Dev Environment"
-                                                   :type :plain-group
-                                                   :value [{:name :realm
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Realm name"
-                                                            :type :string
-                                                            :value "hop"}
-                                                           {:name :frontend-url
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Keycloak frontend URL"
-                                                            :type :string
-                                                            :value "http://localhost/auth"}
-                                                           {:name :client-id
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Application client-id"
-                                                            :type :string
-                                                            :value "hop-spa-12345678"}]}
-                                                  {:name :container
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
-                                                   :tag "Dev Container Environment"
-                                                   :type :plain-group
-                                                   :value [{:name :admin
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Admin configuration"
+                                                   :tag "External"
+                                                   :value [{:name :dev
                                                             :type :plain-group
-                                                            :value [{:name :username
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
-                                                                     :tag "Admin username"
-                                                                     :type :string
-                                                                     :value "admin"}
-                                                                    {:name :password
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
-                                                                     :tag "Admin password"
-                                                                     :type :string
-                                                                     :value "Testpassword1!"}]}
-                                                           {:name :frontend-url
                                                             :docstring [:a]
                                                             :min-hop-version "1"
-                                                            :tag "Keycloak frontend-url"
-                                                            :type :string
-                                                            :value "http://localhost/auth"}
-                                                           {:name :client-id
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Application client-id"
-                                                            :type :string
-                                                            :value "hop-spa-12345678"}
-                                                           {:name :realm
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Realm configuration"
-                                                            :type :plain-group
-                                                            :value [{:name :name
+                                                            :tag "Dev"
+                                                            :value [{:name :realm
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
                                                                      :tag "Realm name"
                                                                      :type :string
-                                                                     :value "hop"}]}
-                                                           {:name :theme
+                                                                     :value "hop"}
+                                                                    {:name :frontend-url
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Keycloak frontend URL"
+                                                                     :type :string
+                                                                     :value "http://localhost/auth"}
+                                                                    {:name :client-id
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Application client-id"
+                                                                     :type :string
+                                                                     :value "hop-spa-12345678"}]}]}
+                                                  {:name :container
+                                                   :type :plain-group
+                                                   :docstring [:a]
+                                                   :min-hop-version "1"
+                                                   :tag "Container"
+                                                   :value [{:name :dev
                                                             :docstring [:a]
                                                             :min-hop-version "1"
-                                                            :tag "Theme configuration"
-                                                            :type :plain-group
-                                                            :value [{:name :name
+                                                            :tag "Dev Environment"
+                                                            :type :single-choice-group
+                                                            :value [{:name :admin
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Theme name"
-                                                                     :type :string
-                                                                     :value "hop"}]}
-                                                           {:name :database
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Database configuration"
-                                                            :type :plain-group
-                                                            :value [{:name :username
+                                                                     :tag "Admin configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Admin username"
+                                                                              :type :string
+                                                                              :value "admin"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Admin password"
+                                                                              :type :string
+                                                                              :value "Testpassword1!"}]}
+                                                                    {:name :frontend-url
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Username"
+                                                                     :tag "Keycloak frontend-url"
                                                                      :type :string
-                                                                     :value "keycloak"}
-                                                                    {:name :password
+                                                                     :value "http://localhost/auth"}
+                                                                    {:name :client-id
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Password"
+                                                                     :tag "Application client-id"
                                                                      :type :string
-                                                                     :value "sa"}
-                                                                    {:name :schema
+                                                                     :value "hop-spa-12345678"}
+                                                                    {:name :realm
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Schema"
-                                                                     :type :string
-                                                                     :value "keycloak"}]}]}]}
-                                       {:name :test
+                                                                     :tag "Realm configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :name
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Realm name"
+                                                                              :type :string
+                                                                              :value "hop"}]}
+                                                                    {:name :theme
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Theme configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :name
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Theme name"
+                                                                              :type :string
+                                                                              :value "hop"}]}
+                                                                    {:name :database
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Database configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Username"
+                                                                              :type :string
+                                                                              :value "keycloak"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :type :string
+                                                                              :value "sa"}
+                                                                             {:name :schema
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Schema"
+                                                                              :type :string
+                                                                              :value "keycloak"}]}]}]}]}
+                                       {:name :to-deploy
+                                        :type :single-choice-group
                                         :docstring [:a]
                                         :min-hop-version "1"
-                                        :tag "Test Environment"
-                                        :type :single-choice-group
+                                        :tag "Deployment env related options"
                                         :value :container
                                         :choices [{:name :external
+                                                   :type :plain-group
                                                    :docstring [:a]
                                                    :min-hop-version "1"
-                                                   :tag "External Dev Environment"
-                                                   :type :plain-group
-                                                   :value [{:name :realm
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Realm name"
-                                                            :type :string
-                                                            :value "hop"}
-                                                           {:name :frontend-url
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Keycloak frontend URL"
-                                                            :type :string
-                                                            :value "http://localhost/auth"}
-                                                           {:name :client-id
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Application client-id"
-                                                            :type :string
-                                                            :value "hop-spa-12345678"}]}
-                                                  {:name :container
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
-                                                   :tag "Test Container Environment"
-                                                   :type :plain-group
-                                                   :value [{:name :admin
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Admin configuration"
+                                                   :tag "External"
+                                                   :value [{:name :test
                                                             :type :plain-group
-                                                            :value [{:name :username
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
-                                                                     :tag "Admin username"
-                                                                     :type :string
-                                                                     :value "admin"}
-                                                                    {:name :password
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
-                                                                     :tag "Admin password"
-                                                                     :type :password
-                                                                     :value ""}]}
-                                                           {:name :frontend-url
                                                             :docstring [:a]
                                                             :min-hop-version "1"
-                                                            :tag "Keycloak frontend-url"
-                                                            :type :string
-                                                            :value "http://localhost/auth"}
-                                                           {:name :client-id
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Application client-id"
-                                                            :type :string
-                                                            :value "hop-spa-12345678"}
-                                                           {:name :realm
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Realm configuration"
-                                                            :type :plain-group
-                                                            :value [{:name :name
+                                                            :tag "Test"
+                                                            :value [{:name :realm
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
                                                                      :tag "Realm name"
                                                                      :type :string
-                                                                     :value "hop"}]}
-                                                           {:name :theme
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Theme configuration"
-                                                            :type :plain-group
-                                                            :value [{:name :name
+                                                                     :value "hop"}
+                                                                    {:name :frontend-url
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Theme name"
+                                                                     :tag "Keycloak frontend URL"
                                                                      :type :string
-                                                                     :value "hop"}]}
-                                                           {:name :database
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Database configuration"
-                                                            :type :plain-group
-                                                            :value [{:name :username
+                                                                     :value "http://localhost/auth"}
+                                                                    {:name :client-id
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Username"
+                                                                     :tag "Application client-id"
                                                                      :type :string
-                                                                     :value "keycloak"}
-                                                                    {:name :password
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
-                                                                     :tag "Password"
-                                                                     :type :password
-                                                                     :value ""}
-                                                                    {:name :schema
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
-                                                                     :tag "Schema"
-                                                                     :type :string
-                                                                     :value "keycloak"}]}]}]}
-                                       {:name :prod
-                                        :type :single-choice-group
-                                        :value :container
-                                        :min-hop-version "1"
-                                        :docstring [:a]
-                                        :choices [{:name :external
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
-                                                   :tag "External Dev Environment"
-                                                   :type :plain-group
-                                                   :value [{:name :realm
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Realm name"
-                                                            :type :string
-                                                            :value "hop"}
-                                                           {:name :frontend-url
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Keycloak frontend URL"
-                                                            :type :string
-                                                            :value "http://localhost/auth"}
-                                                           {:name :client-id
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Application client-id"
-                                                            :type :string
-                                                            :value "hop-spa-12345678"}]}
-                                                  {:name :container
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
-                                                   :tag "Test Container Environment"
-                                                   :type :plain-group
-                                                   :value [{:name :admin
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Admin configuration"
+                                                                     :value "hop-spa-12345678"}]}
+                                                           {:name :prod
                                                             :type :plain-group
-                                                            :value [{:name :username
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
-                                                                     :tag "Admin username"
-                                                                     :type :string
-                                                                     :value "admin"}
-                                                                    {:name :password
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
-                                                                     :tag "Admin password"
-                                                                     :type :password
-                                                                     :value ""}]}
-                                                           {:name :frontend-url
                                                             :docstring [:a]
                                                             :min-hop-version "1"
-                                                            :tag "Keycloak frontend-url"
-                                                            :type :string
-                                                            :value "http://localhost/auth"}
-                                                           {:name :client-id
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Application client-id"
-                                                            :type :string
-                                                            :value "hop-spa-12345678"}
-                                                           {:name :realm
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
-                                                            :tag "Realm configuration"
-                                                            :type :plain-group
-                                                            :value [{:name :name
+                                                            :tag "Prod"
+                                                            :value [{:name :realm
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
                                                                      :tag "Realm name"
                                                                      :type :string
-                                                                     :value "hop"}]}
-                                                           {:name :theme
+                                                                     :value "hop"}
+                                                                    {:name :frontend-url
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Keycloak frontend URL"
+                                                                     :type :string
+                                                                     :value "http://localhost/auth"}
+                                                                    {:name :client-id
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Application client-id"
+                                                                     :type :string
+                                                                     :value "hop-spa-12345678"}]}]}
+                                                  {:name :container
+                                                   :type :plain-group
+                                                   :docstring [:a]
+                                                   :min-hop-version "1"
+                                                   :tag "Container"
+                                                   :value [{:name :test
+                                                            :type :plain-group
                                                             :docstring [:a]
                                                             :min-hop-version "1"
-                                                            :tag "Theme configuration"
-                                                            :type :plain-group
-                                                            :value [{:name :name
+                                                            :tag "Test"
+                                                            :value [{:name :admin
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Theme name"
+                                                                     :tag "Admin configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Admin username"
+                                                                              :type :string
+                                                                              :value "admin"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Admin password"
+                                                                              :type :password
+                                                                              :value ""}]}
+                                                                    {:name :frontend-url
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Keycloak frontend-url"
                                                                      :type :string
-                                                                     :value "hop"}]}
-                                                           {:name :database
+                                                                     :value "http://localhost/auth"}
+                                                                    {:name :client-id
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Application client-id"
+                                                                     :type :string
+                                                                     :value "hop-spa-12345678"}
+                                                                    {:name :realm
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Realm configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :name
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Realm name"
+                                                                              :type :string
+                                                                              :value "hop"}]}
+                                                                    {:name :theme
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Theme configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :name
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Theme name"
+                                                                              :type :string
+                                                                              :value "hop"}]}
+                                                                    {:name :database
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Database configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Username"
+                                                                              :type :string
+                                                                              :value "keycloak"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :type :password
+                                                                              :value ""}
+                                                                             {:name :schema
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Schema"
+                                                                              :type :string
+                                                                              :value "keycloak"}]}]}
+                                                           {:name :prod
+                                                            :type :plain-group
                                                             :docstring [:a]
                                                             :min-hop-version "1"
-                                                            :tag "Database configuration"
-                                                            :type :plain-group
-                                                            :value [{:name :username
+                                                            :tag "Prod"
+                                                            :value [{:name :admin
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Username"
+                                                                     :tag "Admin configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Admin username"
+                                                                              :type :string
+                                                                              :value "admin"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Admin password"
+                                                                              :type :password
+                                                                              :value ""}]}
+                                                                    {:name :frontend-url
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Keycloak frontend-url"
                                                                      :type :string
-                                                                     :value "keycloak"}
-                                                                    {:name :password
+                                                                     :value "http://localhost/auth"}
+                                                                    {:name :client-id
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Password"
-                                                                     :type :password
-                                                                     :value ""}
-                                                                    {:name :schema
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
-                                                                     :tag "Schema"
+                                                                     :tag "Application client-id"
                                                                      :type :string
-                                                                     :value "keycloak"}]}]}]}]}]}]}]}
+                                                                     :value "hop-spa-12345678"}
+                                                                    {:name :realm
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Realm configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :name
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Realm name"
+                                                                              :type :string
+                                                                              :value "hop"}]}
+                                                                    {:name :theme
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Theme configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :name
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Theme name"
+                                                                              :type :string
+                                                                              :value "hop"}]}
+                                                                    {:name :database
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Database configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Username"
+                                                                              :type :string
+                                                                              :value "keycloak"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :type :password
+                                                                              :value ""}
+                                                                             {:name :schema
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Schema"
+                                                                              :type :string
+                                                                              :value "keycloak"}]}]}]}]}]}]}]}]}
  {:name :cloud-provider
   :docstring [:a]
   :min-hop-version "1"
