@@ -40,38 +40,28 @@
     (build-ragtime-config-key settings :prod)
     :migrations []}})
 
-(defn- build-jdbc-database-url
-  [{:keys [host port db user password]}]
-  (format
-   "jdbc:postgresql://%s:%s/%s?user=%s&password=%s&reWriteBatchedInserts=true"
-   host port db user password))
-
-(defn- build-dev-env-variables
-  [settings]
-  (let [base-path "project.profiles.persistence.sql.dev"]
-    {:POSTGRES_HOST "db"
-     :POSTGRES_PORT "5432"
-     :POSTGRES_DB (get settings (keyword base-path "name"))
-     :POSTGRES_USER (get settings (keyword (str base-path ".admin/username")))
-     :POSTGRES_PASSWORD (get settings (keyword (str base-path ".admin/password")))
-     :JDBC_DATABASE_URL
-     (build-jdbc-database-url
-      {:host "db"
-       :port "5432"
-       :db (get settings (keyword base-path "name"))
-       :user (get settings (keyword (str base-path ".app/username")))
-       :password (get settings (keyword (str base-path ".app/password")))})}))
-
-(defn- build-test-prod-env-variables
+(defn- build-env-variables
   [settings environment]
-  (let [base-path (str "project.profiles.persistence.sql." (name environment))]
-    {:JDBC_DATABASE_URL
-     (build-jdbc-database-url
-      {:host nil
-       :port nil
-       :db nil
-       :user (get settings (keyword (str base-path ".app/username")))
-       :password (get settings (keyword (str base-path ".app/password")))})}))
+  (let [base-path (str "project.profiles.persistence.sql." (name environment))
+        host (get settings (keyword (str base-path ".database/host")))
+        port (get settings (keyword (str base-path ".database/port")))
+        db (get settings (keyword (str base-path ".database/name")))
+        admin-user (get settings (keyword (str base-path ".admin-user/username")))
+        admin-password (get settings (keyword (str base-path ".admin-user/password")))
+        app-user (get settings (keyword (str base-path ".app-user/username")))
+        app-password (get settings (keyword (str base-path ".app-user/password")))]
+    (cond->
+     {:JDBC_DATABASE_URL
+      (format
+       "jdbc:postgresql://%s:%s/%s?user=%s&password=%s&reWriteBatchedInserts=true"
+       host port db app-user app-password)}
+      (= :dev environment)
+      (assoc :POSTGRES_HOST host
+             :POSTGRES_PORT port
+             :POSTGRES_DB db
+             :POSTGRES_USER admin-user
+             :POSTGRES_PASSWORD admin-password))))
+
 
 (defn profile
   [settings]
@@ -82,9 +72,9 @@
                              (hikaricp-config settings)
                              (ragtime-config settings))
                 :dev (dev-ragtime-config settings)}
-   :environment-variables {:dev (build-dev-env-variables settings)
-                           :test (build-test-prod-env-variables settings :test)
-                           :prod (build-test-prod-env-variables settings :prod)}
+   :environment-variables {:dev (build-env-variables settings :dev)
+                           :test (build-env-variables settings :test)
+                           :prod (build-env-variables settings :prod)}
    :files [{:src "persistence/sql"}]
    :docker-compose {:dev ["docker-compose.common-dev-ci.db.yml"]
                     :ci ["docker-compose.common-dev-ci.db.yml"

@@ -12,4 +12,4 @@ services:
       - ./keycloak/themes/{{keycloak-theme-name}}:/opt/jboss/keycloak/themes/{{keycloak-theme-name}}:ro
       - ./keycloak/realms-import:/tmp/realms-import:ro
     depends_on:
-      - db
+      - {{project.profiles.persistence-sql.dev.database/host}}

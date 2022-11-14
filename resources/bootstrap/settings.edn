@@ -35,12 +35,35 @@
                                         :min-hop-version "1"
                                         :tag "Dev Environment"
                                         :type :plain-group
-                                        :value [{:name :name
+                                        :value [{:name :database
                                                  :docstring [:a]
                                                  :min-hop-version "1"
-                                                 :tag "Database name"
-                                                 :type :string
-                                                 :value "postgres"}
+                                                 :tag "Prod database"
+                                                 :type :plain-group
+                                                 :value [{:name :host
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Postgres Docker host"
+                                                          :type :string
+                                                          :value "postgres"}
+                                                         {:name :version
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Postgres version"
+                                                          :type :string
+                                                          :value "12"}
+                                                         {:name :name
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Database name"
+                                                          :type :string
+                                                          :value "ebdb"}
+                                                         {:name :port
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Database port"
+                                                          :type :string
+                                                          :value "5432"}]}
                                                 {:name :admin
                                                  :docstring [:a]
                                                  :min-hop-version "1"
@@ -85,7 +108,30 @@
                                         :type :plain-group
                                         :docstring [:a]
                                         :min-hop-version "1"
-                                        :value [{:name :admin
+                                        :value [{:name :database
+                                                 :docstring [:a]
+                                                 :min-hop-version "1"
+                                                 :tag "Prod database"
+                                                 :type :plain-group
+                                                 :value [{:name :version
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Postgres version"
+                                                          :type :string
+                                                          :value "12"}
+                                                         {:name :name
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Database name"
+                                                          :type :string
+                                                          :value "ebdb"}
+                                                         {:name :port
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Database port"
+                                                          :type :string
+                                                          :value "5432"}]}
+                                                {:name :admin-user
                                                  :docstring [:a]
                                                  :min-hop-version "1"
                                                  :tag "Persistence Database Admin configuration"
@@ -102,7 +148,7 @@
                                                           :tag "Database admin password"
                                                           :type :password
                                                           :value ""}]}
-                                                {:name :app
+                                                {:name :app-user
                                                  :docstring [:a]
                                                  :min-hop-version "1"
                                                  :tag "Persistence Database Application User configuration"
@@ -129,7 +175,30 @@
                                         :type :plain-group
                                         :min-hop-version "1"
                                         :docstring [:a]
-                                        :value [{:name :admin
+                                        :value [{:name :database
+                                                 :docstring [:a]
+                                                 :min-hop-version "1"
+                                                 :tag "Prod database"
+                                                 :type :plain-group
+                                                 :value [{:name :version
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Postgres version"
+                                                          :type :string
+                                                          :value "12"}
+                                                         {:name :name
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Database name"
+                                                          :type :string
+                                                          :value "ebdb"}
+                                                         {:name :port
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Database port"
+                                                          :type :string
+                                                          :value "5432"}]}
+                                                {:name :admin-user
                                                  :docstring [:a]
                                                  :min-hop-version "1"
                                                  :tag "Persistence Database Admin configuration"
@@ -146,7 +215,7 @@
                                                           :tag "Database admin password"
                                                           :type :password
                                                           :value ""}]}
-                                                {:name :app
+                                                {:name :app-user
                                                  :docstring [:a]
                                                  :min-hop-version "1"
                                                  :tag "Persistence Database Application User configuration"
@@ -668,23 +737,6 @@
                                         :tag "Notifications email"
                                         :type :string
                                         :value "devops+test@magnet.coop"}
-                                       {:name :database
-                                        :docstring [:a]
-                                        :min-hop-version "1"
-                                        :tag "Database"
-                                        :type :plain-group
-                                        :value [{:name :version
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
-                                                 :tag "Version"
-                                                 :type :string
-                                                 :value "12"}
-                                                {:name :password
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
-                                                 :tag "Password"
-                                                 :type :string
-                                                 :value "safePassword123#@"}]}
                                        {:name :kms
                                         :docstring [:a]
                                         :min-hop-version "1"
@@ -713,23 +765,6 @@
                                         :tag "Notifications email"
                                         :type :string
                                         :value "devops+prod@magnet.coop"}
-                                       {:name :database
-                                        :docstring [:a]
-                                        :min-hop-version "1"
-                                        :tag "Database"
-                                        :type :plain-group
-                                        :value [{:name :version
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
-                                                 :tag "Version"
-                                                 :type :string
-                                                 :value "12"}
-                                                {:name :password
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
-                                                 :tag "Password"
-                                                 :type :string
-                                                 :value "safePassword123#@"}]}
                                        {:name :kms
                                         :docstring [:a]
                                         :min-hop-version "1"

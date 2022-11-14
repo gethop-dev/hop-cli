@@ -1,8 +1,9 @@
 services:
   grafana:
-    ports: "4000:400"
+    ports:
+      - "4000:4000"
     volumes:
       - ./grafana/datasources:/etc/grafana/provisioning/datasources
       - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
     depends_on:
-      - db
+      - {{project.profiles.persistence-sql.dev.database/host}}

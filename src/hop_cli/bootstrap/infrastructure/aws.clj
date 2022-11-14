@@ -53,9 +53,12 @@
               :stack-name-kw :cloud-provider.aws.environment.test/stack-name
               :environment "test"
               :input-parameter-mapping
-              {:cloud-provider.aws.environment.test/notifications-email :NotificationsEmail
-               :cloud-provider.aws.environment.test.database/version :DatabaseEngineVersion
-               :cloud-provider.aws.environment.test.database/password :DatabasePassword
+              {:project.profiles.persistence-sql.test.database/version :DatabaseEngineVersion
+               :project.profiles.persistence-sql.test.database/port :DatabasePort
+               :project.profiles.persistence-sql.test.database/name :DatabaseName
+               :project.profiles.persistence-sql.test.admin-user/password :DatabasePassword
+               :project.profiles.persistence-sql.test.admin-user/username :DatabaseUsername
+               :cloud-provider.aws.environment.test/notifications-email :NotificationsEmail
                :cloud-provider.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
                :cloud-provider.aws.account.vpc/id :VpcId
                :cloud-provider.aws.project.vpc/subnet-ids :SubnetIds
@@ -67,7 +70,7 @@
               {:CognitoUserPoolId :cloud-provider.aws.environment.test.cognito/user-pool-id
                :CognitoUserPoolURL :cloud-provider.aws.environment.test.cognito/user-pool-url
                :CognitoSPAClientId :cloud-provider.aws.environment.test.cognito/spa-client-id
-               :RdsAddress :cloud-provider.aws.environment.test.rds/address
+               :RdsAddress :project.profiles.persistence-sql.test.database/host
                :EbEnvironmentName :cloud-provider.aws.environment.test.eb/environment-name
                :EbEnvironmentURL :cloud-provider.aws.environment.test.eb/environment-url}}
 
@@ -76,9 +79,12 @@
               :stack-name-kw :cloud-provider.aws.environment.prod/stack-name
               :environment "prod"
               :input-parameter-mapping
-              {:cloud-provider.aws.environment.prod/notifications-email :NotificationsEmail
-               :cloud-provider.aws.environment.prod.database/version :DatabaseEngineVersion
-               :cloud-provider.aws.environment.prod.database/password :DatabasePassword
+              {:project.profiles.persistence-sql.prod.database/version :DatabaseEngineVersion
+               :project.profiles.persistence-sql.prod.database/port :DatabasePort
+               :project.profiles.persistence-sql.prod.database/name :DatabaseName
+               :project.profiles.persistence-sql.prod.admin-user/password :DatabasePassword
+               :project.profiles.persistence-sql.prod.admin-user/username :DatabaseUsername
+               :cloud-provider.aws.environment.prod/notifications-email :NotificationsEmail
                :cloud-provider.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
                :cloud-provider.aws.account.vpc/id :VpcId
                :cloud-provider.aws.project.vpc/subnet-ids :SubnetIds
@@ -90,7 +96,7 @@
               {:CognitoUserPoolId :cloud-provider.aws.environment.prod.cognito/user-pool-id
                :CognitoUserPoolURL :cloud-provider.aws.environment.prod.cognito/user-pool-url
                :CognitoSPAClientId :cloud-provider.aws.environment.prod.cognito/spa-client-id
-               :RdsAddress :cloud-provider.aws.environment.prod.rds/address
+               :RdsAddress :project.profiles.persistence-sql.prod.database/host
                :EbEnvironmentName :cloud-provider.aws.environment.prod.eb/environment-name
                :EbEnvironmentURL :cloud-provider.aws.environment.prod.eb/environment-url}}})
 

@@ -29,6 +29,10 @@ Parameters:
     Description: "Password for master user in RDS database"
     Type: "String"
     NoEcho: true
+  DatabasePort:
+    Description: "Port for RDS"
+    Type: "String"
+    Default: "5432"
   RDSMonitoringRoleARN:
     Description: "ARN for RDS monitoring role"
     Type: "String"
@@ -71,6 +75,7 @@ Resources:
       Engine: "postgres"
       EngineVersion: !Ref "DatabaseEngineVersion"
       DBName: !Ref "DatabaseName"
+      Port: !Ref "DatabasePort"
       DBInstanceIdentifier: !Sub "${ProjectName}-${Environment}"
       MasterUsername: !Ref "DatabaseUsername"
       MasterUserPassword: !Ref "DatabasePassword"

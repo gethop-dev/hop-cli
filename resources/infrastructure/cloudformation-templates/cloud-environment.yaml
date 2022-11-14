@@ -40,6 +40,13 @@ Parameters:
     Description: "Password for master user in RDS database"
     Type: "String"
     NoEcho: true
+  DatabasePort:
+    Description: "Database port"
+    Default: "5432"
+  DatabaseName:
+    Description: "Database name"
+    Type: "String"
+    Default: "ebdb"
   IncludeCognito:
     Type: "String"
     Default: "false"
@@ -71,6 +78,8 @@ Resources:
         DatabaseEngineVersion: !Ref "DatabaseEngineVersion"
         DatabaseUsername: !Ref "DatabaseUsername"
         DatabasePassword: !Ref "DatabasePassword"
+        DatabasePort: !Ref "DatabasePort"
+        DatabaseName: !Ref "DatabaseName"
         RDSMonitoringRoleARN: !Ref "RDSMonitoringRoleARN"
         VpcId: !Ref "VpcId"
         SubnetIds: !Join [",", !Ref "SubnetIds"]
