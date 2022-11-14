@@ -190,15 +190,28 @@
           children (get node children-key)]
       (assoc node children-key (mapv (partial qualify-child-name node) children)))))
 
+(defn- is-node-branch?
+  [node]
+  (get #{:plain-group :single-choice-group :multiple-choice-group} (:type node)))
+
+(defn- get-node-children
+  [node]
+  (case (:type node)
+    :plain-group
+    (:value node)
+    :single-choice-group
+    (filter #(= (name (:value node)) (name (:name %))) (:choices node))
+    :multiple-choice-group
+    (filter #(get (set (map name (:value node))) (name (:name %))) (:choices node))))
+
 (defn flatten-settings
   [settings]
   (reduce (fn [acc m]
-            (let [branch-fn (comp coll? :value)]
-              (->> m
-                   (tree-seq branch-fn :value)
-                   (remove branch-fn)
-                   (reduce #(assoc %1 (:name %2) (:value %2)) {})
-                   (merge acc))))
+            (->> m
+                 (tree-seq is-node-branch? get-node-children)
+                 (remove #(= :plain-group (:type %)))
+                 (reduce #(assoc %1 (:name %2) (:value %2)) {})
+                 (merge acc)))
           {}
           settings))
 
