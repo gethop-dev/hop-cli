@@ -9,18 +9,18 @@
             [<<project.name>>.client.view :as view]
             [re-frame.core :as rf]
             [reagent.dom :as rd]
-            <<#profiles.load-frontend-app.requires>><<&.>><</profiles.load-frontend-app.requires>>))
+            <<#project.profiles.load-frontend-app.requires>><<&.>><</project.profiles.load-frontend-app.requires>>))
 
-<<#profiles.load-frontend-app.code>>
+<<#project.profiles.load-frontend-app.code>>
 <<&.>>
-<</profiles.load-frontend-app.code>>
+<</project.profiles.load-frontend-app.code>>
 
 (rf/reg-event-fx
  ::on-config-loaded
  (fn [_ _]
-   {:fx [<<#profiles.load-frontend-app.events>>
+   {:fx [<<#project.profiles.load-frontend-app.events>>
          <<&.>>
-         <</profiles.load-frontend-app.events>>]}))
+         <</project.profiles.load-frontend-app.events>>]}))
 
 (rf/reg-event-fx
  ::load-app

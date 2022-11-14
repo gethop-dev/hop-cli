@@ -18,7 +18,7 @@ PROJECT="{{project.name}}"
 # Tell docker-compose what compose files to use to run the different commands below
 # Order of the files IS IMPORTANT, as later files overwrite values from previous ones.
 # See https://docs.docker.com/compose/reference/envvars/#compose_file
-export COMPOSE_FILE="docker-compose.yml:docker-compose.common-dev-ci.yml:docker-compose.dev.yml"
+export COMPOSE_FILE="{{project.profiles.docker-compose.dev}}"
 
 # Get the project name used by docker-compose. We need it to clean up
 # only containers related to this project, but not others.

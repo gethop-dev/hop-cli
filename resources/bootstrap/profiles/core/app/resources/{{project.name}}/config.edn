@@ -5,20 +5,20 @@
   :duct.server.http/jetty {:handler #ig/ref :<<project.name>>.api/main}
 
   :<<project.name>>.api/main {:routes [#ig/ref :<<project.name>>.api/config
-                                       <<#profiles.config-edn.routes>><<&.>><</profiles.config-edn.routes>>]}
+                                       <<#project.profiles.config-edn.routes>><<&.>><</project.profiles.config-edn.routes>>]}
 
   :<<project.name>>.api/config
   {
-   <<#profiles.config-edn.config>><<&.>><</profiles.config-edn.config>>}
+   <<#project.profiles.config-edn.config>><<&.>><</project.profiles.config-edn.config>>}
 
   :<<project.name>>/common-config
   {
-   <<#profiles.config-edn.common-config>><<&.>><</profiles.config-edn.common-config>>}
+   <<#project.profiles.config-edn.common-config>><<&.>><</project.profiles.config-edn.common-config>>}
 
-  <<#profiles.config-edn.base>><<&.>><</profiles.config-edn.base>>}
+  <<#project.profiles.config-edn.base>><<&.>><</project.profiles.config-edn.base>>}
 
  :duct.profile/dev #duct/include "dev.edn"
  :duct.profile/local #duct/include "local.edn"
  :duct.profile/prod {}
 
- <<#profiles.config-edn.modules>><<&.>><</profiles.config-edn.modules>>}
+ <<#project.profiles.config-edn.modules>><<&.>><</project.profiles.config-edn.modules>>}

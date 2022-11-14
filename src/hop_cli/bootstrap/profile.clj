@@ -34,7 +34,7 @@
 (defn run-profiles!
   [settings]
   (let [profile-data (profile.registry/get-selected-profiles-data settings)
-        updated-settings (assoc settings :profiles profile-data)
+        updated-settings (assoc settings :project profile-data)
         project-path (build-target-project-path settings)]
     (copy-files! updated-settings (:files profile-data))
     (profile.template/render-profile-templates! updated-settings project-path)
