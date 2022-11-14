@@ -1,0 +1,15 @@
+services:
+  keycloak:
+    # Command to import realms and users on startup. See
+    # https://www.keycloak.org/docs/6.0/server_admin/index.html#_export_import
+    # for details
+    command: ["-Dkeycloak.migration.action=import",
+              "-Dkeycloak.migration.provider=dir",
+              "-Dkeycloak.migration.dir=/tmp/realms-import"]
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak/themes/{{keycloak-theme-name}}:/opt/jboss/keycloak/themes/{{keycloak-theme-name}}:ro
+      - ./keycloak/realms-import:/tmp/realms-import:ro
+    depends_on:
+      - db

@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      target: "dev"
+    command: ["lein", "repl", ":headless"]
+    ports:
+      - "3000:3000"
+      - "4001:4001"
+      - "3449:3449"
+    volumes:
+      - ~/.m2:/root/.m2:delegated
+      - ~/.m2:/home/magnet/.m2:delegated

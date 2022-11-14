@@ -30,4 +30,7 @@
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
    :files [{:src "bi/grafana/grafana"
-            :dst "grafana"}]})
+            :dst "grafana"}]
+   :docker-compose {:base ["docker-compose.grafana.yml"]
+                    :dev ["docker-compose.common-dev-ci.grafana.yml"]
+                    :ci ["docker-compose.common-dev-ci.grafana.yml"]}})

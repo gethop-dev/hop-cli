@@ -1,0 +1,15 @@
+services:
+  app:
+    image: ci
+    build:
+      context: .
+      target "ci"
+    environment:
+      - JVM_OPTS=-XshowSettings:vm -Xmx2048m -server
+    entrypoint: /bin/bash
+    command: ["-c", "tail -f /dev/null"]
+  proxy:
+    deploy:
+      resources:
+        limits:
+          memory: 64m

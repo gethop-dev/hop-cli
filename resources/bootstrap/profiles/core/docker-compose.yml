@@ -1,0 +1,19 @@
+services:
+  app:
+    image: {{aws.project.ecr.repository}}/{{project.name}}:latest
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT_APP}
+  proxy:
+    image: nginx:1.21.3-alpine
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT_PROXY}
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    volumes:
+      - ./proxy/conf.d:/etc/nginx/conf.d:ro

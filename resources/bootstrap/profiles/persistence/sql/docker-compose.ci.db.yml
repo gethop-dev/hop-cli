@@ -1,0 +1,6 @@
+services:
+  db:
+    deploy:
+      resources:
+        limits:
+          memory: 256m

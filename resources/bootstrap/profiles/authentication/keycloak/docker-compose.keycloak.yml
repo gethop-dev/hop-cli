@@ -1,0 +1,20 @@
+services:
+  keycloak:
+    image: jboss/keycloak:{{keycloak-image-tag}}
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT_KEYCLOAK}
+    environment:
+      - KEYCLOAK_USER
+      - KEYCLOAK_PASSWORD
+      - KEYCLOAK_FRONTEND_URL
+      - PROXY_ADDRESS_FORWARDING=${KEYCLOAK_PROXY_ADDRESS_FORWARDING}
+      - DB_VENDOR=${$KEYCLOAK_DB_VENDOR}
+      - DB_ADDR=${$KEYCLOAK_DB_ADDR}
+      - DB_DATABASE=${$KEYCLOAK_DB_DATABASE}
+      - DB_SCHEMA=${$KEYCLOAK_DB_SCHEMA}
+      - DB_USER=${$KEYCLOAK_DB_USER}
+      - DB_PASSWORD=${$KEYCLOAK_DB_PASSWORD}
+    volumes:
+      - /var/app/current/keycloak/themes/{{keycloak-theme-name}}:/opt/jboss/keycloak/themes/{{keycloak-theme-name}}:ro{{/keycloak-oidc?}}{{#grafana-support?}}

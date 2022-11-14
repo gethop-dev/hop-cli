@@ -96,4 +96,7 @@
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
    :files [{:src "authentication/common"}
-           {:src "authentication/keycloak"}]})
+           {:src "authentication/keycloak"}]
+   :docker-compose {:base ["docker-compose.keycloak.yml"]
+                    :ci ["docker-compose.common-dev-ci.keycloak.yml"]
+                    :dev ["docker-compose.common-dev-ci.keycloak.yml"]}})
