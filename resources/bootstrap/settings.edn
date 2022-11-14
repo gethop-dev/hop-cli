@@ -14,8 +14,8 @@
            :min-hop-version "1"
            :tag "Profiles"
            :type :multiple-choice-group
-           :value [:persistence-sql :cognito]
-           :choices [{:name :cognito
+           :value [:persistence-sql :grafana]
+           :choices [#_{:name :cognito
                       :docstring [:a]
                       :min-hop-version "1"
                       :tag "Cognito"
@@ -23,7 +23,9 @@
                       :value []}
                      {:name :persistence-sql
                       :type :plain-group
-                      :value [{:environment
+                      :min-hop-version "1"
+                      :docstring [:a]
+                      :value [{:name :environment
                                :docstring [:a]
                                :min-hop-version "1"
                                :tag "Environment"
@@ -55,32 +57,34 @@
                                                           :min-hop-version "1"
                                                           :tag "Database admin password"
                                                           :type :string
-                                                          :value "sa"}]
-                                                 {:name :app
-                                                  :docstring [:a]
-                                                  :min-hop-version "1"
-                                                  :tag "Persistence Database Application User configuration"
-                                                  :type :plain-group
-                                                  :value [{:name :username
-                                                           :docstring [:a]
-                                                           :min-hop-version "1"
-                                                           :tag "Database Application user's username"
-                                                           :type :string
-                                                           :value "app"}
-                                                          {:name :password
-                                                           :docstring [:a]
-                                                           :min-hop-version "1"
-                                                           :tag "Database Application user's password"
-                                                           :type :string
-                                                           :value "sa"}
-                                                          {:name :schema
-                                                           :docstring [:a]
-                                                           :min-hop-version "1"
-                                                           :tag "Database Application user's schema"
-                                                           :type :string
-                                                           :value "app"}]}}]}
+                                                          :value "sa"}]}
+                                                {:name :app
+                                                 :docstring [:a]
+                                                 :min-hop-version "1"
+                                                 :tag "Persistence Database Application User configuration"
+                                                 :type :plain-group
+                                                 :value [{:name :username
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Database Application user's username"
+                                                          :type :string
+                                                          :value "app"}
+                                                         {:name :password
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Database Application user's password"
+                                                          :type :string
+                                                          :value "sa"}
+                                                         {:name :schema
+                                                          :docstring [:a]
+                                                          :min-hop-version "1"
+                                                          :tag "Database Application user's schema"
+                                                          :type :string
+                                                          :value "app"}]}]}
                                        {:name :test
                                         :type :plain-group
+                                        :docstring [:a]
+                                        :min-hop-version "1"
                                         :value [{:name :admin
                                                  :docstring [:a]
                                                  :min-hop-version "1"
@@ -123,6 +127,8 @@
                                                           :value "app"}]}]}
                                        {:name :prod
                                         :type :plain-group
+                                        :min-hop-version "1"
+                                        :docstring [:a]
                                         :value [{:name :admin
                                                  :docstring [:a]
                                                  :min-hop-version "1"
@@ -222,7 +228,7 @@
                                         :docstring [:a]
                                         :min-hop-version "1"
                                         :tag "Dev Environment"
-                                        :type :single-choice
+                                        :type :single-choice-group
                                         :value :container
                                         :choices [{:name :external
                                                    :docstring [:a]
@@ -330,7 +336,7 @@
                                         :docstring [:a]
                                         :min-hop-version "1"
                                         :tag "Test Environment"
-                                        :type :single-choice
+                                        :type :single-choice-group
                                         :value :container
                                         :choices [{:name :external
                                                    :docstring [:a]
@@ -435,8 +441,10 @@
                                                                      :type :string
                                                                      :value "keycloak"}]}]}]}
                                        {:name :prod
-                                        :type :single-choice
+                                        :type :single-choice-group
                                         :value :container
+                                        :min-hop-version "1"
+                                        :docstring [:a]
                                         :choices [{:name :external
                                                    :docstring [:a]
                                                    :min-hop-version "1"

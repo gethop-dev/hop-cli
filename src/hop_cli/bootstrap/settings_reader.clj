@@ -24,7 +24,7 @@
    :integer :nat-int :float :number :string
    :regexp :char :boolean :symbol :list
    :vector :map :set :uuid :inst
-   :single-choice :multiple-choice
+   :password
    ;; group values
    :plain-group :single-choice-group :multiple-choice-group])
 
@@ -110,6 +110,10 @@
   ;; Built-in, in malli.core/predicate-schemas
   inst?)
 
+(def setting-value-password-schema
+  ;; Built-in, in malli.core/predicate-schemas
+  string?)
+
 (def setting-schema
   (m/schema
    ;; Introduce a local registry, so we can have recursive schemas for
@@ -133,6 +137,7 @@
                [:set (conj setting-common-schema [:value setting-value-set-schema])]
                [:uuid (conj setting-common-schema [:value setting-value-uuid-schema])]
                [:inst (conj setting-common-schema [:value setting-value-inst-schema])]
+               [:password (conj setting-common-schema [:value setting-value-password-schema])]
                [:plain-group
                 ;; `:plain-group` key is special, as it contains a vector of other
                 ;; `settings-schema`. In this case we need to use a local registry
