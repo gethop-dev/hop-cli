@@ -47,7 +47,9 @@
     (doseq [{:keys [src dst]} files-to-copy
             :let [src-path (build-bootstrap-resource-path src)
                   dst-path (build-target-project-path settings dst)]]
-      (fs/copy-tree src-path dst-path {:replace-existing true}))))
+      (if (fs/directory? src-path)
+        (fs/copy-tree src-path dst-path {:replace-existing true})
+        (fs/copy src-path dst-path {:replace-existing true})))))
 
 (defn- kv->formatted-string
   [[k v]]
