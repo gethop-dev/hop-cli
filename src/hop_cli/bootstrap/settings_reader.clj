@@ -143,7 +143,7 @@
                 ;; `settings-schema`. In this case we need to use a local registry
                 ;; (defined above) to define a qualified keyword to name the schema,
                 ;; and `:ref` to recursively refer to it.
-                (conj setting-common-schema [:value [:vector {:min 1} [:ref ::setting-schema]]])]
+                (conj setting-common-schema [:value [:vector [:ref ::setting-schema]]])]
                [:single-choice-group
                 ;; `:single-choice-group` key is also special, as it contains a
                 ;; vector of other `settings-schema` in the `:choices` key.

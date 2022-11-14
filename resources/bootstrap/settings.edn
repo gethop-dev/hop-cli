@@ -14,13 +14,13 @@
            :min-hop-version "1"
            :tag "Profiles"
            :type :multiple-choice-group
-           :value [:persistence-sql :bi-grafana]
-           :choices [#_{:name :cognito
-                        :docstring [:a]
-                        :min-hop-version "1"
-                        :tag "Cognito"
-                        :type :plain-group
-                        :value []}
+           :value [:persistence-sql :bi-grafana :auth-cognito]
+           :choices [{:name :auth-cognito
+                      :docstring [:a]
+                      :min-hop-version "1"
+                      :tag "Cognito"
+                      :type :plain-group
+                      :value []}
                      {:name :persistence-sql
                       :type :plain-group
                       :min-hop-version "1"
