@@ -1,4 +1,4 @@
-(ns hop-cli.bootstrap.profile.authentication.cognito)
+(ns hop-cli.bootstrap.profile.registry.authentication.cognito)
 
 (defn- jwt-oidc-config
   [_settings]

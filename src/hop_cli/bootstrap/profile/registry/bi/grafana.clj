@@ -1,4 +1,4 @@
-(ns hop-cli.bootstrap.profile.bi.grafana)
+(ns hop-cli.bootstrap.profile.registry.bi.grafana)
 
 (defn- dashboard-manager-adapter-config
   [_settings]

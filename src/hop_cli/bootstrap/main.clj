@@ -3,7 +3,7 @@
             [hop-cli.aws.api.ssm :as api.ssm]
             [hop-cli.bootstrap.infrastructure.aws :as aws]
             [hop-cli.bootstrap.settings-reader :as sr]
-            [hop-cli.bootstrap.template :as template]
+            [hop-cli.bootstrap.profile :as template]
             [hop-cli.util.thread-transactions :as tht]))
 
 (defn bootstrap-hop

@@ -1,4 +1,4 @@
-(ns hop-cli.bootstrap.profile.frontend)
+(ns hop-cli.bootstrap.profile.registry.frontend)
 
 (defn- cljs-module
   [settings]

@@ -1,4 +1,4 @@
-(ns hop-cli.bootstrap.profile.authentication.keycloak)
+(ns hop-cli.bootstrap.profile.registry.authentication.keycloak)
 
 (defn- jwt-oidc-config
   [_settings]

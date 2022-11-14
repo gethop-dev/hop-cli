@@ -1,4 +1,4 @@
-(ns hop-cli.bootstrap.profile.core)
+(ns hop-cli.bootstrap.profile.registry.core)
 
 (defn- common-config
   []

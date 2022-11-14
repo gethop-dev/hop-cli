@@ -1,4 +1,4 @@
-(ns hop-cli.bootstrap.profile.aws)
+(ns hop-cli.bootstrap.profile.registry.aws)
 
 (defn- build-dev-env-variables
   [settings]

@@ -1,4 +1,4 @@
-(ns hop-cli.bootstrap.profile.persistence.sql)
+(ns hop-cli.bootstrap.profile.registry.persistence.sql)
 
 (defn- sql-config
   [settings]
