@@ -1,20 +1,20 @@
 (ns hop-cli.bootstrap.main
-  (:require [clojure.walk :as walk]
-            [hop-cli.aws.api.ssm :as api.ssm]
-            [hop-cli.bootstrap.infrastructure.aws :as aws]
+  (:require [hop-cli.bootstrap.infrastructure :as infrastructure]
+            [hop-cli.bootstrap.infrastructure.aws]
+            [hop-cli.bootstrap.profile :as profile]
             [hop-cli.bootstrap.settings-reader :as sr]
-            [hop-cli.bootstrap.profile :as template]
             [hop-cli.util.thread-transactions :as tht]))
 
 (defn bootstrap-hop
-  [{:keys [settings-file-path target-project-dir]}]
+  [{:keys [settings-file-path]}]
   (->
    [{:txn-fn
      (fn read-settings [_]
        (sr/read-settings settings-file-path))}
     {:txn-fn
-     (fn provision-infrastructure [{:keys [settings]}]
-       (let [result (aws/provision-initial-infrastructure settings)]
+     (fn provision-infrastructure
+       [{:keys [settings]}]
+       (let [result (infrastructure/provision-initial-infrastructure settings)]
          (if (:success? result)
            {:success? true
             :settings settings}
@@ -22,26 +22,22 @@
             :reason :failed-to-provision-infrastructure
             :error-details result})))}
     {:txn-fn
-     (fn generate-localhost-project [{:keys [settings]}]
-       {:success? true
-        :settings settings
-        :project (template/foo (assoc settings :target-project-dir target-project-dir))})}
+     (fn generate-localhost-project
+       [{:keys [settings]}]
+       (let [result (profile/generate-project! settings)]
+         (if (:success? result)
+           {:success? true
+            :settings (:settings result)}
+           {:success? false
+            :reason :could-not-generate-project
+            :error-details result})))}
     {:txn-fn
-     (fn upload-environment-variables-to-ssm
-       [{:keys [settings project]}]
-       (let [{:keys [environment-variables]} project
-             config {:project-name (:project/name settings)
-                     :environment "test"
-                     :kms-key-alias (:aws.environment.test.kms/key-alias settings)}
-             ssm-env-vars (->> environment-variables
-                               :test
-                               walk/stringify-keys
-                               (map zipmap (repeat [:name :value]))
-                               (map #(update % :value str))
-                               (filter (comp seq :value)))
-             result (api.ssm/put-parameters config {:new? true} ssm-env-vars)]
+     (fn save-environment-variables
+       [{:keys [settings]}]
+       (let [result (infrastructure/save-environment-variables settings)]
          (if (:success? result)
            result
            {:success? false
+            :reason :could-not-save-env-variables
             :error-details result})))}]
    (tht/thread-transactions {})))

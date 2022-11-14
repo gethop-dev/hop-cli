@@ -1,8 +1,11 @@
 (ns hop-cli.bootstrap.infrastructure.aws
   (:require [clojure.java.io :as io]
             [clojure.set :as set]
+            [clojure.walk :as walk]
+            [hop-cli.aws.api.ssm :as api.ssm]
             [hop-cli.aws.cloudformation :as aws.cloudformation]
             [hop-cli.aws.ssl :as aws.ssl]
+            [hop-cli.bootstrap.infrastructure :as infrastructure]
             [hop-cli.util.thread-transactions :as tht]))
 
 (def ^:const cfn-templates-path
@@ -150,7 +153,7 @@
              :settings updated-settings})))
       result)))
 
-(defn provision-initial-infrastructure
+(defmethod infrastructure/provision-initial-infrastructure :aws
   [settings]
   (->
    [{:txn-fn
@@ -240,3 +243,23 @@
 (defn provision-prod-infrastructure
   [settings]
   (provision-cfn-stack settings (:prod-env cfn-templates)))
+
+
+(defmethod infrastructure/save-environment-variables :aws
+  [settings]
+  ;;TODO Fix this once we flatten the project settings coming from the profiles
+  (let [environment-variables (get-in settings [:project :environment-variables])
+        config {:project-name (:project/name settings)
+                :environment "test"
+                :kms-key-alias (:aws.environment.test.kms/key-alias settings)}
+        ssm-env-vars (->> environment-variables
+                          :test
+                          walk/stringify-keys
+                          (map zipmap (repeat [:name :value]))
+                          (map #(update % :value str))
+                          (filter (comp seq :value)))
+        result (api.ssm/put-parameters config {:new? true} ssm-env-vars)]
+    (if (:success? result)
+      result
+      {:success? false
+       :error-details result})))

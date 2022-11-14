@@ -31,7 +31,7 @@
          sort
          (fs/write-lines target-file))))
 
-(defn run-profiles!
+(defn generate-project!
   [settings]
   (let [profile-data (profile.registry/get-selected-profiles-data settings)
         updated-settings (assoc settings :project profile-data)
@@ -39,4 +39,4 @@
     (copy-files! updated-settings (:files profile-data))
     (profile.template/render-profile-templates! updated-settings project-path)
     (write-dev-environment-variables-to-file! settings (:environment-variables profile-data))
-    updated-settings))
+    {:success? true :settings updated-settings}))
