@@ -22,15 +22,6 @@
 (def ^:const cljfmt-config
   {:sort-ns-references? true})
 
-(defn- filter-files-to-copy
-  [settings files]
-  (->> files
-       (filter
-        (fn [{:keys [copy-if]}]
-          (if copy-if
-            (copy-if settings)
-            true)))))
-
 (defn- build-target-project-path
   ([settings]
    (build-target-project-path settings nil))
@@ -43,13 +34,12 @@
 
 (defn- copy-files!
   [settings files]
-  (let [files-to-copy (filter-files-to-copy settings files)]
-    (doseq [{:keys [src dst]} files-to-copy
-            :let [src-path (build-bootstrap-resource-path src)
-                  dst-path (build-target-project-path settings dst)]]
-      (if (fs/directory? src-path)
-        (fs/copy-tree src-path dst-path {:replace-existing true})
-        (fs/copy src-path dst-path {:replace-existing true})))))
+  (doseq [{:keys [src dst]} files
+          :let [src-path (build-bootstrap-resource-path src)
+                dst-path (build-target-project-path settings dst)]]
+    (if (fs/directory? src-path)
+      (fs/copy-tree src-path dst-path {:replace-existing true})
+      (fs/copy src-path dst-path {:replace-existing true}))))
 
 (defn- kv->formatted-string
   [[k v]]
