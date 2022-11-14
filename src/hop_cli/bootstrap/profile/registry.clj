@@ -34,7 +34,7 @@
 
 (defn get-selected-profiles-data
   [settings]
-  (let [profile-kws (get settings :project/profiles)]
+  (let [profile-kws (cons :core (get settings :project/profiles))]
     (->> (select-keys profiles profile-kws)
          (vals)
          (map (fn [profile-fn] (profile-fn settings)))
