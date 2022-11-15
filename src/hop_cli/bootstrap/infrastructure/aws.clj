@@ -57,7 +57,7 @@
               :stack-name-kw :cloud-provider.aws.environment.test/stack-name
               :environment "test"
               :input-parameter-mapping
-              {:project.profiles.persistence-sql.test.database/version :DatabaseEngineVersion
+              {:project.profiles.persistence-sql.database/version :DatabaseEngineVersion
                :project.profiles.persistence-sql.test.database/port :DatabasePort
                :project.profiles.persistence-sql.test.database/name :DatabaseName
                :project.profiles.persistence-sql.test.admin-user/password :DatabasePassword
@@ -83,7 +83,7 @@
               :stack-name-kw :cloud-provider.aws.environment.prod/stack-name
               :environment "prod"
               :input-parameter-mapping
-              {:project.profiles.persistence-sql.prod.database/version :DatabaseEngineVersion
+              {:project.profiles.persistence-sql.database/version :DatabaseEngineVersion
                :project.profiles.persistence-sql.prod.database/port :DatabasePort
                :project.profiles.persistence-sql.prod.database/name :DatabaseName
                :project.profiles.persistence-sql.prod.admin-user/password :DatabasePassword

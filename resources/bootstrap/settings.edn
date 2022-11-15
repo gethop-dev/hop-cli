@@ -25,7 +25,18 @@
                       :type :plain-group
                       :min-hop-version "1"
                       :docstring [:a]
-                      :value [{:name :environment
+                      :value [{:name :database
+                               :type :plain-group
+                               :docstring [:a]
+                               :min-hop-version "1"
+                               :tag "Database"
+                               :value [{:name :version
+                                        :docstring [:a]
+                                        :min-hop-version "1"
+                                        :tag "Postgres version"
+                                        :type :string
+                                        :value "12"}]}
+                              {:name :environment
                                :docstring [:a]
                                :min-hop-version "1"
                                :tag "Environment"
@@ -38,21 +49,9 @@
                                         :value [{:name :database
                                                  :docstring [:a]
                                                  :min-hop-version "1"
-                                                 :tag "Prod database"
+                                                 :tag "Dev database"
                                                  :type :plain-group
-                                                 :value [{:name :host
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
-                                                          :tag "Postgres Docker host"
-                                                          :type :string
-                                                          :value "postgres"}
-                                                         {:name :version
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
-                                                          :tag "Postgres version"
-                                                          :type :string
-                                                          :value "12"}
-                                                         {:name :name
+                                                 :value [{:name :name
                                                           :docstring [:a]
                                                           :min-hop-version "1"
                                                           :tag "Database name"
@@ -113,13 +112,7 @@
                                                  :min-hop-version "1"
                                                  :tag "Prod database"
                                                  :type :plain-group
-                                                 :value [{:name :version
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
-                                                          :tag "Postgres version"
-                                                          :type :string
-                                                          :value "12"}
-                                                         {:name :name
+                                                 :value [{:name :name
                                                           :docstring [:a]
                                                           :min-hop-version "1"
                                                           :tag "Database name"
@@ -180,13 +173,7 @@
                                                  :min-hop-version "1"
                                                  :tag "Prod database"
                                                  :type :plain-group
-                                                 :value [{:name :version
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
-                                                          :tag "Postgres version"
-                                                          :type :string
-                                                          :value "12"}
-                                                         {:name :name
+                                                 :value [{:name :name
                                                           :docstring [:a]
                                                           :min-hop-version "1"
                                                           :tag "Database name"
