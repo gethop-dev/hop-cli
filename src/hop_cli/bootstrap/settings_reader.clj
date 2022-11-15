@@ -198,6 +198,13 @@
     (assoc node :value (util.random/generate-random-string (:length value)))
     node))
 
+(defn- rename-choice-node-names
+  [{:keys [type] :as node}]
+  (if (get #{:single-choice-group :multiple-choice-group} type)
+    (let [new-name (prefix-parent-name-to-child-name node "value")]
+      (assoc node :name new-name))
+    node))
+
 (defn- is-node-branch?
   [node]
   (get #{:plain-group :single-choice-group :multiple-choice-group} (:type node)))
@@ -233,7 +240,9 @@
     (if (m/validate settings-schema settings)
       {:success? true
        :settings (->> settings
-                      (walk/prewalk (comp inject-passwords qualify-node-names))
+                      (walk/prewalk (comp inject-passwords
+                                          rename-choice-node-names
+                                          qualify-node-names))
                       (flatten-settings))}
       {:success? false
        :error-details (m/explain settings-schema settings)})))
