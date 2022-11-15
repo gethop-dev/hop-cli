@@ -42,7 +42,7 @@
 
 (defn- build-env-variables
   [settings environment]
-  (let [base-path (str "project.profiles.persistence.sql." (name environment))
+  (let [base-path (str "project.profiles.persistence-sql.environment." (name environment))
         host (get settings (keyword (str base-path ".database/host")))
         port (get settings (keyword (str base-path ".database/port")))
         db (get settings (keyword (str base-path ".database/name")))

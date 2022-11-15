@@ -1,13 +1,13 @@
 services:
-  {{project.profiles.persistence-sql.dev.database/host}}:
-    image: postgres:{{project.profiles.persistence-sql.dev.database/version}}
+  {{project.profiles.persistence-sql.environment.dev.database.host}}:
+    image: postgres:{{project.profiles.persistence-sql.environment.dev.database.version}}
     environment:
       - POSTGRES_HOST
       - POSTGRES_PORT
       - POSTGRES_DB
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-  ports:
-    - "{{project.profiles.persistence-sql.dev.database/port}}:{{project.profiles.persistence-sql.dev.database/port}}"
-  volumes:
+    ports:
+      - "{{project.profiles.persistence-sql.environment.dev.database.port}}:{{project.profiles.persistence-sql.environment.dev.database.port}}"
+    volumes:
       - ./postgres:/docker-entrypoint-initdb.d

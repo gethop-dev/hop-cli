@@ -64,7 +64,7 @@
                                                           :tag "Database port"
                                                           :type :string
                                                           :value "5432"}]}
-                                                {:name :admin
+                                                {:name :admin-user
                                                  :docstring [:a]
                                                  :min-hop-version "1"
                                                  :tag "Persistence Database Admin configuration"
@@ -81,7 +81,7 @@
                                                           :tag "Database admin password"
                                                           :type :string
                                                           :value "sa"}]}
-                                                {:name :app
+                                                {:name :app-user
                                                  :docstring [:a]
                                                  :min-hop-version "1"
                                                  :tag "Persistence Database Application User configuration"

@@ -19,7 +19,9 @@
   (reduce-kv
    (fn [m k v]
      (if (simple-keyword? k)
-       (assoc m k v)
+       (if (map? v)
+         (update m k merge v)
+         (assoc m k v))
        (let [ns-keys (str/split (namespace k) #"\.")
              all-keys (conj ns-keys (name k))
              keywords (map keyword all-keys)]
