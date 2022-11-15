@@ -336,7 +336,7 @@
                                                             :docstring [:a]
                                                             :min-hop-version "1"
                                                             :tag "Dev Environment"
-                                                            :type :single-choice-group
+                                                            :type :plain-group
                                                             :value [{:name :admin
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
