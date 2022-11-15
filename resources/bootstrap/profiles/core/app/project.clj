@@ -5,7 +5,7 @@
   :dependencies [[org.clojure/clojure "1.10.3"]
                  [duct/core "0.8.0"]
                  [metosin/reitit "0.5.18"]
-                 {{#project.profiles.dependencies}}{{&.}}{{/project.profiles.dependencies}}]
+                 {{#project.dependencies}}{{&.}}{{/project.dependencies}}]
   :plugins [[duct/lein-duct "0.12.3"]
             [s3-wagon-private "1.3.4"]]
   :main ^:skip-aot {{#lambdas.to-snake-case}}{{project.name}}{{/lambdas.to-snake-case}}.main

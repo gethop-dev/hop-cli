@@ -46,10 +46,10 @@
   [settings]
   (-> settings
       (util/expand-ns-keywords)
-      (update-in [:profiles :config-edn]
+      (update-in [:project :config-edn]
                  util/update-map-vals coll->formatted-string {:recursive? false})
-      (update-in [:profiles :load-frontend-app]
-                 util/update-map-vals coll->formatted-string {:recursive? false})))
+      (update-in [:project :load-frontend-app]
+                 util/update-map-vals coll->formatted-string {:recursive? false})
 
 (defn- mustache-template-renderer
   [settings]

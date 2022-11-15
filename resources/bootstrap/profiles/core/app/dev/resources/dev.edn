@@ -1,5 +1,5 @@
 {{=<< >>=}}
 {
- <<#project.profiles.config-edn.dev>><<&.>><</project.profiles.config-edn.dev>>
+ <<#project.config-edn.dev>><<&.>><</project.config-edn.dev>>
 
 }
