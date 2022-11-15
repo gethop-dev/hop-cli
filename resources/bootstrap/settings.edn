@@ -235,41 +235,413 @@
                                :min-hop-version "1"
                                :tag "Environment"
                                :type :plain-group
-                               :value [{:name :dev
+                               :value [{:name :to-develop
+                                        :type :single-choice-group
                                         :docstring [:a]
                                         :min-hop-version "1"
-                                        :tag "Dev Environment"
-                                        :type :plain-group
-                                        :value [{:name :server-domain
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
-                                                 :tag "Server domain"
-                                                 :type :string
-                                                 :value "localhost"}
-                                                {:name :server-port
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
-                                                 :tag "Server port"
-                                                 :type :integer
-                                                 :value 4000}
-                                                {:name :local-part
-                                                 :type :string
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
-                                                 :tag "URL local part"
-                                                 :value "/grafana"}
-                                                {:name :security-admin-user
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
-                                                 :tag "Security admin username"
-                                                 :type :string
-                                                 :value "admin"}
-                                                {:name :security-admin-password
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
-                                                 :tag "Security admin password"
-                                                 :type :password
-                                                 :value {:length 24}}]}]}]}
+                                        :tag "Development-related options"
+                                        :value :container
+                                        :choices [{:name :external
+                                                   :type :plain-group
+                                                   :docstring [:a]
+                                                   :min-hop-version "1"
+                                                   :tag "External"
+                                                   :value [{:name :dev
+                                                            :type :plain-group
+                                                            :docstring [:a]
+                                                            :min-hop-version "1"
+                                                            :tag "Dev"
+                                                            :value [{:name :uri
+                                                                     :type :string
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "URI"
+                                                                     :value "http://localhost/grafana"}
+                                                                    {:name :app-integration
+                                                                     :type :plain-group
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "App integration"
+                                                                     :value [{:name :username
+                                                                              :type :string
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "User name"
+                                                                              :value "grafana_integration"}
+                                                                             {:name :password
+                                                                              :type :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :value ""}]}]}]}
+                                                  {:name :container
+                                                   :type :plain-group
+                                                   :docstring [:a]
+                                                   :min-hop-version "1"
+                                                   :tag "Container"
+                                                   :value [{:name :dev
+                                                            :docstring [:a]
+                                                            :min-hop-version "1"
+                                                            :tag "Dev Environment"
+                                                            :type :plain-group
+                                                            :value [{:name :server-domain
+                                                                     :type :string
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Server domain"
+                                                                     :value "localhost"}
+                                                                    {:name :security-admin
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Security Admin"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :type :string
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "User name"
+                                                                              :value "admin"}
+                                                                             {:name :password
+                                                                              :type :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :value {:length 24}}]}
+                                                                    {:name :database
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Database configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Username"
+                                                                              :type :string
+                                                                              :value "grafana"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :type :password
+                                                                              :value {:length 24}}
+                                                                             {:name :schema
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Schema"
+                                                                              :type :string
+                                                                              :value "grafana"}]}
+                                                                    {:name :datasource
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Datasource"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Username"
+                                                                              :type :string
+                                                                              :value "grafana_data_source"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :type :password
+                                                                              :value {:length 24}}
+                                                                             {:name :timescaledb
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "TimescaleDB"
+                                                                              :type :boolean
+                                                                              :value false}]}
+                                                                    {:name :uri
+                                                                     :type :string
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "URI"
+                                                                     :value "http://grafana:4000"}
+                                                                    {:name :app-integration
+                                                                     :type :plain-group
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "App integration"
+                                                                     :value [{:name :username
+                                                                              :type :string
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "User name"
+                                                                              :value "grafana_integration"}
+                                                                             {:name :password
+                                                                              :type :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :value {:length 24}}]}]}]}]}
+                                       {:name :to-deploy
+                                        :type :single-choice-group
+                                        :docstring [:a]
+                                        :min-hop-version "1"
+                                        :tag "Deployment env related options"
+                                        :value :container
+                                        :choices [{:name :external
+                                                   :type :plain-group
+                                                   :docstring [:a]
+                                                   :min-hop-version "1"
+                                                   :tag "External"
+                                                   :value [{:name :test
+                                                            :type :plain-group
+                                                            :docstring [:a]
+                                                            :min-hop-version "1"
+                                                            :tag "Test"
+                                                            :value [{:name :uri
+                                                                     :type :string
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "URI"
+                                                                     :value "http://localhost/grafana"}
+                                                                    {:name :app-integration
+                                                                     :type :plain-group
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "App integration"
+                                                                     :value [{:name :username
+                                                                              :type :string
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "User name"
+                                                                              :value "grafana_integration"}
+                                                                             {:name :password
+                                                                              :type :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :value ""}]}]}
+                                                           {:name :prod
+                                                            :type :plain-group
+                                                            :docstring [:a]
+                                                            :min-hop-version "1"
+                                                            :tag "Prod"
+                                                            :value [{:name :uri
+                                                                     :type :string
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "URI"
+                                                                     :value "http://localhost/grafana"}
+                                                                    {:name :app-integration
+                                                                     :type :plain-group
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "App integration"
+                                                                     :value [{:name :username
+                                                                              :type :string
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "User name"
+                                                                              :value "grafana_integration"}
+                                                                             {:name :password
+                                                                              :type :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :value ""}]}]}]}
+                                                  {:name :container
+                                                   :type :plain-group
+                                                   :docstring [:a]
+                                                   :min-hop-version "1"
+                                                   :tag "Container"
+                                                   :value [{:name :test
+                                                            :docstring [:a]
+                                                            :min-hop-version "1"
+                                                            :tag "Test Environment"
+                                                            :type :plain-group
+                                                            :value [{:name :server-domain
+                                                                     :type :string
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Server domain"
+                                                                     :value "localhost"}
+                                                                    {:name :security-admin
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Security Admin"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :type :string
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "User name"
+                                                                              :value "admin"}
+                                                                             {:name :password
+                                                                              :type :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :value {:length 24}}]}
+                                                                    {:name :database
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Database configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Username"
+                                                                              :type :string
+                                                                              :value "grafana"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :type :password
+                                                                              :value {:length 24}}
+                                                                             {:name :schema
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Schema"
+                                                                              :type :string
+                                                                              :value "grafana"}]}
+                                                                    {:name :datasource
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Datasource"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Username"
+                                                                              :type :string
+                                                                              :value "grafana_data_source"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :type :password
+                                                                              :value {:length 24}}
+                                                                             {:name :timescaledb
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "TimescaleDB"
+                                                                              :type :boolean
+                                                                              :value false}]}
+                                                                    {:name :uri
+                                                                     :type :string
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "URI"
+                                                                     :value "http://grafana:4000"}
+                                                                    {:name :app-integration
+                                                                     :type :plain-group
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "App integration"
+                                                                     :value [{:name :username
+                                                                              :type :string
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "User name"
+                                                                              :value "grafana_integration"}
+                                                                             {:name :password
+                                                                              :type :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :value {:length 24}}]}]}
+                                                           {:name :prod
+                                                            :docstring [:a]
+                                                            :min-hop-version "1"
+                                                            :tag "Prod Environment"
+                                                            :type :plain-group
+                                                            :value [{:name :server-domain
+                                                                     :type :string
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Server domain"
+                                                                     :value "localhost"}
+                                                                    {:name :security-admin
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Security Admin"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :type :string
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "User name"
+                                                                              :value "admin"}
+                                                                             {:name :password
+                                                                              :type :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :value {:length 24}}]}
+                                                                    {:name :database
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Database configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Username"
+                                                                              :type :string
+                                                                              :value "grafana"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :type :password
+                                                                              :value {:length 24}}
+                                                                             {:name :schema
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Schema"
+                                                                              :type :string
+                                                                              :value "grafana"}]}
+                                                                    {:name :datasource
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "Datasource"
+                                                                     :type :plain-group
+                                                                     :value [{:name :username
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Username"
+                                                                              :type :string
+                                                                              :value "grafana_data_source"}
+                                                                             {:name :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :type :password
+                                                                              :value {:length 24}}
+                                                                             {:name :timescaledb
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "TimescaleDB"
+                                                                              :type :boolean
+                                                                              :value false}]}
+                                                                    {:name :uri
+                                                                     :type :string
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "URI"
+                                                                     :value "http://grafana:4000"}
+                                                                    {:name :app-integration
+                                                                     :type :plain-group
+                                                                     :docstring [:a]
+                                                                     :min-hop-version "1"
+                                                                     :tag "App integration"
+                                                                     :value [{:name :username
+                                                                              :type :string
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "User name"
+                                                                              :value "grafana_integration"}
+                                                                             {:name :password
+                                                                              :type :password
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Password"
+                                                                              :value {:length 24}}]}]}]}]}]}]}
                      {:name :auth-keycloak
                       :docstring [:a]
                       :min-hop-version "1"
