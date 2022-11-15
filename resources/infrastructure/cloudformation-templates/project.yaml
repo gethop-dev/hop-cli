@@ -69,5 +69,5 @@ Outputs:
   SubnetIds:
     Value: !Join [",",[!GetAtt "VPC.Outputs.PublicSubnetId1",
                        !GetAtt "VPC.Outputs.PublicSubnetId2"]]
-  EcrRepositoryURL:
-    Value: !GetAtt "ECR.Outputs.EcrRepositoryURL"
+  EcrAppRepositoryURL:
+    Value: !GetAtt "ECR.Outputs.EcrAppRepositoryURL"

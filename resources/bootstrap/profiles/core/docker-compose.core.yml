@@ -1,6 +1,6 @@
 services:
   app:
-    image: {{project.docker.registry.repository-url}}:latest
+    image: {{project.docker.registry.app-repository-url}}:latest
     deploy:
       resources:
         limits:
