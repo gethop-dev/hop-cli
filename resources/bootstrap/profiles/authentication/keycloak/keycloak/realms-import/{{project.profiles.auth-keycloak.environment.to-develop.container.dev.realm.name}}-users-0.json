@@ -1,0 +1,30 @@
+{{=<< >>=}}
+{
+    "realm" : "<<project.profiles.auth-keycloak.environment.to-develop.container.dev.realm.name>>",
+    "users" : [ {
+        "id" : "87b20e19-4ff1-4623-a306-ee80beeadac2",
+        "createdTimestamp" : 1582727114806,
+        "username" : "test@magnet.coop",
+        "enabled" : true,
+        "totp" : false,
+        "emailVerified" : true,
+        "firstName" : "Magnet",
+        "lastName" : "Test User",
+        "email" : "test@magnet.coop",
+        "credentials" : [ {
+            "id" : "8d251adb-9031-48a6-ad2f-939fd059837a",
+            "type" : "password",
+            "createdDate" : 1582727139440,
+            "secretData" : "{\"value\":\"AnvNTmIpInFnKQuOJO4xth1q8vIkddPHP/D+mwqdVXriguYm6f6qSK2t5fxm+oMeXaDrahR4pMQbt/hhiPtC1Q==\",\"salt\":\"/Tgl6rXTMJNihyK49qauiQ==\"}",
+            "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
+        } ],
+        "disableableCredentialTypes" : [ ],
+        "requiredActions" : [ ],
+        "realmRoles" : [ "uma_authorization", "offline_access" ],
+        "clientRoles" : {
+            "account" : [ "manage-account", "view-profile" ]
+        },
+        "notBefore" : 0,
+        "groups" : [ ]
+    } ]
+}

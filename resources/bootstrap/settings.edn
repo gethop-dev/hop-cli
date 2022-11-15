@@ -288,7 +288,13 @@
                       :min-hop-version "1"
                       :tag "Keycloak"
                       :type :plain-group
-                      :value [{:name :environment
+                      :value [{:name :version
+                               :docstring [:a]
+                               :tag "Keycloak version"
+                               :min-hop-version "1"
+                               :type :string
+                               :value "20.0"}
+                              {:name :environment
                                :docstring [:a]
                                :min-hop-version "1"
                                :tag "Environment"
@@ -312,9 +318,14 @@
                                                             :value [{:name :realm
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Realm name"
-                                                                     :type :string
-                                                                     :value "hop"}
+                                                                     :tag "Realm configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :name
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Realm name"
+                                                                              :type :string
+                                                                              :value "hop"}]}
                                                                     {:name :frontend-url
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
@@ -430,9 +441,14 @@
                                                             :value [{:name :realm
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Realm name"
-                                                                     :type :string
-                                                                     :value "hop"}
+                                                                     :tag "Realm configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :name
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Realm name"
+                                                                              :type :string
+                                                                              :value "hop"}]}
                                                                     {:name :frontend-url
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
@@ -453,9 +469,14 @@
                                                             :value [{:name :realm
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"
-                                                                     :tag "Realm name"
-                                                                     :type :string
-                                                                     :value "hop"}
+                                                                     :tag "Realm configuration"
+                                                                     :type :plain-group
+                                                                     :value [{:name :name
+                                                                              :docstring [:a]
+                                                                              :min-hop-version "1"
+                                                                              :tag "Realm name"
+                                                                              :type :string
+                                                                              :value "hop"}]}
                                                                     {:name :frontend-url
                                                                      :docstring [:a]
                                                                      :min-hop-version "1"

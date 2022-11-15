@@ -67,16 +67,18 @@
      :OIDC_JWKS_URI (str keycloak-frontend-url "/realms/" keycloak-realm "/protocol/openid-connect/certs")
 
      ;; Keycloak service related environment variables
-     :KEYCLOAK_USER (get settings (keyword (str keycloak-base-path ".admin/username")))
-     :KEYCLOAK_PASSWORD (get settings (keyword (str keycloak-base-path ".admin/password")))
-     :KEYCLOAK_DB_VENDOR "postgres"
-     :KEYCLOAK_DB_ADDR (get settings (keyword (str persistence-sql-base-path ".database/host")))
-     :KEYCLOAK_DB_PORT (get settings (keyword (str persistence-sql-base-path ".database/port")))
-     :KEYCLOAK_DB_DATABASE (get settings (keyword (str persistence-sql-base-path ".database/name")))
-     :KEYCLOAK_DB_USER (get settings (keyword (str keycloak-base-path ".database/username")))
-     :KEYCLOAK_DB_PASSWORD (get settings (keyword (str keycloak-base-path ".database/password")))
-     :KEYCLOAK_DB_SCHEMA (get settings (keyword (str keycloak-base-path ".database/schema")))
-     :KEYCLOAK_PROXY_ADDRESS_FORWARDING true}))
+     :MEMORY_LIMIT_KEYCLOAK "256m"
+     :KC_ADMIN (get settings (keyword (str keycloak-base-path ".admin/username")))
+     :KC_ADMIN_PASSWORD (get settings (keyword (str keycloak-base-path ".admin/password")))
+     :KC_DB "postgres"
+     :KC_DB_URL (format "jdbc:postgresql://%s:%s/%s"
+                              (get settings (keyword (str persistence-sql-base-path ".database/host")))
+                              (get settings (keyword (str persistence-sql-base-path ".database/port")))
+                              (get settings (keyword (str persistence-sql-base-path ".database/name"))))
+     :KC_DB_SCHEMA (get settings (keyword (str keycloak-base-path ".database/schema")))
+     :KC_DB_USERNAME (get settings (keyword (str keycloak-base-path ".database/username")))
+     :KC_DB_PASSWORD (get settings (keyword (str keycloak-base-path ".database/password")))
+     :KC_PROXY "edge"}))
 
 (defn- build-env-variables
   [settings environment]
@@ -89,14 +91,29 @@
   [settings]
   (let [common ["docker-compose.keycloak.yml"]
         common-dev-ci ["docker-compose.keycloak.common-dev-ci.yml"]
-        ci ["docker-compose.keycloak.ci.yml"]]
+        ci ["docker-compose.keycloak.ci.yml"]
+        aws ["docker-compose.keycloak.aws.yml"]]
     (cond->  {:to-develop [] :ci [] :to-deploy []}
       (= :container (:project.profiles.auth-keycloak.environment.to-develop/value settings))
       (assoc :to-develop (concat common common-dev-ci)
              :ci (concat common common-dev-ci ci))
 
       (= :container (:project.profiles.auth-keycloak.environment.to-deploy/value settings))
-      (assoc :to-deploy common))))
+      (assoc :to-deploy common)
+
+      (= :aws (:cloud-provider/value settings))
+      (update :to-deploy concat aws))))
+
+(defn- build-docker-files-to-copy
+  [settings]
+  (let [compose-files
+        (->> (docker-compose-files settings)
+             (vals)
+             (apply concat)
+             (map (fn [file] {:src (str "/authentication/keycloak/" file)})))]
+    (if (seq compose-files)
+      (conj compose-files {:src "/authentication/keycloak/keycloak" :dst "keycloak"})
+      [])))
 
 (defn profile
   [settings]
@@ -112,6 +129,7 @@
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
-   :files [{:src "authentication/common"}
-           {:src "authentication/keycloak"}]
+   :files (concat [{:src "authentication/common"}
+                   {:src "authentication/keycloak/app" :dst "app"}]
+                  (build-docker-files-to-copy settings))
    :docker-compose (docker-compose-files settings)})
