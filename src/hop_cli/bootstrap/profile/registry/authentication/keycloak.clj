@@ -1,4 +1,5 @@
-(ns hop-cli.bootstrap.profile.registry.authentication.keycloak)
+(ns hop-cli.bootstrap.profile.registry.authentication.keycloak
+  (:require [hop-cli.bootstrap.util :as bootstrap.util]))
 
 (defn- jwt-oidc-config
   [_settings]
@@ -43,14 +44,16 @@
 
 (defn- build-external-env-variables
   [settings environment]
-  (let [base-path (format "project.profiles.keycloak.environment.%s.external" (name environment))]
+  (let [base-path (format "project.profiles.auth-keycloak.environment.%s.external.%s"
+                          (name (bootstrap.util/get-env-type environment)) (name environment))]
     {:KEYCLOAK_REALM (get settings (keyword base-path "realm"))
      :KEYCLOAK_FRONTEND_URL (get settings (keyword base-path "frontend-url"))
      :KEYCLOAK_CLIENT_ID (get settings (keyword base-path "client-id"))}))
 
 (defn- build-container-env-variables
   [settings environment]
-  (let [keycloak-base-path (format "project.profiles.keycloak.environment.%s.container" (name environment))
+  (let [keycloak-base-path (format "project.profiles.auth-keycloak.environment.%s.container.%s"
+                                   (name (bootstrap.util/get-env-type environment))  (name environment))
         persistence-sql-base-path (format "project.profiles.persistence-sql.environment.%s" (name environment))
         keycloak-realm (get settings (keyword (str keycloak-base-path ".realm/name")))
         keycloak-frontend-url (get settings (keyword keycloak-base-path "frontend-url"))
@@ -67,9 +70,9 @@
      :KEYCLOAK_USER (get settings (keyword (str keycloak-base-path ".admin/username")))
      :KEYCLOAK_PASSWORD (get settings (keyword (str keycloak-base-path ".admin/password")))
      :KEYCLOAK_DB_VENDOR "postgres"
-     :KEYCLOAK_DB_ADDR (get settings (keyword persistence-sql-base-path "address"))
-     :KEYCLOAK_DB_PORT (get settings (keyword persistence-sql-base-path "port"))
-     :KEYCLOAK_DB_DATABASE (get settings (keyword persistence-sql-base-path "name"))
+     :KEYCLOAK_DB_ADDR (get settings (keyword (str persistence-sql-base-path ".database/host")))
+     :KEYCLOAK_DB_PORT (get settings (keyword (str persistence-sql-base-path ".database/port")))
+     :KEYCLOAK_DB_DATABASE (get settings (keyword (str persistence-sql-base-path ".database/name")))
      :KEYCLOAK_DB_USER (get settings (keyword (str keycloak-base-path ".database/username")))
      :KEYCLOAK_DB_PASSWORD (get settings (keyword (str keycloak-base-path ".database/password")))
      :KEYCLOAK_DB_SCHEMA (get settings (keyword (str keycloak-base-path ".database/schema")))
@@ -77,9 +80,23 @@
 
 (defn- build-env-variables
   [settings environment]
-  (if (= :external (get settings (keyword "project.profiles.keycloak.environment" (name environment))))
+  (if (= :external (get settings (keyword (format "project.profiles.auth-keycloak.environment.%s/value"
+                                                  (name (bootstrap.util/get-env-type environment))))))
     (build-external-env-variables settings environment)
     (build-container-env-variables settings environment)))
+
+(defn- docker-compose-files
+  [settings]
+  (let [common ["docker-compose.keycloak.yml"]
+        common-dev-ci ["docker-compose.keycloak.common-dev-ci.yml"]
+        ci ["docker-compose.keycloak.ci.yml"]]
+    (cond->  {:to-develop [] :ci [] :to-deploy []}
+      (= :container (:project.profiles.auth-keycloak.environment.to-develop/value settings))
+      (assoc :to-develop (concat common common-dev-ci)
+             :ci (concat common common-dev-ci ci))
+
+      (= :container (:project.profiles.auth-keycloak.environment.to-deploy/value settings))
+      (assoc :to-deploy common))))
 
 (defn profile
   [settings]
@@ -97,6 +114,4 @@
                            :prod (build-env-variables settings :prod)}
    :files [{:src "authentication/common"}
            {:src "authentication/keycloak"}]
-   :docker-compose {:base ["docker-compose.keycloak.yml"]
-                    :ci ["docker-compose.common-dev-ci.keycloak.yml"]
-                    :dev ["docker-compose.common-dev-ci.keycloak.yml"]}})
+   :docker-compose (docker-compose-files settings)})

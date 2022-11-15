@@ -26,7 +26,7 @@
     (get #{:environment-variables :config-edn} k)
     (merge-with merge v1 v2)
 
-    (get #{:load-frontend-app} k)
+    (get #{:load-frontend-app :docker-compose} k)
     (merge-with concat v1 v2)
 
     :else
@@ -34,7 +34,7 @@
 
 (defn get-selected-profiles-data
   [settings]
-  (let [profile-kws (cons :core (get settings :project/profiles))]
+  (let [profile-kws (cons :core (get settings :project.profiles/value))]
     (->> (select-keys profiles profile-kws)
          (vals)
          (map (fn [profile-fn] (profile-fn settings)))

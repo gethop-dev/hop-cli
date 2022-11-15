@@ -62,6 +62,10 @@
              :POSTGRES_USER admin-user
              :POSTGRES_PASSWORD admin-password))))
 
+(def ^:const docker-compose-files
+  {:to-develop ["docker-compose.postgres.common-dev-ci.yml"]
+   :ci ["docker-compose.postgres.common-dev-ci.yml"
+        "docker-compose.postgres.ci.yml"]})
 
 (defn profile
   [settings]
@@ -76,6 +80,4 @@
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
    :files [{:src "persistence/sql"}]
-   :docker-compose {:dev ["docker-compose.common-dev-ci.db.yml"]
-                    :ci ["docker-compose.common-dev-ci.db.yml"
-                         "docker-compose.ci.db.yml"]}})
+   :docker-compose docker-compose-files})

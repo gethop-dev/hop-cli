@@ -1,0 +1,3 @@
+services:
+  keycloak:
+    mem_limit: 256m
