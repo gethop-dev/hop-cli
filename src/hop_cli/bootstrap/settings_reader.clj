@@ -3,6 +3,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.walk :as walk]
+            [hop-cli.util.random :as util.random]
             [malli.core :as m])
   (:import (java.io PushbackReader)))
 
@@ -112,7 +113,8 @@
 
 (def setting-value-password-schema
   ;; Built-in, in malli.core/predicate-schemas
-  string?)
+  [:map
+   [:length pos-int?]])
 
 (def setting-schema
   (m/schema
@@ -190,6 +192,12 @@
           children (get node children-key)]
       (assoc node children-key (mapv (partial qualify-child-name node) children)))))
 
+(defn- inject-passwords
+  [{:keys [type value] :as node}]
+  (if (= :password type)
+    (assoc node :value (util.random/generate-random-string (:length value)))
+    node))
+
 (defn- is-node-branch?
   [node]
   (get #{:plain-group :single-choice-group :multiple-choice-group} (:type node)))
@@ -225,7 +233,7 @@
     (if (m/validate settings-schema settings)
       {:success? true
        :settings (->> settings
-                      (walk/prewalk qualify-node-names)
+                      (walk/prewalk (comp inject-passwords qualify-node-names))
                       (flatten-settings))}
       {:success? false
        :error-details (m/explain settings-schema settings)})))
