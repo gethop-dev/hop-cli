@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "RDS and EB connection"
+Parameters:
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Server environment"
+    Type: "String"
+    AllowedValues:
+      - "test"
+      - "prod"
+  RdsSecurityGroupId:
+    Description: "RDS security group"
+    Type: "String"
+  EbSecurityGroupId:
+    Description: "RDS security group"
+    Type: "String"
+
+Resources:
+  EbToRdsSecurityGroupRule:
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupId: !Ref "RdsSecurityGroupId"
+      SourceSecurityGroupId: !Ref "EbSecurityGroupId"
+      IpProtocol: "tcp"
+      FromPort: 5432
+      ToPort: 5432
+      Description: !Sub "${ProjectName}-${Environment}-eb"

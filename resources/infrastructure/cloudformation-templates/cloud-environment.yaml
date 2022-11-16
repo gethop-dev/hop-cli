@@ -42,6 +42,7 @@ Parameters:
     NoEcho: true
   DatabasePort:
     Description: "Database port"
+    Type: "String"
     Default: "5432"
   DatabaseName:
     Description: "Database name"
@@ -53,10 +54,14 @@ Parameters:
   IncludeS3:
     Type: "String"
     Default: "false"
+  IncludeRds:
+    Type: "String"
+    Default: "true"
 
 Conditions:
   IncludeCognitoCond: !Equals ["true", !Ref "IncludeCognito"]
   IncludeS3Cond: !Equals ["true", !Ref "IncludeS3"]
+  IncludeRDSCond: !Equals ["true", !Ref "IncludeRds"]
 
 Resources:
   Cognito:
@@ -70,6 +75,7 @@ Resources:
         ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
   RDS:
     Type: "AWS::CloudFormation::Stack"
+    Condition: "IncludeRDSCond"
     Properties:
       TemplateURL: !Sub "${TemplateBucketURL}/environment/rds.yaml"
       Parameters:
@@ -128,10 +134,17 @@ Resources:
         NotificationsEmail: !Ref "NotificationsEmail"
         LoadBalancerARN: !Ref "LoadBalancerARN"
         EbApplicationName: !Ref "EbApplicationName"
-        RdsSecurityGroupId: !GetAtt "RDS.Outputs.RdsSecurityGroupId"
         ElbSecurityGroupId: !Ref "ElbSecurityGroupId"
         KmsKeyAlias: !GetAtt "KMS.Outputs.KmsKeyAlias"
         InstanceRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
+  RdsEbConnection:
+    Type: "AWS::CloudFormation::Stack"
+    Condition: "IncludeRDSCond"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/eb-rds-connection.yaml"
+      Parameters:
+        RdsSecurityGroupId: !GetAtt "RDS.Outputs.RdsSecurityGroupId"
+        EbSecurityGroupId: !GetAtt "EB.Outputs.EbSecurityGroupId"
 
 Outputs:
   CognitoUserPoolId:
@@ -146,6 +159,7 @@ Outputs:
   KmsKeyAlias:
     Value: !GetAtt "KMS.Outputs.KmsKeyAlias"
   RdsAddress:
+    Condition: "IncludeRDSCond"
     Value: !GetAtt "RDS.Outputs.RDSAddress"
   EbApplicationName:
     Value: !Ref "EbApplicationName"
