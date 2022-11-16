@@ -112,7 +112,9 @@
   inst?)
 
 (def setting-value-password-schema
-  ;; Built-in, in malli.core/predicate-schemas
+  string?)
+
+(def setting-value-auto-gen-password-schema
   [:map
    [:length pos-int?]])
 
@@ -140,6 +142,7 @@
                [:uuid (conj setting-common-schema [:value setting-value-uuid-schema])]
                [:inst (conj setting-common-schema [:value setting-value-inst-schema])]
                [:password (conj setting-common-schema [:value setting-value-password-schema])]
+               [:auto-gen-password (conj setting-common-schema [:value setting-value-auto-gen-password-schema])]
                [:plain-group
                 ;; `:plain-group` key is special, as it contains a vector of other
                 ;; `settings-schema`. In this case we need to use a local registry
@@ -192,9 +195,9 @@
           children (get node children-key)]
       (assoc node children-key (mapv (partial qualify-child-name node) children)))))
 
-(defn- inject-passwords
+(defn- inject-auto-generated-passwords
   [{:keys [type value] :as node}]
-  (if (= :password type)
+  (if (= :auto-gen-password type)
     (assoc node :value (util.random/generate-random-string (:length value)))
     node))
 
@@ -240,7 +243,7 @@
     (if (m/validate settings-schema settings)
       {:success? true
        :settings (->> settings
-                      (walk/prewalk (comp inject-passwords
+                      (walk/prewalk (comp inject-auto-generated-passwords
                                           rename-choice-node-names
                                           qualify-node-names))
                       (flatten-settings))}

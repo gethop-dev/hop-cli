@@ -139,7 +139,7 @@
                                                           :docstring [:a]
                                                           :min-hop-version "1"
                                                           :tag "Database admin password"
-                                                          :type :password
+                                                          :type :auto-gen-password
                                                           :value {:length 24}}]}
                                                 {:name :app-user
                                                  :docstring [:a]
@@ -156,7 +156,7 @@
                                                           :docstring [:a]
                                                           :min-hop-version "1"
                                                           :tag "Database Application user's password"
-                                                          :type :password
+                                                          :type :auto-gen-password
                                                           :value {:length 24}}
                                                          {:name :schema
                                                           :docstring [:a]
@@ -200,7 +200,7 @@
                                                           :docstring [:a]
                                                           :min-hop-version "1"
                                                           :tag "Database admin password"
-                                                          :type :password
+                                                          :type :auto-gen-password
                                                           :value {:length 24}}]}
                                                 {:name :app-user
                                                  :docstring [:a]
@@ -217,7 +217,7 @@
                                                           :docstring [:a]
                                                           :min-hop-version "1"
                                                           :tag "Database Application user's password"
-                                                          :type :password
+                                                          :type :auto-gen-password
                                                           :value {:length 24}}
                                                          {:name :schema
                                                           :docstring [:a]
@@ -302,7 +302,7 @@
                                                                               :tag "User name"
                                                                               :value "admin"}
                                                                              {:name :password
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
@@ -322,7 +322,7 @@
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :schema
                                                                               :docstring [:a]
@@ -345,7 +345,7 @@
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :timescaledb
                                                                               :docstring [:a]
@@ -371,7 +371,7 @@
                                                                               :tag "User name"
                                                                               :value "grafana_integration"}
                                                                              {:name :password
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
@@ -471,7 +471,7 @@
                                                                               :tag "User name"
                                                                               :value "admin"}
                                                                              {:name :password
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
@@ -491,7 +491,7 @@
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :schema
                                                                               :docstring [:a]
@@ -514,7 +514,7 @@
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :timescaledb
                                                                               :docstring [:a]
@@ -540,7 +540,7 @@
                                                                               :tag "User name"
                                                                               :value "grafana_integration"}
                                                                              {:name :password
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
@@ -568,7 +568,7 @@
                                                                               :tag "User name"
                                                                               :value "admin"}
                                                                              {:name :password
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
@@ -588,7 +588,7 @@
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :schema
                                                                               :docstring [:a]
@@ -611,7 +611,7 @@
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :timescaledb
                                                                               :docstring [:a]
@@ -637,7 +637,7 @@
                                                                               :tag "User name"
                                                                               :value "grafana_integration"}
                                                                              {:name :password
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
@@ -873,7 +873,7 @@
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Admin password"
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :value {:length 24}}]}
                                                                     {:name :frontend-url
                                                                      :docstring [:a]
@@ -924,7 +924,7 @@
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :schema
                                                                               :docstring [:a]
@@ -952,7 +952,7 @@
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Admin password"
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :value {:length 24}}]}
                                                                     {:name :frontend-url
                                                                      :docstring [:a]
@@ -1003,7 +1003,7 @@
                                                                               :docstring [:a]
                                                                               :min-hop-version "1"
                                                                               :tag "Password"
-                                                                              :type :password
+                                                                              :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :schema
                                                                               :docstring [:a]
