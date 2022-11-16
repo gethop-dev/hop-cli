@@ -1,4 +1,5 @@
-(ns hop-cli.bootstrap.profile.registry.persistence.sql)
+(ns hop-cli.bootstrap.profile.registry.persistence.sql
+  (:import [java.net URLEncoder]))
 
 (defn- sql-config
   [settings]
@@ -54,7 +55,9 @@
      {:JDBC_DATABASE_URL
       (format
        "jdbc:postgresql://%s:%s/%s?user=%s&password=%s&reWriteBatchedInserts=true"
-       host port db app-user app-password)}
+       host port db
+       (URLEncoder/encode app-user "utf-8")
+       (URLEncoder/encode app-password "utf-8"))}
       (= :dev environment)
       (assoc :POSTGRES_HOST host
              :POSTGRES_PORT port
