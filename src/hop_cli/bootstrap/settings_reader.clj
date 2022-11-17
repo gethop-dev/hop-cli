@@ -25,7 +25,7 @@
    :integer :nat-int :float :number :string
    :regexp :char :boolean :symbol :list
    :vector :map :set :uuid :inst
-   :password
+   :password :auto-gen-password
    ;; group values
    :plain-group :single-choice-group :multiple-choice-group])
 
@@ -198,7 +198,7 @@
 (defn- inject-auto-generated-passwords
   [{:keys [type value] :as node}]
   (if (= :auto-gen-password type)
-    (assoc node :value (util.random/generate-random-string (:length value)))
+    (assoc node :value (util.random/generate-random-password value))
     node))
 
 (defn- rename-choice-node-names

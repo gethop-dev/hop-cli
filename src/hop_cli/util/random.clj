@@ -13,6 +13,6 @@
   []
   (nth chs (.nextInt rng (count chs))))
 
-(defn generate-random-string
-  [length]
+(defn generate-random-password
+  [{:keys [length]}]
   (apply str (take length (repeatedly generate-random-character))))
