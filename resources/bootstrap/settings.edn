@@ -1,1173 +1,753 @@
 [{:name :project
-  :docstring [:a]
-  :min-hop-version "1"
   :tag "Project"
   :type :plain-group
   :value [{:name :name
-           :docstring [:a]
-           :min-hop-version "1"
            :tag "Project Name"
            :type :string
            :value "hop"}
           {:name :profiles
-           :docstring [:a]
-           :min-hop-version "1"
            :tag "Profiles"
            :type :multiple-choice-group
            :value [:persistence-sql :bi-grafana :auth-cognito]
            :choices [{:name :auth-cognito
-                      :docstring [:a]
-                      :min-hop-version "1"
                       :tag "Cognito"
                       :type :plain-group
                       :value []}
                      {:name :persistence-sql
                       :type :plain-group
-                      :min-hop-version "1"
-                      :docstring [:a]
                       :value [{:name :database
                                :type :plain-group
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "Database"
                                :value [{:name :version
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Postgres version"
                                         :type :string
                                         :value "12"}]}
                               {:name :environment
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "Environment"
                                :type :plain-group
                                :value [{:name :dev
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Dev Environment"
                                         :type :plain-group
                                         :value [{:name :database
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "Dev database"
                                                  :type :plain-group
                                                  :value [{:name :name
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database name"
                                                           :type :string
                                                           :value "ebdb"}
                                                          {:name :port
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database port"
                                                           :type :string
                                                           :value "5432"}]}
                                                 {:name :admin-user
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "Persistence Database Admin configuration"
                                                  :type :plain-group
                                                  :value [{:name :username
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database admin username"
                                                           :type :string
                                                           :value "postgres"}
                                                          {:name :password
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database admin password"
                                                           :type :string
                                                           :value "sa"}]}
                                                 {:name :app-user
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "Persistence Database Application User configuration"
                                                  :type :plain-group
                                                  :value [{:name :username
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database Application user's username"
                                                           :type :string
                                                           :value "app"}
                                                          {:name :password
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database Application user's password"
                                                           :type :string
                                                           :value "sa"}
                                                          {:name :schema
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database Application user's schema"
                                                           :type :string
                                                           :value "app"}]}]}
                                        {:name :test
                                         :type :plain-group
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :value [{:name :database
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "Prod database"
                                                  :type :plain-group
                                                  :value [{:name :name
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database name"
                                                           :type :string
                                                           :value "ebdb"}
                                                          {:name :port
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database port"
                                                           :type :string
                                                           :value "5432"}]}
                                                 {:name :admin-user
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "Persistence Database Admin configuration"
                                                  :type :plain-group
                                                  :value [{:name :username
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database admin username"
                                                           :type :string
                                                           :value "ebdb"}
                                                          {:name :password
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database admin password"
                                                           :type :auto-gen-password
                                                           :value {:length 24}}]}
                                                 {:name :app-user
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "Persistence Database Application User configuration"
                                                  :type :plain-group
                                                  :value [{:name :username
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database Application user's username "
                                                           :type :string
                                                           :value "app"}
                                                          {:name :password
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database Application user's password"
                                                           :type :auto-gen-password
                                                           :value {:length 24}}
                                                          {:name :schema
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database Application schema"
                                                           :type :string
                                                           :value "app"}]}]}
                                        {:name :prod
                                         :type :plain-group
-                                        :min-hop-version "1"
-                                        :docstring [:a]
                                         :value [{:name :database
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "Prod database"
                                                  :type :plain-group
                                                  :value [{:name :name
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database name"
                                                           :type :string
                                                           :value "ebdb"}
                                                          {:name :port
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database port"
                                                           :type :string
                                                           :value "5432"}]}
                                                 {:name :admin-user
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "Persistence Database Admin configuration"
                                                  :type :plain-group
                                                  :value [{:name :username
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database admin username"
                                                           :type :string
                                                           :value "ebdb"}
                                                          {:name :password
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database admin password"
                                                           :type :auto-gen-password
                                                           :value {:length 24}}]}
                                                 {:name :app-user
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "Persistence Database Application User configuration"
                                                  :type :plain-group
                                                  :value [{:name :username
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database Application user's username "
                                                           :type :string
                                                           :value "app"}
                                                          {:name :password
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database Application user's password"
                                                           :type :auto-gen-password
                                                           :value {:length 24}}
                                                          {:name :schema
-                                                          :docstring [:a]
-                                                          :min-hop-version "1"
                                                           :tag "Database Application schema"
                                                           :type :string
                                                           :value "app"}]}]}]}]}
                      {:name :bi-grafana
-                      :docstring [:a]
-                      :min-hop-version "1"
                       :tag "Grafana"
                       :type :plain-group
                       :value [{:name :environment
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "Environment"
                                :type :plain-group
                                :value [{:name :to-develop
                                         :type :single-choice-group
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Development-related options"
                                         :value :container
                                         :choices [{:name :external
                                                    :type :plain-group
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
                                                    :tag "External"
                                                    :value [{:name :dev
                                                             :type :plain-group
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Dev"
                                                             :value [{:name :uri
                                                                      :type :string
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "URI"
                                                                      :value "http://localhost/grafana"}
                                                                     {:name :app-integration
                                                                      :type :plain-group
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "App integration"
                                                                      :value [{:name :username
                                                                               :type :string
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "User name"
                                                                               :value "grafana_integration"}
                                                                              {:name :password
                                                                               :type :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :value ""}]}]}]}
                                                   {:name :container
                                                    :type :plain-group
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
                                                    :tag "Container"
                                                    :value [{:name :dev
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Dev Environment"
                                                             :type :plain-group
                                                             :value [{:name :server-domain
                                                                      :type :string
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Server domain"
                                                                      :value "localhost"}
                                                                     {:name :security-admin
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Security Admin"
                                                                      :type :plain-group
                                                                      :value [{:name :username
                                                                               :type :string
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "User name"
                                                                               :value "admin"}
                                                                              {:name :password
                                                                               :type :auto-gen-password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :value {:length 24}}]}
                                                                     {:name :database
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Database configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Username"
                                                                               :type :string
                                                                               :value "grafana"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :schema
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Schema"
                                                                               :type :string
                                                                               :value "grafana"}]}
                                                                     {:name :datasource
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Datasource"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Username"
                                                                               :type :string
                                                                               :value "grafana_data_source"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :timescaledb
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "TimescaleDB"
                                                                               :type :boolean
                                                                               :value false}]}
                                                                     {:name :uri
                                                                      :type :string
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "URI"
                                                                      :value "http://grafana:4000"}
                                                                     {:name :app-integration
                                                                      :type :plain-group
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "App integration"
                                                                      :value [{:name :username
                                                                               :type :string
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "User name"
                                                                               :value "grafana_integration"}
                                                                              {:name :password
                                                                               :type :auto-gen-password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :value {:length 24}}]}]}]}]}
                                        {:name :to-deploy
                                         :type :single-choice-group
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Deployment env related options"
                                         :value :container
                                         :choices [{:name :external
                                                    :type :plain-group
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
                                                    :tag "External"
                                                    :value [{:name :test
                                                             :type :plain-group
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Test"
                                                             :value [{:name :uri
                                                                      :type :string
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "URI"
                                                                      :value "http://localhost/grafana"}
                                                                     {:name :app-integration
                                                                      :type :plain-group
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "App integration"
                                                                      :value [{:name :username
                                                                               :type :string
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "User name"
                                                                               :value "grafana_integration"}
                                                                              {:name :password
                                                                               :type :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :value ""}]}]}
                                                            {:name :prod
                                                             :type :plain-group
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Prod"
                                                             :value [{:name :uri
                                                                      :type :string
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "URI"
                                                                      :value "http://localhost/grafana"}
                                                                     {:name :app-integration
                                                                      :type :plain-group
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "App integration"
                                                                      :value [{:name :username
                                                                               :type :string
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "User name"
                                                                               :value "grafana_integration"}
                                                                              {:name :password
                                                                               :type :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :value ""}]}]}]}
                                                   {:name :container
                                                    :type :plain-group
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
                                                    :tag "Container"
                                                    :value [{:name :test
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Test Environment"
                                                             :type :plain-group
                                                             :value [{:name :server-domain
                                                                      :type :string
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Server domain"
                                                                      :value "localhost"}
                                                                     {:name :security-admin
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Security Admin"
                                                                      :type :plain-group
                                                                      :value [{:name :username
                                                                               :type :string
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "User name"
                                                                               :value "admin"}
                                                                              {:name :password
                                                                               :type :auto-gen-password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :value {:length 24}}]}
                                                                     {:name :database
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Database configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Username"
                                                                               :type :string
                                                                               :value "grafana"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :schema
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Schema"
                                                                               :type :string
                                                                               :value "grafana"}]}
                                                                     {:name :datasource
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Datasource"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Username"
                                                                               :type :string
                                                                               :value "grafana_data_source"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :timescaledb
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "TimescaleDB"
                                                                               :type :boolean
                                                                               :value false}]}
                                                                     {:name :uri
                                                                      :type :string
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "URI"
                                                                      :value "http://grafana:4000"}
                                                                     {:name :app-integration
                                                                      :type :plain-group
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "App integration"
                                                                      :value [{:name :username
                                                                               :type :string
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "User name"
                                                                               :value "grafana_integration"}
                                                                              {:name :password
                                                                               :type :auto-gen-password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :value {:length 24}}]}]}
                                                            {:name :prod
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Prod Environment"
                                                             :type :plain-group
                                                             :value [{:name :server-domain
                                                                      :type :string
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Server domain"
                                                                      :value "localhost"}
                                                                     {:name :security-admin
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Security Admin"
                                                                      :type :plain-group
                                                                      :value [{:name :username
                                                                               :type :string
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "User name"
                                                                               :value "admin"}
                                                                              {:name :password
                                                                               :type :auto-gen-password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :value {:length 24}}]}
                                                                     {:name :database
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Database configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Username"
                                                                               :type :string
                                                                               :value "grafana"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :schema
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Schema"
                                                                               :type :string
                                                                               :value "grafana"}]}
                                                                     {:name :datasource
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Datasource"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Username"
                                                                               :type :string
                                                                               :value "grafana_data_source"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :timescaledb
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "TimescaleDB"
                                                                               :type :boolean
                                                                               :value false}]}
                                                                     {:name :uri
                                                                      :type :string
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "URI"
                                                                      :value "http://grafana:4000"}
                                                                     {:name :app-integration
                                                                      :type :plain-group
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "App integration"
                                                                      :value [{:name :username
                                                                               :type :string
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "User name"
                                                                               :value "grafana_integration"}
                                                                              {:name :password
                                                                               :type :auto-gen-password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :value {:length 24}}]}]}]}]}]}]}
                      {:name :auth-keycloak
-                      :docstring [:a]
-                      :min-hop-version "1"
                       :tag "Keycloak"
                       :type :plain-group
                       :value [{:name :version
-                               :docstring [:a]
                                :tag "Keycloak version"
-                               :min-hop-version "1"
                                :type :string
                                :value "20.0"}
                               {:name :environment
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "Environment"
                                :type :plain-group
                                :value [{:name :to-develop
                                         :type :single-choice-group
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Development-related options"
                                         :value :container
                                         :choices [{:name :external
                                                    :type :plain-group
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
                                                    :tag "External"
                                                    :value [{:name :dev
                                                             :type :plain-group
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Dev"
                                                             :value [{:name :realm
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Realm configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :name
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Realm name"
                                                                               :type :string
                                                                               :value "hop"}]}
                                                                     {:name :frontend-url
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Keycloak frontend URL"
                                                                      :type :string
                                                                      :value "http://localhost/auth"}
                                                                     {:name :client-id
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Application client-id"
                                                                      :type :string
                                                                      :value "hop-spa-12345678"}]}]}
                                                   {:name :container
                                                    :type :plain-group
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
                                                    :tag "Container"
                                                    :value [{:name :dev
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Dev Environment"
                                                             :type :plain-group
                                                             :value [{:name :admin
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Admin configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Admin username"
                                                                               :type :string
                                                                               :value "admin"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Admin password"
                                                                               :type :string
                                                                               :value "Testpassword1!"}]}
                                                                     {:name :frontend-url
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Keycloak frontend-url"
                                                                      :type :string
                                                                      :value "http://localhost/auth"}
                                                                     {:name :client-id
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Application client-id"
                                                                      :type :string
                                                                      :value "hop-spa-12345678"}
                                                                     {:name :realm
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Realm configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :name
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Realm name"
                                                                               :type :string
                                                                               :value "hop"}]}
                                                                     {:name :theme
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Theme configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :name
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Theme name"
                                                                               :type :string
                                                                               :value "hop"}]}
                                                                     {:name :database
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Database configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Username"
                                                                               :type :string
                                                                               :value "keycloak"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :type :string
                                                                               :value "sa"}
                                                                              {:name :schema
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Schema"
                                                                               :type :string
                                                                               :value "keycloak"}]}]}]}]}
                                        {:name :to-deploy
                                         :type :single-choice-group
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Deployment env related options"
                                         :value :container
                                         :choices [{:name :external
                                                    :type :plain-group
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
                                                    :tag "External"
                                                    :value [{:name :test
                                                             :type :plain-group
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Test"
                                                             :value [{:name :realm
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Realm configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :name
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Realm name"
                                                                               :type :string
                                                                               :value "hop"}]}
                                                                     {:name :frontend-url
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Keycloak frontend URL"
                                                                      :type :string
                                                                      :value "http://localhost/auth"}
                                                                     {:name :client-id
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Application client-id"
                                                                      :type :string
                                                                      :value "hop-spa-12345678"}]}
                                                            {:name :prod
                                                             :type :plain-group
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Prod"
                                                             :value [{:name :realm
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Realm configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :name
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Realm name"
                                                                               :type :string
                                                                               :value "hop"}]}
                                                                     {:name :frontend-url
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Keycloak frontend URL"
                                                                      :type :string
                                                                      :value "http://localhost/auth"}
                                                                     {:name :client-id
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Application client-id"
                                                                      :type :string
                                                                      :value "hop-spa-12345678"}]}]}
                                                   {:name :container
                                                    :type :plain-group
-                                                   :docstring [:a]
-                                                   :min-hop-version "1"
                                                    :tag "Container"
                                                    :value [{:name :test
                                                             :type :plain-group
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Test"
                                                             :value [{:name :admin
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Admin configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Admin username"
                                                                               :type :string
                                                                               :value "admin"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Admin password"
                                                                               :type :auto-gen-password
                                                                               :value {:length 24}}]}
                                                                     {:name :frontend-url
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Keycloak frontend-url"
                                                                      :type :string
                                                                      :value "http://localhost/auth"}
                                                                     {:name :client-id
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Application client-id"
                                                                      :type :string
                                                                      :value "hop-spa-12345678"}
                                                                     {:name :realm
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Realm configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :name
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Realm name"
                                                                               :type :string
                                                                               :value "hop"}]}
                                                                     {:name :theme
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Theme configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :name
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Theme name"
                                                                               :type :string
                                                                               :value "hop"}]}
                                                                     {:name :database
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Database configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Username"
                                                                               :type :string
                                                                               :value "keycloak"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :schema
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Schema"
                                                                               :type :string
                                                                               :value "keycloak"}]}]}
                                                            {:name :prod
                                                             :type :plain-group
-                                                            :docstring [:a]
-                                                            :min-hop-version "1"
                                                             :tag "Prod"
                                                             :value [{:name :admin
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Admin configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Admin username"
                                                                               :type :string
                                                                               :value "admin"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Admin password"
                                                                               :type :auto-gen-password
                                                                               :value {:length 24}}]}
                                                                     {:name :frontend-url
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Keycloak frontend-url"
                                                                      :type :string
                                                                      :value "http://localhost/auth"}
                                                                     {:name :client-id
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Application client-id"
                                                                      :type :string
                                                                      :value "hop-spa-12345678"}
                                                                     {:name :realm
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Realm configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :name
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Realm name"
                                                                               :type :string
                                                                               :value "hop"}]}
                                                                     {:name :theme
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Theme configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :name
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Theme name"
                                                                               :type :string
                                                                               :value "hop"}]}
                                                                     {:name :database
-                                                                     :docstring [:a]
-                                                                     :min-hop-version "1"
                                                                      :tag "Database configuration"
                                                                      :type :plain-group
                                                                      :value [{:name :username
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Username"
                                                                               :type :string
                                                                               :value "keycloak"}
                                                                              {:name :password
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Password"
                                                                               :type :auto-gen-password
                                                                               :value {:length 24}}
                                                                              {:name :schema
-                                                                              :docstring [:a]
-                                                                              :min-hop-version "1"
                                                                               :tag "Schema"
                                                                               :type :string
                                                                               :value "keycloak"}]}]}]}]}]}]}]}]}
  {:name :cloud-provider
-  :docstring [:a]
-  :min-hop-version "1"
   :tag "AWS infrastructure"
   :type :single-choice-group
   :value :aws
   :choices [{:name :aws
-             :docstring [:a]
-             :min-hop-version "1"
              :tag "AWS infrastructure"
              :type :plain-group
              :value [{:name :cloudformation
-                      :docstring [:a]
-                      :min-hop-version "1"
                       :tag "Account"
                       :type :plain-group
                       :value [{:name :template-bucket-name
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "Cloudformation Template Bucket"
                                :type :string
                                :value "cloudformation-templates-223330293187"}]}
                      {:name :account
-                      :docstring [:a]
-                      :min-hop-version "1"
                       :tag "Account"
                       :type :plain-group
                       :value [{:name :stack-name
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "Stack-name"
                                :type :string
                                :value "hop-account"}
                               {:name :resource-name-prefix
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "Resource name prefix"
                                :type :string
                                :value "hop"}
                               {:name :vpc
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "VPC"
                                :type :plain-group
                                :value [{:name :cidr
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "VPC CIDR"
                                         :type :string
                                         :value "172.31.0.0/16"}]}]}
                      {:name :project
-                      :docstring [:a]
-                      :min-hop-version "1"
                       :tag "Project"
                       :type :plain-group
                       :value [{:name :stack-name
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "Stack-name"
                                :type :string
                                :value "hop-project"}
                               {:name :vpc
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "VPC"
                                :type :plain-group
                                :value [{:name :subnet-1
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Subnet 1"
                                         :type :plain-group
                                         :value [{:name :cidr
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "CIDR"
                                                  :type :string
                                                  :value "172.31.0.0/24"}]}
                                        {:name :subnet-2
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Subnet 2"
                                         :type :plain-group
                                         :value [{:name :cidr
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "CIDR"
                                                  :type :string
                                                  :value "172.31.1.0/24"}]}]}]}
                      {:name :environment
-                      :docstring [:a]
-                      :min-hop-version "1"
                       :tag "Environment"
                       :type :plain-group
                       :value [{:name :dev
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "Dev"
                                :type :plain-group
                                :value [{:name :stack-name
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Stack-name"
                                         :type :string
                                         :value "hop-test-dev"}]}
                               {:name :test
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "Test"
                                :type :plain-group
                                :value [{:name :stack-name
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Stack-name"
                                         :type :string
                                         :value "hop-test-test"}
                                        {:name :notifications-email
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Notifications email"
                                         :type :string
                                         :value "devops+test@magnet.coop"}
                                        {:name :kms
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "KMS"
                                         :type :plain-group
                                         :value [{:name :key-alias
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "Key Alias"
                                                  :type :string
                                                  :value "alias/hop-test"}]}]}
                               {:name :prod
-                               :docstring [:a]
-                               :min-hop-version "1"
                                :tag "Prod"
                                :type :plain-group
                                :value [{:name :stack-name
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Stack-name"
                                         :type :string
                                         :value "hop-project-prod"}
                                        {:name :notifications-email
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "Notifications email"
                                         :type :string
                                         :value "devops+prod@magnet.coop"}
                                        {:name :kms
-                                        :docstring [:a]
-                                        :min-hop-version "1"
                                         :tag "KMS"
                                         :type :plain-group
                                         :value [{:name :key-alias
-                                                 :docstring [:a]
-                                                 :min-hop-version "1"
                                                  :tag "Key Alias"
                                                  :type :string
                                                  :value "alias/hop-prod"}]}]}]}]}]}]

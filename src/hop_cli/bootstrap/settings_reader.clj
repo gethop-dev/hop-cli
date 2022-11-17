@@ -43,8 +43,8 @@
 
    ;; Now the actual specs for the keys and their values.
    [:name setting-name-schema]
-   [:docstring setting-docstring-schema]
-   [:min-hop-version setting-min-hop-version-schema]
+   [:docstring {:optional true}  setting-docstring-schema]
+   [:min-hop-version {:optional true} setting-min-hop-version-schema]
    [:tag {:optional true} setting-tag-schema]
    [:type setting-type-schema]])
 
