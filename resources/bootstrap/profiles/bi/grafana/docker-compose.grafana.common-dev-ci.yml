@@ -1,0 +1,6 @@
+services:
+  grafana:
+    volumes:
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+    depends_on:
+      - postgres

@@ -45,7 +45,6 @@
 (defn- settings->mustache-data
   [settings]
   (-> settings
-      (util/expand-ns-keywords)
       (update-in [:project :config-edn]
                  util/update-map-vals coll->formatted-string {:recursive? false})
       (update-in [:project :load-frontend-app]
@@ -75,6 +74,7 @@
 
 (defn render-profile-templates!
   [settings project-path]
+  (prn project-path)
   (let [renderer (mustache-template-renderer settings)]
     (fs/walk-file-tree
      project-path

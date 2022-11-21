@@ -5,37 +5,13 @@
             [hop-cli.bootstrap.profile.registry.bi.grafana :as bi.grafana]
             [hop-cli.bootstrap.profile.registry.core :as core]
             [hop-cli.bootstrap.profile.registry.frontend :as frontend]
-            [hop-cli.bootstrap.profile.registry.persistence.sql :as p.sql]
-            [hop-cli.util :as util]))
+            [hop-cli.bootstrap.profile.registry.persistence.sql :as p.sql]))
 
 (def profiles
-  {:auth-cognito auth.cognito/profile
-   :auth-keycloak  auth.keycloak/profile
-   :aws aws/profile
-   :bi-grafana bi.grafana/profile
-   :core core/profile
-   :frontend frontend/profile
-   :persistence-sql p.sql/profile})
-
-(defn- merge-profile-key
-  [k v1 v2]
-  (cond
-    (get #{:dependencies :files} k)
-    (vec (concat v1 v2))
-
-    (get #{:environment-variables :config-edn} k)
-    (merge-with merge v1 v2)
-
-    (get #{:load-frontend-app :docker-compose} k)
-    (merge-with concat v1 v2)
-
-    :else
-    (merge v1 v2)))
-
-(defn get-selected-profiles-data
-  [settings]
-  (let [profile-kws (cons :core (get settings :project.profiles/value))]
-    (->> (select-keys profiles profile-kws)
-         (vals)
-         (map (fn [profile-fn] (profile-fn settings)))
-         (apply util/merge-with-key merge-profile-key))))
+  [{:kw :core :exec-fn core/profile}
+   {:kw :persistence-sql :exec-fn p.sql/profile}
+   {:kw :auth-cognito :exec-fn auth.cognito/profile}
+   {:kw :auth-keycloak :exec-fn auth.keycloak/profile}
+   {:kw :bi-grafana :exec-fn bi.grafana/profile}
+   {:kw :frontend :exec-fn frontend/profile}
+   {:kw :aws :exec-fn aws/profile}])

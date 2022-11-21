@@ -1,13 +1,15 @@
-(ns hop-cli.bootstrap.profile.registry.frontend)
+(ns hop-cli.bootstrap.profile.registry.frontend
+  (:require [hop-cli.bootstrap.util :as bp.util]))
 
 (defn- cljs-module
   [settings]
-  {:duct.module/cljs
-   {:main (symbol (str (:project/name settings) ".client"))}
-   :hydrogen.module/core
-   {:externs
-    {:production []}
-    :figwheel-main {}}})
+  (let [project-name (bp.util/get-settings-value settings :project/name)]
+    {:duct.module/cljs
+     {:main (symbol (str project-name ".client"))}
+     :hydrogen.module/core
+     {:externs
+      {:production []}
+      :figwheel-main {}}}))
 
 (defn- sass-compiler
   []
@@ -17,11 +19,13 @@
 
 (defn- root-static-route
   [settings]
-  {(keyword (str (:project/name settings) ".static/root")) {}})
+  (let [project-name (bp.util/get-settings-value settings :project/name)]
+    {(keyword (str project-name ".static/root")) {}}))
 
 (defn- routes
   [settings]
-  [(tagged-literal 'ig/ref (keyword (str (:project/name settings) ".static/root")))])
+  (let [project-name (bp.util/get-settings-value settings :project/name)]
+    [(tagged-literal 'ig/ref (keyword (str project-name ".static/root")))]))
 
 (defn profile
   [settings]

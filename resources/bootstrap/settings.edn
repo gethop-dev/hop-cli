@@ -5,15 +5,37 @@
            :tag "Project Name"
            :type :string
            :value "hop"}
+          {:name :proxy
+           :type :plain-group
+           :value [{:name :dev
+                    :type :plain-group
+                    :value [{:name :domain
+                             :type :string
+                             :value "localhost"}
+                            {:name :protocol
+                             :type :string
+                             :value "http"}]}
+                   {:name :test
+                    :type :plain-group
+                    :value [{:name :domain
+                             :type :string
+                             :value "app.test.invalid"}
+                            {:name :protocol
+                             :type :string
+                             :value "https"}]}
+                   {:name :prod
+                    :type :plain-group
+                    :value [{:name :domain
+                             :type :string
+                             :value "app.invalid"}
+                            {:name :protocol
+                             :type :string
+                             :value "https"}]}]}
           {:name :profiles
            :tag "Profiles"
            :type :multiple-choice-group
-           :value [:persistence-sql :bi-grafana :auth-cognito]
-           :choices [{:name :auth-cognito
-                      :tag "Cognito"
-                      :type :plain-group
-                      :value []}
-                     {:name :persistence-sql
+           :value [:persistence-sql :auth-keycloak :bi-grafana]
+           :choices [{:name :persistence-sql
                       :type :plain-group
                       :value [{:name :database
                                :type :plain-group
@@ -22,396 +44,523 @@
                                         :tag "Postgres version"
                                         :type :string
                                         :value "12"}]}
-                              {:name :environment
-                               :tag "Environment"
+                              {:name :deployment
+                               :tag "Deployment"
                                :type :plain-group
-                               :value [{:name :dev
-                                        :tag "Dev Environment"
-                                        :type :plain-group
-                                        :value [{:name :database
-                                                 :tag "Dev database"
-                                                 :type :plain-group
-                                                 :value [{:name :name
-                                                          :tag "Database name"
-                                                          :type :string
-                                                          :value "ebdb"}
-                                                         {:name :port
-                                                          :tag "Database port"
-                                                          :type :string
-                                                          :value "5432"}]}
-                                                {:name :admin-user
-                                                 :tag "Persistence Database Admin configuration"
-                                                 :type :plain-group
-                                                 :value [{:name :username
-                                                          :tag "Database admin username"
-                                                          :type :string
-                                                          :value "postgres"}
-                                                         {:name :password
-                                                          :tag "Database admin password"
-                                                          :type :string
-                                                          :value "sa"}]}
-                                                {:name :app-user
-                                                 :tag "Persistence Database Application User configuration"
-                                                 :type :plain-group
-                                                 :value [{:name :username
-                                                          :tag "Database Application user's username"
-                                                          :type :string
-                                                          :value "app"}
-                                                         {:name :password
-                                                          :tag "Database Application user's password"
-                                                          :type :string
-                                                          :value "sa"}
-                                                         {:name :schema
-                                                          :tag "Database Application user's schema"
-                                                          :type :string
-                                                          :value "app"}]}]}
-                                       {:name :test
-                                        :type :plain-group
-                                        :value [{:name :database
-                                                 :tag "Prod database"
-                                                 :type :plain-group
-                                                 :value [{:name :name
-                                                          :tag "Database name"
-                                                          :type :string
-                                                          :value "ebdb"}
-                                                         {:name :port
-                                                          :tag "Database port"
-                                                          :type :string
-                                                          :value "5432"}]}
-                                                {:name :admin-user
-                                                 :tag "Persistence Database Admin configuration"
-                                                 :type :plain-group
-                                                 :value [{:name :username
-                                                          :tag "Database admin username"
-                                                          :type :string
-                                                          :value "ebdb"}
-                                                         {:name :password
-                                                          :tag "Database admin password"
-                                                          :type :auto-gen-password
-                                                          :value {:length 24}}]}
-                                                {:name :app-user
-                                                 :tag "Persistence Database Application User configuration"
-                                                 :type :plain-group
-                                                 :value [{:name :username
-                                                          :tag "Database Application user's username "
-                                                          :type :string
-                                                          :value "app"}
-                                                         {:name :password
-                                                          :tag "Database Application user's password"
-                                                          :type :auto-gen-password
-                                                          :value {:length 24}}
-                                                         {:name :schema
-                                                          :tag "Database Application schema"
-                                                          :type :string
-                                                          :value "app"}]}]}
-                                       {:name :prod
-                                        :type :plain-group
-                                        :value [{:name :database
-                                                 :tag "Prod database"
-                                                 :type :plain-group
-                                                 :value [{:name :name
-                                                          :tag "Database name"
-                                                          :type :string
-                                                          :value "ebdb"}
-                                                         {:name :port
-                                                          :tag "Database port"
-                                                          :type :string
-                                                          :value "5432"}]}
-                                                {:name :admin-user
-                                                 :tag "Persistence Database Admin configuration"
-                                                 :type :plain-group
-                                                 :value [{:name :username
-                                                          :tag "Database admin username"
-                                                          :type :string
-                                                          :value "ebdb"}
-                                                         {:name :password
-                                                          :tag "Database admin password"
-                                                          :type :auto-gen-password
-                                                          :value {:length 24}}]}
-                                                {:name :app-user
-                                                 :tag "Persistence Database Application User configuration"
-                                                 :type :plain-group
-                                                 :value [{:name :username
-                                                          :tag "Database Application user's username "
-                                                          :type :string
-                                                          :value "app"}
-                                                         {:name :password
-                                                          :tag "Database Application user's password"
-                                                          :type :auto-gen-password
-                                                          :value {:length 24}}
-                                                         {:name :schema
-                                                          :tag "Database Application schema"
-                                                          :type :string
-                                                          :value "app"}]}]}]}]}
+                               :value [{:name :to-develop
+                                        :type :single-choice-group
+                                        :value :container
+                                        :choices [{:name :container
+                                                   :type :plain-group
+                                                   :value [{:name :deployment-type
+                                                            :type :keyword
+                                                            :value :container}
+                                                           {:name :environment
+                                                            :type :plain-group
+                                                            :value [{:name :dev
+                                                                     :tag "Dev Environment"
+                                                                     :type :plain-group
+                                                                     :value [{:name :database
+                                                                              :tag "Dev database"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Database name"
+                                                                                       :type :string
+                                                                                       :value "ebdb"}
+                                                                                      {:name :port
+                                                                                       :tag "Database port"
+                                                                                       :type :string
+                                                                                       :value "5432"}
+                                                                                      {:name :admin-user
+                                                                                       :tag "Persistence Database Admin configuration"
+                                                                                       :type :plain-group
+                                                                                       :value [{:name :username
+                                                                                                :tag "Database admin username"
+                                                                                                :type :string
+                                                                                                :value "postgres"}
+                                                                                               {:name :password
+                                                                                                :tag "Database admin password"
+                                                                                                :type :string
+                                                                                                :value "sa"}]}
+                                                                                      {:name :app-user
+                                                                                       :tag "Persistence Database Application User configuration"
+                                                                                       :type :plain-group
+                                                                                       :value [{:name :username
+                                                                                                :tag "Database Application user's username"
+                                                                                                :type :string
+                                                                                                :value "app"}
+                                                                                               {:name :password
+                                                                                                :tag "Database Application user's password"
+                                                                                                :type :string
+                                                                                                :value "sa"}
+                                                                                               {:name :schema
+                                                                                                :tag "Database Application user's schema"
+                                                                                                :type :string
+                                                                                                :value "app"}]}]}]}]}]}
+                                                  {:name :external
+                                                   :type :plain-group
+                                                   :value [{:name :deployment-type
+                                                            :type :keyword
+                                                            :value :external}
+                                                           {:name :environment
+                                                            :type :plain-group
+                                                            :value [{:name :dev
+                                                                     :tag "Dev Environment"
+                                                                     :type :plain-group
+                                                                     :value [{:name :database
+                                                                              :tag "Dev database"
+                                                                              :type :plain-group
+                                                                              :value [{:name :host
+                                                                                       :tag "Database host"
+                                                                                       :type :string
+                                                                                       :value "db.host"}
+                                                                                      {:name :name
+                                                                                       :tag "Database name"
+                                                                                       :type :string
+                                                                                       :value "ebdb"}
+                                                                                      {:name :port
+                                                                                       :tag "Database port"
+                                                                                       :type :string
+                                                                                       :value "5432"}
+                                                                                      {:name :app-user
+                                                                                       :tag "Persistence Database Application User configuration"
+                                                                                       :type :plain-group
+                                                                                       :value [{:name :username
+                                                                                                :tag "Database Application user's username"
+                                                                                                :type :string
+                                                                                                :value "app"}
+                                                                                               {:name :password
+                                                                                                :tag "Database Application user's password"
+                                                                                                :type :string
+                                                                                                :value "sa"}
+                                                                                               {:name :schema
+                                                                                                :tag "Database Application user's schema"
+                                                                                                :type :string
+                                                                                                :value "app"}]}]}]}]}]}]}
+                                       {:name :to-deploy
+                                        :type :single-choice-group
+                                        :value :rds
+                                        :choices [{:name :rds
+                                                   :type :plain-group
+                                                   :value [{:name :deployment-type
+                                                            :type :keyword
+                                                            :value :external}
+                                                           {:name :environment
+                                                            :type :plain-group
+                                                            :value [{:name :test
+                                                                     :type :plain-group
+                                                                     :value [{:name :database
+                                                                              :tag "Test database"
+                                                                              :type :plain-group
+                                                                              :value [{:name :host
+                                                                                       :tag "Database host"
+                                                                                       :type :ref
+                                                                                       :value :cloud-provider.aws.environment.test.rds/host}
+                                                                                      {:name :name
+                                                                                       :tag "Database name"
+                                                                                       :type :ref
+                                                                                       :value :cloud-provider.aws.environment.test.rds/name}
+                                                                                      {:name :port
+                                                                                       :tag "Database port"
+                                                                                       :type :ref
+                                                                                       :value :cloud-provider.aws.environment.test.rds/port}
+                                                                                      {:name :app-user
+                                                                                       :tag "Persistence Database Application User configuration"
+                                                                                       :type :plain-group
+                                                                                       :value [{:name :username
+                                                                                                :tag "Database Application user's username "
+                                                                                                :type :string
+                                                                                                :value "app"}
+                                                                                               {:name :password
+                                                                                                :tag "Database Application user's password"
+                                                                                                :type :auto-gen-password
+                                                                                                :value {:length 24}}
+                                                                                               {:name :schema
+                                                                                                :tag "Database Application schema"
+                                                                                                :type :string
+                                                                                                :value "app"}]}]}]}
+                                                                    {:name :prod
+                                                                     :type :plain-group
+                                                                     :value [{:name :database
+                                                                              :tag "Prod database"
+                                                                              :type :plain-group
+                                                                              :value [{:name :host
+                                                                                       :tag "Database host"
+                                                                                       :type :ref
+                                                                                       :value :cloud-provider.aws.environment.prod.rds/host}
+                                                                                      {:name :name
+                                                                                       :tag "Database name"
+                                                                                       :type :ref
+                                                                                       :value :cloud-provider.aws.environment.prod.rds/name}
+                                                                                      {:name :port
+                                                                                       :tag "Database port"
+                                                                                       :type :ref
+                                                                                       :value :cloud-provider.aws.environment.prod.rds/port}
+                                                                                      {:name :app-user
+                                                                                       :tag "Persistence Database Application User configuration"
+                                                                                       :type :plain-group
+                                                                                       :value [{:name :username
+                                                                                                :tag "Database Application user's username "
+                                                                                                :type :string
+                                                                                                :value "app"}
+                                                                                               {:name :password
+                                                                                                :tag "Database Application user's password"
+                                                                                                :type :auto-gen-password
+                                                                                                :value {:length 24}}
+                                                                                               {:name :schema
+                                                                                                :tag "Database Application schema"
+                                                                                                :type :string
+                                                                                                :value "app"}]}]}]}]}]}]}]}]}
+
                      {:name :bi-grafana
                       :tag "Grafana"
                       :type :plain-group
-                      :value [{:name :environment
-                               :tag "Environment"
+                      :value [{:name :version
+                               :tag "Grafana version"
+                               :type :string
+                               :value "8.2.6"}
+                              {:name :deployment
                                :type :plain-group
                                :value [{:name :to-develop
                                         :type :single-choice-group
                                         :tag "Development-related options"
                                         :value :container
-                                        :choices [{:name :external
+                                        :choices [{:name :container
                                                    :type :plain-group
-                                                   :tag "External"
-                                                   :value [{:name :dev
+                                                   :value [{:name :deployment-type
+                                                            :type :keyword
+                                                            :value :container}
+                                                           {:name :environment
                                                             :type :plain-group
-                                                            :tag "Dev"
-                                                            :value [{:name :uri
-                                                                     :type :string
-                                                                     :tag "URI"
-                                                                     :value "http://localhost/grafana"}
-                                                                    {:name :app-integration
+                                                            :value [{:name :dev
+                                                                     :tag "Test Environment"
                                                                      :type :plain-group
-                                                                     :tag "App integration"
-                                                                     :value [{:name :username
+                                                                     ;; TODO: decide if we need it here or we get it from the code directly.
+                                                                     :value [{:name :server-domain
                                                                               :type :string
-                                                                              :tag "User name"
-                                                                              :value "grafana_integration"}
-                                                                             {:name :password
-                                                                              :type :password
-                                                                              :tag "Password"
-                                                                              :value ""}]}]}]}
-                                                  {:name :container
-                                                   :type :plain-group
-                                                   :tag "Container"
-                                                   :value [{:name :dev
-                                                            :tag "Dev Environment"
-                                                            :type :plain-group
-                                                            :value [{:name :server-domain
-                                                                     :type :string
-                                                                     :tag "Server domain"
-                                                                     :value "localhost"}
-                                                                    {:name :security-admin
-                                                                     :tag "Security Admin"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :type :string
-                                                                              :tag "User name"
-                                                                              :value "admin"}
-                                                                             {:name :password
-                                                                              :type :auto-gen-password
-                                                                              :tag "Password"
-                                                                              :value {:length 24}}]}
-                                                                    {:name :database
-                                                                     :tag "Database configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Username"
-                                                                              :type :string
-                                                                              :value "grafana"}
-                                                                             {:name :password
-                                                                              :tag "Password"
-                                                                              :type :auto-gen-password
-                                                                              :value {:length 24}}
-                                                                             {:name :schema
-                                                                              :tag "Schema"
-                                                                              :type :string
-                                                                              :value "grafana"}]}
-                                                                    {:name :datasource
-                                                                     :tag "Datasource"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Username"
-                                                                              :type :string
-                                                                              :value "grafana_data_source"}
-                                                                             {:name :password
-                                                                              :tag "Password"
-                                                                              :type :auto-gen-password
-                                                                              :value {:length 24}}
-                                                                             {:name :timescaledb
-                                                                              :tag "TimescaleDB"
+                                                                              :tag "Server domain"
+                                                                              :value :project.proxy.dev/domain}
+                                                                             {:name :sso
                                                                               :type :boolean
-                                                                              :value false}]}
-                                                                    {:name :uri
-                                                                     :type :string
-                                                                     :tag "URI"
-                                                                     :value "http://grafana:4000"}
-                                                                    {:name :app-integration
+                                                                              :tag "Single sign on"
+                                                                              :value true}
+                                                                             {:name :admin-user
+                                                                              :type :plain-group
+                                                                              :value [{:name :username
+                                                                                       :type :string
+                                                                                       :tag "User name"
+                                                                                       :value "admin"}
+                                                                                      {:name :password
+                                                                                       :type :auto-gen-password
+                                                                                       :tag "Password"
+                                                                                       :value {:length 24}}]}
+                                                                             {:name :database
+                                                                              :tag "Database configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :host
+                                                                                       :tag "Host"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database/host}
+                                                                                      {:name :port
+                                                                                       :tag "Port"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database/port}
+                                                                                      {:name :name
+                                                                                       :tag "Name"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database/name}
+                                                                                      {:name :username
+                                                                                       :tag "Username"
+                                                                                       :type :string
+                                                                                       :value "grafana"}
+                                                                                      {:name :password
+                                                                                       :tag "Password"
+                                                                                       :type :auto-gen-password
+                                                                                       :value {:length 24}}
+                                                                                      {:name :schema
+                                                                                       :tag "Schema"
+                                                                                       :type :string
+                                                                                       :value "grafana"}]}
+                                                                             {:name :app-integration
+                                                                              :type :plain-group
+                                                                              :tag "App integration"
+                                                                              :value [{:name :username
+                                                                                       :type :string
+                                                                                       :tag "User name"
+                                                                                       :value "grafana_integration"}
+                                                                                      {:name :password
+                                                                                       :type :auto-gen-password
+                                                                                       :tag "Password"
+                                                                                       :value {:length 24}}]}
+                                                                             {:name :oidc
+                                                                              :type :single-choice-group
+                                                                              :value :keycloak-profile
+                                                                              :choices [{:name :keycloak-profile
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :token-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-develop.?.environment.dev/token-url}
+                                                                                                 {:name :api-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-develop.?.environment.dev/api-url}
+                                                                                                 {:name :auth-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-develop.?.environment.dev/auth-url}
+                                                                                                 {:name :client-id
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-develop.?.environment.dev.other-clients.grafana/id}
+                                                                                                 {:name :client-secret
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-develop.?.environment.dev.other-clients.grafana/secret}]}]}]}]}]}
+                                                  {:name :external
+                                                   :type :plain-group
+                                                   :value [{:name :deployment-type
+                                                            :type :string
+                                                            :value :external}
+                                                           {:name :environment
+                                                            :type :plain-group
+                                                            :value [{:name :dev
                                                                      :type :plain-group
-                                                                     :tag "App integration"
-                                                                     :value [{:name :username
+                                                                     :tag "Dev"
+                                                                     :value [{:name :uri
                                                                               :type :string
-                                                                              :tag "User name"
-                                                                              :value "grafana_integration"}
-                                                                             {:name :password
-                                                                              :type :auto-gen-password
-                                                                              :tag "Password"
-                                                                              :value {:length 24}}]}]}]}]}
+                                                                              :tag "URI"
+                                                                              :value "http://localhost/grafana"}
+                                                                             {:name :sso
+                                                                              :type :boolean
+                                                                              :tag "Single sign on"
+                                                                              :value true}
+                                                                             {:name :app-integration
+                                                                              :type :plain-group
+                                                                              :tag "App integration"
+                                                                              :value [{:name :username
+                                                                                       :type :string
+                                                                                       :tag "User name"
+                                                                                       :value "grafana_integration"}
+                                                                                      {:name :password
+                                                                                       :type :password
+                                                                                       :tag "Password"
+                                                                                       :value ""}]}]}]}]}]}
                                        {:name :to-deploy
                                         :type :single-choice-group
-                                        :tag "Deployment env related options"
+                                        :tag "Deployment-related options"
                                         :value :container
-                                        :choices [{:name :external
+                                        :choices [{:name :container
                                                    :type :plain-group
-                                                   :tag "External"
-                                                   :value [{:name :test
+                                                   :value [{:name :deployment-type
+                                                            :type :keyword
+                                                            :value :container}
+                                                           {:name :environment
                                                             :type :plain-group
-                                                            :tag "Test"
-                                                            :value [{:name :uri
-                                                                     :type :string
-                                                                     :tag "URI"
-                                                                     :value "http://localhost/grafana"}
-                                                                    {:name :app-integration
+                                                            :value [{:name :test
+                                                                     :tag "Test Environment"
                                                                      :type :plain-group
-                                                                     :tag "App integration"
-                                                                     :value [{:name :username
+                                                                     :value [{:name :server-domain
                                                                               :type :string
-                                                                              :tag "User name"
-                                                                              :value "grafana_integration"}
-                                                                             {:name :password
-                                                                              :type :password
-                                                                              :tag "Password"
-                                                                              :value ""}]}]}
-                                                           {:name :prod
-                                                            :type :plain-group
-                                                            :tag "Prod"
-                                                            :value [{:name :uri
-                                                                     :type :string
-                                                                     :tag "URI"
-                                                                     :value "http://localhost/grafana"}
-                                                                    {:name :app-integration
+                                                                              :tag "Server domain"
+                                                                              :value :project.proxy.test/domain}
+                                                                             {:name :sso
+                                                                              :type :boolean
+                                                                              :tag "Single sign on"
+                                                                              :value true}
+                                                                             {:name :admin-user
+                                                                              :type :plain-group
+                                                                              :value [{:name :username
+                                                                                       :type :string
+                                                                                       :tag "User name"
+                                                                                       :value "admin"}
+                                                                                      {:name :password
+                                                                                       :type :auto-gen-password
+                                                                                       :tag "Password"
+                                                                                       :value {:length 24}}]}
+                                                                             {:name :database
+                                                                              :tag "Database configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :host
+                                                                                       :tag "Host"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database/host}
+                                                                                      {:name :port
+                                                                                       :tag "Port"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database/port}
+                                                                                      {:name :name
+                                                                                       :tag "Name"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database/name}
+                                                                                      {:name :username
+                                                                                       :tag "Username"
+                                                                                       :type :string
+                                                                                       :value "grafana"}
+                                                                                      {:name :password
+                                                                                       :tag "Password"
+                                                                                       :type :auto-gen-password
+                                                                                       :value {:length 24}}
+                                                                                      {:name :schema
+                                                                                       :tag "Schema"
+                                                                                       :type :string
+                                                                                       :value "grafana"}]}
+                                                                             {:name :app-integration
+                                                                              :type :plain-group
+                                                                              :tag "App integration"
+                                                                              :value [{:name :username
+                                                                                       :type :string
+                                                                                       :tag "User name"
+                                                                                       :value "grafana_integration"}
+                                                                                      {:name :password
+                                                                                       :type :auto-gen-password
+                                                                                       :tag "Password"
+                                                                                       :value {:length 24}}]}
+                                                                             {:name :oidc
+                                                                              :type :single-choice-group
+                                                                              :value :keycloak-profile
+                                                                              :choices [{:name :keycloak-profile
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :token-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.test/token-url}
+                                                                                                 {:name :api-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.test/api-url}
+                                                                                                 {:name :auth-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.test/auth-url}
+                                                                                                 {:name :client-id
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.test.other-clients.grafana/id}
+                                                                                                 {:name :client-secret
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.test.other-clients.grafana/secret}]}]}]}
+                                                                    {:name :prod
+                                                                     :tag "Prod Environment"
                                                                      :type :plain-group
-                                                                     :tag "App integration"
-                                                                     :value [{:name :username
+                                                                     :value [{:name :server-domain
                                                                               :type :string
-                                                                              :tag "User name"
-                                                                              :value "grafana_integration"}
-                                                                             {:name :password
-                                                                              :type :password
-                                                                              :tag "Password"
-                                                                              :value ""}]}]}]}
-                                                  {:name :container
+                                                                              :tag "Server domain"
+                                                                              :value :project.proxy.prod/domain}
+                                                                             {:name :sso
+                                                                              :type :boolean
+                                                                              :tag "Single sign on"
+                                                                              :value true}
+                                                                             {:name :admin-user
+                                                                              :type :plain-group
+                                                                              :value [{:name :username
+                                                                                       :type :string
+                                                                                       :tag "User name"
+                                                                                       :value "admin"}
+                                                                                      {:name :password
+                                                                                       :type :auto-gen-password
+                                                                                       :tag "Password"
+                                                                                       :value {:length 24}}]}
+                                                                             {:name :database
+                                                                              :tag "Database configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :host
+                                                                                       :tag "Host"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database/host}
+                                                                                      {:name :port
+                                                                                       :tag "Port"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database/port}
+                                                                                      {:name :name
+                                                                                       :tag "Name"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database/name}
+                                                                                      {:name :username
+                                                                                       :tag "Username"
+                                                                                       :type :string
+                                                                                       :value "grafana"}
+                                                                                      {:name :password
+                                                                                       :tag "Password"
+                                                                                       :type :auto-gen-password
+                                                                                       :value {:length 24}}
+                                                                                      {:name :schema
+                                                                                       :tag "Schema"
+                                                                                       :type :string
+                                                                                       :value "grafana"}]}
+                                                                             {:name :app-integration
+                                                                              :type :plain-group
+                                                                              :tag "App integration"
+                                                                              :value [{:name :username
+                                                                                       :type :string
+                                                                                       :tag "User name"
+                                                                                       :value "grafana_integration"}
+                                                                                      {:name :password
+                                                                                       :type :auto-gen-password
+                                                                                       :tag "Password"
+                                                                                       :value {:length 24}}]}
+                                                                             {:name :oidc
+                                                                              :type :single-choice-group
+                                                                              :value :keycloak-profile
+                                                                              :choices [{:name :keycloak-profile
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :token-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.prod/token-url}
+                                                                                                 {:name :api-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.prod/api-url}
+                                                                                                 {:name :auth-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.prod/auth-url}
+                                                                                                 {:name :client-id
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.prod.other-clients.grafana/id}
+                                                                                                 {:name :client-secret
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.prod.other-clients.grafana/secret}]}]}]}]}]}
+                                                  {:name :external
                                                    :type :plain-group
-                                                   :tag "Container"
-                                                   :value [{:name :test
-                                                            :tag "Test Environment"
+                                                   :value [{:name :deployment-type
+                                                            :type :string
+                                                            :value :external}
+                                                           {:name :environment
                                                             :type :plain-group
-                                                            :value [{:name :server-domain
-                                                                     :type :string
-                                                                     :tag "Server domain"
-                                                                     :value "localhost"}
-                                                                    {:name :security-admin
-                                                                     :tag "Security Admin"
+                                                            :value [{:name :test
                                                                      :type :plain-group
-                                                                     :value [{:name :username
+                                                                     :tag "Test"
+                                                                     :value [{:name :uri
                                                                               :type :string
-                                                                              :tag "User name"
-                                                                              :value "admin"}
-                                                                             {:name :password
-                                                                              :type :auto-gen-password
-                                                                              :tag "Password"
-                                                                              :value {:length 24}}]}
-                                                                    {:name :database
-                                                                     :tag "Database configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Username"
-                                                                              :type :string
-                                                                              :value "grafana"}
-                                                                             {:name :password
-                                                                              :tag "Password"
-                                                                              :type :auto-gen-password
-                                                                              :value {:length 24}}
-                                                                             {:name :schema
-                                                                              :tag "Schema"
-                                                                              :type :string
-                                                                              :value "grafana"}]}
-                                                                    {:name :datasource
-                                                                     :tag "Datasource"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Username"
-                                                                              :type :string
-                                                                              :value "grafana_data_source"}
-                                                                             {:name :password
-                                                                              :tag "Password"
-                                                                              :type :auto-gen-password
-                                                                              :value {:length 24}}
-                                                                             {:name :timescaledb
-                                                                              :tag "TimescaleDB"
+                                                                              :tag "URI"
+                                                                              :value "http://localhost/grafana"}
+                                                                             {:name :sso
                                                                               :type :boolean
-                                                                              :value false}]}
-                                                                    {:name :uri
-                                                                     :type :string
-                                                                     :tag "URI"
-                                                                     :value "http://grafana:4000"}
-                                                                    {:name :app-integration
+                                                                              :tag "Single sign on"
+                                                                              :value true}
+                                                                             {:name :app-integration
+                                                                              :type :plain-group
+                                                                              :tag "App integration"
+                                                                              :value [{:name :username
+                                                                                       :type :string
+                                                                                       :tag "User name"
+                                                                                       :value "grafana_integration"}
+                                                                                      {:name :password
+                                                                                       :type :password
+                                                                                       :tag "Password"
+                                                                                       :value ""}]}]}
+                                                                    {:name :prod
                                                                      :type :plain-group
-                                                                     :tag "App integration"
-                                                                     :value [{:name :username
+                                                                     :tag "Prod"
+                                                                     :value [{:name :uri
                                                                               :type :string
-                                                                              :tag "User name"
-                                                                              :value "grafana_integration"}
-                                                                             {:name :password
-                                                                              :type :auto-gen-password
-                                                                              :tag "Password"
-                                                                              :value {:length 24}}]}]}
-                                                           {:name :prod
-                                                            :tag "Prod Environment"
-                                                            :type :plain-group
-                                                            :value [{:name :server-domain
-                                                                     :type :string
-                                                                     :tag "Server domain"
-                                                                     :value "localhost"}
-                                                                    {:name :security-admin
-                                                                     :tag "Security Admin"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :type :string
-                                                                              :tag "User name"
-                                                                              :value "admin"}
-                                                                             {:name :password
-                                                                              :type :auto-gen-password
-                                                                              :tag "Password"
-                                                                              :value {:length 24}}]}
-                                                                    {:name :database
-                                                                     :tag "Database configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Username"
-                                                                              :type :string
-                                                                              :value "grafana"}
-                                                                             {:name :password
-                                                                              :tag "Password"
-                                                                              :type :auto-gen-password
-                                                                              :value {:length 24}}
-                                                                             {:name :schema
-                                                                              :tag "Schema"
-                                                                              :type :string
-                                                                              :value "grafana"}]}
-                                                                    {:name :datasource
-                                                                     :tag "Datasource"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Username"
-                                                                              :type :string
-                                                                              :value "grafana_data_source"}
-                                                                             {:name :password
-                                                                              :tag "Password"
-                                                                              :type :auto-gen-password
-                                                                              :value {:length 24}}
-                                                                             {:name :timescaledb
-                                                                              :tag "TimescaleDB"
+                                                                              :tag "URI"
+                                                                              :value "http://localhost/grafana"}
+                                                                             {:name :sso
                                                                               :type :boolean
-                                                                              :value false}]}
-                                                                    {:name :uri
-                                                                     :type :string
-                                                                     :tag "URI"
-                                                                     :value "http://grafana:4000"}
-                                                                    {:name :app-integration
-                                                                     :type :plain-group
-                                                                     :tag "App integration"
-                                                                     :value [{:name :username
-                                                                              :type :string
-                                                                              :tag "User name"
-                                                                              :value "grafana_integration"}
-                                                                             {:name :password
-                                                                              :type :auto-gen-password
-                                                                              :tag "Password"
-                                                                              :value {:length 24}}]}]}]}]}]}]}
+                                                                              :tag "Single sign on"
+                                                                              :value true}
+                                                                             {:name :app-integration
+                                                                              :type :plain-group
+                                                                              :tag "App integration"
+                                                                              :value [{:name :username
+                                                                                       :type :string
+                                                                                       :tag "User name"
+                                                                                       :value "grafana_integration"}
+                                                                                      {:name :password
+                                                                                       :type :password
+                                                                                       :tag "Password"
+                                                                                       :value ""}]}]}]}]}]}]}]}
                      {:name :auth-keycloak
                       :tag "Keycloak"
                       :type :plain-group
@@ -419,236 +568,352 @@
                                :tag "Keycloak version"
                                :type :string
                                :value "20.0"}
-                              {:name :environment
-                               :tag "Environment"
+                              {:name :deployment
+                               :tag "Deployment"
                                :type :plain-group
                                :value [{:name :to-develop
                                         :type :single-choice-group
-                                        :tag "Development-related options"
                                         :value :container
-                                        :choices [{:name :external
+                                        :choices [{:name :container
                                                    :type :plain-group
-                                                   :tag "External"
-                                                   :value [{:name :dev
+                                                   :value [{:name :deployment-type
+                                                            :type :keyword
+                                                            :value :container}
+                                                           {:name :environment
                                                             :type :plain-group
-                                                            :tag "Dev"
-                                                            :value [{:name :realm
-                                                                     :tag "Realm configuration"
+                                                            :value [{:name :dev
                                                                      :type :plain-group
-                                                                     :value [{:name :name
-                                                                              :tag "Realm name"
-                                                                              :type :string
-                                                                              :value "hop"}]}
-                                                                    {:name :frontend-url
-                                                                     :tag "Keycloak frontend URL"
-                                                                     :type :string
-                                                                     :value "http://localhost/auth"}
-                                                                    {:name :client-id
-                                                                     :tag "Application client-id"
-                                                                     :type :string
-                                                                     :value "hop-spa-12345678"}]}]}
-                                                  {:name :container
+                                                                     :value [{:name :admin
+                                                                              :tag "Admin configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :username
+                                                                                       :tag "Admin username"
+                                                                                       :type :string
+                                                                                       :value "admin"}
+                                                                                      {:name :password
+                                                                                       :tag "Admin password"
+                                                                                       :type :string
+                                                                                       :value "Testpassword1!"}]}
+                                                                             {:name :app-client
+                                                                              :tag "Application client-id"
+                                                                              :type :plain-group
+                                                                              :value [{:name :id
+                                                                                       :type :string
+                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                             {:name :other-clients
+                                                                              :tag "Other clients"
+                                                                              :type :multiple-choice-group
+                                                                              :value [:grafana]
+                                                                              :choices [{:name :grafana
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :id
+                                                                                                  :type :string
+                                                                                                  :value "hop-grafana-XXXXXXX"}
+                                                                                                 {:name :secret
+                                                                                                  :type :auto-gen-password
+                                                                                                  :value {:length 32}}]}]}
+                                                                             {:name :realm
+                                                                              :tag "Realm configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Realm name"
+                                                                                       :type :string
+                                                                                       :value "hop"}]}
+                                                                             {:name :theme
+                                                                              :tag "Theme configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Theme name"
+                                                                                       :type :string
+                                                                                       :value "hop"}]}
+                                                                             {:name :database
+                                                                              :tag "Database configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :host
+                                                                                       :tag "Host"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database/host}
+                                                                                      {:name :port
+                                                                                       :tag "Port"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database/port}
+                                                                                      {:name :name
+                                                                                       :tag "Name"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database/name}
+                                                                                      {:name :username
+                                                                                       :tag "Username"
+                                                                                       :type :string
+                                                                                       :value "keycloak"}
+                                                                                      {:name :password
+                                                                                       :tag "Password"
+                                                                                       :type :string
+                                                                                       :value "sa"}
+                                                                                      {:name :schema
+                                                                                       :tag "Schema"
+                                                                                       :type :string
+                                                                                       :value "keycloak"}]}]}]}]}
+                                                  {:name :external
                                                    :type :plain-group
-                                                   :tag "Container"
-                                                   :value [{:name :dev
-                                                            :tag "Dev Environment"
+                                                   :value [{:name :deployment-type
+                                                            :type :string
+                                                            :value :external}
+                                                           {:name :environment
                                                             :type :plain-group
-                                                            :value [{:name :admin
-                                                                     :tag "Admin configuration"
+                                                            :value [{:name :dev
                                                                      :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Admin username"
+                                                                     :value [{:name :realm
+                                                                              :tag "Realm configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Realm name"
+                                                                                       :type :string
+                                                                                       :value "hop"}]}
+                                                                             {:name :uri
+                                                                              :tag "Keycloak URI"
                                                                               :type :string
-                                                                              :value "admin"}
-                                                                             {:name :password
-                                                                              :tag "Admin password"
-                                                                              :type :string
-                                                                              :value "Testpassword1!"}]}
-                                                                    {:name :frontend-url
-                                                                     :tag "Keycloak frontend-url"
-                                                                     :type :string
-                                                                     :value "http://localhost/auth"}
-                                                                    {:name :client-id
-                                                                     :tag "Application client-id"
-                                                                     :type :string
-                                                                     :value "hop-spa-12345678"}
-                                                                    {:name :realm
-                                                                     :tag "Realm configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :name
-                                                                              :tag "Realm name"
-                                                                              :type :string
-                                                                              :value "hop"}]}
-                                                                    {:name :theme
-                                                                     :tag "Theme configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :name
-                                                                              :tag "Theme name"
-                                                                              :type :string
-                                                                              :value "hop"}]}
-                                                                    {:name :database
-                                                                     :tag "Database configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Username"
-                                                                              :type :string
-                                                                              :value "keycloak"}
-                                                                             {:name :password
-                                                                              :tag "Password"
-                                                                              :type :string
-                                                                              :value "sa"}
-                                                                             {:name :schema
-                                                                              :tag "Schema"
-                                                                              :type :string
-                                                                              :value "keycloak"}]}]}]}]}
+                                                                              :value "http://localhost/auth"}
+                                                                             {:name :app-client
+                                                                              :tag "Application client-id"
+                                                                              :type :plain-group
+                                                                              :value [{:name :id
+                                                                                       :type :string
+                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                             {:name :other-clients
+                                                                              :tag "Other clients"
+                                                                              :type :multiple-choice-group
+                                                                              :value [:grafana]
+                                                                              :choices [{:name :grafana
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :id
+                                                                                                  :type :string
+                                                                                                  :value "hop-grafana-XXXXXXX"}
+                                                                                                 {:name :secret
+                                                                                                  :type :auto-gen-password
+                                                                                                  :value {:length 32}}]}]}]}]}]}]}
                                        {:name :to-deploy
                                         :type :single-choice-group
-                                        :tag "Deployment env related options"
                                         :value :container
-                                        :choices [{:name :external
+                                        :choices [{:name :container
                                                    :type :plain-group
-                                                   :tag "External"
-                                                   :value [{:name :test
+                                                   :value [{:name :deployment-type
+                                                            :type :keyword
+                                                            :value :container}
+                                                           {:name :environment
                                                             :type :plain-group
-                                                            :tag "Test"
-                                                            :value [{:name :realm
-                                                                     :tag "Realm configuration"
+                                                            :value [{:name :test
                                                                      :type :plain-group
-                                                                     :value [{:name :name
-                                                                              :tag "Realm name"
-                                                                              :type :string
-                                                                              :value "hop"}]}
-                                                                    {:name :frontend-url
-                                                                     :tag "Keycloak frontend URL"
-                                                                     :type :string
-                                                                     :value "http://localhost/auth"}
-                                                                    {:name :client-id
-                                                                     :tag "Application client-id"
-                                                                     :type :string
-                                                                     :value "hop-spa-12345678"}]}
-                                                           {:name :prod
-                                                            :type :plain-group
-                                                            :tag "Prod"
-                                                            :value [{:name :realm
-                                                                     :tag "Realm configuration"
+                                                                     :value [{:name :admin
+                                                                              :tag "Admin configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :username
+                                                                                       :tag "Admin username"
+                                                                                       :type :string
+                                                                                       :value "admin"}
+                                                                                      {:name :password
+                                                                                       :tag "Admin password"
+                                                                                       :type :auto-gen-password
+                                                                                       :value {:length 24}}]}
+                                                                             {:name :app-client
+                                                                              :tag "Application client-id"
+                                                                              :type :plain-group
+                                                                              :value [{:name :id
+                                                                                       :type :string
+                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                             {:name :other-clients
+                                                                              :tag "Other clients"
+                                                                              :type :multiple-choice-group
+                                                                              :value [:grafana]
+                                                                              :choices [{:name :grafana
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :id
+                                                                                                  :type :string
+                                                                                                  :value "hop-grafana-XXXXXXX"}
+                                                                                                 {:name :secret
+                                                                                                  :type :auto-gen-password
+                                                                                                  :value {:length 32}}]}]}
+                                                                             {:name :realm
+                                                                              :tag "Realm configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Realm name"
+                                                                                       :type :string
+                                                                                       :value "hop"}]}
+                                                                             {:name :theme
+                                                                              :tag "Theme configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Theme name"
+                                                                                       :type :string
+                                                                                       :value "hop"}]}
+                                                                             {:name :database
+                                                                              :tag "Database configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :host
+                                                                                       :tag "Host"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database/host}
+                                                                                      {:name :port
+                                                                                       :tag "Port"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database/port}
+                                                                                      {:name :name
+                                                                                       :tag "Name"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database/name}
+                                                                                      {:name :username
+                                                                                       :tag "Username"
+                                                                                       :type :string
+                                                                                       :value "keycloak"}
+                                                                                      {:name :password
+                                                                                       :tag "Password"
+                                                                                       :type :auto-gen-password
+                                                                                       :value {:length 24}}
+                                                                                      {:name :schema
+                                                                                       :tag "Schema"
+                                                                                       :type :string
+                                                                                       :value "keycloak"}]}]}
+                                                                    {:name :prod
                                                                      :type :plain-group
-                                                                     :value [{:name :name
-                                                                              :tag "Realm name"
-                                                                              :type :string
-                                                                              :value "hop"}]}
-                                                                    {:name :frontend-url
-                                                                     :tag "Keycloak frontend URL"
-                                                                     :type :string
-                                                                     :value "http://localhost/auth"}
-                                                                    {:name :client-id
-                                                                     :tag "Application client-id"
-                                                                     :type :string
-                                                                     :value "hop-spa-12345678"}]}]}
-                                                  {:name :container
+                                                                     :value [{:name :admin
+                                                                              :tag "Admin configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :username
+                                                                                       :tag "Admin username"
+                                                                                       :type :string
+                                                                                       :value "admin"}
+                                                                                      {:name :password
+                                                                                       :tag "Admin password"
+                                                                                       :type :auto-gen-password
+                                                                                       :value {:length 24}}]}
+                                                                             {:name :app-client
+                                                                              :tag "Application client-id"
+                                                                              :type :plain-group
+                                                                              :value [{:name :id
+                                                                                       :type :string
+                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                             {:name :other-clients
+                                                                              :tag "Other clients"
+                                                                              :type :multiple-choice-group
+                                                                              :value [:grafana]
+                                                                              :choices [{:name :grafana
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :id
+                                                                                                  :type :string
+                                                                                                  :value "hop-grafana-XXXXXXX"}
+                                                                                                 {:name :secret
+                                                                                                  :type :auto-gen-password
+                                                                                                  :value {:length 32}}]}]}
+                                                                             {:name :realm
+                                                                              :tag "Realm configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Realm name"
+                                                                                       :type :string
+                                                                                       :value "hop"}]}
+                                                                             {:name :theme
+                                                                              :tag "Theme configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Theme name"
+                                                                                       :type :string
+                                                                                       :value "hop"}]}
+                                                                             {:name :database
+                                                                              :tag "Database configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :host
+                                                                                       :tag "Host"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database/host}
+                                                                                      {:name :port
+                                                                                       :tag "Port"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database/port}
+                                                                                      {:name :name
+                                                                                       :tag "Name"
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database/name}
+                                                                                      {:name :username
+                                                                                       :tag "Username"
+                                                                                       :type :string
+                                                                                       :value "keycloak"}
+                                                                                      {:name :password
+                                                                                       :tag "Password"
+                                                                                       :type :auto-gen-password
+                                                                                       :value {:length 24}}
+                                                                                      {:name :schema
+                                                                                       :tag "Schema"
+                                                                                       :type :string
+                                                                                       :value "keycloak"}]}]}]}]}
+                                                  {:name :external
                                                    :type :plain-group
-                                                   :tag "Container"
-                                                   :value [{:name :test
+                                                   :value [{:name :deployment-type
+                                                            :type :keyword
+                                                            :value :external}
+                                                           {:name :environment
                                                             :type :plain-group
-                                                            :tag "Test"
-                                                            :value [{:name :admin
-                                                                     :tag "Admin configuration"
+                                                            :value [{:name :test
                                                                      :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Admin username"
+                                                                     :value [{:name :realm
+                                                                              :tag "Realm configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Realm name"
+                                                                                       :type :string
+                                                                                       :value "hop"}]}
+                                                                             {:name :uri
+                                                                              :tag "Keycloak URI"
                                                                               :type :string
-                                                                              :value "admin"}
-                                                                             {:name :password
-                                                                              :tag "Admin password"
-                                                                              :type :auto-gen-password
-                                                                              :value {:length 24}}]}
-                                                                    {:name :frontend-url
-                                                                     :tag "Keycloak frontend-url"
-                                                                     :type :string
-                                                                     :value "http://localhost/auth"}
-                                                                    {:name :client-id
-                                                                     :tag "Application client-id"
-                                                                     :type :string
-                                                                     :value "hop-spa-12345678"}
-                                                                    {:name :realm
-                                                                     :tag "Realm configuration"
+                                                                              :value "http://localhost/auth"}
+                                                                             {:name :app-client
+                                                                              :tag "Application client-id"
+                                                                              :type :plain-group
+                                                                              :value [{:name :id
+                                                                                       :type :string
+                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                             {:name :other-clients
+                                                                              :tag "Other clients"
+                                                                              :type :multiple-choice-group
+                                                                              :value [:grafana]
+                                                                              :choices [{:name :grafana
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :id
+                                                                                                  :type :string
+                                                                                                  :value "hop-grafana-XXXXXXX"}
+                                                                                                 {:name :secret
+                                                                                                  :type :auto-gen-password
+                                                                                                  :value {:length 32}}]}]}]}
+                                                                    {:name :prod
                                                                      :type :plain-group
-                                                                     :value [{:name :name
-                                                                              :tag "Realm name"
+                                                                     :value [{:name :realm
+                                                                              :tag "Realm configuration"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Realm name"
+                                                                                       :type :string
+                                                                                       :value "hop"}]}
+                                                                             {:name :uri
+                                                                              :tag "Keycloak URI"
                                                                               :type :string
-                                                                              :value "hop"}]}
-                                                                    {:name :theme
-                                                                     :tag "Theme configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :name
-                                                                              :tag "Theme name"
-                                                                              :type :string
-                                                                              :value "hop"}]}
-                                                                    {:name :database
-                                                                     :tag "Database configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Username"
-                                                                              :type :string
-                                                                              :value "keycloak"}
-                                                                             {:name :password
-                                                                              :tag "Password"
-                                                                              :type :auto-gen-password
-                                                                              :value {:length 24}}
-                                                                             {:name :schema
-                                                                              :tag "Schema"
-                                                                              :type :string
-                                                                              :value "keycloak"}]}]}
-                                                           {:name :prod
-                                                            :type :plain-group
-                                                            :tag "Prod"
-                                                            :value [{:name :admin
-                                                                     :tag "Admin configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Admin username"
-                                                                              :type :string
-                                                                              :value "admin"}
-                                                                             {:name :password
-                                                                              :tag "Admin password"
-                                                                              :type :auto-gen-password
-                                                                              :value {:length 24}}]}
-                                                                    {:name :frontend-url
-                                                                     :tag "Keycloak frontend-url"
-                                                                     :type :string
-                                                                     :value "http://localhost/auth"}
-                                                                    {:name :client-id
-                                                                     :tag "Application client-id"
-                                                                     :type :string
-                                                                     :value "hop-spa-12345678"}
-                                                                    {:name :realm
-                                                                     :tag "Realm configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :name
-                                                                              :tag "Realm name"
-                                                                              :type :string
-                                                                              :value "hop"}]}
-                                                                    {:name :theme
-                                                                     :tag "Theme configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :name
-                                                                              :tag "Theme name"
-                                                                              :type :string
-                                                                              :value "hop"}]}
-                                                                    {:name :database
-                                                                     :tag "Database configuration"
-                                                                     :type :plain-group
-                                                                     :value [{:name :username
-                                                                              :tag "Username"
-                                                                              :type :string
-                                                                              :value "keycloak"}
-                                                                             {:name :password
-                                                                              :tag "Password"
-                                                                              :type :auto-gen-password
-                                                                              :value {:length 24}}
-                                                                             {:name :schema
-                                                                              :tag "Schema"
-                                                                              :type :string
-                                                                              :value "keycloak"}]}]}]}]}]}]}]}]}
+                                                                              :value "http://localhost/auth"}
+                                                                             {:name :app-client
+                                                                              :tag "Application client-id"
+                                                                              :type :plain-group
+                                                                              :value [{:name :id
+                                                                                       :type :string
+                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                             {:name :other-clients
+                                                                              :tag "Other clients"
+                                                                              :type :multiple-choice-group
+                                                                              :value [:grafana]
+                                                                              :choices [{:name :grafana
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :id
+                                                                                                  :type :string
+                                                                                                  :value "hop-grafana-XXXXXXX"}
+                                                                                                 {:name :secret
+                                                                                                  :type :auto-gen-password
+                                                                                                  :value {:length 32}}]}]}]}]}]}]}]}]}]}]}
  {:name :cloud-provider
   :tag "AWS infrastructure"
   :type :single-choice-group
@@ -726,6 +991,28 @@
                                         :tag "Notifications email"
                                         :type :string
                                         :value "devops+test@magnet.coop"}
+                                       {:name :rds
+                                        :tag "RDS"
+                                        :type :plain-group
+                                        :value [{:name :version
+                                                 :type :string
+                                                 :value "12"}
+                                                {:name :port
+                                                 :type :string
+                                                 :value "5432"}
+                                                {:name :name
+                                                 :type :string
+                                                 :value "ebdb"}
+                                                {:name :admin-user
+                                                 :type :plain-group
+                                                 :value [{:name :username
+                                                          :tag "Database admin username"
+                                                          :type :string
+                                                          :value "postgres"}
+                                                         {:name :password
+                                                          :tag "Database admin password"
+                                                          :type :auto-gen-password
+                                                          :value {:length 24}}]}]}
                                        {:name :kms
                                         :tag "KMS"
                                         :type :plain-group
@@ -744,6 +1031,28 @@
                                         :tag "Notifications email"
                                         :type :string
                                         :value "devops+prod@magnet.coop"}
+                                       {:name :rds
+                                        :tag "RDS"
+                                        :type :plain-group
+                                        :value [{:name :version
+                                                 :type :string
+                                                 :value "12"}
+                                                {:name :port
+                                                 :type :string
+                                                 :value "5432"}
+                                                {:name :name
+                                                 :type :string
+                                                 :value "ebdb"}
+                                                {:name :admin-user
+                                                 :type :plain-group
+                                                 :value [{:name :username
+                                                          :tag "Database admin username"
+                                                          :type :string
+                                                          :value "postgres"}
+                                                         {:name :password
+                                                          :tag "Database admin password"
+                                                          :type :auto-gen-password
+                                                          :value {:length 24}}]}]}
                                        {:name :kms
                                         :tag "KMS"
                                         :type :plain-group

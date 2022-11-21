@@ -1,11 +1,11 @@
 (ns hop-cli.bootstrap.infrastructure.aws
   (:require [clojure.java.io :as io]
-            [clojure.set :as set]
             [clojure.walk :as walk]
             [hop-cli.aws.api.ssm :as api.ssm]
             [hop-cli.aws.cloudformation :as aws.cloudformation]
             [hop-cli.aws.ssl :as aws.ssl]
             [hop-cli.bootstrap.infrastructure :as infrastructure]
+            [hop-cli.bootstrap.util :as bp.util]
             [hop-cli.util.thread-transactions :as tht]))
 
 (def ^:const cfn-templates-path
@@ -57,11 +57,11 @@
               :stack-name-kw :cloud-provider.aws.environment.test/stack-name
               :environment "test"
               :input-parameter-mapping
-              {:project.profiles.persistence-sql.database/version :DatabaseEngineVersion
-               :project.profiles.persistence-sql.test.database/port :DatabasePort
-               :project.profiles.persistence-sql.test.database/name :DatabaseName
-               :project.profiles.persistence-sql.test.admin-user/password :DatabasePassword
-               :project.profiles.persistence-sql.test.admin-user/username :DatabaseUsername
+              {:cloud-provider.aws.environment.test.rds/version :DatabaseEngineVersion
+               :cloud-provider.aws.environment.test.rds/port :DatabasePort
+               :cloud-provider.aws.environment.test.rds/name :DatabaseName
+               :cloud-provider.aws.environment.test.rds.admin-user/password :DatabasePassword
+               :cloud-provider.aws.environment.test.rds.admin-user/username :DatabaseUsername
                :cloud-provider.aws.environment.test/notifications-email :NotificationsEmail
                :cloud-provider.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
                :cloud-provider.aws.account.vpc/id :VpcId
@@ -74,7 +74,7 @@
               {:CognitoUserPoolId :cloud-provider.aws.environment.test.cognito/user-pool-id
                :CognitoUserPoolURL :cloud-provider.aws.environment.test.cognito/user-pool-url
                :CognitoSPAClientId :cloud-provider.aws.environment.test.cognito/spa-client-id
-               :RdsAddress :project.profiles.persistence-sql.test.database/host
+               :RdsAddress :cloud-provider.aws.environment.test.rds/host
                :EbEnvironmentName :cloud-provider.aws.environment.test.eb/environment-name
                :EbEnvironmentURL :cloud-provider.aws.environment.test.eb/environment-url}}
 
@@ -83,11 +83,11 @@
               :stack-name-kw :cloud-provider.aws.environment.prod/stack-name
               :environment "prod"
               :input-parameter-mapping
-              {:project.profiles.persistence-sql.database/version :DatabaseEngineVersion
-               :project.profiles.persistence-sql.prod.database/port :DatabasePort
-               :project.profiles.persistence-sql.prod.database/name :DatabaseName
-               :project.profiles.persistence-sql.prod.admin-user/password :DatabasePassword
-               :project.profiles.persistence-sql.prod.admin-user/username :DatabaseUsername
+              {:cloud-provider.aws.environment.prod.rds/version :DatabaseEngineVersion
+               :cloud-provider.aws.environment.prod.rds/port :DatabasePort
+               :cloud-provider.aws.environment.prod.rds/name :DatabaseName
+               :cloud-provider.aws.environment.prod.rds.admin-user/password :DatabasePassword
+               :cloud-provider.aws.environment.prod.rds.admin-user/username :DatabaseUsername
                :cloud-provider.aws.environment.prod/notifications-email :NotificationsEmail
                :cloud-provider.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
                :cloud-provider.aws.account.vpc/id :VpcId
@@ -100,7 +100,7 @@
               {:CognitoUserPoolId :cloud-provider.aws.environment.prod.cognito/user-pool-id
                :CognitoUserPoolURL :cloud-provider.aws.environment.prod.cognito/user-pool-url
                :CognitoSPAClientId :cloud-provider.aws.environment.prod.cognito/spa-client-id
-               :RdsAddress :project.profiles.persistence-sql.prod.database/host
+               :RdsAddress :cloud-provider.aws.environment.prod.rds/host
                :EbEnvironmentName :cloud-provider.aws.environment.prod.eb/environment-name
                :EbEnvironmentURL :cloud-provider.aws.environment.prod.eb/environment-url}}})
 
@@ -124,17 +124,22 @@
         {:success? false
          :error-details result}))))
 
-(defn- select-and-rename-keys
+(defn select-and-rename-keys
   [m mapping]
-  (-> m
-      (select-keys (keys mapping))
-      (set/rename-keys mapping)))
+  (reduce-kv
+   (fn [r k1 k2]
+     (let [p1 (bp.util/settings-kw->settings-path k1)
+           p2 (bp.util/settings-kw->settings-path k2)
+           v (get-in m p1)]
+       (assoc-in r p2 v)))
+   {}
+   mapping))
 
 (defn- provision-cfn-stack
   [settings {:keys [input-parameter-mapping output-parameter-mapping stack-name-kw] :as template-opts}]
-  (let [stack-name (get settings stack-name-kw)
-        project-name (:project/name settings)
-        bucket-name (:cloud-provider.aws.cloudformation/template-bucket-name settings)
+  (let [stack-name (bp.util/get-settings-value settings stack-name-kw)
+        project-name (bp.util/get-settings-value settings :project/name)
+        bucket-name (bp.util/get-settings-value settings :cloud-provider.aws.cloudformation/template-bucket-name)
         parameters (select-and-rename-keys settings input-parameter-mapping)
         opts (assoc template-opts
                     :project-name project-name
@@ -248,12 +253,12 @@
 
 (defmethod infrastructure/save-environment-variables :aws
   [settings]
-  ;;TODO Fix this once we flatten the project settings coming from the profiles
-  (let [environment-variables (get-in settings [:project :environment-variables])
-        config {:project-name (:project/name settings)
-                :environment "test"
-                :kms-key-alias (:aws.environment.test.kms/key-alias settings)}
-        ssm-env-vars (->> environment-variables
+  (let [config {:environment "test"
+                :project-name
+                (bp.util/get-settings-value settings :project/name)
+                :kms-key-alias
+                (bp.util/get-settings-value settings :aws.environment.test.kms/key-alias)}
+        ssm-env-vars (->> (bp.util/get-settings-value settings :project/environment-variables)
                           :test
                           walk/stringify-keys
                           (map zipmap (repeat [:name :value]))

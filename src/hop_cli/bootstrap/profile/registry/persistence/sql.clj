@@ -1,9 +1,11 @@
 (ns hop-cli.bootstrap.profile.registry.persistence.sql
+  (:require [hop-cli.bootstrap.util :as bp.util]
+            [meta-merge.core :refer [meta-merge]])
   (:import [java.net URLEncoder]))
 
 (defn- sql-config
   [settings]
-  (let [project-name (get settings :project/name)]
+  (let [project-name (bp.util/get-settings-value settings :project/name)]
     {[(keyword (format "%s.boundary.adapter.persistence/sql" project-name))
       (keyword (format "%s.boundary.adapter.persistence/postgres" project-name))]
      (tagged-literal 'ig/ref :duct.database/sql)}))
@@ -18,8 +20,9 @@
 
 (defn- build-ragtime-config-key
   [settings environment]
-  [:duct.migrator/ragtime
-   (keyword (format "%s/%s" (:project/name settings) (name environment)))])
+  (let [project-name (bp.util/get-settings-value settings :project/name)]
+    [:duct.migrator/ragtime
+     (keyword (format "%s/%s" project-name (name environment)))]))
 
 (defn- ragtime-config
   [settings]
@@ -41,16 +44,29 @@
     (build-ragtime-config-key settings :prod)
     :migrations []}})
 
+(defn- build-container-env-variables
+  [settings env-path]
+  (let [port (bp.util/get-settings-value settings (conj env-path :database :port))
+        db (bp.util/get-settings-value settings (conj env-path :database :name))
+        admin-user (bp.util/get-settings-value settings (conj env-path :database :admin-user :username))
+        admin-password (bp.util/get-settings-value settings (conj env-path :database :admin-user :password))]
+    {:POSTGRES_PORT port
+     :POSTGRES_DB db
+     :POSTGRES_USER admin-user
+     :POSTGRES_PASSWORD admin-password}))
+
 (defn- build-env-variables
   [settings environment]
-  (let [base-path (str "project.profiles.persistence-sql.environment." (name environment))
-        host (get settings (keyword (str base-path ".database/host")))
-        port (get settings (keyword (str base-path ".database/port")))
-        db (get settings (keyword (str base-path ".database/name")))
-        admin-user (get settings (keyword (str base-path ".admin-user/username")))
-        admin-password (get settings (keyword (str base-path ".admin-user/password")))
-        app-user (get settings (keyword (str base-path ".app-user/username")))
-        app-password (get settings (keyword (str base-path ".app-user/password")))]
+  (let [base-path [:project :profiles :persistence-sql :deployment (bp.util/get-env-type environment) :?]
+        env-path (conj base-path :environment environment)
+        deploy-type (bp.util/get-settings-value settings (conj base-path :deployment-type))
+        host (if (= :container deploy-type)
+               "postgres"
+               (bp.util/get-settings-value settings (conj env-path :database :host)))
+        port (bp.util/get-settings-value settings (conj env-path :database :port))
+        db (bp.util/get-settings-value settings (conj env-path :database :name))
+        app-user (bp.util/get-settings-value settings (conj env-path :database :app-user :username))
+        app-password (bp.util/get-settings-value settings (conj env-path :database :app-user :password))]
     (cond->
      {:JDBC_DATABASE_URL
       (format
@@ -58,17 +74,37 @@
        host port db
        (URLEncoder/encode app-user "utf-8")
        (URLEncoder/encode app-password "utf-8"))}
-      (= :dev environment)
-      (assoc :POSTGRES_HOST host
-             :POSTGRES_PORT port
-             :POSTGRES_DB db
-             :POSTGRES_USER admin-user
-             :POSTGRES_PASSWORD admin-password))))
+      (= :container deploy-type)
+      (merge (build-container-env-variables settings env-path)))))
 
-(def ^:const docker-compose-files
-  {:to-develop ["docker-compose.postgres.common-dev-ci.yml"]
-   :ci ["docker-compose.postgres.common-dev-ci.yml"
-        "docker-compose.postgres.ci.yml"]})
+(defn- build-docker-compose-files
+  [settings]
+  (let [common ["docker-compose.postgres.yml"]
+        common-dev-ci ["docker-compose.postgres.common-dev-ci.yml"]
+        ci ["docker-compose.postgres.ci.yml"]]
+    (cond->  {:to-develop [] :ci [] :to-deploy []}
+      (= :container (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-develop.?/deployment-type))
+      (assoc :to-develop (concat common common-dev-ci)
+             :ci (concat common common-dev-ci ci)))))
+
+(defn- build-docker-files-to-copy
+  [settings]
+  (bp.util/build-profile-docker-files-to-copy
+   (build-docker-compose-files settings)
+   "persistence/sql/"
+   [{:src "persistence/sql/postgres" :dst "postgres"}]))
+
+(defn- build-profile-env-outputs
+  [settings env]
+  (when (and
+         (= :dev env)
+         (= :container (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-develop/value)))
+    {:deployment
+     {:to-develop
+      {:container
+       {:environment
+        {:dev
+         {:database {:host "postgres"}}}}}}}))
 
 (defn profile
   [settings]
@@ -82,5 +118,10 @@
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
-   :files [{:src "persistence/sql"}]
-   :docker-compose docker-compose-files})
+   :files (concat [{:src "persistence/sql/app" :dst "app"}]
+                  (build-docker-files-to-copy settings))
+   :docker-compose (build-docker-compose-files settings)
+   :outputs (meta-merge
+             (build-profile-env-outputs settings :dev)
+             (build-profile-env-outputs settings :test)
+             (build-profile-env-outputs settings :prod))})

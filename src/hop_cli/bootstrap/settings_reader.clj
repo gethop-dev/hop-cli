@@ -3,6 +3,8 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.walk :as walk]
+            [hop-cli.bootstrap.util :as bp.util]
+            [hop-cli.util :as util]
             [hop-cli.util.random :as util.random]
             [malli.core :as m])
   (:import (java.io PushbackReader)))
@@ -166,34 +168,52 @@
 (def settings-schema
   (m/schema [:vector {:min 1} setting-schema]))
 
-(defn prefix-parent-name-to-child-name
-  "FIXME:"
-  [parent child-name]
-  (let [parent-name (:name parent)
-        parent-ns (namespace parent-name)
-        parent-kw (name parent-name)
-        child-ns (if (nil? parent-ns)
-                   parent-kw
-                   (str parent-ns "." parent-kw))]
-    (keyword child-ns (name child-name))))
+(defprotocol RefLike
+  (ref-key [r] "Return the key of the reference.")
+  (ref-resolve [r config] "Return the resolved value."))
 
-(defn qualify-child-name
-  "FIXME:"
-  [parent child]
-  (update child :name (partial prefix-parent-name-to-child-name parent)))
+(defrecord Ref [key]
+  RefLike
+  (ref-key [_] key)
+  (ref-resolve [_ settings]
+    (bp.util/get-settings-value settings key)))
 
-(defn qualify-node-names
-  "FIXME:"
-  [node]
-  (if-not (and (map? node)
-               (#{:plain-group :single-choice-group :multiple-choice-group} (:type node)))
-    node
-    (let [type (:type node)
-          children-key (case type
-                         :plain-group :value
-                         (:single-choice-group :multiple-choice-group) :choices)
-          children (get node children-key)]
-      (assoc node children-key (mapv (partial qualify-child-name node) children)))))
+(defn resolve-refs
+  [settings subpath]
+  (update-in
+   settings
+   subpath
+   util/update-map-vals
+   (fn [v]
+     (if-not (instance? RefLike v)
+       v
+       (ref-resolve v settings)))))
+
+(defn- settings->settings-nested-map
+  [settings]
+  (->> settings
+       (walk/postwalk
+        (fn [node]
+          (if-not (and (map? node) (:name node))
+            node
+            {(:name node)
+             (cond
+               (= (:type node) :plain-group)
+               (apply merge (:value node))
+
+               (= (:type node) :single-choice-group)
+               (->
+                (first (filter #(= (:value node) (first (keys %))) (:choices node)))
+                (assoc :value (:value node)))
+
+               (= (:type node) :multiple-choice-group)
+               (->
+                (apply merge (filter #(get (set (:value node)) (first (keys %))) (:choices node)))
+                (assoc :value (:value node)))
+
+               :else
+               (:value node))})))
+       (apply merge)))
 
 (defn- inject-auto-generated-passwords
   [{:keys [type value] :as node}]
@@ -201,51 +221,23 @@
     (assoc node :value (util.random/generate-random-password value))
     node))
 
-(defn- rename-choice-node-names
-  [{:keys [type] :as node}]
-  (if (get #{:single-choice-group :multiple-choice-group} type)
-    (let [new-name (prefix-parent-name-to-child-name node "value")]
-      (assoc node :name new-name))
+(defn- build-refs
+  [{:keys [type value] :as node}]
+  (if (= :ref type)
+    (assoc node :value (->Ref value))
     node))
-
-(defn- is-node-branch?
-  [node]
-  (get #{:plain-group :single-choice-group :multiple-choice-group} (:type node)))
-
-(defn- get-node-children
-  [node]
-  (case (:type node)
-    :plain-group
-    (:value node)
-    :single-choice-group
-    (filter #(= (name (:value node)) (name (:name %))) (:choices node))
-    :multiple-choice-group
-    (filter #(get (set (map name (:value node))) (name (:name %))) (:choices node))))
-
-(defn flatten-settings
-  [settings]
-  (reduce (fn [acc m]
-            (->> m
-                 (tree-seq is-node-branch? get-node-children)
-                 (remove #(= :plain-group (:type %)))
-                 (reduce #(assoc %1 (:name %2) (:value %2)) {})
-                 (merge acc)))
-          {}
-          settings))
 
 (defn read-settings
   [settings-file-path]
-  (let [settings (-> settings-file-path
-                     (fs/file)
-                     (io/reader)
-                     (PushbackReader.)
-                     (edn/read))]
-    (if (m/validate settings-schema settings)
-      {:success? true
-       :settings (->> settings
-                      (walk/prewalk (comp inject-auto-generated-passwords
-                                          rename-choice-node-names
-                                          qualify-node-names))
-                      (flatten-settings))}
-      {:success? false
-       :error-details (m/explain settings-schema settings)})))
+  (let [settings (->> settings-file-path
+                      (fs/file)
+                      (io/reader)
+                      (PushbackReader.)
+                      (edn/read))]
+    (if true #_(m/validate settings-schema settings)
+        {:success? true
+         :settings (->> settings
+                        (walk/prewalk (comp build-refs inject-auto-generated-passwords))
+                        (settings->settings-nested-map))}
+        {:success? false
+         :error-details (m/explain settings-schema settings)})))

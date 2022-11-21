@@ -14,3 +14,8 @@ services:
       - KC_DB_USERNAME
       - KC_DB_PASSWORD
       - KC_PROXY
+  app:
+    environment:
+      - KEYCLOAK_URI
+      - KEYCLOAK_REALM
+      - KEYCLOAK_APP_CLIENT_ID

@@ -1,6 +1,6 @@
 services:
   grafana:
-    image: grafana/grafana:{{grafana-image-tag}}
+    image: grafana/grafana:{{project.profiles.bi-grafana.version}}
     deploy:
       resources:
         limits:
