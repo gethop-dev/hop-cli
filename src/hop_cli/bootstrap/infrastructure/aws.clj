@@ -250,7 +250,6 @@
   [settings]
   (provision-cfn-stack settings (:prod-env cfn-templates)))
 
-
 (defmethod infrastructure/save-environment-variables :aws
   [settings]
   (let [config {:environment "test"
