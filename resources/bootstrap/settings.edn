@@ -108,7 +108,40 @@
                                                                                                {:name :schema
                                                                                                 :tag "Database Application user's schema"
                                                                                                 :type :string
-                                                                                                :value "app"}]}]}]}]}]}
+                                                                                                :value "app"}]}
+                                                                                      {:name :other-users
+                                                                                       :type :multiple-choice-group
+                                                                                       :value [:keycloak :grafana :grafana-datasource]
+                                                                                       :choices [{:name :keycloak
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "keycloak"}
+                                                                                                          {:name :password
+                                                                                                           :type :string
+                                                                                                           :value "sa"}
+                                                                                                          {:name :schema
+                                                                                                           :type :string
+                                                                                                           :value "keycloak"}]}
+                                                                                                 {:name :grafana
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "grafana"}
+                                                                                                          {:name :password
+                                                                                                           :type :string
+                                                                                                           :value "sa"}
+                                                                                                          {:name :schema
+                                                                                                           :type :string
+                                                                                                           :value "grafana"}]}
+                                                                                                 {:name :grafana-datasource
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "grafana_datasource"}
+                                                                                                          {:name :password
+                                                                                                           :type :string
+                                                                                                           :value "sa"}]}]}]}]}]}]}
                                                   {:name :external
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
@@ -122,7 +155,11 @@
                                                                      :value [{:name :database
                                                                               :tag "Dev database"
                                                                               :type :plain-group
-                                                                              :value [{:name :host
+                                                                              :value [{:name :type
+                                                                                       :tag "Database type"
+                                                                                       :type :string
+                                                                                       :value "postgresql"}
+                                                                                      {:name :host
                                                                                        :tag "Database host"
                                                                                        :type :string
                                                                                        :value "db.host"}
@@ -148,7 +185,40 @@
                                                                                                {:name :schema
                                                                                                 :tag "Database Application user's schema"
                                                                                                 :type :string
-                                                                                                :value "app"}]}]}]}]}]}]}
+                                                                                                :value "app"}]}
+                                                                                      {:name :other-users
+                                                                                       :type :multiple-choice-group
+                                                                                       :value [:keycloak :grafana]
+                                                                                       :choices [{:name :keycloak
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "keycloak"}
+                                                                                                          {:name :password
+                                                                                                           :type :string
+                                                                                                           :value ""}
+                                                                                                          {:name :schema
+                                                                                                           :type :string
+                                                                                                           :value "keycloak"}]}
+                                                                                                 {:name :grafana
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "grafana"}
+                                                                                                          {:name :password
+                                                                                                           :type :string
+                                                                                                           :value ""}
+                                                                                                          {:name :schema
+                                                                                                           :type :string
+                                                                                                           :value "grafana"}]}
+                                                                                                 {:name :grafana-datasource
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "grafana_datasource"}
+                                                                                                          {:name :password
+                                                                                                           :type :password
+                                                                                                           :value ""}]}]}]}]}]}]}]}
                                        {:name :to-deploy
                                         :type :single-choice-group
                                         :value :rds
@@ -164,7 +234,11 @@
                                                                      :value [{:name :database
                                                                               :tag "Test database"
                                                                               :type :plain-group
-                                                                              :value [{:name :host
+                                                                              :value [{:name :type
+                                                                                       :tag "Database type"
+                                                                                       :type :string
+                                                                                       :value "postgresql"}
+                                                                                      {:name :host
                                                                                        :tag "Database host"
                                                                                        :type :ref
                                                                                        :value :cloud-provider.aws.environment.test.rds/host}
@@ -190,13 +264,50 @@
                                                                                                {:name :schema
                                                                                                 :tag "Database Application schema"
                                                                                                 :type :string
-                                                                                                :value "app"}]}]}]}
+                                                                                                :value "app"}]}
+                                                                                      {:name :other-users
+                                                                                       :type :multiple-choice-group
+                                                                                       :value [:keycloak :grafana :grafana-datasource]
+                                                                                       :choices [{:name :keycloak
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "keycloak"}
+                                                                                                          {:name :password
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 32}}
+                                                                                                          {:name :schema
+                                                                                                           :type :string
+                                                                                                           :value "keycloak"}]}
+                                                                                                 {:name :grafana
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "grafana"}
+                                                                                                          {:name :password
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 32}}
+                                                                                                          {:name :schema
+                                                                                                           :type :string
+                                                                                                           :value "grafana"}]}
+                                                                                                 {:name :grafana-datasource
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "grafana_datasource"}
+                                                                                                          {:name :password
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 32}}]}]}]}]}
                                                                     {:name :prod
                                                                      :type :plain-group
                                                                      :value [{:name :database
                                                                               :tag "Prod database"
                                                                               :type :plain-group
-                                                                              :value [{:name :host
+                                                                              :value [{:name :type
+                                                                                       :tag "Database type"
+                                                                                       :type :string
+                                                                                       :value "postgresql"}
+                                                                                      {:name :host
                                                                                        :tag "Database host"
                                                                                        :type :ref
                                                                                        :value :cloud-provider.aws.environment.prod.rds/host}
@@ -222,7 +333,40 @@
                                                                                                {:name :schema
                                                                                                 :tag "Database Application schema"
                                                                                                 :type :string
-                                                                                                :value "app"}]}]}]}]}]}]}]}]}
+                                                                                                :value "app"}]}
+                                                                                      {:name :other-users
+                                                                                       :type :multiple-choice-group
+                                                                                       :value [:keycloak :grafana]
+                                                                                       :choices [{:name :keycloak
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "keycloak"}
+                                                                                                          {:name :password
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 32}}
+                                                                                                          {:name :schema
+                                                                                                           :type :string
+                                                                                                           :value "keycloak"}]}
+                                                                                                 {:name :grafana
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "grafana"}
+                                                                                                          {:name :password
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 32}}
+                                                                                                          {:name :schema
+                                                                                                           :type :string
+                                                                                                           :value "grafana"}]}
+                                                                                                 {:name :grafana-datasource
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :type :string
+                                                                                                           :value "grafana_datasource"}
+                                                                                                          {:name :password
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 32}}]}]}]}]}]}]}]}]}]}
 
                      {:name :bi-grafana
                       :tag "Grafana"
@@ -249,7 +393,7 @@
                                                                      :type :plain-group
                                                                      ;; TODO: decide if we need it here or we get it from the code directly.
                                                                      :value [{:name :server-domain
-                                                                              :type :string
+                                                                              :type :ref
                                                                               :tag "Server domain"
                                                                               :value :project.proxy.dev/domain}
                                                                              {:name :sso
@@ -283,16 +427,16 @@
                                                                                        :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database/name}
                                                                                       {:name :username
                                                                                        :tag "Username"
-                                                                                       :type :string
-                                                                                       :value "grafana"}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database.other-users.grafana/username}
                                                                                       {:name :password
                                                                                        :tag "Password"
-                                                                                       :type :auto-gen-password
-                                                                                       :value {:length 24}}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database.other-users.grafana/password}
                                                                                       {:name :schema
                                                                                        :tag "Schema"
-                                                                                       :type :string
-                                                                                       :value "grafana"}]}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database.other-users.grafana/schema}]}
                                                                              {:name :app-integration
                                                                               :type :plain-group
                                                                               :tag "App integration"
@@ -368,7 +512,7 @@
                                                                      :tag "Test Environment"
                                                                      :type :plain-group
                                                                      :value [{:name :server-domain
-                                                                              :type :string
+                                                                              :type :ref
                                                                               :tag "Server domain"
                                                                               :value :project.proxy.test/domain}
                                                                              {:name :sso
@@ -402,16 +546,16 @@
                                                                                        :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database/name}
                                                                                       {:name :username
                                                                                        :tag "Username"
-                                                                                       :type :string
-                                                                                       :value "grafana"}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database.other-users.grafana/username}
                                                                                       {:name :password
                                                                                        :tag "Password"
-                                                                                       :type :auto-gen-password
-                                                                                       :value {:length 24}}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database.other-users.grafana/password}
                                                                                       {:name :schema
                                                                                        :tag "Schema"
-                                                                                       :type :string
-                                                                                       :value "grafana"}]}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database.other-users.grafana/schema}]}
                                                                              {:name :app-integration
                                                                               :type :plain-group
                                                                               :tag "App integration"
@@ -447,7 +591,7 @@
                                                                      :tag "Prod Environment"
                                                                      :type :plain-group
                                                                      :value [{:name :server-domain
-                                                                              :type :string
+                                                                              :type :ref
                                                                               :tag "Server domain"
                                                                               :value :project.proxy.prod/domain}
                                                                              {:name :sso
@@ -481,16 +625,16 @@
                                                                                        :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database/name}
                                                                                       {:name :username
                                                                                        :tag "Username"
-                                                                                       :type :string
-                                                                                       :value "grafana"}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database.other-users.grafana/username}
                                                                                       {:name :password
                                                                                        :tag "Password"
-                                                                                       :type :auto-gen-password
-                                                                                       :value {:length 24}}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database.other-users.grafana/password}
                                                                                       {:name :schema
                                                                                        :tag "Schema"
-                                                                                       :type :string
-                                                                                       :value "grafana"}]}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database.other-users.grafana/schema}]}
                                                                              {:name :app-integration
                                                                               :type :plain-group
                                                                               :tag "App integration"
@@ -655,16 +799,16 @@
                                                                                        :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database/name}
                                                                                       {:name :username
                                                                                        :tag "Username"
-                                                                                       :type :string
-                                                                                       :value "keycloak"}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database.other-users.keycloak/username}
                                                                                       {:name :password
                                                                                        :tag "Password"
-                                                                                       :type :string
-                                                                                       :value "sa"}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database.other-users.keycloak/password}
                                                                                       {:name :schema
                                                                                        :tag "Schema"
-                                                                                       :type :string
-                                                                                       :value "keycloak"}]}]}]}]}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-develop.?.environment.dev.database.other-users.keycloak/schema}]}]}]}]}
                                                   {:name :external
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
@@ -775,16 +919,16 @@
                                                                                        :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database/name}
                                                                                       {:name :username
                                                                                        :tag "Username"
-                                                                                       :type :string
-                                                                                       :value "keycloak"}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database.other-users.keycloak/username}
                                                                                       {:name :password
                                                                                        :tag "Password"
-                                                                                       :type :auto-gen-password
-                                                                                       :value {:length 24}}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database.other-users.keycloak/password}
                                                                                       {:name :schema
                                                                                        :tag "Schema"
-                                                                                       :type :string
-                                                                                       :value "keycloak"}]}]}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.test.database.other-users.keycloak/schema}]}]}
                                                                     {:name :prod
                                                                      :type :plain-group
                                                                      :value [{:name :admin
@@ -847,16 +991,16 @@
                                                                                        :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database/name}
                                                                                       {:name :username
                                                                                        :tag "Username"
-                                                                                       :type :string
-                                                                                       :value "keycloak"}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database.other-users.keycloak/username}
                                                                                       {:name :password
                                                                                        :tag "Password"
-                                                                                       :type :auto-gen-password
-                                                                                       :value {:length 24}}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database.other-users.keycloak/password}
                                                                                       {:name :schema
                                                                                        :tag "Schema"
-                                                                                       :type :string
-                                                                                       :value "keycloak"}]}]}]}]}
+                                                                                       :type :ref
+                                                                                       :value :project.profiles.persistence-sql.deployment.to-deploy.?.environment.prod.database.other-users.keycloak/schema}]}]}]}]}
                                                   {:name :external
                                                    :type :plain-group
                                                    :value [{:name :deployment-type

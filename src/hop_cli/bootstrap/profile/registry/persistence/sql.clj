@@ -1,7 +1,6 @@
 (ns hop-cli.bootstrap.profile.registry.persistence.sql
   (:require [hop-cli.bootstrap.util :as bp.util]
-            [meta-merge.core :refer [meta-merge]])
-  (:import [java.net URLEncoder]))
+            [meta-merge.core :refer [meta-merge]]))
 
 (defn- sql-config
   [settings]
@@ -13,7 +12,14 @@
 (defn- hikaricp-config
   [_]
   {:duct.database.sql/hikaricp
-   {:jdbc-url (tagged-literal 'duct/env ["JDBC_DATABASE_URL" 'Str])
+   {:adapter (tagged-literal 'duct/env ["APP_DB_TYPE" 'Str])
+    :server-name (tagged-literal 'duct/env ["APP_DB_HOST" 'Str])
+    :port-number (tagged-literal 'duct/env ["APP_DB_PORT" 'Str])
+    :database-name (tagged-literal 'duct/env ["APP_DB_NAME" 'Str])
+    :username (tagged-literal 'duct/env ["APP_DB_USER" 'Str])
+    :password (tagged-literal 'duct/env ["APP_DB_PASSWORD" 'Str])
+    :schema (tagged-literal 'duct/env ["APP_DB_SCHEMA" 'Str])
+    :re-write-batched-inserts true
     :logger nil
     :minimum-idle 10
     :maximum-pool-size 25}})
@@ -63,17 +69,22 @@
         host (if (= :container deploy-type)
                "postgres"
                (bp.util/get-settings-value settings (conj env-path :database :host)))
+        type (if (= :container deploy-type)
+               "postgresql"
+               (bp.util/get-settings-value settings (conj env-path :database :type)))
         port (bp.util/get-settings-value settings (conj env-path :database :port))
         db (bp.util/get-settings-value settings (conj env-path :database :name))
         app-user (bp.util/get-settings-value settings (conj env-path :database :app-user :username))
-        app-password (bp.util/get-settings-value settings (conj env-path :database :app-user :password))]
+        app-password (bp.util/get-settings-value settings (conj env-path :database :app-user :password))
+        app-schema (bp.util/get-settings-value settings (conj env-path :database :app-user :schema))]
     (cond->
-     {:JDBC_DATABASE_URL
-      (format
-       "jdbc:postgresql://%s:%s/%s?user=%s&password=%s&reWriteBatchedInserts=true"
-       host port db
-       (URLEncoder/encode app-user "utf-8")
-       (URLEncoder/encode app-password "utf-8"))}
+     {:APP_DB_TYPE type
+      :APP_DB_HOST host
+      :APP_DB_PORT port
+      :APP_DB_NAME db
+      :APP_DB_USER app-user
+      :APP_DB_PASSWORD app-password
+      :APP_DB_SCHEMA app-schema}
       (= :container deploy-type)
       (merge (build-container-env-variables settings env-path)))))
 

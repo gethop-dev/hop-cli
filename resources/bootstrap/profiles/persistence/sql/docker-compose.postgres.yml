@@ -7,3 +7,14 @@ services:
       - POSTGRES_DB
       - POSTGRES_USER
       - POSTGRES_PASSWORD
+      - APP_DB_USER
+      - APP_DB_PASSWORD
+      - APP_DB_SCHEMA{{#project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.keycloak.username}}
+      - KC_DB_USERNAME
+      - KC_DB_PASSWORD
+      - KC_DB_SCHEMA{{/project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.keycloak.username}}{{#project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.grafana.username}}
+      - GF_DATABASE_USER
+      - GF_DATABASE_PASSWORD
+      - GF_DATABASE_SCHEMA{{/project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.grafana.username}}{{#project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.grafana_datasource.username}}
+      - GF_DATASOURCE_USER
+      - GF_DATASOURCE_PASSWORD{{/project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.grafana_datasource.username}}
