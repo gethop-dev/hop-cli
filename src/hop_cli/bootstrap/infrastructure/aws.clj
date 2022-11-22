@@ -51,10 +51,10 @@
               :cloud-provider.aws.environment.dev.optional-services.cognito/enabled :IncludeCognito
               :cloud-provider.aws.environment.dev.optional-services.s3/enabled :IncludeS3}
              :output-parameter-mapping
-             {:CognitoUserPoolId :cloud-provider.aws.environment.dev.cognito/user-pool-id
-              :CognitoUserPoolURL :cloud-provider.aws.environment.dev.cognito/user-pool-url
-              :CognitoSPAClientId :cloud-provider.aws.environment.dev.cognito/spa-client-id
-              :S3BucketName :cloud-provider.aws.environment.dev.optional-services.s3/bucket-name}}
+             {:S3BucketName :cloud-provider.aws.environment.dev.optional-services.s3/bucket-name
+              :CognitoUserPoolId :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/id
+              :CognitoUserPoolURL :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/url
+              :CognitoSPAClientId :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.app-client/id}}
 
    :test-env {:master-template "cloud-environment.yaml"
               :capability :CAPABILITY_NAMED_IAM
@@ -78,9 +78,9 @@
                :cloud-provider.aws.environment.test.optional-services.s3/enabled :IncludeS3
                :cloud-provider.aws.environment.test.optional-services.rds/enabled :IncludeRds}
               :output-parameter-mapping
-              {:CognitoUserPoolId :cloud-provider.aws.environment.test.cognito/user-pool-id
-               :CognitoUserPoolURL :cloud-provider.aws.environment.test.cognito/user-pool-url
-               :CognitoSPAClientId :cloud-provider.aws.environment.test.cognito/spa-client-id
+              {:CognitoUserPoolId :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/id
+               :CognitoUserPoolURL :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/url
+               :CognitoSPAClientId :cloud-provider.aws.environment.test.optional-services.cognito.user-pool.app-client/id
                :RdsAddress :cloud-provider.aws.environment.test.optional-services.rds/host
                :EbEnvironmentName :cloud-provider.aws.environment.test.eb/environment-name
                :EbEnvironmentURL :cloud-provider.aws.environment.test.eb/environment-url
@@ -108,9 +108,9 @@
                :cloud-provider.aws.environment.prod.optional-services.s3/enabled :IncludeS3
                :cloud-provider.aws.environment.prod.optional-services.rds/enabled :IncludeRds}
               :output-parameter-mapping
-              {:CognitoUserPoolId :cloud-provider.aws.environment.prod.cognito/user-pool-id
-               :CognitoUserPoolURL :cloud-provider.aws.environment.prod.cognito/user-pool-url
-               :CognitoSPAClientId :cloud-provider.aws.environment.prod.cognito/spa-client-id
+              {:CognitoUserPoolId :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/id
+               :CognitoUserPoolURL :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/url
+               :CognitoSPAClientId :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool.app-client/id
                :RdsAddress :cloud-provider.aws.environment.prod.optional-services.rds/host
                :EbEnvironmentName :cloud-provider.aws.environment.prod.eb/environment-name
                :EbEnvironmentURL :cloud-provider.aws.environment.prod.eb/environment-url

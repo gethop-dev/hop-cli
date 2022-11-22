@@ -1,4 +1,5 @@
-(ns hop-cli.bootstrap.profile.registry.authentication.cognito)
+(ns hop-cli.bootstrap.profile.registry.authentication.cognito
+  (:require [hop-cli.bootstrap.util :as bp.util]))
 
 (defn- jwt-oidc-config
   [_settings]
@@ -28,8 +29,9 @@
 
 (defn user-api-config
   [settings]
-  {(keyword (str (:project/name settings) ".api/user"))
-   (tagged-literal 'ig/ref (keyword (:project/name settings) "common-config"))})
+  (let [project-name (bp.util/get-settings-value settings :project/name)]
+    {(keyword (str project-name ".api/user"))
+     (tagged-literal 'ig/ref (keyword (:project/name settings) "common-config"))}))
 
 (defn- common-config
   []
@@ -37,7 +39,8 @@
 
 (defn- routes
   [settings]
-  [(tagged-literal 'ig/ref (keyword (str (:project/name settings) ".api/user")))])
+  (let [project-name (bp.util/get-settings-value settings :project/name)]
+    [(tagged-literal 'ig/ref (keyword (str project-name ".api/user")))]))
 
 (def ^:private load-frontend-app-code
   "(rf/reg-event-fx
@@ -47,10 +50,10 @@
 
 (defn- build-env-variables
   [settings environment]
-  (let [base-path (format "cloud-provider.aws.environment.%s.cognito" (name environment))
-        pool-id (get settings (keyword base-path "user-pool-id"))
-        pool-url (get settings (keyword base-path "user-pool-url"))
-        client-id (get settings (keyword base-path "spa-client-id"))]
+  (let [base-path [:project :profiles :auth-cognito :environment environment :user-pool :?]
+        pool-id (bp.util/get-settings-value settings (conj base-path :id))
+        pool-url (bp.util/get-settings-value settings (conj base-path :url))
+        client-id (bp.util/get-settings-value settings (conj base-path :app-client :id))]
     {:COGNITO_USER_POOL_ID pool-id
      :OIDC_AUDIENCE client-id
      :OIDC_ISSUER_URL pool-url

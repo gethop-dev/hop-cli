@@ -1118,7 +1118,102 @@
                                                                                                   :value "hop-grafana-XXXXXXX"}
                                                                                                  {:name :secret
                                                                                                   :type :auto-gen-password
-                                                                                                  :value {:length 32}}]}]}]}]}]}]}]}]}]}]}
+                                                                                                  :value {:length 32}}]}]}]}]}]}]}]}]}
+                     {:name :auth-cognito
+                      :type :plain-group
+                      :value [{:name :environment
+                               :type :plain-group
+                               :value [{:name :dev
+                                        :type :plain-group
+                                        :value [{:name :user-pool
+                                                 :type :single-choice-group
+                                                 :value :provisioned
+                                                 :choices [{:name :provisioned
+                                                            :type :plain-group
+                                                            :value [{:name :id
+                                                                     :type :ref
+                                                                     :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.id}
+                                                                    {:name :url
+                                                                     :type :ref
+                                                                     :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.url}
+                                                                    {:name :app-client
+                                                                     :type :plain-group
+                                                                     :value [{:name :id
+                                                                              :type :ref
+                                                                              :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.app-client.id}]}]}
+                                                           {:name :custom
+                                                            :type :plain-group
+                                                            :value [{:name :id
+                                                                     :type :string
+                                                                     :value ""}
+                                                                    {:name :url
+                                                                     :type :string
+                                                                     :value ""}
+                                                                    {:name :app-client
+                                                                     :type :plain-group
+                                                                     :value [{:name :id
+                                                                              :type :string
+                                                                              :value ""}]}]}]}]}
+                                       {:name :test
+                                        :type :plain-group
+                                        :value [{:name :user-pool
+                                                 :type :single-choice-group
+                                                 :value :provisioned
+                                                 :choices [{:name :provisioned
+                                                            :type :plain-group
+                                                            :value [{:name :id
+                                                                     :type :ref
+                                                                     :value :cloud-provider.aws.environment.test.optional-services.cognito.user-pool.id}
+                                                                    {:name :url
+                                                                     :type :ref
+                                                                     :value :cloud-provider.aws.environment.test.optional-services.cognito.user-pool.url}
+                                                                    {:name :app-client
+                                                                     :type :plain-group
+                                                                     :value [{:name :id
+                                                                              :type :ref
+                                                                              :value :cloud-provider.aws.environment.test.optional-services.cognito.app-client.id}]}]}
+                                                           {:name :custom
+                                                            :type :plain-group
+                                                            :value [{:name :id
+                                                                     :type :string
+                                                                     :value ""}
+                                                                    {:name :url
+                                                                     :type :string
+                                                                     :value ""}
+                                                                    {:name :app-client
+                                                                     :type :plain-group
+                                                                     :value [{:name :id
+                                                                              :type :string
+                                                                              :value ""}]}]}]}]}
+                                       {:name :prod
+                                        :type :plain-group
+                                        :value [{:name :user-pool
+                                                 :type :single-choice-group
+                                                 :value :provisioned
+                                                 :choices [{:name :provisioned
+                                                            :type :plain-group
+                                                            :value [{:name :id
+                                                                     :type :ref
+                                                                     :value :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool.id}
+                                                                    {:name :url
+                                                                     :type :ref
+                                                                     :value :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool.url}
+                                                                    {:name :app-client
+                                                                     :type :plain-group
+                                                                     :value [{:name :id
+                                                                              :type :ref
+                                                                              :value :cloud-provider.aws.environment.prod.optional-services.cognito.app-client.id}]}]}
+                                                           {:name :custom
+                                                            :type :plain-group
+                                                            :value [{:name :id
+                                                                     :type :string
+                                                                     :value ""}
+                                                                    {:name :url
+                                                                     :type :string
+                                                                     :value ""}
+                                                                    {:name :client-id
+                                                                     :type :string
+                                                                     :value ""}]}]}]}]}]}]}]}
  {:name :cloud-provider
   :tag "AWS infrastructure"
   :type :single-choice-group
