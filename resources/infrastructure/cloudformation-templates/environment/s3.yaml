@@ -16,7 +16,7 @@ Parameters:
     Type: "String"
 
 Resources:
-  S3bucket:
+  S3Bucket:
     Type: "AWS::S3::Bucket"
     Properties:
       AccessControl: "Private"
@@ -26,7 +26,7 @@ Resources:
           Value: !Ref "ProjectName"
         - Key: "environment"
           Value: !Ref "Environment"
-  S3bucketPolicy:
+  S3BucketPolicy:
     Type: "AWS::IAM::ManagedPolicy"
     Properties:
       ManagedPolicyName: !Sub "${ProjectName}-${Environment}-env-s3"
@@ -44,7 +44,5 @@ Resources:
         - !Ref "ConsumerRoleName"
 
 Outputs:
-  S3bucket:
+  BucketName:
     Value: !Ref "S3bucket"
-  S3PolicyARN:
-    Value: !Ref "S3bucketPolicy"

@@ -82,3 +82,6 @@ Outputs:
     Value: !GetAtt "Cognito.Outputs.UserPoolSPAClientId"
   KmsKeyAlias:
     Value: !GetAtt "KMS.Outputs.KmsKeyAlias"
+  S3BucketName:
+    Condition: "IncludeS3Cond"
+    Value: !GetAtt "S3.Outputs.BucketName"

@@ -46,8 +46,57 @@
           {:name :profiles
            :tag "Profiles"
            :type :multiple-choice-group
-           :value [:persistence-sql :auth-keycloak :bi-grafana]
-           :choices [{:name :persistence-sql
+           :value [:persistence-sql :auth-keycloak :bi-grafana :object-storage-s3]
+           :choices [{:name :object-storage-s3
+                      :type :plain-group
+                      :value [{:name :environment
+                               :type :plain-group
+                               :value [{:name :dev
+                                        :type :plain-group
+                                        :value [{:name :bucket
+                                                 :type :single-choice-group
+                                                 :value :provisioned
+                                                 :choices [{:name :provisioned
+                                                            :type :plain-group
+                                                            :value [{:name :name
+                                                                     :type :ref
+                                                                     :value :cloud-provider.aws.environment.dev.optional-services.s3.bucket-name}]}
+                                                           {:name :custom
+                                                            :type :plain-group
+                                                            :value [{:name :name
+                                                                     :type :string
+                                                                     :value ""}]}]}]}
+                                       {:name :test
+                                        :type :plain-group
+                                        :value [{:name :bucket
+                                                 :type :single-choice-group
+                                                 :value :provisioned
+                                                 :choices [{:name :provisioned
+                                                            :type :plain-group
+                                                            :value [{:name :name
+                                                                     :type :ref
+                                                                     :value :cloud-provider.aws.environment.test.optional-services.s3.bucket-name}]}
+                                                           {:name :custom
+                                                            :type :plain-group
+                                                            :value [{:name :name
+                                                                     :type :string
+                                                                     :value ""}]}]}]}
+                                       {:name :prod
+                                        :type :plain-group
+                                        :value [{:name :bucket
+                                                 :type :single-choice-group
+                                                 :value :provisioned
+                                                 :choices [{:name :provisioned
+                                                            :type :plain-group
+                                                            :value [{:name :name
+                                                                     :type :ref
+                                                                     :value :cloud-provider.aws.environment.prod.optional-services.s3.bucket-name}]}
+                                                           {:name :custom
+                                                            :type :plain-group
+                                                            :value [{:name :name
+                                                                     :type :string
+                                                                     :value ""}]}]}]}]}]}
+                     {:name :persistence-sql
                       :type :plain-group
                       :value [{:name :database
                                :type :plain-group

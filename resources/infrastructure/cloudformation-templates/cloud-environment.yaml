@@ -143,6 +143,8 @@ Resources:
     Properties:
       TemplateURL: !Sub "${TemplateBucketURL}/environment/eb-rds-connection.yaml"
       Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
         RdsSecurityGroupId: !GetAtt "RDS.Outputs.RdsSecurityGroupId"
         EbSecurityGroupId: !GetAtt "EB.Outputs.EbSecurityGroupId"
 
@@ -167,3 +169,6 @@ Outputs:
     Value: !GetAtt "EB.Outputs.EbEnvironmentName"
   EbEnvironmentURL:
     Value: !GetAtt "EB.Outputs.EbEnvironmentURL"
+  S3BucketName:
+    Condition: "IncludeS3Cond"
+    Value: !GetAtt "S3.Outputs.BucketName"

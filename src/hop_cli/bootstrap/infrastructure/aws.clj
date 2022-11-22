@@ -52,7 +52,8 @@
              :output-parameter-mapping
              {:CognitoUserPoolId :cloud-provider.aws.environment.dev.cognito/user-pool-id
               :CognitoUserPoolURL :cloud-provider.aws.environment.dev.cognito/user-pool-url
-              :CognitoSPAClientId :cloud-provider.aws.environment.dev.cognito/spa-client-id}}
+              :CognitoSPAClientId :cloud-provider.aws.environment.dev.cognito/spa-client-id
+              :S3BucketName :cloud-provider.aws.environment.dev.optional-services.s3/bucket-name}}
 
    :test-env {:master-template "cloud-environment.yaml"
               :capability :CAPABILITY_NAMED_IAM
@@ -81,7 +82,8 @@
                :CognitoSPAClientId :cloud-provider.aws.environment.test.cognito/spa-client-id
                :RdsAddress :cloud-provider.aws.environment.test.optional-services.rds/host
                :EbEnvironmentName :cloud-provider.aws.environment.test.eb/environment-name
-               :EbEnvironmentURL :cloud-provider.aws.environment.test.eb/environment-url}}
+               :EbEnvironmentURL :cloud-provider.aws.environment.test.eb/environment-url
+               :S3BucketName :cloud-provider.aws.environment.test.optional-services.s3/bucket-name}}
 
    :prod-env {:master-template "cloud-environment.yaml"
               :capability :CAPABILITY_NAMED_IAM
@@ -110,7 +112,8 @@
                :CognitoSPAClientId :cloud-provider.aws.environment.prod.cognito/spa-client-id
                :RdsAddress :cloud-provider.aws.environment.prod.optional-services.rds/host
                :EbEnvironmentName :cloud-provider.aws.environment.prod.eb/environment-name
-               :EbEnvironmentURL :cloud-provider.aws.environment.prod.eb/environment-url}}})
+               :EbEnvironmentURL :cloud-provider.aws.environment.prod.eb/environment-url
+               :S3BucketName :cloud-provider.aws.environment.prod.optional-services.s3/bucket-name}}})
 
 (defn wait-for-stack-completion
   [stack-name]
