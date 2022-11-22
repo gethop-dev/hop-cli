@@ -17,7 +17,8 @@
    ["docker-compose.core.yml"
     "docker-compose.core.ci.yml"]
    :to-deploy
-   ["docker-compose.core.yml"]})
+   ["docker-compose.core.yml"
+    "docker-compose.core.to-deploy.yml"]})
 
 (defn profile
   [settings]

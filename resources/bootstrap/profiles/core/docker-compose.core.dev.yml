@@ -1,5 +1,6 @@
 services:
   app:
+    image: local/{{project.name}}/dev:latest
     build:
       context: .
       target: "dev"

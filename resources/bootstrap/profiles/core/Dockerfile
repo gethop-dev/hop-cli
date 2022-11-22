@@ -64,7 +64,7 @@ RUN set -eux; \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY run-as-user.sh "${BINARIES_INSTALL_PATH}"
+COPY docker/run-as-user.sh "${BINARIES_INSTALL_PATH}"
 
 WORKDIR /app
 

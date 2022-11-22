@@ -1,6 +1,6 @@
 services:
   app:
-    image: ci
+    image: local/{{project.name}}/ci:latest
     build:
       context: .
       target "ci"
