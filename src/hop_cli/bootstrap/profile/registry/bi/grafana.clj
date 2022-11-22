@@ -142,6 +142,16 @@
    "bi/grafana/"
    [{:src "bi/grafana/grafana" :dst "grafana"}]))
 
+(defn- build-dev-outputs
+  [settings]
+  {:deployment
+   {:to-develop
+    {:container
+     {:depends-on-postgres?
+      (= :container
+         (bp.util/get-settings-value settings
+                                     :project.profiles.bi-grafana.deployment.to-develop.container/db-deployment-type))}}}})
+
 (defn profile
   [settings]
   {:dependencies '[[dev.gethop/dashboard-manager.grafana "0.2.8"]]
@@ -151,4 +161,5 @@
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
    :files (build-docker-files-to-copy settings)
-   :docker-compose (build-docker-compose-files settings)})
+   :docker-compose (build-docker-compose-files settings)
+   :outputs (build-dev-outputs settings)})

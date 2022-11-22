@@ -432,13 +432,16 @@
                                         :value :container
                                         :choices [{:name :container
                                                    :type :plain-group
-                                                   :value [{:name :deployment-type
+                                                   :value [{:name :db-deployment-type
+                                                            :type :ref
+                                                            :value :project.profiles.persistence-sql.deployment.to-develop.?/deployment-type}
+                                                           {:name :deployment-type
                                                             :type :keyword
                                                             :value :container}
                                                            {:name :environment
                                                             :type :plain-group
                                                             :value [{:name :dev
-                                                                     :tag "Test Environment"
+                                                                     :tag "Dev Environment"
                                                                      :type :plain-group
                                                                      ;; TODO: decide if we need it here or we get it from the code directly.
                                                                      :value [{:name :server-domain
