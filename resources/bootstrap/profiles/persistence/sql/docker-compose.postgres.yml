@@ -7,5 +7,3 @@ services:
       - POSTGRES_DB
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-    ports:
-      - "{{project.profiles.persistence-sql.environment.dev.database.port}}:{{project.profiles.persistence-sql.environment.dev.database.port}}"

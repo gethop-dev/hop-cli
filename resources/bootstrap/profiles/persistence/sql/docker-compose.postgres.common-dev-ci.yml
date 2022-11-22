@@ -1,4 +1,6 @@
 services:
   postgres:
+    ports:
+      - "{{project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.port}}:{{project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.port}}"
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d
