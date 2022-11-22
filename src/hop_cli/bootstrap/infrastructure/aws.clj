@@ -6,7 +6,8 @@
             [hop-cli.aws.ssl :as aws.ssl]
             [hop-cli.bootstrap.infrastructure :as infrastructure]
             [hop-cli.bootstrap.util :as bp.util]
-            [hop-cli.util.thread-transactions :as tht]))
+            [hop-cli.util.thread-transactions :as tht]
+            [meta-merge.core :refer [meta-merge]]))
 
 (def ^:const cfn-templates-path
   (io/resource "infrastructure/cloudformation-templates"))
@@ -165,7 +166,7 @@
           wait-result
           (let [outputs (:outputs wait-result)
                 new-settings (select-and-rename-keys outputs output-parameter-mapping)
-                updated-settings (merge settings new-settings)]
+                updated-settings (meta-merge settings new-settings)]
             {:success? true
              :settings updated-settings})))
       result)))
@@ -176,7 +177,7 @@
    [{:txn-fn
      (fn upload-cloudformation-templates
        [_]
-       (let [bucket-name (:cloud-provider.aws.cloudformation/template-bucket-name settings)
+       (let [bucket-name (bp.util/get-settings-value settings :cloud-provider.aws.cloudformation/template-bucket-name)
              opts {:bucket-name bucket-name
                    :directory-path cfn-templates-path}
              _log (println (format "Uploading cloudformation templates to %s bucket..." bucket-name))
@@ -190,12 +191,12 @@
      (fn provision-account
        [_]
        (let [{:keys [stack-name-kw output-parameter-mapping] :as template-opts} (:account cfn-templates)
-             stack-name (get settings stack-name-kw)
+             stack-name (bp.util/get-settings-value settings stack-name-kw)
              result (aws.cloudformation/describe-stack {:stack-name stack-name})]
          (if (and (:success? result) (:stack result))
            (let [outputs (get-in result [:stack :outputs])
                  new-settings (select-and-rename-keys outputs output-parameter-mapping)
-                 updated-settings (merge settings new-settings)]
+                 updated-settings (meta-merge settings new-settings)]
              (println "Skipping account stack creation because it already exists")
              {:success? true
               :settings updated-settings})
@@ -209,7 +210,7 @@
     {:txn-fn
      (fn create-and-upload-self-signed-certificate
        [{:keys [settings]}]
-       (if (:cloud-provider.aws.project.elb/certificate-arn settings)
+       (if (bp.util/get-settings-value settings :cloud-provider.aws.project.elb/certificate-arn)
          (do
            (println "Skipping self-signed certificate upload.")
            {:success? true
@@ -218,8 +219,8 @@
                result (aws.ssl/create-and-upload-self-signed-certificate {})]
            (if (:success? result)
              (let [certificate-arn (:certificate-arn result)
-                   updated-settings (assoc settings
-                                           :cloud-provider.aws.project.elb/certificate-arn certificate-arn)]
+                   updated-settings
+                   (assoc-in settings [:cloud-provider :aws :project :elb :certificate-arn] certificate-arn)]
                {:success? true
                 :settings updated-settings})
              {:success? false
