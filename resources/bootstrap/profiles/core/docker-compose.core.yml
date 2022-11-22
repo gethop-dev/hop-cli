@@ -1,6 +1,6 @@
 services:
   app:
-    image: {{project.docker.registry.app-repository-url}}:latest
+    image: {{#lambdas.resolve-choices}}project.docker.registry.?.app-repository-url{{/lambdas.resolve-choices}}:latest
     deploy:
       resources:
         limits:

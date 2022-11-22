@@ -5,6 +5,18 @@
            :tag "Project Name"
            :type :string
            :value "hop"}
+          {:name :docker
+           :tag "Docker configuration"
+           :type :plain-group
+           :value [{:name :registry
+                    :type :single-choice-group
+                    :value [{:name :aws
+                             :type :plain-group
+                             :value [{:name :app-repository-url
+                                      :type :single-choice
+                                      :value [{:name :aws
+                                               :type :ref
+                                               :value :cloud-provider.aws.project.ecr/app-repository-url}]}]}]}]}
           {:name :proxy
            :type :plain-group
            :value [{:name :dev

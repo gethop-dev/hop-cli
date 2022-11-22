@@ -4,6 +4,7 @@
             [cljstache.core :as cljstache]
             [clojure.pprint :refer [pprint]]
             [clojure.string :as str]
+            [hop-cli.bootstrap.util :as bp.util]
             [hop-cli.util :as util]
             [hop-cli.util.file :as util.file]
             [zprint.core :as zprint]))
@@ -14,11 +15,16 @@
 (def ^:const cljfmt-config
   {:sort-ns-references? true})
 
-(def ^:private template-lambdas
+(defn- build-template-lambdas
+  [settings]
   {:to-snake-case
    (fn [text]
      (fn [render-fn]
-       (str/replace (render-fn text) #"-" "_")))})
+       (str/replace (render-fn text) #"-" "_")))
+   :resolve-choices
+   (fn [text]
+     (let [path (map keyword (str/split text #"\."))]
+       (bp.util/get-settings-value settings path)))})
 
 (defn- kv->formatted-string
   [[k v]]
@@ -56,7 +62,7 @@
   [settings]
   (let [mustache-data (-> settings
                           (settings->mustache-data)
-                          (assoc :lambdas template-lambdas))]
+                          (assoc :lambdas (build-template-lambdas settings)))]
     (fn [content]
       (cljstache/render content mustache-data))))
 
