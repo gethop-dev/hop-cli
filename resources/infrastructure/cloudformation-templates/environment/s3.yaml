@@ -39,10 +39,10 @@ Resources:
               - "s3:PutObject"
               - "s3:ListBucket"
               - "s3:DeleteObject"
-            Resource: !GetAtt "S3bucket.Arn"
+            Resource: !GetAtt "S3Bucket.Arn"
       Roles:
         - !Ref "ConsumerRoleName"
 
 Outputs:
   BucketName:
-    Value: !Ref "S3bucket"
+    Value: !Ref "S3Bucket"
