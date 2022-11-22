@@ -46,7 +46,9 @@
              :stack-name-kw :cloud-provider.aws.environment.dev/stack-name
              :environment "dev"
              :input-parameter-mapping
-             {:cloud-provider.aws.account.iam/local-dev-user-arn :LocalDevUserARN}
+             {:cloud-provider.aws.account.iam/local-dev-user-arn :LocalDevUserARN
+              :cloud-provider.aws.environment.dev.optional-services.cognito/enabled :IncludeCognito
+              :cloud-provider.aws.environment.dev.optional-services.s3/enabled :IncludeS3}
              :output-parameter-mapping
              {:CognitoUserPoolId :cloud-provider.aws.environment.dev.cognito/user-pool-id
               :CognitoUserPoolURL :cloud-provider.aws.environment.dev.cognito/user-pool-url
@@ -57,11 +59,11 @@
               :stack-name-kw :cloud-provider.aws.environment.test/stack-name
               :environment "test"
               :input-parameter-mapping
-              {:cloud-provider.aws.environment.test.rds/version :DatabaseEngineVersion
-               :cloud-provider.aws.environment.test.rds/port :DatabasePort
-               :cloud-provider.aws.environment.test.rds/name :DatabaseName
-               :cloud-provider.aws.environment.test.rds.admin-user/password :DatabasePassword
-               :cloud-provider.aws.environment.test.rds.admin-user/username :DatabaseUsername
+              {:cloud-provider.aws.environment.test.optional-services.rds/version :DatabaseEngineVersion
+               :cloud-provider.aws.environment.test.optional-services.rds/port :DatabasePort
+               :cloud-provider.aws.environment.test.optional-services.rds/name :DatabaseName
+               :cloud-provider.aws.environment.test.optional-services.rds.admin-user/password :DatabasePassword
+               :cloud-provider.aws.environment.test.optional-services.rds.admin-user/username :DatabaseUsername
                :cloud-provider.aws.environment.test/notifications-email :NotificationsEmail
                :cloud-provider.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
                :cloud-provider.aws.account.vpc/id :VpcId
@@ -69,12 +71,15 @@
                :cloud-provider.aws.account.iam/eb-service-role-arn :EbServiceRoleARN
                :cloud-provider.aws.project.eb/application-name  :EbApplicationName
                :cloud-provider.aws.project.elb/arn :LoadBalancerARN
-               :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId}
+               :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId
+               :cloud-provider.aws.environment.test.optional-services.cognito/enabled :IncludeCognito
+               :cloud-provider.aws.environment.test.optional-services.s3/enabled :IncludeS3
+               :cloud-provider.aws.environment.test.optional-services.rds/enabled :IncludeRds}
               :output-parameter-mapping
               {:CognitoUserPoolId :cloud-provider.aws.environment.test.cognito/user-pool-id
                :CognitoUserPoolURL :cloud-provider.aws.environment.test.cognito/user-pool-url
                :CognitoSPAClientId :cloud-provider.aws.environment.test.cognito/spa-client-id
-               :RdsAddress :cloud-provider.aws.environment.test.rds/host
+               :RdsAddress :cloud-provider.aws.environment.test.optional-services.rds/host
                :EbEnvironmentName :cloud-provider.aws.environment.test.eb/environment-name
                :EbEnvironmentURL :cloud-provider.aws.environment.test.eb/environment-url}}
 
@@ -83,11 +88,11 @@
               :stack-name-kw :cloud-provider.aws.environment.prod/stack-name
               :environment "prod"
               :input-parameter-mapping
-              {:cloud-provider.aws.environment.prod.rds/version :DatabaseEngineVersion
-               :cloud-provider.aws.environment.prod.rds/port :DatabasePort
-               :cloud-provider.aws.environment.prod.rds/name :DatabaseName
-               :cloud-provider.aws.environment.prod.rds.admin-user/password :DatabasePassword
-               :cloud-provider.aws.environment.prod.rds.admin-user/username :DatabaseUsername
+              {:cloud-provider.aws.environment.prod.optional-services.rds/version :DatabaseEngineVersion
+               :cloud-provider.aws.environment.prod.optional-services.rds/port :DatabasePort
+               :cloud-provider.aws.environment.prod.optional-services.rds/name :DatabaseName
+               :cloud-provider.aws.environment.prod.optional-services.rds.admin-user/password :DatabasePassword
+               :cloud-provider.aws.environment.prod.optional-services.rds.admin-user/username :DatabaseUsername
                :cloud-provider.aws.environment.prod/notifications-email :NotificationsEmail
                :cloud-provider.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
                :cloud-provider.aws.account.vpc/id :VpcId
@@ -95,12 +100,15 @@
                :cloud-provider.aws.account.iam/eb-service-role-arn :EbServiceRoleARN
                :cloud-provider.aws.project.eb/application-name  :EbApplicationName
                :cloud-provider.aws.project.elb/arn :LoadBalancerARN
-               :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId}
+               :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId
+               :cloud-provider.aws.environment.prod.optional-services.cognito/enabled :IncludeCognito
+               :cloud-provider.aws.environment.prod.optional-services.s3/enabled :IncludeS3
+               :cloud-provider.aws.environment.prod.optional-services.rds/enabled :IncludeRds}
               :output-parameter-mapping
               {:CognitoUserPoolId :cloud-provider.aws.environment.prod.cognito/user-pool-id
                :CognitoUserPoolURL :cloud-provider.aws.environment.prod.cognito/user-pool-url
                :CognitoSPAClientId :cloud-provider.aws.environment.prod.cognito/spa-client-id
-               :RdsAddress :cloud-provider.aws.environment.prod.rds/host
+               :RdsAddress :cloud-provider.aws.environment.prod.optional-services.rds/host
                :EbEnvironmentName :cloud-provider.aws.environment.prod.eb/environment-name
                :EbEnvironmentURL :cloud-provider.aws.environment.prod.eb/environment-url}}})
 

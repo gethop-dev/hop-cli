@@ -204,11 +204,13 @@
                (= (:type node) :single-choice-group)
                (->
                 (first (filter #(= (:value node) (first (keys %))) (:choices node)))
+                (util/update-map-vals #(assoc % :enabled true) {:recursive? false})
                 (assoc :value (:value node)))
 
                (= (:type node) :multiple-choice-group)
                (->
                 (apply merge (filter #(get (set (:value node)) (first (keys %))) (:choices node)))
+                (util/update-map-vals #(assoc % :enabled true) {:recursive? false})
                 (assoc :value (:value node)))
 
                :else

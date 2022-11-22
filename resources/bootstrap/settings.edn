@@ -241,15 +241,15 @@
                                                                                       {:name :host
                                                                                        :tag "Database host"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.test.rds/host}
+                                                                                       :value :cloud-provider.aws.environment.test.optional-services.rds/host}
                                                                                       {:name :name
                                                                                        :tag "Database name"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.test.rds/name}
+                                                                                       :value :cloud-provider.aws.environment.test.optional-services.rds/name}
                                                                                       {:name :port
                                                                                        :tag "Database port"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.test.rds/port}
+                                                                                       :value :cloud-provider.aws.environment.test.optional-services.rds/port}
                                                                                       {:name :app-user
                                                                                        :tag "Persistence Database Application User configuration"
                                                                                        :type :plain-group
@@ -310,15 +310,15 @@
                                                                                       {:name :host
                                                                                        :tag "Database host"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.prod.rds/host}
+                                                                                       :value :cloud-provider.aws.environment.prod.optional-services.rds/host}
                                                                                       {:name :name
                                                                                        :tag "Database name"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.prod.rds/name}
+                                                                                       :value :cloud-provider.aws.environment.prod.optional-services.rds/name}
                                                                                       {:name :port
                                                                                        :tag "Database port"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.prod.rds/port}
+                                                                                       :value :cloud-provider.aws.environment.prod.optional-services.rds/port}
                                                                                       {:name :app-user
                                                                                        :tag "Persistence Database Application User configuration"
                                                                                        :type :plain-group
@@ -1135,7 +1135,16 @@
                                :value [{:name :stack-name
                                         :tag "Stack-name"
                                         :type :string
-                                        :value "hop-test-dev"}]}
+                                        :value "hop-test-dev"}
+                                       {:name :optional-services
+                                        :type :multiple-choice-group
+                                        :value [:cognito :s3]
+                                        :choices [{:name :cognito
+                                                   :type :plain-group
+                                                   :value []}
+                                                  {:name :s3
+                                                   :type :plain-group
+                                                   :value []}]}]}
                               {:name :test
                                :tag "Test"
                                :type :plain-group
@@ -1147,28 +1156,37 @@
                                         :tag "Notifications email"
                                         :type :string
                                         :value "devops+test@magnet.coop"}
-                                       {:name :rds
-                                        :tag "RDS"
-                                        :type :plain-group
-                                        :value [{:name :version
-                                                 :type :string
-                                                 :value "12"}
-                                                {:name :port
-                                                 :type :string
-                                                 :value "5432"}
-                                                {:name :name
-                                                 :type :string
-                                                 :value "ebdb"}
-                                                {:name :admin-user
-                                                 :type :plain-group
-                                                 :value [{:name :username
-                                                          :tag "Database admin username"
-                                                          :type :string
-                                                          :value "postgres"}
-                                                         {:name :password
-                                                          :tag "Database admin password"
-                                                          :type :auto-gen-password
-                                                          :value {:length 24}}]}]}
+                                       {:name :optional-services
+                                        :type :multiple-choice-group
+                                        :value [:rds :cognito :s3]
+                                        :choices [{:name :cognito
+                                                   :type :plain-group
+                                                   :value []}
+                                                  {:name :s3
+                                                   :type :plain-group
+                                                   :value []}
+                                                  {:name :rds
+                                                   :tag "RDS"
+                                                   :type :plain-group
+                                                   :value [{:name :version
+                                                            :type :string
+                                                            :value "12"}
+                                                           {:name :port
+                                                            :type :string
+                                                            :value "5432"}
+                                                           {:name :name
+                                                            :type :string
+                                                            :value "ebdb"}
+                                                           {:name :admin-user
+                                                            :type :plain-group
+                                                            :value [{:name :username
+                                                                     :tag "Database admin username"
+                                                                     :type :string
+                                                                     :value "postgres"}
+                                                                    {:name :password
+                                                                     :tag "Database admin password"
+                                                                     :type :auto-gen-password
+                                                                     :value {:length 24}}]}]}]}
                                        {:name :kms
                                         :tag "KMS"
                                         :type :plain-group
@@ -1187,28 +1205,37 @@
                                         :tag "Notifications email"
                                         :type :string
                                         :value "devops+prod@magnet.coop"}
-                                       {:name :rds
-                                        :tag "RDS"
-                                        :type :plain-group
-                                        :value [{:name :version
-                                                 :type :string
-                                                 :value "12"}
-                                                {:name :port
-                                                 :type :string
-                                                 :value "5432"}
-                                                {:name :name
-                                                 :type :string
-                                                 :value "ebdb"}
-                                                {:name :admin-user
-                                                 :type :plain-group
-                                                 :value [{:name :username
-                                                          :tag "Database admin username"
-                                                          :type :string
-                                                          :value "postgres"}
-                                                         {:name :password
-                                                          :tag "Database admin password"
-                                                          :type :auto-gen-password
-                                                          :value {:length 24}}]}]}
+                                       {:name :optional-services
+                                        :type :multiple-choice-group
+                                        :value [:rds :cognito :s3]
+                                        :choices [{:name :cognito
+                                                   :type :plain-group
+                                                   :value []}
+                                                  {:name :s3
+                                                   :type :plain-group
+                                                   :value []}
+                                                  {:name :rds
+                                                   :tag "RDS"
+                                                   :type :plain-group
+                                                   :value [{:name :version
+                                                            :type :string
+                                                            :value "12"}
+                                                           {:name :port
+                                                            :type :string
+                                                            :value "5432"}
+                                                           {:name :name
+                                                            :type :string
+                                                            :value "ebdb"}
+                                                           {:name :admin-user
+                                                            :type :plain-group
+                                                            :value [{:name :username
+                                                                     :tag "Database admin username"
+                                                                     :type :string
+                                                                     :value "postgres"}
+                                                                    {:name :password
+                                                                     :tag "Database admin password"
+                                                                     :type :auto-gen-password
+                                                                     :value {:length 24}}]}]}]}
                                        {:name :kms
                                         :tag "KMS"
                                         :type :plain-group
