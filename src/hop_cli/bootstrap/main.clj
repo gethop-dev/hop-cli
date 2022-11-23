@@ -6,11 +6,18 @@
             [hop-cli.util.thread-transactions :as tht]))
 
 (defn bootstrap-hop
-  [{:keys [settings-file-path]}]
+  [{:keys [settings-file-path target-project-dir]}]
   (->
    [{:txn-fn
      (fn read-settings [_]
-       (sr/read-settings settings-file-path))}
+       (let [result (sr/read-settings settings-file-path)]
+         (if (:success? result)
+           {:success? true
+            :settings
+            (assoc-in (:settings result) [:project :target-dir] target-project-dir)}
+           {:success? false
+            :reason :could-not-read-settings
+            :error-details result})))}
     {:txn-fn
      (fn provision-infrastructure
        [{:keys [settings]}]

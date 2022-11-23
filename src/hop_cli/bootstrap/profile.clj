@@ -11,7 +11,8 @@
   ([settings]
    (build-target-project-path settings nil))
   ([settings subpath]
-   (str (fs/normalize (:target-project-dir settings)) fs/file-separator subpath)))
+   (let [target-dir (bp.util/get-settings-value settings :project/target-dir)]
+     (str (fs/normalize target-dir) fs/file-separator subpath))))
 
 (defn- build-bootstrap-resource-path
   [subpath]
