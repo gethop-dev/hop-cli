@@ -173,6 +173,7 @@
                    {:src "authentication/keycloak/app" :dst "app"}]
                   (build-docker-files-to-copy settings))
    :docker-compose (build-docker-compose-files settings)
+   :deploy-files ["keycloak/themes"]
    :outputs (meta-merge (build-profile-env-outputs settings :dev)
                         (build-profile-env-outputs settings :test)
                         (build-profile-env-outputs settings :prod))})

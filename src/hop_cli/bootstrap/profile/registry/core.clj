@@ -27,4 +27,5 @@
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
-   :docker-compose docker-compose-files})
+   :docker-compose docker-compose-files
+   :deploy-files ["proxy"]})

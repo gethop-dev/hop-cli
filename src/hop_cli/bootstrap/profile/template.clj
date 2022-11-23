@@ -56,7 +56,9 @@
       (update-in [:project :load-frontend-app]
                  util/update-map-vals coll->formatted-string {:recursive? false})
       (update-in [:project :docker-compose]
-                 util/update-map-vals #(str/join ":" %))))
+                 util/update-map-vals #(str/join ":" %))
+      (update-in [:project :deploy-files]
+                 util/update-map-vals coll->formatted-string {:recursive? false})))
 
 (defn- mustache-template-renderer
   [settings]

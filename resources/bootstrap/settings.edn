@@ -46,8 +46,30 @@
           {:name :profiles
            :tag "Profiles"
            :type :multiple-choice-group
-           :value [:persistence-sql :auth-keycloak :bi-grafana :object-storage-s3]
-           :choices [{:name :object-storage-s3
+           :value [:persistence-sql :auth-keycloak :bi-grafana :object-storage-s3 :ci-bitbucket]
+           :choices [{:name :ci-bitbucket
+                      :type :plain-group
+                      :value [{:name :continuous-deployment
+                               :type :single-choice-group
+                               :value :aws
+                               :choices [{:name :aws
+                                        :type :plain-group
+                                        :value [{:name :eb-s3-bucket
+                                                 :type :string
+                                                 :value "elasticbeanstalk-eu-west-1-XXXXXXXXXX"}
+                                                {:name :environment
+                                                 :type :plain-group
+                                                 :value [{:name :test
+                                                          :type :plain-group
+                                                          :value [{:name :eb-env-name
+                                                                   :type :ref
+                                                                   :value :cloud-provider.aws.environment.test.eb/environment-name}]}
+                                                         {:name :prod
+                                                          :type :plain-group
+                                                          :value [{:name :eb-env-name
+                                                                   :type :ref
+                                                                   :value :cloud-provider.aws.environment.prod.eb/environment-name}]}]}]}]}]}
+                     {:name :object-storage-s3
                       :type :plain-group
                       :value [{:name :environment
                                :type :plain-group
