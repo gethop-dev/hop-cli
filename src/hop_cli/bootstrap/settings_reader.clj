@@ -236,7 +236,7 @@
                       (io/reader)
                       (PushbackReader.)
                       (edn/read))]
-    (if true #_(m/validate settings-schema settings)
+    (if (m/validate settings-schema settings)
         {:success? true
          :settings (->> settings
                         (walk/prewalk (comp build-refs inject-auto-generated-passwords))
