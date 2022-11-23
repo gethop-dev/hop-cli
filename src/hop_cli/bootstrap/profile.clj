@@ -58,7 +58,9 @@
 
 (defn generate-project!
   [settings]
-  (let [updated-settings (execute-profiles settings)
+  (let [updated-settings (-> settings
+                             (execute-profiles)
+                             (settings-reader/resolve-refs [:project]))
         project-path (build-target-project-path settings)]
     (copy-files! updated-settings)
     (profile.template/render-profile-templates! updated-settings project-path)
