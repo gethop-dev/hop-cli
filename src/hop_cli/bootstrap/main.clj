@@ -24,7 +24,7 @@
        (let [result (infrastructure/provision-initial-infrastructure settings)]
          (if (:success? result)
            {:success? true
-            :settings settings}
+            :settings (:settings result)}
            {:success? false
             :reason :failed-to-provision-infrastructure
             :error-details result})))}
