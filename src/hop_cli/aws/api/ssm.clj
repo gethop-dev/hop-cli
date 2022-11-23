@@ -49,13 +49,28 @@
       {:success? false
        :error-details result})))
 
+(defn put-parameters*
+  [config opts parameters]
+  (loop [pending-params parameters
+         completed-results []]
+    (if (empty? pending-params)
+      completed-results
+      (let [result (put-parameter config opts (first pending-params))]
+        (if (and
+             (not (:success? result))
+             (= "ThrottlingException" (get-in result [:error-details :__type])))
+          (do
+            (Thread/sleep 3000)
+            (recur pending-params completed-results))
+          (recur (rest pending-params) (conj completed-results result)))))))
+
 (defn put-parameters
   [config opts parameters]
-  (let [results (map (partial put-parameter config opts) parameters)]
-    (if (every? :success? results)
-      {:success? true}
-      {:success? false
-       :error-details (filter (comp not :success?) results)})))
+  (let [results (put-parameters* config opts parameters)]
+      (if (every? :success? results)
+        {:success? true}
+        {:success? false
+         :error-details (filter (comp not :success?) results)})))
 
 (defn get-parameters
   [{:keys [project-name environment]}]
