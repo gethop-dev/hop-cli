@@ -3,4 +3,4 @@ services:
     volumes:
       - ./grafana/dashboards:/etc/grafana/provisioning/dashboards{{#project.profiles.bi-grafana.deployment.to-develop.container.depends-on-postgres?}}
     depends_on:
-      - postgres{{#project.profiles.bi-grafana.deployment.to-develop.container.depends-on-postgres?}}
+      - postgres{{/project.profiles.bi-grafana.deployment.to-develop.container.depends-on-postgres?}}
