@@ -157,7 +157,9 @@
 
 (defn profile
   [settings]
-  {:config-edn {:base (merge
+  {:dependencies '[[dev.gethop/buddy-auth.jwt-oidc "0.10.4"]
+                   [duct/middleware.buddy "0.2.0"]]
+   :config-edn {:base (merge
                        (jwt-oidc-config settings)
                        (buddy-auth-config settings)
                        (user-api-config settings))

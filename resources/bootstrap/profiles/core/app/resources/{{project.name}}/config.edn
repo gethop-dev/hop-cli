@@ -21,4 +21,7 @@
  :duct.profile/local #duct/include "local.edn"
  :duct.profile/prod {}
 
+ :duct.module/logging {}
+ :duct.module.web/site {}
+
  <<#project.config-edn.modules>><<&.>><</project.config-edn.modules>>}

@@ -4,10 +4,11 @@
   :min-lein-version "2.9.8"
   :dependencies [[org.clojure/clojure "1.10.3"]
                  [duct/core "0.8.0"]
+                 [duct/module.web "0.7.3"]
+                 [duct/module.logging "0.5.0"]
                  [metosin/reitit "0.5.18"]
                  {{#project.dependencies}}{{&.}}{{/project.dependencies}}]
-  :plugins [[duct/lein-duct "0.12.3"]
-            [s3-wagon-private "1.3.4"]]
+  :plugins [[duct/lein-duct "0.12.3"]]
   :main ^:skip-aot {{#lambdas.to-snake-case}}{{project.name}}{{/lambdas.to-snake-case}}.main
   :resource-paths ["resources" "target/resources" "target/resources/{{#lambdas.to-snake-case}}{{project.name}}{{/lambdas.to-snake-case}}"]
   :middleware [lein-duct.plugin/middleware]
@@ -31,7 +32,8 @@
               :plugins [[lein-cljfmt "0.8.0"]
                         [jonase/eastwood "1.2.3"]]
               :dependencies [[integrant/repl "0.3.2"]
-                             [day8.re-frame/re-frame-10x "1.2.5"]]}}
+                             [hawk "0.2.11"]
+                             [eftest "0.5.9"]]}}
   :uberjar-name "{{project.name}}-standalone.jar"
   :test-selectors {:default (fn [m] (not (or (:integration m) (:regression m))))
                    :all (constantly true)

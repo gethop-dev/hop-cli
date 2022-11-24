@@ -62,7 +62,9 @@
 (defn profile
   [settings]
   {:dependencies '[[dev.gethop/session.re-frame.cognito "0.1.0-alpha"]
-                   [dev.gethop/user-manager.cognito "0.1.0"]]
+                   [dev.gethop/user-manager.cognito "0.1.0"]
+                   [dev.gethop/buddy-auth.jwt-oidc "0.10.4"]
+                   [duct/middleware.buddy "0.2.0"]]
    :config-edn {:base (merge
                        (cognito-adapter-config settings)
                        (jwt-oidc-config settings)

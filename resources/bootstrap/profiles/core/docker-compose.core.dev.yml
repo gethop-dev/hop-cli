@@ -10,5 +10,6 @@ services:
       - "4001:4001"
       - "3449:3449"
     volumes:
+      - ./app:/app:delegated
       - ~/.m2:/root/.m2:delegated
-      - ~/.m2:/home/magnet/.m2:delegated
+      - ~/.m2:/home/hop/.m2:delegated

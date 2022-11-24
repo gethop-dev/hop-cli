@@ -7,7 +7,7 @@
   (:require [integrant.core :as ig]
             [<<project.name>>.api.middleware.authentication :as api.auth]
             [<<project.name>>.api.util.responses :as util.r]
-            [<<project.name>>.util :as util]))
+            [<<project.name>>.shared.util :as util]))
 
 (defn- get-dummy-user-data
   [config req]
