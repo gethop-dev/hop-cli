@@ -3,7 +3,7 @@
             [hop-cli.bootstrap.profile.registry.authentication.keycloak :as auth.keycloak]
             [hop-cli.bootstrap.profile.registry.aws :as aws]
             [hop-cli.bootstrap.profile.registry.bi.grafana :as bi.grafana]
-            [hop-cli.bootstrap.profile.registry.ci.bitbucket :as ci.bitbucket]
+            [hop-cli.bootstrap.profile.registry.ci :as ci]
             [hop-cli.bootstrap.profile.registry.core :as core]
             [hop-cli.bootstrap.profile.registry.frontend :as frontend]
             [hop-cli.bootstrap.profile.registry.object-storage.s3 :as os.s3]
@@ -18,4 +18,4 @@
    {:kw :frontend :exec-fn frontend/profile}
    {:kw :aws :exec-fn aws/profile}
    {:kw :object-storage-s3 :exec-fn os.s3/profile}
-   {:kw :ci-bitbucket :exec-fn ci.bitbucket/profile}])
+   {:kw :ci :exec-fn ci/profile}])

@@ -48,6 +48,12 @@
     (map->formatted-string coll)
     (sequential-coll->formatted-string coll)))
 
+(defn- coll->escaped-string
+  [coll]
+  (->> coll
+       (map #(format "\"%s\"" %1))
+       (interpose " ")))
+
 (defn- settings->mustache-data
   [settings]
   (-> settings
@@ -57,8 +63,7 @@
                  util/update-map-vals coll->formatted-string {:recursive? false})
       (update-in [:project :docker-compose]
                  util/update-map-vals #(str/join ":" %))
-      (update-in [:project :deploy-files]
-                 util/update-map-vals coll->formatted-string {:recursive? false})))
+      (update-in [:project :deploy-files] coll->escaped-string)))
 
 (defn- mustache-template-renderer
   [settings]

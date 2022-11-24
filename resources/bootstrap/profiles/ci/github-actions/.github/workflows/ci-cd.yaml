@@ -1,0 +1,47 @@
+{{=<< >>=}}
+name: <<project.name>> CI/CD pipeline
+
+on:
+  push:
+    paths-ignore:
+      - "README.md"
+      - "CONTRIBUTING.md"
+      - "CHANGELOG.md"
+      - "LICENSE"
+      - ".gitignore"
+
+jobs:
+  build-and-lint:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: {{secrets.AWS_ACCESS_KEY_ID}}
+      AWS_SECRET_ACCESS_KEY: {{secrets.AWS_SECRET_ACCESS_KEY}}
+      AWS_DEFAULT_REGION: {{secrets.AWS_DEFAULT_REGION}}
+      TEST_AWS_ACCESS_KEY_ID: {{secrets.TEST_AWS_ACCESS_KEY_ID}}
+      TEST_AWS_SECRET_ACCESS_KEY: {{secrets.TEST_AWS_SECRET_ACCESS_KEY}}
+      TEST_AWS_DEFAULT_REGION: {{secrets.TEST_AWS_DEFAULT_REGION}}
+      DOCKER_BUILDKIT: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Bob
+        run: docker run --rm --name bob --workdir "/project" -v "${PWD}:/project" magnetcoop/bob:c01f6bb sh -c "tail -f /dev/null"
+
+      - name: Bob checks
+        run: docker exec bob  sh -c "all-checks.sh"
+
+      - name: Lint and test
+        run: ./ci/lint-and-test.sh
+
+      - name: Build app prod docker image
+        run: ./ci/build-app-prod-docker-image.sh<<#cloud-provider.aws.enabled>>
+
+      - name: ECR login
+        run: docker exec bob sh -c "./ci/aws/ecr-login.sh"
+
+      - name: Publish app prod docker image
+        run: ./ci/publish-app-prod-docker-image.sh
+
+      - name: Deploy to AWS test environment
+        run: docker exec bob sh -c "./ci/aws/deploy-to-test-env.sh"<</cloud-provider.aws.enabled>>
