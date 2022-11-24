@@ -19,3 +19,6 @@ services:
       - KEYCLOAK_URI
       - KEYCLOAK_REALM
       - KEYCLOAK_APP_CLIENT_ID
+      - OIDC_ISSUER_URL
+      - OIDC_AUDIENCE
+      - OIDC_JWKS_URI

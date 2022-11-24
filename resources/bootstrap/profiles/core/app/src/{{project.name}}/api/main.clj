@@ -69,7 +69,7 @@
   [routes]
   (reduce conj (conj api-context swagger-docs) routes))
 
-(defmethod ig/init-key :reitit-demo.api/main
+(defmethod ig/init-key :<<project.name>>.api/main
   [_ {:keys [routes]}]
   (let [root (first routes)
         api-routes (build-api-routes (rest routes))]
