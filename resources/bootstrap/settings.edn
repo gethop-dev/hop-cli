@@ -10,13 +10,12 @@
            :type :plain-group
            :value [{:name :registry
                     :type :single-choice-group
-                    :value [{:name :aws
-                             :type :plain-group
-                             :value [{:name :app-repository-url
-                                      :type :single-choice
-                                      :value [{:name :aws
-                                               :type :ref
-                                               :value :cloud-provider.aws.project.ecr/app-repository-url}]}]}]}]}
+                    :value :aws
+                    :choices [{:name :aws
+                               :type :plain-group
+                               :value [{:name :app-repository-url
+                                        :type :ref
+                                        :value :cloud-provider.aws.project.ecr/app-repository-url}]}]}]}
           {:name :proxy
            :type :plain-group
            :value [{:name :dev
@@ -82,7 +81,7 @@
                                                             :type :plain-group
                                                             :value [{:name :name
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.dev.optional-services.s3.bucket-name}]}
+                                                                     :value :cloud-provider.aws.environment.dev.optional-services.s3/bucket-name}]}
                                                            {:name :custom
                                                             :type :plain-group
                                                             :value [{:name :name
@@ -97,7 +96,7 @@
                                                             :type :plain-group
                                                             :value [{:name :name
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.test.optional-services.s3.bucket-name}]}
+                                                                     :value :cloud-provider.aws.environment.test.optional-services.s3/bucket-name}]}
                                                            {:name :custom
                                                             :type :plain-group
                                                             :value [{:name :name
@@ -112,7 +111,7 @@
                                                             :type :plain-group
                                                             :value [{:name :name
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.prod.optional-services.s3.bucket-name}]}
+                                                                     :value :cloud-provider.aws.environment.prod.optional-services.s3/bucket-name}]}
                                                            {:name :custom
                                                             :type :plain-group
                                                             :value [{:name :name
@@ -545,7 +544,7 @@
                                                   {:name :external
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
-                                                            :type :string
+                                                            :type :keyword
                                                             :value :external}
                                                            {:name :environment
                                                             :type :plain-group
@@ -743,7 +742,7 @@
                                                   {:name :external
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
-                                                            :type :string
+                                                            :type :keyword
                                                             :value :external}
                                                            {:name :environment
                                                             :type :plain-group
@@ -886,7 +885,7 @@
                                                   {:name :external
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
-                                                            :type :string
+                                                            :type :keyword
                                                             :value :external}
                                                            {:name :environment
                                                             :type :plain-group
@@ -1157,15 +1156,15 @@
                                                             :type :plain-group
                                                             :value [{:name :id
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.id}
+                                                                     :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/id}
                                                                     {:name :url
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.url}
+                                                                     :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/url}
                                                                     {:name :app-client
                                                                      :type :plain-group
                                                                      :value [{:name :id
                                                                               :type :ref
-                                                                              :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.app-client.id}]}]}
+                                                                              :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.app-client/id}]}]}
                                                            {:name :custom
                                                             :type :plain-group
                                                             :value [{:name :id
@@ -1188,15 +1187,15 @@
                                                             :type :plain-group
                                                             :value [{:name :id
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.test.optional-services.cognito.user-pool.id}
+                                                                     :value :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/id}
                                                                     {:name :url
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.test.optional-services.cognito.user-pool.url}
+                                                                     :value :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/url}
                                                                     {:name :app-client
                                                                      :type :plain-group
                                                                      :value [{:name :id
                                                                               :type :ref
-                                                                              :value :cloud-provider.aws.environment.test.optional-services.cognito.app-client.id}]}]}
+                                                                              :value :cloud-provider.aws.environment.test.optional-services.cognito.app-client/id}]}]}
                                                            {:name :custom
                                                             :type :plain-group
                                                             :value [{:name :id
@@ -1219,15 +1218,15 @@
                                                             :type :plain-group
                                                             :value [{:name :id
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool.id}
+                                                                     :value :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/id}
                                                                     {:name :url
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool.url}
+                                                                     :value :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/url}
                                                                     {:name :app-client
                                                                      :type :plain-group
                                                                      :value [{:name :id
                                                                               :type :ref
-                                                                              :value :cloud-provider.aws.environment.prod.optional-services.cognito.app-client.id}]}]}
+                                                                              :value :cloud-provider.aws.environment.prod.optional-services.cognito.app-client/id}]}]}
                                                            {:name :custom
                                                             :type :plain-group
                                                             :value [{:name :id

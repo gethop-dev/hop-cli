@@ -25,8 +25,8 @@
   [:enum
    ;; non-group values
    :integer :nat-int :float :number :string
-   :regexp :char :boolean :symbol :list
-   :vector :map :set :uuid :inst
+   :regexp :char :boolean :symbol :list :keyword
+   :vector :map :set :uuid :inst :ref
    :password :auto-gen-password
    ;; group values
    :plain-group :single-choice-group :multiple-choice-group])
@@ -120,6 +120,12 @@
   [:map
    [:length pos-int?]])
 
+(def setting-value-ref-schema
+  qualified-keyword?)
+
+(def setting-value-keyword-schema
+  keyword?)
+
 (def setting-schema
   (m/schema
    ;; Introduce a local registry, so we can have recursive schemas for
@@ -145,6 +151,8 @@
                [:inst (conj setting-common-schema [:value setting-value-inst-schema])]
                [:password (conj setting-common-schema [:value setting-value-password-schema])]
                [:auto-gen-password (conj setting-common-schema [:value setting-value-auto-gen-password-schema])]
+               [:keyword (conj setting-common-schema [:value setting-value-keyword-schema])]
+               [:ref (conj setting-common-schema [:value setting-value-ref-schema])]
                [:plain-group
                 ;; `:plain-group` key is special, as it contains a vector of other
                 ;; `settings-schema`. In this case we need to use a local registry
