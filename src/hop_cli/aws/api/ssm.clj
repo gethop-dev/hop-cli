@@ -67,10 +67,10 @@
 (defn put-parameters
   [config opts parameters]
   (let [results (put-parameters* config opts parameters)]
-      (if (every? :success? results)
-        {:success? true}
-        {:success? false
-         :error-details (filter (comp not :success?) results)})))
+    (if (every? :success? results)
+      {:success? true}
+      {:success? false
+       :error-details (filter (comp not :success?) results)})))
 
 (defn get-parameters
   [{:keys [project-name environment]}]

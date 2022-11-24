@@ -245,9 +245,9 @@
                       (PushbackReader.)
                       (edn/read))]
     (if (m/validate settings-schema settings)
-        {:success? true
-         :settings (->> settings
-                        (walk/prewalk (comp build-refs inject-auto-generated-passwords))
-                        (settings->settings-nested-map))}
-        {:success? false
-         :error-details (m/explain settings-schema settings)})))
+      {:success? true
+       :settings (->> settings
+                      (walk/prewalk (comp build-refs inject-auto-generated-passwords))
+                      (settings->settings-nested-map))}
+      {:success? false
+       :error-details (m/explain settings-schema settings)})))
