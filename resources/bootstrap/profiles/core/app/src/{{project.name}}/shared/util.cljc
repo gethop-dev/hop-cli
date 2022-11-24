@@ -3,9 +3,7 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 {{=<< >>=}}
-(ns <<project.name>>.shared.util
-  #?(:clj (:import [java.util UUID]))
-  #?(:cljs (:refer-clojure :exclude [uuid])))
+(ns <<project.name>>.shared.util)
 
 (defn uuid
   "If no argument is passed, creates a random UUID. If the passed
@@ -13,8 +11,7 @@
   representing a UUID value return the corresponding UUID. Any other
   value or invalid string returns nil. "
   ([]
-   #?(:clj (UUID/randomUUID)
-      :cljs (random-uuid)))
+   (random-uuid))
   ([x]
    (try
      (cond
@@ -22,9 +19,8 @@
        x
 
        (string? x)
-       #?(:clj (UUID/fromString x)
-          :cljs (cljs.core/uuid x)))
-     (catch #?(:clj Exception :cljs :default) _
+       (parse-uuid x))
+     (catch #?(:clj Throwable :cljs :default) _
        nil))))
 
 (defn filter-map
