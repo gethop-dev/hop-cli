@@ -8,12 +8,10 @@
                                        <<#project.config-edn.routes>><<&.>><</project.config-edn.routes>>]}
 
   :<<project.name>>.api/config
-  {
-   <<#project.config-edn.config>><<&.>><</project.config-edn.config>>}
+  {<<#project.config-edn.config>><<&.>><</project.config-edn.config>>}
 
   :<<project.name>>/common-config
-  {
-   <<#project.config-edn.common-config>><<&.>><</project.config-edn.common-config>>}
+  {<<#project.config-edn.common-config>><<&.>><</project.config-edn.common-config>>}
 
   <<#project.config-edn.base>><<&.>><</project.config-edn.base>>}
 
