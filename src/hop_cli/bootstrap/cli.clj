@@ -1,5 +1,6 @@
 (ns hop-cli.bootstrap.cli
   (:require [babashka.cli :as cli]
+            [babashka.fs :as fs]
             [clojure.pprint :refer [pprint]]
             [hop-cli.bootstrap.infrastructure.aws :as aws]
             [hop-cli.bootstrap.main :as main]
@@ -29,10 +30,14 @@
     :desc "Bootstraps a new HOP based project"
     :spec {:settings-file-path {:alias :s
                                 :desc "The HOP settings file path."
-                                :require true}
+                                :require true
+                                :validate (comp fs/exists? fs/file)
+                                :error-msgs {:validate "Couldn't find HOP setting.edn file. Aborting..."}}
            :target-project-dir {:alias :d
                                 :desc "Target directory to create the new project."
-                                :require true}}}
+                                :require true
+                                :validate (comp not fs/exists? fs/file)
+                                :error-msgs {:validate "Project directory already exists. Please input a different directory."}}}}
    {:cmds ["copy-settings"]
     :fn copy-settings-handler
     :error-fn error/generic-error-handler
@@ -46,7 +51,9 @@
     :desc "Provision a production cloud infrastructure."
     :spec {:settings-file-path {:alias :s
                                 :desc "The HOP settings file path."
-                                :require true}}}
+                                :require true
+                                :validate (comp fs/exists? fs/file)
+                                :error-msgs {:validate "Couldn't find HOP setting.edn file. Aborting..."}}}}
    {:cmds []
     :fn print-help-handler}])
 
