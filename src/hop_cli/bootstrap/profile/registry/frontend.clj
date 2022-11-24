@@ -30,7 +30,8 @@
 (defn profile
   [settings]
   {:files [{:src "frontend"}]
-   :dependencies '[[cljs-ajax/cljs-ajax "0.8.4"]
+   :dependencies '[[org.clojure/clojurescript "1.11.60"]
+                   [cljs-ajax/cljs-ajax "0.8.4"]
                    [cljsjs/react "17.0.2-0"]
                    [cljsjs/react-dom "17.0.2-0"]
                    [day8.re-frame/http-fx "0.2.4"]
