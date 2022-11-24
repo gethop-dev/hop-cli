@@ -33,7 +33,8 @@
                         [jonase/eastwood "1.2.3"]]
               :dependencies [[integrant/repl "0.3.2"]
                              [hawk "0.2.11"]
-                             [eftest "0.5.9"]]}}
+                             [eftest "0.5.9"]
+                             {{#project.dev-dependencies}}{{&.}}{{/project.dev-dependencies}}]}}
   :uberjar-name "{{project.name}}-standalone.jar"
   :test-selectors {:default (fn [m] (not (or (:integration m) (:regression m))))
                    :all (constantly true)

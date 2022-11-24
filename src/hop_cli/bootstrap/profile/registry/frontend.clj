@@ -39,6 +39,7 @@
                    [com.taoensso/tempura "1.3.0"]
                    [hydrogen/module.cljs "0.5.2"]
                    [hydrogen/module.core "0.4.2"]]
+   :dev-dependenices '[[day8.re-frame/re-frame-10x "1.5.0"]]
    :config-edn {:base (merge
                        (routes settings)
                        (root-static-route settings)
