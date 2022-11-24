@@ -59,6 +59,13 @@
      :OIDC_ISSUER_URL pool-url
      :OIDC_JWKS_URI (str pool-url "/.well-known/jwks.json")}))
 
+(defn- build-docker-compose-files
+  []
+  (let [common ["docker-compose.cognito.yml"]]
+    {:to-develop common
+     :to-deploy common
+     :ci common}))
+
 (defn profile
   [settings]
   {:dependencies '[[dev.gethop/session.re-frame.cognito "0.1.0-alpha"]
@@ -79,5 +86,6 @@
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
+   :docker-compose-files (build-docker-compose-files)
    :files [{:src "authentication/common"}
            {:src "authentication/cognito"}]})
