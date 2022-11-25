@@ -60,6 +60,7 @@
              (not (:success? result))
              (= "ThrottlingException" (get-in result [:error-details :__type])))
           (do
+            (println "SSM Rate limit exceeded. Retrying in 3s...")
             (Thread/sleep 3000)
             (recur pending-params completed-results))
           (recur (rest pending-params) (conj completed-results result)))))))

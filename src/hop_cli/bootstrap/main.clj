@@ -11,6 +11,7 @@
   (->
    [{:txn-fn
      (fn read-settings [_]
+       (println "Reading settings.edn...")
        (let [result (sr/read-settings settings-file-path)]
          (if (:success? result)
            {:success? true
@@ -22,6 +23,7 @@
     {:txn-fn
      (fn provision-infrastructure
        [{:keys [settings]}]
+       (println "Provisioning infrastructure")
        (let [result (infrastructure/provision-initial-infrastructure settings)]
          (if (:success? result)
            {:success? true
@@ -32,6 +34,7 @@
     {:txn-fn
      (fn execute-profiles
        [{:keys [settings]}]
+       (println "Generating project...")
        (let [result (profile/execute-profiles! settings)]
          (if (:success? result)
            {:success? true
@@ -42,6 +45,7 @@
     {:txn-fn
      (fn save-environment-variables
        [{:keys [settings]}]
+       (println "Saving environment variables...")
        (let [result (infrastructure/save-environment-variables settings)]
          (if (:success? result)
            result
@@ -51,6 +55,7 @@
     {:txn-fn
      (fn post-installation-messages
        [{:keys [settings] :as prv-result}]
+       (println "Project generation finished. Now follow these manual steps to complete the bootstrap.")
        (let [messages (bp.util/get-settings-value settings :project/post-installation-messages)]
          (doseq [msg messages]
            (println msg))
