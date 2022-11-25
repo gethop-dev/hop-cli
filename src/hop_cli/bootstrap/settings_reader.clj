@@ -6,7 +6,8 @@
             [hop-cli.bootstrap.util :as bp.util]
             [hop-cli.util :as util]
             [hop-cli.util.random :as util.random]
-            [malli.core :as m])
+            [malli.core :as m]
+            [malli.error :as me])
   (:import (java.io PushbackReader)))
 
 (def setting-name-schema
@@ -250,4 +251,4 @@
                       (walk/prewalk (comp build-refs inject-auto-generated-passwords))
                       (settings->settings-nested-map))}
       {:success? false
-       :error-details (m/explain settings-schema settings)})))
+       :error-details (me/humanize (m/explain settings-schema settings))})))
