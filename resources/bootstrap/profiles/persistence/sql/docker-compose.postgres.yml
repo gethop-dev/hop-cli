@@ -18,4 +18,4 @@ services:
       - KC_DB_SCHEMA{{/project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.keycloak.enabled}}{{#project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.grafana.enabled}}
       - GF_DATABASE_USER
       - GF_DATABASE_PASSWORD
-      - GF_DATABASE_SCHEMA
+      - GF_DATABASE_SCHEMA{{/project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.grafana.enabled}}
