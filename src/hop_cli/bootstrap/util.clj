@@ -41,4 +41,4 @@
              (map (fn [file] {:src (str profile-root-path file)})))]
     (if (and (seq compose-files) (seq extra-docker-files))
       (concat compose-files extra-docker-files)
-      [])))
+      compose-files)))
