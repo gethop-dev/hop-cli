@@ -1,5 +1,6 @@
 (ns hop-cli.bootstrap.profile.registry.persistence.sql
-  (:require [hop-cli.bootstrap.util :as bp.util]
+  (:require [hop-cli.bootstrap.profile.registry :as registry]
+            [hop-cli.bootstrap.util :as bp.util]
             [meta-merge.core :refer [meta-merge]]))
 
 (defn- sql-config
@@ -103,7 +104,7 @@
   (bp.util/build-profile-docker-files-to-copy
    (build-docker-compose-files settings)
    "persistence/sql/"
-   [{:src "persistence/sql/postgres" :dst "postgres"}]))
+   []))
 
 (defn- build-profile-env-outputs
   [settings env]
@@ -117,8 +118,8 @@
         {:dev
          {:database {:host "postgres"}}}}}}}))
 
-(defn profile
-  [settings]
+(defmethod registry/pre-render-hook :persistence-sql
+  [_ settings]
   {:dependencies '[[duct/module.sql "0.6.1"]
                    [dev.gethop/sql-utils "0.4.13"]
                    [org.postgresql/postgresql "42.3.3"]]

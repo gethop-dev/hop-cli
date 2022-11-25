@@ -1,8 +1,9 @@
 (ns hop-cli.bootstrap.profile.registry.ci
-  (:require [hop-cli.bootstrap.util :as bp.util]))
+  (:require [hop-cli.bootstrap.profile.registry :as registry]
+            [hop-cli.bootstrap.util :as bp.util]))
 
-(defn profile
-  [settings]
+(defmethod registry/pre-render-hook :ci
+  [_ settings]
   {:files (cond-> [{:src "ci/common"}]
             (bp.util/get-settings-value settings :project.profiles.ci.provider.bitbucket-pipelines/enabled)
             (conj {:src "ci/bitbucket-pipelines"})

@@ -1,5 +1,6 @@
 (ns hop-cli.bootstrap.profile.registry.bi.grafana
-  (:require [hop-cli.bootstrap.util :as bp.util]))
+  (:require [hop-cli.bootstrap.profile.registry :as registry]
+            [hop-cli.bootstrap.util :as bp.util]))
 
 (defn- dashboard-manager-adapter-config
   [_settings]
@@ -152,8 +153,8 @@
          (bp.util/get-settings-value settings
                                      :project.profiles.bi-grafana.deployment.to-develop.container/db-deployment-type))}}}})
 
-(defn profile
-  [settings]
+(defmethod registry/pre-render-hook :bi-grafana
+  [_ settings]
   {:dependencies '[[dev.gethop/dashboard-manager.grafana "0.2.8"]]
    :config-edn {:base (dashboard-manager-adapter-config settings)
                 :config (sso-apps-config)}

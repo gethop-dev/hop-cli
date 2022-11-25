@@ -1,11 +1,12 @@
 (ns hop-cli.bootstrap.profile.registry.aws
-  (:require [hop-cli.bootstrap.util :as bp.util]))
+  (:require [hop-cli.bootstrap.profile.registry :as registry]
+            [hop-cli.bootstrap.util :as bp.util]))
 
 (defn- build-dev-env-variables
   [settings]
   {:AWS_ROLE_ARN (bp.util/get-settings-value settings :cloud-provider.aws.account.iam/eb-service-role-arn)})
 
-(defn profile
-  [settings]
+(defmethod registry/pre-render-hook :aws
+  [_ settings]
   {:files [{:src "aws/.platform" :dst ".platform"}]
    :environment-variables {:dev (build-dev-env-variables settings)}})

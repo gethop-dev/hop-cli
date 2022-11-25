@@ -1,5 +1,6 @@
 (ns hop-cli.bootstrap.profile.registry.authentication.cognito
-  (:require [hop-cli.bootstrap.util :as bp.util]))
+  (:require [hop-cli.bootstrap.profile.registry :as registry]
+            [hop-cli.bootstrap.util :as bp.util]))
 
 (defn- jwt-oidc-config
   [_settings]
@@ -66,8 +67,8 @@
      :to-deploy common
      :ci common}))
 
-(defn profile
-  [settings]
+(defmethod registry/pre-render-hook :auth-cognito
+  [_ settings]
   {:dependencies '[[dev.gethop/session.re-frame.cognito "0.1.0-alpha"]
                    [dev.gethop/user-manager.cognito "0.1.0"]
                    [dev.gethop/buddy-auth.jwt-oidc "0.10.4"]

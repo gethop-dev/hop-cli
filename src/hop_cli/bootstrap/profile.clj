@@ -2,10 +2,12 @@
   (:require [babashka.fs :as fs]
             [clojure.java.io :as io]
             [hop-cli.bootstrap.profile.registry :as profile.registry]
+            [hop-cli.bootstrap.profile.registry-loader :as profile.registry-loader]
             [hop-cli.bootstrap.profile.template :as profile.template]
             [hop-cli.bootstrap.settings-reader :as settings-reader]
             [hop-cli.bootstrap.util :as bp.util]
-            [meta-merge.core :refer [meta-merge]]))
+            [meta-merge.core :refer [meta-merge]]
+            [hop-cli.bootstrap.profile.registry :as registry]))
 
 (defn- build-target-project-path
   ([settings]
@@ -38,31 +40,43 @@
          sort
          (fs/write-lines target-file))))
 
-(defn- execute-profiles
+(defn get-selected-profiles
   [settings]
-  (let [selected-profiles (bp.util/get-settings-value settings
-                                                      [:project :profiles :value])
+  (let [selected-profiles (bp.util/get-settings-value settings [:project :profiles :value])
         selected-profile-set (set (cons :core selected-profiles))]
-    (->> profile.registry/profiles
-         (filterv #(get selected-profile-set (:kw %)))
-         (reduce
-          (fn [settings {:keys [kw exec-fn]}]
-            (let [resolved-settings (settings-reader/resolve-refs settings [:project :profiles kw])
-                  result (exec-fn resolved-settings)]
-              (meta-merge
-               resolved-settings
-               {:project (-> result
-                             (dissoc :outputs)
-                             (assoc-in [:profiles kw] (:outputs result)))})))
-          settings))))
+    (->> profile.registry-loader/profile-list
+         (filterv #(get selected-profile-set %)))))
 
-(defn generate-project!
+(defn- execute-profile-hook
+  [settings profiles hook-fn]
+  (reduce
+   (fn [settings profile-kw]
+     (let [resolved-settings
+           (settings-reader/resolve-refs settings [:project :profiles profile-kw])
+           result (hook-fn profile-kw resolved-settings)]
+       (meta-merge
+        resolved-settings
+        {:project (-> result
+                      (dissoc :outputs)
+                      (assoc-in [:profiles profile-kw] (:outputs result)))})))
+   settings
+   profiles))
+
+(defn- generate-project!
   [settings]
-  (let [updated-settings (-> settings
-                             (execute-profiles)
-                             (settings-reader/resolve-refs [:project]))
-        project-path (build-target-project-path settings)]
-    (copy-files! updated-settings)
-    (profile.template/render-profile-templates! updated-settings project-path)
-    (write-dev-environment-variables-to-file! updated-settings)
+  (let [project-path (build-target-project-path settings)]
+    (copy-files! settings)
+    (profile.template/render-profile-templates! settings project-path)
+    (write-dev-environment-variables-to-file! settings)
+    settings))
+
+(defn execute-profiles!
+  [settings]
+  (let [profiles (get-selected-profiles settings)
+        updated-settings
+        (-> settings
+            (execute-profile-hook profiles registry/pre-render-hook)
+            (settings-reader/resolve-refs [:project])
+            (generate-project!)
+            (execute-profile-hook profiles registry/post-render-hook))]
     {:success? true :settings updated-settings}))

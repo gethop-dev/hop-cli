@@ -1,5 +1,6 @@
 (ns hop-cli.bootstrap.profile.registry.frontend
-  (:require [hop-cli.bootstrap.util :as bp.util]))
+  (:require [hop-cli.bootstrap.profile.registry :as registry]
+            [hop-cli.bootstrap.util :as bp.util]))
 
 (defn- cljs-module
   [settings]
@@ -27,8 +28,8 @@
   (let [project-name (bp.util/get-settings-value settings :project/name)]
     [(tagged-literal 'ig/ref (keyword (str project-name ".static/root")))]))
 
-(defn profile
-  [settings]
+(defmethod registry/pre-render-hook :frontend
+  [_ settings]
   {:files [{:src "frontend"}]
    :dependencies '[[org.clojure/clojurescript "1.11.60"]
                    [cljs-ajax/cljs-ajax "0.8.4"]

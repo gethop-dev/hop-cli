@@ -1,4 +1,5 @@
-(ns hop-cli.bootstrap.profile.registry.core)
+(ns hop-cli.bootstrap.profile.registry.core
+  (:require [hop-cli.bootstrap.profile.registry :as registry]))
 
 (defn- common-config
   []
@@ -20,8 +21,8 @@
    ["docker-compose.core.yml"
     "docker-compose.core.to-deploy.yml"]})
 
-(defn profile
-  [settings]
+(defmethod registry/pre-render-hook :core
+  [_ settings]
   {:files [{:src "core"}]
    :config-edn {:common-config (common-config)}
    :environment-variables {:dev (build-env-variables settings :dev)

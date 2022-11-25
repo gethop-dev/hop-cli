@@ -1,5 +1,6 @@
 (ns hop-cli.bootstrap.profile.registry.authentication.keycloak
-  (:require [hop-cli.bootstrap.util :as bp.util]
+  (:require [hop-cli.bootstrap.profile.registry :as registry]
+            [hop-cli.bootstrap.util :as bp.util]
             [meta-merge.core :refer [meta-merge]]))
 
 (defn- jwt-oidc-config
@@ -155,8 +156,8 @@
           :auth-url
           (format "%s/realms/%s/protocol/openid-connect/auth" external-uri realm-name)}}}}}}))
 
-(defn profile
-  [settings]
+(defmethod registry/pre-render-hook :auth-keycloak
+  [_ settings]
   {:dependencies '[[dev.gethop/buddy-auth.jwt-oidc "0.10.4"]
                    [duct/middleware.buddy "0.2.0"]]
    :config-edn {:base (merge

@@ -29,14 +29,14 @@
             :reason :failed-to-provision-infrastructure
             :error-details result})))}
     {:txn-fn
-     (fn generate-localhost-project
+     (fn execute-profiles
        [{:keys [settings]}]
-       (let [result (profile/generate-project! settings)]
+       (let [result (profile/execute-profiles! settings)]
          (if (:success? result)
            {:success? true
             :settings (:settings result)}
            {:success? false
-            :reason :could-not-generate-project
+            :reason :could-not-execute-profiles
             :error-details result})))}
     {:txn-fn
      (fn save-environment-variables
