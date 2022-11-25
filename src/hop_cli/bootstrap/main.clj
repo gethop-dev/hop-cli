@@ -3,7 +3,8 @@
             [hop-cli.bootstrap.infrastructure.aws]
             [hop-cli.bootstrap.profile :as profile]
             [hop-cli.bootstrap.settings-reader :as sr]
-            [hop-cli.util.thread-transactions :as tht]))
+            [hop-cli.util.thread-transactions :as tht]
+            [hop-cli.bootstrap.util :as bp.util]))
 
 (defn bootstrap-hop
   [{:keys [settings-file-path target-project-dir]}]
@@ -46,5 +47,12 @@
            result
            {:success? false
             :reason :could-not-save-env-variables
-            :error-details result})))}]
+            :error-details result})))}
+    {:txn-fn
+     (fn post-installation-messages
+       [{:keys [settings] :as prv-result}]
+       (let [messages (bp.util/get-settings-value settings :project/post-installation-messages)]
+         (doseq [msg messages]
+           (println msg))
+         prv-result))}]
    (tht/thread-transactions {})))

@@ -329,6 +329,17 @@
                                                                                        :tag "Database port"
                                                                                        :type :ref
                                                                                        :value :cloud-provider.aws.environment.test.optional-services.rds/port}
+                                                                                      {:name :admin-user
+                                                                                       :tag "Persistence Database Admin configuration"
+                                                                                       :type :plain-group
+                                                                                       :value [{:name :username
+                                                                                                :tag "Database admin username"
+                                                                                                :type :ref
+                                                                                                :value :cloud-provider.aws.environment.test.optional-services.rds.admin-user/username}
+                                                                                               {:name :password
+                                                                                                :tag "Database admin password"
+                                                                                                :type :ref
+                                                                                                :value :cloud-provider.aws.environment.test.optional-services.rds.admin-user/password}]}
                                                                                       {:name :app-user
                                                                                        :tag "Persistence Database Application User configuration"
                                                                                        :type :plain-group
@@ -398,6 +409,17 @@
                                                                                        :tag "Database port"
                                                                                        :type :ref
                                                                                        :value :cloud-provider.aws.environment.prod.optional-services.rds/port}
+                                                                                      {:name :admin-user
+                                                                                       :tag "Persistence Database Admin configuration"
+                                                                                       :type :plain-group
+                                                                                       :value [{:name :username
+                                                                                                :tag "Database admin username"
+                                                                                                :type :ref
+                                                                                                :value :cloud-provider.aws.environment.prod.optional-services.rds.admin-user/username}
+                                                                                               {:name :password
+                                                                                                :tag "Database admin password"
+                                                                                                :type :ref
+                                                                                                :value :cloud-provider.aws.environment.prod.optional-services.rds.admin-user/password}]}
                                                                                       {:name :app-user
                                                                                        :tag "Persistence Database Application User configuration"
                                                                                        :type :plain-group
@@ -415,7 +437,7 @@
                                                                                                 :value "app"}]}
                                                                                       {:name :other-users
                                                                                        :type :multiple-choice-group
-                                                                                       :value [:keycloak :grafana]
+                                                                                       :value [:keycloak :grafana :grafana-datasource]
                                                                                        :choices [{:name :keycloak
                                                                                                   :type :plain-group
                                                                                                   :value [{:name :username

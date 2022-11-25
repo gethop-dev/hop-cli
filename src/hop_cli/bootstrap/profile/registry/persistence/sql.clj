@@ -1,5 +1,7 @@
 (ns hop-cli.bootstrap.profile.registry.persistence.sql
-  (:require [hop-cli.bootstrap.profile.registry :as registry]
+  (:require [babashka.fs :as fs]
+            [clojure.string :as str]
+            [hop-cli.bootstrap.profile.registry :as registry]
             [hop-cli.bootstrap.util :as bp.util]
             [meta-merge.core :refer [meta-merge]]))
 
@@ -51,17 +53,6 @@
     (build-ragtime-config-key settings :prod)
     :migrations []}})
 
-(defn- build-container-env-variables
-  [settings env-path]
-  (let [port (bp.util/get-settings-value settings (conj env-path :database :port))
-        db (bp.util/get-settings-value settings (conj env-path :database :name))
-        admin-user (bp.util/get-settings-value settings (conj env-path :database :admin-user :username))
-        admin-password (bp.util/get-settings-value settings (conj env-path :database :admin-user :password))]
-    {:POSTGRES_PORT port
-     :POSTGRES_DB db
-     :POSTGRES_USER admin-user
-     :POSTGRES_PASSWORD admin-password}))
-
 (defn- build-env-variables
   [settings environment]
   (let [base-path [:project :profiles :persistence-sql :deployment (bp.util/get-env-type environment) :?]
@@ -77,17 +68,20 @@
         db (bp.util/get-settings-value settings (conj env-path :database :name))
         app-user (bp.util/get-settings-value settings (conj env-path :database :app-user :username))
         app-password (bp.util/get-settings-value settings (conj env-path :database :app-user :password))
-        app-schema (bp.util/get-settings-value settings (conj env-path :database :app-user :schema))]
-    (cond->
-     {:APP_DB_TYPE type
-      :APP_DB_HOST host
-      :APP_DB_PORT port
-      :APP_DB_NAME db
-      :APP_DB_USER app-user
-      :APP_DB_PASSWORD app-password
-      :APP_DB_SCHEMA app-schema}
-      (= :container deploy-type)
-      (merge (build-container-env-variables settings env-path)))))
+        app-schema (bp.util/get-settings-value settings (conj env-path :database :app-user :schema))
+        admin-user (bp.util/get-settings-value settings (conj env-path :database :admin-user :username))
+        admin-password (bp.util/get-settings-value settings (conj env-path :database :admin-user :password))]
+    {:APP_DB_TYPE type
+     :APP_DB_HOST host
+     :APP_DB_PORT port
+     :APP_DB_NAME db
+     :APP_DB_USER app-user
+     :APP_DB_PASSWORD app-password
+     :APP_DB_SCHEMA app-schema
+     :DB_PORT port
+     :DB_NAME db
+     :DB_ADMIN_USER admin-user
+     :DB_ADMIN_PASSWORD admin-password}))
 
 (defn- build-docker-compose-files
   [settings]
@@ -118,6 +112,34 @@
         {:dev
          {:database {:host "postgres"}}}}}}}))
 
+(defn- replace-env-variable
+  [settings environment [env-var-str env-var-name]]
+  (let [path [:project :environment-variables environment (keyword env-var-name)]
+        env-var-value (bp.util/get-settings-value settings path)]
+    (if env-var-value
+      env-var-value
+      env-var-str)))
+
+(defn build-environment-init-db-sql-string
+  [settings environment]
+  (let [project-dir (bp.util/get-settings-value settings :project/target-dir)
+        template-file (format "%s/postgres/init-scripts/%s/%s/01_create_schemas_and_roles.sql"
+                              project-dir
+                              (name (bp.util/get-env-type environment))
+                              (name environment))
+        template-content (slurp (fs/file template-file))]
+    (str/replace template-content #"\$\{([^}]+)\}" #(replace-env-variable settings environment %1))))
+
+(defn build-init-db-sql-string
+  [settings]
+  (with-out-str
+    (println "Once the DB is up and running you need to run the following SQL statements:")
+    (println "\nFor test env:\n")
+    (println (build-environment-init-db-sql-string settings :test))
+    (println "\nFor prod env:\n")
+    (println (build-environment-init-db-sql-string settings :prod))
+    (println "The scripts are stored in the project under postgres/init-scripts for reference.")))
+
 (defmethod registry/pre-render-hook :persistence-sql
   [_ settings]
   {:dependencies '[[duct/module.sql "0.6.1"]
@@ -130,10 +152,19 @@
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
-   :files (concat [{:src "persistence/sql/app" :dst "app"}]
+   :files (concat [{:src "persistence/sql/app"
+                    :dst "app"}
+                   {:src "persistence/sql/postgres/init-scripts/to-deploy"
+                    :dst "postgres/init-scripts/to-deploy"}
+                   {:src "persistence/sql/postgres/init-scripts/to-develop/dev"
+                    :dst "postgres/init-scripts/to-develop/dev"}]
                   (build-docker-files-to-copy settings))
    :docker-compose (build-docker-compose-files settings)
    :outputs (meta-merge
              (build-profile-env-outputs settings :dev)
              (build-profile-env-outputs settings :test)
              (build-profile-env-outputs settings :prod))})
+
+(defmethod registry/post-render-hook :persistence-sql
+  [_ settings]
+  {:post-installation-messages [(build-init-db-sql-string settings)]})
