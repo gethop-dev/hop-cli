@@ -42,8 +42,8 @@
                    [hydrogen/module.cljs "0.5.2"]
                    [hydrogen/module.core "0.4.2"]]
    :dev-dependenices '[[day8.re-frame/re-frame-10x "1.5.0"]]
-   :config-edn {:base (merge
-                       (routes settings)
+   :config-edn {:routes (routes settings)
+                :modules (cljs-module settings)
+                :base (merge
                        (root-static-route settings)
-                       (sass-compiler))
-                :modules (cljs-module settings)}})
+                       (sass-compiler))}})
