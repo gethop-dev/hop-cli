@@ -3,8 +3,8 @@
             [hop-cli.bootstrap.infrastructure.aws]
             [hop-cli.bootstrap.profile :as profile]
             [hop-cli.bootstrap.settings-reader :as sr]
-            [hop-cli.util.thread-transactions :as tht]
-            [hop-cli.bootstrap.util :as bp.util]))
+            [hop-cli.bootstrap.util :as bp.util]
+            [hop-cli.util.thread-transactions :as tht]))
 
 (defn bootstrap-hop
   [{:keys [settings-file-path target-project-dir]}]

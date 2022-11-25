@@ -1,13 +1,12 @@
 (ns hop-cli.bootstrap.profile
   (:require [babashka.fs :as fs]
             [clojure.java.io :as io]
-            [hop-cli.bootstrap.profile.registry :as profile.registry]
+            [hop-cli.bootstrap.profile.registry :as registry]
             [hop-cli.bootstrap.profile.registry-loader :as profile.registry-loader]
             [hop-cli.bootstrap.profile.template :as profile.template]
             [hop-cli.bootstrap.settings-reader :as settings-reader]
             [hop-cli.bootstrap.util :as bp.util]
-            [meta-merge.core :refer [meta-merge]]
-            [hop-cli.bootstrap.profile.registry :as registry]))
+            [meta-merge.core :refer [meta-merge]]))
 
 (defn- build-target-project-path
   ([settings]
