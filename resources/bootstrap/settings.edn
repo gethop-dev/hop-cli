@@ -859,7 +859,7 @@
                                                                               :type :plain-group
                                                                               :value [{:name :id
                                                                                        :type :string
-                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                                       :value "hop-spa-XXXXXXXX"}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
                                                                               :type :multiple-choice-group
@@ -938,7 +938,7 @@
                                                                               :type :plain-group
                                                                               :value [{:name :id
                                                                                        :type :string
-                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                                       :value "hop-spa-XXXXXXXX"}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
                                                                               :type :multiple-choice-group
@@ -979,7 +979,7 @@
                                                                               :type :plain-group
                                                                               :value [{:name :id
                                                                                        :type :string
-                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                                       :value "hop-spa-XXXXXXXX"}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
                                                                               :type :multiple-choice-group
@@ -1051,7 +1051,7 @@
                                                                               :type :plain-group
                                                                               :value [{:name :id
                                                                                        :type :string
-                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                                       :value "hop-spa-XXXXXXXX"}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
                                                                               :type :multiple-choice-group
@@ -1130,7 +1130,7 @@
                                                                               :type :plain-group
                                                                               :value [{:name :id
                                                                                        :type :string
-                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                                       :value "hop-spa-XXXXXXXX"}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
                                                                               :type :multiple-choice-group
@@ -1161,7 +1161,7 @@
                                                                               :type :plain-group
                                                                               :value [{:name :id
                                                                                        :type :string
-                                                                                       :value "hop-grafana-XXXXXXXX"}]}
+                                                                                       :value "hop-spa-XXXXXXXX"}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
                                                                               :type :multiple-choice-group

@@ -4,7 +4,6 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./keycloak/themes/{{keycloak-theme-name}}:/opt/jboss/keycloak/themes/{{keycloak-theme-name}}:ro
       - ./keycloak/realms-import:/opt/keycloak/data/import:ro
     depends_on:
       - postgres
