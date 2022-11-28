@@ -17,7 +17,7 @@ services:
       - KC_HOSTNAME_PATH
       - KC_HOSTNAME_ADMIN_URL
     volumes:
-      - ./keycloak/themes/{{keycloak-theme-name}}:/opt/jboss/keycloak/themes/{{keycloak-theme-name}}:ro
+      - ./keycloak/themes/:/opt/keycloak/themes/:ro
   app:
     environment:
       - KEYCLOAK_URI
