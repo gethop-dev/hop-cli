@@ -87,7 +87,9 @@
      :KC_DB_SCHEMA db-schema
      :KC_DB_USERNAME db-username
      :KC_DB_PASSWORD db-pwd
-     :KC_PROXY "edge"}))
+     :KC_PROXY "edge"
+     :KC_HOSTNAME_PATH "/auth"
+     :KC_HOSTNAME_ADMIN_URL keycloak-uri}))
 
 (defn- build-env-variables
   [settings environment]
@@ -125,7 +127,8 @@
   (bp.util/build-profile-docker-files-to-copy
    (build-docker-compose-files settings)
    "authentication/keycloak/"
-   [{:src "authentication/keycloak/keycloak" :dst "keycloak"}]))
+   [{:src "authentication/keycloak/keycloak" :dst "keycloak"}
+    {:src "authentication/keycloak/proxy" :dst "proxy"}]))
 
 (defn- build-profile-env-outputs
   [settings environment]

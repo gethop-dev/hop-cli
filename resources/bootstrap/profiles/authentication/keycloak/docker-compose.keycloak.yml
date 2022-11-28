@@ -14,6 +14,8 @@ services:
       - KC_DB_USERNAME
       - KC_DB_PASSWORD
       - KC_PROXY
+      - KC_HOSTNAME_PATH
+      - KC_HOSTNAME_ADMIN_URL
   app:
     environment:
       - KEYCLOAK_URI

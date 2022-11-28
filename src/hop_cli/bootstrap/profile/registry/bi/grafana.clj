@@ -141,7 +141,8 @@
   (bp.util/build-profile-docker-files-to-copy
    (build-docker-compose-files settings)
    "bi/grafana/"
-   [{:src "bi/grafana/grafana" :dst "grafana"}]))
+   [{:src "bi/grafana/grafana" :dst "grafana"}
+    {:src "bi/grafana/proxy" :dst "proxy"}]))
 
 (defn- build-dev-outputs
   [settings]
