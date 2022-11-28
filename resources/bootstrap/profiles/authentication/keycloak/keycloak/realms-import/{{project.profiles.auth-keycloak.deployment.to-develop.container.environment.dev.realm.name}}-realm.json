@@ -1053,8 +1053,8 @@
         "strictTransportSecurity": "max-age=31536000; includeSubDomains"
     },
     "smtpServer": {},
-    "loginTheme": "keycloak",
-    "accountTheme": "keycloak",
+    "loginTheme": "<<project.profiles.auth-keycloak.deployment.to-develop.container.environment.dev.theme.name>>",
+    "accountTheme": "<<project.profiles.auth-keycloak.deployment.to-develop.container.environment.dev.theme.name>>",
     "adminTheme": "keycloak",
     "emailTheme": "keycloak",
     "eventsEnabled": false,
