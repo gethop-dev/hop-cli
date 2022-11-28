@@ -21,7 +21,6 @@
     :database-name (tagged-literal 'duct/env ["APP_DB_NAME" 'Str])
     :username (tagged-literal 'duct/env ["APP_DB_USER" 'Str])
     :password (tagged-literal 'duct/env ["APP_DB_PASSWORD" 'Str])
-    :schema (tagged-literal 'duct/env ["APP_DB_SCHEMA" 'Str])
     :re-write-batched-inserts true
     :logger nil
     :minimum-idle 10
@@ -142,7 +141,8 @@
 
 (defmethod registry/pre-render-hook :persistence-sql
   [_ settings]
-  {:dependencies '[[duct/module.sql "0.6.1"]
+  {:dependencies '[[duct/migrator.ragtime "0.3.2"]
+                   [dev.gethop/database.sql.hikaricp "0.4.1"]
                    [dev.gethop/sql-utils "0.4.13"]
                    [org.postgresql/postgresql "42.3.3"]]
    :config-edn {:base (merge (sql-config settings)
