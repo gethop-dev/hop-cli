@@ -286,7 +286,7 @@
             "offline_access",
             "microprofile-jwt"
         ]
-    },
+    },<<#project.profiles.auth-keycloak.deployment.to-develop.container.environment.dev.other-clients.grafana.enabled>>
         {
         "id": "9740d3ef-3d30-4235-8eb0-4c15d4e7db88",
         "clientId": "<<project.profiles.auth-keycloak.deployment.to-develop.container.environment.dev.other-clients.grafana.id>>",
@@ -340,7 +340,7 @@
             "offline_access",
             "microprofile-jwt"
         ]
-    },
+    },<</project.profiles.auth-keycloak.deployment.to-develop.container.environment.dev.other-clients.grafana.enabled>>
         {
         "id": "49b50391-9ba0-46d6-8139-fa60a306ef4a",
         "clientId": "<<project.profiles.auth-keycloak.deployment.to-develop.container.environment.dev.app-client.id>>",
