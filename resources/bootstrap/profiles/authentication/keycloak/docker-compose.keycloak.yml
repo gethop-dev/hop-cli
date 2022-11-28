@@ -26,3 +26,7 @@ services:
       - OIDC_ISSUER_URL
       - OIDC_AUDIENCE
       - OIDC_JWKS_URI
+  proxy:
+    depends_on:
+      keycloak:
+        condition: service_started

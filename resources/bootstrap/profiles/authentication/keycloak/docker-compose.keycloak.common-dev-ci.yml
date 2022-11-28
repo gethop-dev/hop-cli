@@ -6,4 +6,5 @@ services:
     volumes:
       - ./keycloak/realms-import:/opt/keycloak/data/import:ro
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy

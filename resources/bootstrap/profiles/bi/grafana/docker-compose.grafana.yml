@@ -48,3 +48,7 @@ services:
       - OIDC_SSO_APP_1_LOGIN_METHOD
       - OIDC_SSO_APP_1_LOGOUT_URL
       - OIDC_SSO_APP_1_LOGOUT_METHOD
+  proxy:
+    depends_on:
+      grafana:
+        condition: service_started

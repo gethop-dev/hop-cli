@@ -13,6 +13,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - app
+      app:
+        condition: service_started
     volumes:
       - ./proxy/conf.d:/etc/nginx/conf.d:ro
