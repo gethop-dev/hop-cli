@@ -85,3 +85,5 @@ Outputs:
   S3BucketName:
     Condition: "IncludeS3Cond"
     Value: !GetAtt "S3.Outputs.BucketName"
+  DevRoleArn:
+    Value: !GetAtt "IAM.Outputs.ConsumerRoleARN"

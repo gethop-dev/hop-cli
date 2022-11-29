@@ -22,18 +22,18 @@
       (with-out-str
         (println "Make sure you have the %s aws-vault profile configured" local-dev-user-profile)))))
 
-(defn- build-setup-aws-vault-project-dev-user-instructions
+(defn- build-setup-aws-vault-project-dev-role-instructions
   [settings]
   (let [project-name (bp.util/get-settings-value settings :project/name)
         profile-prefix (bp.util/get-settings-value settings :project.profiles.aws.aws-vault/profile-prefix)
         local-user-name (bp.util/get-settings-value settings :project.profiles.aws.credentials.local-dev-user/name)
-        local-user-arn (bp.util/get-settings-value settings :project.profiles.aws.credentials.local-dev-user/arn)]
+        local-role-arn (bp.util/get-settings-value settings :project.profiles.aws.credentials.local-dev-user/role-arn)]
     (with-out-str
       (println (format "Configure the development role used in the %s project" project-name))
       (println "Add the following profile to your aws config file (usually in '~/.aws/config')")
       (println (format "[profile %s/%s-dev-env]" profile-prefix project-name))
       (println (format "source_profile = %s/%s" profile-prefix local-user-name))
-      (println (format "role_arn = %s" local-user-arn))
+      (println (format "role_arn = %s" local-role-arn))
       (println "You may want to share those details with other team members that will work on this project."))))
 
 (defmethod registry/pre-render-hook :aws
@@ -45,4 +45,4 @@
 (defmethod registry/post-render-hook :aws
   [_ settings]
   {:post-installation-messages [(build-setup-aws-vault-local-dev-user-instructions settings)
-                                (build-setup-aws-vault-project-dev-user-instructions settings)]})
+                                (build-setup-aws-vault-project-dev-role-instructions settings)]})

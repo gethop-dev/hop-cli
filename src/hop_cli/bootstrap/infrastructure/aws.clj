@@ -56,7 +56,8 @@
              {:S3BucketName :cloud-provider.aws.environment.dev.optional-services.s3/bucket-name
               :CognitoUserPoolId :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/id
               :CognitoUserPoolURL :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/url
-              :CognitoSPAClientId :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.app-client/id}}
+              :CognitoSPAClientId :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.app-client/id
+              :DevRoleArn :cloud-provider.aws.environment.dev.iam.role/arn}}
 
    :test-env {:master-template "cloud-environment.yaml"
               :capability :CAPABILITY_NAMED_IAM
