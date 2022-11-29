@@ -175,7 +175,7 @@
 
 (defn- create-local-dev-user-credentials
   [settings]
-  (let [name-key :cloud-provider.aws.account.iam/local-dev-user-name
+  (let [name-key :cloud-provider.aws.account.iam.local-dev-user/name
         local-dev-user-name (bp.util/get-settings-value settings name-key)
         result (aws.iam/create-access-key {:username local-dev-user-name})]
     (if-not (:success? result)
