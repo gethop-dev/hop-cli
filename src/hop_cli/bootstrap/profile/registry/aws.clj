@@ -29,7 +29,7 @@
         local-user-name (bp.util/get-settings-value settings :project.profiles.aws.credentials.local-dev-user/name)
         local-user-arn (bp.util/get-settings-value settings :project.profiles.aws.credentials.local-dev-user/arn)]
     (with-out-str
-      (println "Configure the development role used in the %s project" project-name)
+      (println (format "Configure the development role used in the %s project" project-name))
       (println "Add the following profile to your aws config file (usually in '~/.aws/config')")
       (println (format "[profile %s/%s-dev-env]" profile-prefix project-name))
       (println (format "source_profile = %s/%s" profile-prefix local-user-name))

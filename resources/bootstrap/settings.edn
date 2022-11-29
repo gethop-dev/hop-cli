@@ -13,28 +13,7 @@
                     :value :aws
                     :choices [{:name :aws
                                :type :plain-group
-                               :value [{:name :aws-vault
-                                        :type :plain-group
-                                        :value [{:name :profile-prefix
-                                                 :type :string
-                                                 :value "hop"}]}
-                                       {:name :credentials
-                                        :type :plain-group
-                                        :value [{:name :local-dev-user
-                                                 :type :plain-group
-                                                 :value [{:name :name
-                                                          :type :ref
-                                                          :value :cloud-provider.aws.account.iam.local-dev-user/name}
-                                                         {:name :arn
-                                                          :type :ref
-                                                          :value :cloud-provider.aws.account.iam.local-dev-user/arn}
-                                                         {:name :access-key-id
-                                                          :type :ref
-                                                          :value :cloud-provider.aws.account.iam.local-dev-user/access-key-id}
-                                                         {:name :secret-access-key
-                                                          :type :ref
-                                                          :value :cloud-provider.aws.account.iam.local-dev-user/secret-access-key}]}]}
-                                       {:name :app-repository-url
+                               :value [{:name :app-repository-url
                                         :type :ref
                                         :value :cloud-provider.aws.project.ecr/app-repository-url}]}]}]}
           {:name :proxy
@@ -67,7 +46,30 @@
            :tag "Profiles"
            :type :multiple-choice-group
            :value [:persistence-sql :auth-keycloak :bi-grafana :object-storage-s3 :frontend :aws :ci]
-           :choices [{:name :ci
+           :choices [{:name :aws
+                      :type :plain-group
+                      :value [{:name :aws-vault
+                               :type :plain-group
+                               :value [{:name :profile-prefix
+                                        :type :string
+                                        :value "hop"}]}
+                              {:name :credentials
+                               :type :plain-group
+                               :value [{:name :local-dev-user
+                                        :type :plain-group
+                                        :value [{:name :name
+                                                 :type :ref
+                                                 :value :cloud-provider.aws.account.iam.local-dev-user/name}
+                                                {:name :arn
+                                                 :type :ref
+                                                 :value :cloud-provider.aws.account.iam.local-dev-user/arn}
+                                                {:name :access-key-id
+                                                 :type :ref
+                                                 :value :cloud-provider.aws.account.iam.local-dev-user/access-key-id}
+                                                {:name :secret-access-key
+                                                 :type :ref
+                                                 :value :cloud-provider.aws.account.iam.local-dev-user/secret-access-key}]}]}]}
+                     {:name :ci
                       :type :plain-group
                       :value [{:name :provider
                                :type :single-choice-group
