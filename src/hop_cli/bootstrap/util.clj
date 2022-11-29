@@ -32,6 +32,12 @@
     :else
     (get-in settings ks)))
 
+(defn assoc-in-settings-value
+  [settings ks v]
+  (if (coll? ks)
+    (assoc-in settings ks v)
+    (assoc-in settings (settings-kw->settings-path ks) v)))
+
 (defn build-profile-docker-files-to-copy
   [docker-compose-files profile-root-path extra-docker-files]
   (let [compose-files

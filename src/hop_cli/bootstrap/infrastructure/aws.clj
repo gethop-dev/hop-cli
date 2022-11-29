@@ -3,6 +3,7 @@
             [clojure.walk :as walk]
             [hop-cli.aws.api.ssm :as api.ssm]
             [hop-cli.aws.cloudformation :as aws.cloudformation]
+            [hop-cli.aws.iam :as aws.iam]
             [hop-cli.aws.ssl :as aws.ssl]
             [hop-cli.bootstrap.infrastructure :as infrastructure]
             [hop-cli.bootstrap.util :as bp.util]
@@ -21,8 +22,8 @@
               :cloud-provider.aws.account/resource-name-prefix :ResourceNamePrefix}
              :output-parameter-mapping
              {:EbServiceRoleARN :cloud-provider.aws.account.iam/eb-service-role-arn
-              :LocalDevUserARN :cloud-provider.aws.account.iam/local-dev-user-arn
-              :LocalDevUserName :cloud-provider.aws.account.iam/local-dev-user-name
+              :LocalDevUserARN :cloud-provider.aws.account.iam.local-dev-user/arn
+              :LocalDevUserName :cloud-provider.aws.account.iam.local-dev-user/name
               :RDSMonitoringRoleARN :cloud-provider.aws.account.iam/rds-monitoring-role-arm
               :PublicRouteTable1Id :cloud-provider.aws.account.vpc/public-route-table-id
               :VpcId :cloud-provider.aws.account.vpc/id}}
@@ -48,7 +49,7 @@
              :stack-name-kw :cloud-provider.aws.environment.dev/stack-name
              :environment "dev"
              :input-parameter-mapping
-             {:cloud-provider.aws.account.iam/local-dev-user-arn :LocalDevUserARN
+             {:cloud-provider.aws.account.iam.local-dev-user/arn :LocalDevUserARN
               :cloud-provider.aws.environment.dev.optional-services.cognito/enabled :IncludeCognito
               :cloud-provider.aws.environment.dev.optional-services.s3/enabled :IncludeS3}
              :output-parameter-mapping
@@ -172,6 +173,23 @@
              :settings updated-settings})))
       result)))
 
+(defn- create-local-dev-user-credentials
+  [settings]
+  (let [name-key :cloud-provider.aws.account.iam/local-dev-user-name
+        local-dev-user-name (bp.util/get-settings-value settings name-key)
+        result (aws.iam/create-access-key {:username local-dev-user-name})]
+    (if-not (:success? result)
+      {:success? false
+       :reason {:username local-dev-user-name :result result}}
+      {:success? true
+       :settings (-> settings
+                     (bp.util/assoc-in-settings-value
+                      :cloud-provider.aws.account.iam.local-dev-user/access-key-id
+                      (get-in result [:access-key :id]))
+                     (bp.util/assoc-in-settings-value
+                      :cloud-provider.aws.account.iam.local-dev-user/secret-access-key
+                      (get-in result [:access-key :secret])))})))
+
 (defmethod infrastructure/provision-initial-infrastructure :aws
   [settings]
   (->
@@ -203,8 +221,13 @@
               :settings updated-settings})
            (let [result (provision-cfn-stack settings template-opts)]
              (if (:success? result)
-               {:success? true
-                :settings (:settings result)}
+               (let [result (create-local-dev-user-credentials (:settings result))]
+                 (if (:success? result)
+                   {:success? true
+                    :settings (:settings result)}
+                   {:success? false
+                    :reason :could-not-obtain-and-print-local-user-credentials
+                    :error-details result}))
                {:success? false
                 :reason :could-not-provision-account-cfn
                 :error-details result})))))}

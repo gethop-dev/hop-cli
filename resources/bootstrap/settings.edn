@@ -24,10 +24,16 @@
                                                  :type :plain-group
                                                  :value [{:name :name
                                                           :type :ref
-                                                          :value :cloud-provider.aws.account.iam/local-dev-user-arn}
+                                                          :value :cloud-provider.aws.account.iam.local-dev-user/name}
                                                          {:name :arn
                                                           :type :ref
-                                                          :value :cloud-provider.aws.account.iam/local-dev-user-arn}]}]}
+                                                          :value :cloud-provider.aws.account.iam.local-dev-user/arn}
+                                                         {:name :access-key-id
+                                                          :type :ref
+                                                          :value :cloud-provider.aws.account.iam.local-dev-user/access-key-id}
+                                                         {:name :secret-access-key
+                                                          :type :ref
+                                                          :value :cloud-provider.aws.account.iam.local-dev-user/secret-access-key}]}]}
                                        {:name :app-repository-url
                                         :type :ref
                                         :value :cloud-provider.aws.project.ecr/app-repository-url}]}]}]}
@@ -60,7 +66,7 @@
           {:name :profiles
            :tag "Profiles"
            :type :multiple-choice-group
-           :value [:persistence-sql :auth-keycloak :bi-grafana :object-storage-s3 :ci]
+           :value [:persistence-sql :auth-keycloak :bi-grafana :object-storage-s3 :frontend :aws :ci]
            :choices [{:name :ci
                       :type :plain-group
                       :value [{:name :provider

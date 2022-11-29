@@ -57,7 +57,8 @@
        [{:keys [settings] :as prv-result}]
        (println "Project generation finished. Now follow these manual steps to complete the bootstrap.")
        (let [messages (bp.util/get-settings-value settings :project/post-installation-messages)]
-         (doseq [msg messages]
+         (doseq [[n msg] (map-indexed vector messages)]
+           (println (format "Post-installation step #%s" n))
            (println msg))
          prv-result))}]
    (tht/thread-transactions {})))
