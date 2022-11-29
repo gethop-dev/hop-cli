@@ -48,7 +48,8 @@
        (println "Saving environment variables...")
        (let [result (infrastructure/save-environment-variables settings)]
          (if (:success? result)
-           result
+           {:success? true
+            :settings settings}
            {:success? false
             :reason :could-not-save-env-variables
             :error-details result})))}
