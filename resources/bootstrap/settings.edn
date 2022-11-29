@@ -566,6 +566,9 @@
                                                                                                  {:name :auth-url
                                                                                                   :type :ref
                                                                                                   :value :project.profiles.auth-keycloak.deployment.to-develop.?.environment.dev/auth-url}
+                                                                                                 {:name :logout-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-develop.?.environment.dev/logout-url}
                                                                                                  {:name :client-id
                                                                                                   :type :ref
                                                                                                   :value :project.profiles.auth-keycloak.deployment.to-develop.?.environment.dev.other-clients.grafana/id}
@@ -685,6 +688,9 @@
                                                                                                  {:name :auth-url
                                                                                                   :type :ref
                                                                                                   :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.test/auth-url}
+                                                                                                 {:name :logout-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.test/logout-url}
                                                                                                  {:name :client-id
                                                                                                   :type :ref
                                                                                                   :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.test.other-clients.grafana/id}
@@ -764,6 +770,9 @@
                                                                                                  {:name :auth-url
                                                                                                   :type :ref
                                                                                                   :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.prod/auth-url}
+                                                                                                 {:name :logout-url
+                                                                                                  :type :ref
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.prod/logout-url}
                                                                                                  {:name :client-id
                                                                                                   :type :ref
                                                                                                   :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.prod.other-clients.grafana/id}

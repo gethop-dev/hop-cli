@@ -157,7 +157,9 @@
           :api-url
           (format "%s/realms/%s/protocol/openid-connect/userinfo" internal-uri realm-name)
           :auth-url
-          (format "%s/realms/%s/protocol/openid-connect/auth" external-uri realm-name)}}}}}}))
+          (format "%s/realms/%s/protocol/openid-connect/auth" external-uri realm-name)
+          :logout-url
+          (format "%s/realms/%s/protocol/openid-connect/logout" external-uri realm-name)}}}}}}))
 
 (defmethod registry/pre-render-hook :auth-keycloak
   [_ settings]

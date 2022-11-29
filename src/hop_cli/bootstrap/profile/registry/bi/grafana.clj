@@ -91,6 +91,8 @@
     (bp.util/get-settings-value settings (conj env-path :oidc :? :api-url))
     :GF_AUTH_GENERIC_OAUTH_AUTH_URL
     (bp.util/get-settings-value settings (conj env-path :oidc :? :auth-url))
+    :GF_AUTH_SIGNOUT_REDIRECT_URL
+    (bp.util/get-settings-value settings (conj env-path :oidc :? :logout-url))
     :GF_AUTH_GENERIC_OAUTH_CLIENT_ID
     (bp.util/get-settings-value settings (conj env-path :oidc :? :client-id))
     :GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
