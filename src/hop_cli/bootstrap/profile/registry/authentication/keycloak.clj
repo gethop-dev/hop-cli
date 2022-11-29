@@ -146,7 +146,7 @@
                        (format "%s://%s/auth" project-protocol project-domain))
         internal-uri (if (= :external deployment-type)
                        keycloak-uri
-                       "http://keycloak:8080/auth")]
+                       "http://keycloak:8080")]
     {:deployment
      {env-type
       {deployment-choice

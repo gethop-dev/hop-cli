@@ -475,7 +475,7 @@
                       :value [{:name :version
                                :tag "Grafana version"
                                :type :string
-                               :value "8.2.6"}
+                               :value "9.2.6"}
                               {:name :deployment
                                :type :plain-group
                                :value [{:name :to-develop
@@ -511,9 +511,9 @@
                                                                                        :tag "User name"
                                                                                        :value "admin"}
                                                                                       {:name :password
-                                                                                       :type :auto-gen-password
+                                                                                       :type :string
                                                                                        :tag "Password"
-                                                                                       :value {:length 24}}]}
+                                                                                       :value "admin"}]}
                                                                              {:name :database
                                                                               :tag "Database configuration"
                                                                               :type :plain-group

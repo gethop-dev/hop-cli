@@ -299,7 +299,7 @@
         "enabled": true,
         "alwaysDisplayInConsole": false,
         "clientAuthenticatorType": "client-secret",
-        "secret": "**********",
+        "secret": "<<project.profiles.auth-keycloak.deployment.to-develop.container.environment.dev.other-clients.grafana.secret>>",
         "redirectUris": [
             "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>/grafana/*"
         ],
