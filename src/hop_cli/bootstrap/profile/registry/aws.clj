@@ -21,7 +21,8 @@
 
 (defmethod registry/pre-render-hook :aws
   [_ settings]
-  {:files [{:src "aws/.platform" :dst ".platform"}]
+  {:files [{:src "aws/.platform" :dst ".platform"}
+           {:src "aws/start-dev.sh" :dst "start-dev.sh"}]
    :environment-variables {:dev (build-dev-env-variables settings)}})
 
 (defmethod registry/post-render-hook :aws
