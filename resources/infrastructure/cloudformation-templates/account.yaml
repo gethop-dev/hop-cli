@@ -54,5 +54,7 @@ Outputs:
     Value: !GetAtt "IamEb.Outputs.EbServiceRoleARN"
   LocalDevUserARN:
     Value: !GetAtt "IamLocalDevUser.Outputs.LocalDevUserARN"
+  LocalDevUserName:
+    Value: !GetAtt "IamLocalDevUser.Outputs.LocalDevUserName"
   RDSMonitoringRoleARN:
     Value: !GetAtt "IamRds.Outputs.RDSMonitoringRoleARN"

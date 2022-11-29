@@ -22,6 +22,7 @@
              :output-parameter-mapping
              {:EbServiceRoleARN :cloud-provider.aws.account.iam/eb-service-role-arn
               :LocalDevUserARN :cloud-provider.aws.account.iam/local-dev-user-arn
+              :LocalDevUserName :cloud-provider.aws.account.iam/local-dev-user-name
               :RDSMonitoringRoleARN :cloud-provider.aws.account.iam/rds-monitoring-role-arm
               :PublicRouteTable1Id :cloud-provider.aws.account.vpc/public-route-table-id
               :VpcId :cloud-provider.aws.account.vpc/id}}

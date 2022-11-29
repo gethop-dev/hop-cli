@@ -13,7 +13,22 @@
                     :value :aws
                     :choices [{:name :aws
                                :type :plain-group
-                               :value [{:name :app-repository-url
+                               :value [{:name :aws-vault
+                                        :type :plain-group
+                                        :value [{:name :profile-prefix
+                                                 :type :string
+                                                 :value "hop"}]}
+                                       {:name :credentials
+                                        :type :plain-group
+                                        :value [{:name :local-dev-user
+                                                 :type :plain-group
+                                                 :value [{:name :name
+                                                          :type :ref
+                                                          :value :cloud-provider.aws.account.iam/local-dev-user-arn}
+                                                         {:name :arn
+                                                          :type :ref
+                                                          :value :cloud-provider.aws.account.iam/local-dev-user-arn}]}]}
+                                       {:name :app-repository-url
                                         :type :ref
                                         :value :cloud-provider.aws.project.ecr/app-repository-url}]}]}]}
           {:name :proxy
