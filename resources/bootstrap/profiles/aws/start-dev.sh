@@ -68,7 +68,7 @@ aws-vault exec "${PROFILE_PREFIX}/${PROJECT}-dev-env" --duration 12h -- env \
     TEST_AWS_SECRET_ACCESS_KEY="${TEST_AWS_SECRET_ACCESS_KEY}" \
     bash -c \
     'set -eu;
-     ./ci/docker-env-vars.sh;
+     ./docker/docker-env-vars.sh;
      docker-compose up --build --detach --force-recreate --renew-anon-volumes'
 
 # And show the logs
