@@ -70,19 +70,18 @@
   (reduce conj (conj api-context swagger-docs) routes))
 
 (defmethod ig/init-key :<<project.name>>.api/main
-  [_ {:keys [routes]}]
-  (let [root (first routes)
-        api-routes (build-api-routes (rest routes))]
-    (reitit.ring/ring-handler
-     (reitit.ring/router
-      [root
-       api-routes]
-      router-config)
-     (reitit.ring/routes
-      (swagger-ui/create-swagger-ui-handler {:path "/api/docs"
-                                             :url "/api/swagger.json"
-                                             :validatorUrl nil
-                                             :apisSorter "alpha"
-                                             :operationsSorter "alpha"})
-      (reitit.ring/create-resource-handler {:path "/" :root "<<project.name>>/public"})
-      (reitit.ring/create-default-handler)))))
+  [_ {:keys [routes api-routes]}]
+  (reitit.ring/ring-handler
+   (reitit.ring/router
+    (concat
+     routes
+     [(build-api-routes api-routes)])
+    router-config)
+   (reitit.ring/routes
+    (swagger-ui/create-swagger-ui-handler {:path "/api/docs"
+                                           :url "/api/swagger.json"
+                                           :validatorUrl nil
+                                           :apisSorter "alpha"
+                                           :operationsSorter "alpha"})
+    (reitit.ring/create-resource-handler {:path "/" :root "<<project.name>>/public"})
+    (reitit.ring/create-default-handler))))

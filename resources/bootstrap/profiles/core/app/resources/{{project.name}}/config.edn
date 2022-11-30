@@ -4,8 +4,9 @@
 
   :duct.server.http/jetty {:handler #ig/ref :<<project.name>>.api/main}
 
-  :<<project.name>>.api/main {:routes [#ig/ref :<<project.name>>.api/config
-                                       <<#project.config-edn.routes>><<&.>><</project.config-edn.routes>>]}
+  :<<project.name>>.api/main {:routes [<<#project.config-edn.routes>><<&.>><</project.config-edn.routes>>]
+                              :api-routes [#ig/ref :<<project.name>>.api/config
+                                           <<#project.config-edn.api-routes>><<&.>><</project.config-edn.api-routes>>]}
 
   :<<project.name>>.api/config
   {<<#project.config-edn.config>><<&.>><</project.config-edn.config>>}
