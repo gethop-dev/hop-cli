@@ -26,7 +26,7 @@
  ::load-app
  (fn [_ _]
    {:db {}
-    :dispatch [[::client.config/load-config [::on-config-loaded]]]}))
+    :dispatch [::client.config/load-config [::on-config-loaded]]}))
 
 (defn app []
   [:div.app-container
