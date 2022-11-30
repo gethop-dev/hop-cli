@@ -6,26 +6,26 @@
 (ns <<project.name>>.client.routes
   (:require [<<project.name>>.client.landing :as landing]
             [<<project.name>>.shared.util.routing :as util.routing]
-            [re-frame.core :as re-frame]
-            [reitit.frontend :as rf]
-            [reitit.frontend.controllers :as rfc]
-            [reitit.frontend.easy :as rfe]))
+            [re-frame.core :as rf]
+            [reitit.frontend :as reitit.fr]
+            [reitit.frontend.controllers :as reitit.frc]
+            [reitit.frontend.easy :as reitit.fre]))
 
-(re-frame/reg-fx
+(rf/reg-fx
  :push-state
  (fn [route]
-   (apply rfe/push-state route)))
+   (apply reitit.fre/push-state route)))
 
-(re-frame/reg-event-fx
+(rf/reg-event-fx
  ::push-state
  (fn [_ [_ & route]]
    {:push-state route}))
 
-(re-frame/reg-event-db
+(rf/reg-event-db
  ::navigated
  (fn [db [_ new-match]]
    (let [old-match   (:current-route db)
-         controllers (rfc/apply-controllers (:controllers old-match) new-match)]
+         controllers (reitit.frc/apply-controllers (:controllers old-match) new-match)]
      (assoc db :current-route (assoc new-match :controllers controllers)))))
 
 (defn href
@@ -35,7 +35,7 @@
   ([k params]
    (href k params nil))
   ([k params query]
-   (rfe/href k params query)))
+   (reitit.fre/href k params query)))
 
 (def routes
   ["/"
@@ -46,18 +46,18 @@
 
 (defn on-navigate [new-match]
   (when new-match
-    (re-frame/dispatch [::navigated new-match])))
+    (rf/dispatch [::navigated new-match])))
 
 (def router
-  (rf/router
+  (reitit.fr/router
    routes
    {:data {:coercion util.routing/custom-malli-coercion}}))
 
 (defn init-routes! []
   (js/console.log "initializing routes")
-  (rfe/start!
+  (reitit.fre/start!
    router
    on-navigate
    {:use-fragment true                                      ;; using "true" for easier route debugging without SSR.
     :on-coercion-error (fn [_ _] (js/alert "Coercion error!"))})
-  (re-frame/dispatch [::push-state ::landing/view]))
+  (rf/dispatch [::push-state ::landing/view]))

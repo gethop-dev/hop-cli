@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/
  */
 
+@import 'util';
 @import 'theming';
 @import 'generic-popup';
 @import 'loading-popup';
@@ -15,10 +16,6 @@ html, body, #app, .app-container{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-
-html{
-  font-family: $font-family-main;
 }
 
 /* TODO I dindn't put a lot of effort into the quality of this stylesheet.

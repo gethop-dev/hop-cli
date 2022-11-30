@@ -19,6 +19,6 @@
 
 (defn main
   []
-  (let [current-route (re-frame/subscribe [::current-route])]
+  (let [current-route (rf/subscribe [::current-route])]
     (fn []
       [view-display (get-in @current-route [:data :name])])))

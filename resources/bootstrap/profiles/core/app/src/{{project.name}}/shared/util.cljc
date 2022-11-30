@@ -3,7 +3,8 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 {{=<< >>=}}
-(ns <<project.name>>.shared.util)
+(ns <<project.name>>.shared.util
+  (:refer-clojure :exclude [uuid]))
 
 (defn uuid
   "If no argument is passed, creates a random UUID. If the passed

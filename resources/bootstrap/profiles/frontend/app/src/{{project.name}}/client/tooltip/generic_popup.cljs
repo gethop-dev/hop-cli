@@ -2,6 +2,7 @@
 ;; License, v. 2.0. If a copy of the MPL was not distributed with this
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
+{{=<< >>=}}
 (ns <<project.name>>.client.tooltip.generic-popup
   (:require [<<project.name>>.client.localization :refer [t]]
             [<<project.name>>.client.tooltip :as tooltip]

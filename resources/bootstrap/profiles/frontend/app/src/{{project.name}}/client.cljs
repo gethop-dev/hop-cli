@@ -3,7 +3,7 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 {{=<< >>=}}
-(ns <<project.name>>.client
+(ns ^:figwheel-hooks <<project.name>>.client
   (:require [<<project.name>>.client.config :as client.config]
             [<<project.name>>.client.routes :as routes]
             [<<project.name>>.client.view :as view]

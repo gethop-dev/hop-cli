@@ -1,6 +1,7 @@
 {{=<< >>=}}
 (ns <<project.name>>.client.util
-  (:require [re-frame.core :as rf]))
+  (:require [<<project.name>>.client.tooltip.loading-popup :as loading-popup]
+            [re-frame.core :as rf]))
 
 (rf/reg-event-fx
  ::generic-success

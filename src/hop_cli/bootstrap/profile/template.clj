@@ -94,7 +94,7 @@
      project-path
      {:visit-file
       (fn [path _]
-        (when (get #{"edn" "clj" "cljs" "cljc" "json" "sh" "yaml" "yml" "sql"} (fs/extension path))
+        (when (get #{"edn" "clj" "cljs" "cljc" "json" "sh" "yaml" "yml" "sql" "html"} (fs/extension path))
           (let [update-file-fn (fn [file-content]
                                  (->> file-content
                                       (renderer)
