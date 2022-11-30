@@ -4,7 +4,10 @@
   :min-lein-version "2.9.8"
   :dependencies [[org.clojure/clojure "1.11.0"]
                  [duct/core "0.8.0"]
-                 [duct/module.web "0.7.3"]
+                 [duct/module.web "0.7.3" :exclusions [[ring/ring-core]
+                                                       [ring/ring-devel]
+                                                       [ring/ring-jetty-adapter]]]
+                 [ring "1.9.6"]
                  [duct/module.logging "0.5.0"]
                  [metosin/reitit "0.5.18"]
                  {{#project.dependencies}}{{&.}}{{/project.dependencies}}]

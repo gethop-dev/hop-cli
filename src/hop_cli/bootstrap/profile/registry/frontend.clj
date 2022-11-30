@@ -3,14 +3,13 @@
             [hop-cli.bootstrap.util :as bp.util]))
 
 (defn- cljs-module
-  [settings]
-  (let [project-name (bp.util/get-settings-value settings :project/name)]
-    {:duct.module/cljs
-     {:main (symbol (str project-name ".client"))}
-     :hydrogen.module/core
-     {:externs
-      {:production []}
-      :figwheel-main {}}}))
+  []
+  {:dev.gethop.duct.module/cljs-compiler
+   {:environments
+    {:development
+     {:compiler :figwheel-main
+      :compiler-config {:options {:closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
+                                  :preloads ['day8.re-frame-10x.preload]}}}}}})
 
 (defn- sass-compiler
   []
@@ -39,12 +38,11 @@
                    [re-frame/re-frame "1.1.2"]
                    [reagent/reagent "1.1.1"]
                    [com.taoensso/tempura "1.3.0"]
-                   [hydrogen/module.cljs "0.5.2"]
-                   [hydrogen/module.core "0.4.2"]
+                   [dev.gethop/duct.module.cljs-compiler "0.1.0"]
                    [duct/compiler.sass "0.2.1"]]
    :dev-dependencies '[[day8.re-frame/re-frame-10x "1.2.7"]]
    :config-edn {:routes (routes settings)
-                :modules (cljs-module settings)
+                :modules (cljs-module)
                 :base (merge
                        (root-static-route settings)
                        (sass-compiler))}})
