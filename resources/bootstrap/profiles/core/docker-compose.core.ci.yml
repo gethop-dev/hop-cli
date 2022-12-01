@@ -8,6 +8,10 @@ services:
       - JVM_OPTS=-XshowSettings:vm -Xmx2048m -server
     entrypoint: /bin/bash
     command: ["-c", "tail -f /dev/null"]
+    deploy:
+      resources:
+        limits:
+          memory: 2512m
   proxy:
     deploy:
       resources:
