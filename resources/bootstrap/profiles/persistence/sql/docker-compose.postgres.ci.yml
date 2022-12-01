@@ -1,5 +1,5 @@
 services:
-  {{project.profiles.persistence-sql.environment.dev.database.host}}:
+  postgres:
     deploy:
       resources:
         limits:
