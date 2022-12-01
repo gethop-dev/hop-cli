@@ -40,7 +40,8 @@
   [_ settings]
   {:files [{:src "aws/.platform" :dst ".platform"}
            {:src "aws/start-dev.sh" :dst "start-dev.sh"}]
-   :environment-variables {:dev (build-dev-env-variables settings)}})
+   :environment-variables {:dev (build-dev-env-variables settings)}
+   :deploy-files [".platform"]})
 
 (defmethod registry/post-render-hook :aws
   [_ settings]
