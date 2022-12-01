@@ -53,6 +53,12 @@
        (map #(format "\"%s\"" %1))
        (interpose " ")))
 
+(defn- coll->docker-compose-environment-yaml-list
+  [coll]
+  (->> coll
+       (map #(format "      - %s" %))
+       (interpose "\n")))
+
 (defn- settings->mustache-data
   [settings]
   (-> settings
@@ -62,7 +68,9 @@
                  util/update-map-vals coll->formatted-string {:recursive? false})
       (update-in [:project :docker-compose]
                  util/update-map-vals #(str/join ":" %))
-      (update-in [:project :deploy-files] coll->escaped-string)))
+      (update-in [:project :deploy-files] coll->escaped-string)
+      (update-in [:project :extra-app-docker-compose-environment-variables]
+                 coll->docker-compose-environment-yaml-list)))
 
 (defn- mustache-template-renderer*
   [mustache-data]

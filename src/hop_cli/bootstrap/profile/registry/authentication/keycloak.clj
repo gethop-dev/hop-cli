@@ -182,6 +182,12 @@
                   (build-docker-files-to-copy settings))
    :docker-compose (build-docker-compose-files settings)
    :deploy-files ["keycloak/themes"]
+   :extra-app-docker-compose-environment-variables ["KEYCLOAK_URI"
+                                                    "KEYCLOAK_REALM"
+                                                    "KEYCLOAK_APP_CLIENT_ID"
+                                                    "OIDC_ISSUER_URL"
+                                                    "OIDC_AUDIENCE"
+                                                    "OIDC_JWKS_URI"]
    :outputs (meta-merge (build-profile-env-outputs settings :dev)
                         (build-profile-env-outputs settings :test)
                         (build-profile-env-outputs settings :prod))})

@@ -166,4 +166,9 @@
                            :prod (build-env-variables settings :prod)}
    :files (build-docker-files-to-copy settings)
    :docker-compose (build-docker-compose-files settings)
+   :extra-app-docker-compose-environment-variables ["OIDC_SSO_APP_1_NAME"
+                                                    "OIDC_SSO_APP_1_LOGIN_URL"
+                                                    "OIDC_SSO_APP_1_LOGIN_METHOD"
+                                                    "OIDC_SSO_APP_1_LOGOUT_URL"
+                                                    "OIDC_SSO_APP_1_LOGOUT_METHOD"]
    :outputs (build-dev-outputs settings)})

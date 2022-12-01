@@ -160,6 +160,12 @@
                     :dst "postgres/init-scripts/to-develop/dev"}]
                   (build-docker-files-to-copy settings))
    :docker-compose (build-docker-compose-files settings)
+   :extra-app-docker-compose-environment-variables ["APP_DB_TYPE"
+                                                    "APP_DB_HOST"
+                                                    "APP_DB_PORT"
+                                                    "APP_DB_NAME"
+                                                    "APP_DB_USER"
+                                                    "APP_DB_PASSWORD"]
    :outputs (meta-merge
              (build-profile-env-outputs settings :dev)
              (build-profile-env-outputs settings :test)

@@ -18,14 +18,6 @@ services:
       - KC_HOSTNAME_ADMIN_URL
     volumes:
       - ./keycloak/themes/:/opt/keycloak/themes/:ro
-  app:
-    environment:
-      - KEYCLOAK_URI
-      - KEYCLOAK_REALM
-      - KEYCLOAK_APP_CLIENT_ID
-      - OIDC_ISSUER_URL
-      - OIDC_AUDIENCE
-      - OIDC_JWKS_URI
   proxy:
     depends_on:
       keycloak:

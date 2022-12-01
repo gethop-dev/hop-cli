@@ -1,6 +1,0 @@
-services:
-  app:
-    environment:
-      - OIDC_ISSUER_URL
-      - OIDC_AUDIENCE
-      - OIDC_JWKS_URI

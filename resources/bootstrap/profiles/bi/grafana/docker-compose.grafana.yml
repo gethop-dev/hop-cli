@@ -30,13 +30,6 @@ services:
       - GF_DATABASE_USER
       - GF_DATABASE_PASSWORD
       - GF_DATABASE_SSL_MODE
-  app:
-    environment:
-      - OIDC_SSO_APP_1_NAME
-      - OIDC_SSO_APP_1_LOGIN_URL
-      - OIDC_SSO_APP_1_LOGIN_METHOD
-      - OIDC_SSO_APP_1_LOGOUT_URL
-      - OIDC_SSO_APP_1_LOGOUT_METHOD
   proxy:
     depends_on:
       grafana:
