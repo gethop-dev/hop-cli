@@ -10,7 +10,7 @@
             [<<project.name>>.shared.util :as util]))
 
 (defn- get-dummy-user-data
-  [config req]
+  [_config req]
   (let [user-id (-> req :identity util/uuid)]
     (util.r/ok {:success? true
                 :user {:avatar "https://www.w3schools.com/w3images/avatar2.png"
