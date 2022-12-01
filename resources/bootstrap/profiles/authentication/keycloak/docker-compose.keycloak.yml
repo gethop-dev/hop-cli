@@ -1,6 +1,7 @@
 services:
   keycloak:
     image: quay.io/keycloak/keycloak:{{project.profiles.auth-keycloak.version}}
+    command: ["start"]
     deploy:
       resources:
         limits:
