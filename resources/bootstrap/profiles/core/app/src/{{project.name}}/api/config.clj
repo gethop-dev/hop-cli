@@ -9,7 +9,8 @@
 
 (defn config-handler
   [config _req]
-  (util.r/ok config))
+  (util.r/ok {:success? true
+              :config config}))
 
 (defmethod ig/init-key :<<project.name>>.api/config
   [_ config]

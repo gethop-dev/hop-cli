@@ -37,6 +37,7 @@
               :dependencies [[integrant/repl "0.3.2"]
                              [hawk "0.2.11"]
                              [eftest "0.5.9"]
+                             [ring/ring-mock "0.4.0"]
                              {{#project.dev-dependencies}}{{&.}}{{/project.dev-dependencies}}]}}
   :uberjar-name "{{project.name}}-standalone.jar"
   :test-selectors {:default (fn [m] (not (or (:integration m) (:regression m))))

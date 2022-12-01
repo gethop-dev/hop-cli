@@ -9,9 +9,8 @@
 
 (defn response
   ([status body]
-   {:status  status
-    :headers {"content-type" "application/json"}
-    :body    body}))
+   {:status status
+    :body body}))
 
 (defmacro http-status [code sym]
   `(def ~sym (partial response ~code)))
