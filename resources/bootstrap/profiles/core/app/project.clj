@@ -28,8 +28,7 @@
              {:eastwood {:linters [:all]
                          :exclude-linters
                          [:keyword-typos :boxed-math :non-clojure-file :performance :unused-namespaces]
-                         :debug [:progress :time]
-                         :config-files ["eastwood_config.clj"]}
+                         :debug [:progress :time]}
               :resource-paths ["dev/resources"]
               :source-paths ["dev/src"]
               :plugins [[lein-cljfmt "0.8.0"]
