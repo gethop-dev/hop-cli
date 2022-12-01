@@ -90,7 +90,7 @@ WORKDIR /opt
 # hadolint ignore=DL3022
 COPY --from=eclipse-temurin:19-jre $JAVA_HOME $JAVA_HOME
 
-COPY --from=build-uberjar /app/target/oksol-standalone.jar oksol-standalone.jar
+COPY --from=build-uberjar /app/target/{{project.name}}-standalone.jar {{project.name}}-standalone.jar
 
 # hadolint ignore=DL3025
 CMD java -Djava.awt.headless=true \
@@ -99,13 +99,13 @@ CMD java -Djava.awt.headless=true \
     -XX:+UseContainerSupport \
     -XX:MaxRAMPercentage=70.0 \
     -server \
-    -jar oksol-standalone.jar :duct/migrator && \
+    -jar {{project.name}}-standalone.jar :duct/migrator && \
     java -Djava.awt.headless=true \
     -XshowSettings:vm \
     -XX:+UnlockExperimentalVMOptions \
     -XX:+UseContainerSupport \
     -XX:MaxRAMPercentage=70.0 \
     -server \
-    -jar oksol-standalone.jar :duct/daemon
+    -jar {{project.name}}-standalone.jar :duct/daemon
 
 EXPOSE 3000

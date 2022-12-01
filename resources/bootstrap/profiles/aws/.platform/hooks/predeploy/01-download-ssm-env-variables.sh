@@ -33,15 +33,15 @@ fi
 
 TEMP_FILE=$(mktemp)
 
-trap "rm -f ${TEMP_FILE}" EXIT ERR
+trap 'rm -f ${TEMP_FILE}' EXIT ERR
 
 bb /usr/local/hop-cli/hop-cli.jar \
-   aws \
-   env-vars \
-   download \
-   --project-name "${PROJECT_NAME}" \
-   --environment "${ENVIRONMENT}" \
-   --kms-key-alias "${KMS_KEY_ALIAS}" \
-   --file "${TEMP_FILE}"
+    aws \
+    env-vars \
+    download \
+    --project-name "${PROJECT_NAME}" \
+    --environment "${ENVIRONMENT}" \
+    --kms-key-alias "${KMS_KEY_ALIAS}" \
+    --file "${TEMP_FILE}"
 
-cat "${TEMP_FILE}" >> "${NEW_ENV_FILE_PATH}"
+cat "${TEMP_FILE}" >>"${NEW_ENV_FILE_PATH}"

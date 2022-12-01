@@ -8,10 +8,9 @@ INSTALL_DIR="/usr/local/hop-cli"
 DOWNLOAD_DIR="${INSTALL_DIR}/${HOP_CLI_VERSION}"
 DOWNLOAD_PATH="${DOWNLOAD_DIR}/${HOP_CLI_NAME}"
 
-trap "rm -rf ${DOWNLOAD_DIR}" ERR
+trap 'rm -rf ${DOWNLOAD_DIR}' ERR
 
-if [ ! -d "${DOWNLOAD_DIR}" ];
-then
+if [ ! -d "${DOWNLOAD_DIR}" ]; then
     mkdir --parents "${DOWNLOAD_DIR}"
     curl --location --output "${DOWNLOAD_PATH}" "https://github.com/gethop-dev/hop-cli/releases/download/${HOP_CLI_VERSION}/hop-cli.jar"
 fi

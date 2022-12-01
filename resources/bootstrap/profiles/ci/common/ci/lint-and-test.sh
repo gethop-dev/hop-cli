@@ -10,7 +10,7 @@ export COMPOSE_FILE="{{project.docker-compose.ci}}"
 
 docker build --target ci --tag lint-and-test .
 
-docker compose up -d
+docker-compose up -d
 
 echo "clj-kondo"
 time docker-compose exec -T app clj-kondo --lint src --lint test

@@ -6,8 +6,8 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 # shellcheck disable=SC1090,SC1091
 . "${SCRIPT_DIR}/common-vars.sh"
 
-# Skip updating if branch is not master
-if [[ "${BRANCH:=}" != "master" ]]; then
+# Skip updating if branch is not main
+if [[ "${BRANCH:=}" != "main" ]]; then
     exit 0
 fi
 
@@ -16,12 +16,12 @@ DOCKER_COMPOSE_TMPDIR=$(realpath "$(mktemp -d ./tmp.XXXXXXXX)")
 CURR_DIR="$(pwd)"
 #shellcheck disable=SC2064
 trap "rm -rf ${DOCKER_COMPOSE_TMPDIR}" INT TERM EXIT
-export COMPOSE_FILE="{{project.docker-compose.ci}}"
+export COMPOSE_FILE="{{project.docker-compose.to-deploy}}"
 docker-compose config |
     yq --yaml-output '.services[].environment? |= (if . == null then [] else keys end)' \
         >"${DOCKER_COMPOSE_TMPDIR}/docker-compose.yml"
 sed -i \
-    -e "s|${IMAGE_NAME}:latest|${IMAGE_NAME}:${TAG}|g" \
+    -e "s|${DOCKER_IMAGE_REPOSITORY}:latest|${DOCKER_IMAGE_REPOSITORY}:${TAG}|g" \
     -e "s|${CURR_DIR}|/var/app/current|g" \
     "${DOCKER_COMPOSE_TMPDIR}/docker-compose.yml"
 cp -ra --parents "${SOURCE_BUNDLE_FILES[@]}" "${DOCKER_COMPOSE_TMPDIR}"
