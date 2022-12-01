@@ -38,10 +38,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install clj-kondo
-        uses: DeLaGuardo/setup-clj-kondo@master
+      - name: Install Clojure Tools
+        uses: DeLaGuardo/setup-clojure@10.1
         with:
-          version: '2022.10.05'
+          clj-kondo: 2022.11.02
 
       - name: Install Babashka
         run: |
