@@ -28,6 +28,9 @@ Parameters:
     Type: "String"
   EbApplicationName:
     Type: "String"
+  EbInstanceType:
+    Type: "String"
+    Default: "t3.micro"
   LoadBalancerARN:
     Type: "String"
   ElbSecurityGroupId:
@@ -134,6 +137,7 @@ Resources:
         NotificationsEmail: !Ref "NotificationsEmail"
         LoadBalancerARN: !Ref "LoadBalancerARN"
         EbApplicationName: !Ref "EbApplicationName"
+        InstanceType: !Ref "EbInstanceType"
         ElbSecurityGroupId: !Ref "ElbSecurityGroupId"
         KmsKeyAlias: !GetAtt "KMS.Outputs.KmsKeyAlias"
         InstanceRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"

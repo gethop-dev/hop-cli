@@ -1393,6 +1393,11 @@
                                         :tag "Notifications email"
                                         :type :string
                                         :value "devops+test@magnet.coop"}
+                                       {:name :eb
+                                        :type :plain-group
+                                        :value [{:name :ec2-instance-type
+                                                 :type :string
+                                                 :value "t3.micro"}]}
                                        {:name :optional-services
                                         :type :multiple-choice-group
                                         :value [:rds :cognito :s3]
@@ -1442,6 +1447,11 @@
                                         :tag "Notifications email"
                                         :type :string
                                         :value "devops+prod@magnet.coop"}
+                                       {:name :eb
+                                        :type :plain-group
+                                        :value [{:name :ec2-instance-type
+                                                 :type :string
+                                                 :value "t3.micro"}]}
                                        {:name :optional-services
                                         :type :multiple-choice-group
                                         :value [:rds :cognito :s3]

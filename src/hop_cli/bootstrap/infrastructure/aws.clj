@@ -79,7 +79,8 @@
                :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId
                :cloud-provider.aws.environment.test.optional-services.cognito/enabled :IncludeCognito
                :cloud-provider.aws.environment.test.optional-services.s3/enabled :IncludeS3
-               :cloud-provider.aws.environment.test.optional-services.rds/enabled :IncludeRds}
+               :cloud-provider.aws.environment.test.optional-services.rds/enabled :IncludeRds
+               :cloud-provider.aws.environment.test.eb/ec2-instance-type :EbInstanceType}
               :output-parameter-mapping
               {:CognitoUserPoolId :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/id
                :CognitoUserPoolURL :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/url
@@ -109,7 +110,8 @@
                :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId
                :cloud-provider.aws.environment.prod.optional-services.cognito/enabled :IncludeCognito
                :cloud-provider.aws.environment.prod.optional-services.s3/enabled :IncludeS3
-               :cloud-provider.aws.environment.prod.optional-services.rds/enabled :IncludeRds}
+               :cloud-provider.aws.environment.prod.optional-services.rds/enabled :IncludeRds
+               :cloud-provider.aws.environment.prod.eb/ec2-instance-type :EbInstanceType}
               :output-parameter-mapping
               {:CognitoUserPoolId :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/id
                :CognitoUserPoolURL :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/url
