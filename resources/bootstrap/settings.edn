@@ -45,8 +45,36 @@
           {:name :profiles
            :tag "Profiles"
            :type :multiple-choice-group
-           :value [:persistence-sql :auth-keycloak :bi-grafana :object-storage-s3 :frontend :aws :ci]
-           :choices [{:name :aws
+           :value [:core :persistence-sql :auth-keycloak :bi-grafana :object-storage-s3 :frontend :aws :ci]
+           :choices [{:name :core
+                      :type :plain-group
+                      :value [{:name :environment
+                               :type :plain-group
+                               :value [{:name :dev
+                                        :type :plain-group
+                                        :value [{:name :nginx-memory-limit-mb
+                                                 :type :integer
+                                                 :value 128}
+                                                {:name :app-memory-limit-mb
+                                                 :type :integer
+                                                 :value 4096}]}
+                                       {:name :test
+                                        :type :plain-group
+                                        :value [{:name :nginx-memory-limit-mb
+                                                 :type :integer
+                                                 :value 128}
+                                                {:name :app-memory-limit-mb
+                                                 :type :integer
+                                                 :value 4096}]}
+                                       {:name :prod
+                                        :type :plain-group
+                                        :value [{:name :nginx-memory-limit-mb
+                                                 :type :integer
+                                                 :value 128}
+                                                {:name :app-memory-limit-mb
+                                                 :type :integer
+                                                 :value 4096}]}]}]}
+                     {:name :aws
                       :type :plain-group
                       :value [{:name :aws-vault
                                :type :plain-group
@@ -191,6 +219,9 @@
                                                                                        :tag "Database port"
                                                                                        :type :string
                                                                                        :value "5432"}
+                                                                                      {:name :memory-limit-mb
+                                                                                       :type :integer
+                                                                                       :value 512}
                                                                                       {:name :admin-user
                                                                                        :tag "Persistence Database Admin configuration"
                                                                                        :type :plain-group
@@ -533,6 +564,9 @@
                                                                               :type :boolean
                                                                               :tag "Single sign on"
                                                                               :value true}
+                                                                             {:name :memory-limit-mb
+                                                                              :type :integer
+                                                                              :value 1024}
                                                                              {:name :admin-user
                                                                               :type :plain-group
                                                                               :value [{:name :username
@@ -655,6 +689,9 @@
                                                                               :type :boolean
                                                                               :tag "Single sign on"
                                                                               :value true}
+                                                                             {:name :memory-limit-mb
+                                                                              :type :integer
+                                                                              :value 1024}
                                                                              {:name :admin-user
                                                                               :type :plain-group
                                                                               :value [{:name :username
@@ -737,6 +774,9 @@
                                                                               :type :boolean
                                                                               :tag "Single sign on"
                                                                               :value true}
+                                                                             {:name :memory-limit-mb
+                                                                              :type :integer
+                                                                              :value 1024}
                                                                              {:name :admin-user
                                                                               :type :plain-group
                                                                               :value [{:name :username
@@ -892,6 +932,9 @@
                                                                                        :tag "Admin password"
                                                                                        :type :string
                                                                                        :value "Testpassword1!"}]}
+                                                                             {:name :memory-limit-mb
+                                                                              :type :integer
+                                                                              :value 768}
                                                                              {:name :app-client
                                                                               :tag "Application client-id"
                                                                               :type :plain-group
@@ -1012,6 +1055,9 @@
                                                                                        :tag "Admin password"
                                                                                        :type :auto-gen-password
                                                                                        :value {:length 24}}]}
+                                                                             {:name :memory-limit-mb
+                                                                              :type :integer
+                                                                              :value 768}
                                                                              {:name :app-client
                                                                               :tag "Application client-id"
                                                                               :type :plain-group
@@ -1084,6 +1130,9 @@
                                                                                        :tag "Admin password"
                                                                                        :type :auto-gen-password
                                                                                        :value {:length 24}}]}
+                                                                             {:name :memory-limit-mb
+                                                                              :type :integer
+                                                                              :value 768}
                                                                              {:name :app-client
                                                                               :tag "Application client-id"
                                                                               :type :plain-group

@@ -42,7 +42,7 @@
 (defn get-selected-profiles
   [settings]
   (let [selected-profiles (bp.util/get-settings-value settings [:project :profiles :value])
-        selected-profile-set (set (cons :core selected-profiles))]
+        selected-profile-set (set selected-profiles)]
     (->> profile.registry-loader/profile-list
          (filterv #(get selected-profile-set %)))))
 

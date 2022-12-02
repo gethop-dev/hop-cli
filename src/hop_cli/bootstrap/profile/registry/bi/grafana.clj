@@ -50,9 +50,10 @@
     :DS_MANAGER_CREDENTIALS_PASSWORD
     (bp.util/get-settings-value settings (conj env-path :app-integration :password))
 
-     ;; Docker
-    :MEMORY_LIMIT_GRAFANA "2048m"
-     ;; General settings
+    ;; Docker
+    :MEMORY_LIMIT_GRAFANA
+    (str (bp.util/get-settings-value settings (conj env-path :memory-limit-mb)) "m")
+    ;; General settings
     :GF_SECURITY_ALLOW_EMBEDDING "false"
     :GF_SERVER_DOMAIN
     (bp.util/get-settings-value settings (conj env-path :server-domain))
@@ -62,7 +63,7 @@
     :GF_SNAPSHOTS_EXTERNAL_ENABLED "false"
     :GF_AUTH_ANONYMOUS_ENABLED "false"
 
-     ;; Admin user
+    ;; Admin user
     :GF_SECURITY_ADMIN_USER
     (bp.util/get-settings-value settings (conj env-path :admin-user :username))
     :GF_SECURITY_ADMIN_PASSWORD

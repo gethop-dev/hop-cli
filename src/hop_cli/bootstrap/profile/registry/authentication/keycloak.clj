@@ -69,7 +69,8 @@
         keycloak-admin-pwd (bp.util/get-settings-value settings (conj env-path :admin :password))
         project-protocol (bp.util/get-settings-value settings [:project :proxy environment :protocol])
         project-domain (bp.util/get-settings-value settings [:project :proxy environment :domain])
-        keycloak-uri (format "%s://%s/auth" project-protocol project-domain)]
+        keycloak-uri (format "%s://%s/auth" project-protocol project-domain)
+        memory-limit (bp.util/get-settings-value settings (conj env-path :memory-limit-mb))]
     ;; Application related environment variables
     {:KEYCLOAK_REALM keycloak-realm
      :KEYCLOAK_URI keycloak-uri
@@ -79,7 +80,7 @@
      :OIDC_JWKS_URI (str keycloak-uri "/realms/" keycloak-realm "/protocol/openid-connect/certs")
 
      ;; Keycloak service related environment variables
-     :MEMORY_LIMIT_KEYCLOAK "256m"
+     :MEMORY_LIMIT_KEYCLOAK (str memory-limit "m")
      :KC_ADMIN keycloak-admin-username
      :KC_ADMIN_PASSWORD keycloak-admin-pwd
      :KC_DB "postgres"

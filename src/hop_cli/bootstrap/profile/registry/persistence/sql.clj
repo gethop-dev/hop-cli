@@ -69,18 +69,22 @@
         app-password (bp.util/get-settings-value settings (conj env-path :database :app-user :password))
         app-schema (bp.util/get-settings-value settings (conj env-path :database :app-user :schema))
         admin-user (bp.util/get-settings-value settings (conj env-path :database :admin-user :username))
-        admin-password (bp.util/get-settings-value settings (conj env-path :database :admin-user :password))]
-    {:APP_DB_TYPE type
-     :APP_DB_HOST host
-     :APP_DB_PORT port
-     :APP_DB_NAME db
-     :APP_DB_USER app-user
-     :APP_DB_PASSWORD app-password
-     :APP_DB_SCHEMA app-schema
-     :DB_PORT port
-     :DB_NAME db
-     :DB_ADMIN_USER admin-user
-     :DB_ADMIN_PASSWORD admin-password}))
+        admin-password (bp.util/get-settings-value settings (conj env-path :database :admin-user :password))
+        container-memory-limit (when (= :container deploy-type)
+                                 (bp.util/get-settings-value settings (conj env-path :database :memory-limit-mb)))]
+    (merge {:APP_DB_TYPE type
+            :APP_DB_HOST host
+            :APP_DB_PORT port
+            :APP_DB_NAME db
+            :APP_DB_USER app-user
+            :APP_DB_PASSWORD app-password
+            :APP_DB_SCHEMA app-schema
+            :DB_PORT port
+            :DB_NAME db
+            :DB_ADMIN_USER admin-user
+            :DB_ADMIN_PASSWORD admin-password}
+           (when container-memory-limit
+             {:MEMORY_LIMIT_POSTGRES (str container-memory-limit "m")}))))
 
 (defn- build-docker-compose-files
   [settings]
