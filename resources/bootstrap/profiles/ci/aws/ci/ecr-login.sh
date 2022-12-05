@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 #shellcheck disable=SC2091
 
-set -eu
+set -eu -o pipefail
 
-AWS_ACCOUNT_NUMBER=$(aws sts get-caller-identity --query Account --output text |
-    sed "s/$(printf '\r')\$//")
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+# shellcheck disable=SC1090,SC1091
+. "${SCRIPT_DIR}/common-vars.sh"
 
 aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" |
     sed "s/$(printf '\r')\$//" |

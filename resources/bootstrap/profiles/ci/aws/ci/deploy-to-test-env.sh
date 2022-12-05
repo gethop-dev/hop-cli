@@ -66,7 +66,7 @@ cp -ra --parents "${SOURCE_BUNDLE_FILES[@]}" "${DOCKER_COMPOSE_TMPDIR}"
 pushd "${DOCKER_COMPOSE_TMPDIR}"
 zip -r "${KEY}" "${SOURCE_BUNDLE_FILES[@]}" docker-compose.yml
 cp "${KEY}" "${CURR_DIR}/local.zip"
-aws s3 cp "${KEY}" "s3://${S3_BUCKET}/${KEY}"
+aws s3 cp "${KEY}" "s3://${EB_S3_BUCKET}/${KEY}"
 popd
 
 TS=$(date +%s)
@@ -76,7 +76,7 @@ VERSION_LABEL="${TS}-${TAG}"
 aws elasticbeanstalk create-application-version \
     --application-name "${APPLICATION_NAME}" \
     --version-label="${VERSION_LABEL}" \
-    --source-bundle "S3Bucket=${S3_BUCKET},S3Key=${KEY}" \
+    --source-bundle "S3Bucket=${EB_S3_BUCKET},S3Key=${KEY}" \
     --no-auto-create-application
 
 # Update test environment

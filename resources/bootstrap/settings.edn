@@ -116,10 +116,7 @@
                                :value :aws
                                :choices [{:name :aws
                                           :type :plain-group
-                                          :value [{:name :eb-s3-bucket
-                                                   :type :string
-                                                   :value "elasticbeanstalk-eu-west-1-XXXXXXXXXX"}
-                                                  {:name :eb-application-name
+                                          :value [{:name :eb-application-name
                                                    :type :ref
                                                    :value :cloud-provider.aws.project.eb/application-name}
                                                   {:name :git

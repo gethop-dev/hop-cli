@@ -8,8 +8,12 @@ SCRIPT_PARENT_DIR=$(dirname "${SCRIPT_DIR}")
 # shellcheck disable=SC1090,SC1091
 source "${SCRIPT_PARENT_DIR}/common-vars.sh"
 
-# S3 Bucket where we store docker-compose files for the builds
-S3_BUCKET="{{project.profiles.ci.continuous-deployment.aws.eb-s3-bucket}}"
+# The AWS account-id is obtained from the credentials
+AWS_ACCOUNT_NUMBER=$(aws sts get-caller-identity --query Account --output text |
+                         sed "s/$(printf '\r')\$//")
+
+# S3 Bucket where the bundle for the ElasticBeanstalk deployment is stored
+EB_S3_BUCKET="elasticbeanstalk-${AWS_DEFAULT_REGION}-${AWS_ACCOUNT_NUMBER}"
 
 # List of file for the Beanstalk Task definition bundle.
 # It should contain all the directories and
