@@ -31,9 +31,8 @@
 
 (defn app []
   [:div.app-container
-   [:div.app-container__main
-    {:id "app-container__main"}
-    [view/main]]])
+   {:id "app-container"}
+   [view/main]])
 
 (defn main []
   [app])

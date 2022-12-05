@@ -8,6 +8,7 @@
 @import 'theming';
 @import 'generic-popup';
 @import 'loading-popup';
+@import 'landing';
 
 /* A normalized styling */
 html, body, #app, .app-container{
@@ -18,21 +19,6 @@ html, body, #app, .app-container{
   box-sizing: border-box;
 }
 
-/* TODO I dindn't put a lot of effort into the quality of this stylesheet.
-That's because we'll soon decide on the standards of writing them.
-The stylesheet presented new is there just as an example of usage.
-~@DH 2018.10.25 */
-
 .app-container {
   display: flex;
-}
-
-app-container__main {
-  flex: 1;
-  overflow: auto;
-
-  min-height: calc(100vh);
-  text-align: center;
-  @include color('color-2');
-  @include background-color('color-1');
 }
