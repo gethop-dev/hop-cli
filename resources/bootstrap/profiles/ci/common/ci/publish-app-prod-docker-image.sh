@@ -7,7 +7,7 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 . "${SCRIPT_DIR}/common-vars.sh"
 
 # Skip building if branch is not master
-if [[ "${BRANCH}" != "master" ]]; then
+if [[ "${BRANCH}" != "${DEPLOYMENT_BRANCH}" ]]; then
     exit 0
 fi
 

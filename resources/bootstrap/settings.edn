@@ -122,6 +122,11 @@
                                                   {:name :eb-application-name
                                                    :type :ref
                                                    :value :cloud-provider.aws.project.eb/application-name}
+                                                  {:name :git
+                                                   :type :plain-group
+                                                   :value [{:name :deployment-branch
+                                                            :type :string
+                                                            :value "master"}]}
                                                   {:name :environment
                                                    :type :plain-group
                                                    :value [{:name :test

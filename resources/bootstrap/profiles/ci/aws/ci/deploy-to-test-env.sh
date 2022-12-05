@@ -7,7 +7,7 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 . "${SCRIPT_DIR}/common-vars.sh"
 
 # Skip updating if branch is not main
-if [[ "${BRANCH:=}" != "main" ]]; then
+if [[ "${BRANCH:=}" != "${DEPLOYMENT_BRANCH}" ]]; then
     exit 0
 fi
 
