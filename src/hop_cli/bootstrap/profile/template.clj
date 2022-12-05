@@ -55,9 +55,12 @@
 
 (defn- coll->docker-compose-environment-yaml-list
   [coll]
-  (->> coll
-       (map #(format "      - %s" %))
-       (interpose "\n")))
+  (if (seq coll)
+    (->> coll
+         (map #(format "      - %s" %))
+         (cons "    environment:")
+         (interpose "\n"))
+    []))
 
 (defn- settings->mustache-data
   [settings]

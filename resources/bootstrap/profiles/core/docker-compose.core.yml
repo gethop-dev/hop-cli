@@ -4,7 +4,6 @@ services:
       resources:
         limits:
           memory: ${MEMORY_LIMIT_APP}
-    environment:
 {{#project.extra-app-docker-compose-environment-variables}}{{&.}}{{/project.extra-app-docker-compose-environment-variables}}
   proxy:
     image: nginx:1.21.3-alpine
