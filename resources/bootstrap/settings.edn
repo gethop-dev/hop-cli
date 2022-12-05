@@ -1315,7 +1315,7 @@
                                                                      :type :plain-group
                                                                      :value [{:name :id
                                                                               :type :ref
-                                                                              :value :cloud-provider.aws.environment.test.optional-services.cognito.app-client/id}]}]}
+                                                                              :value :cloud-provider.aws.environment.test.optional-services.cognito.user-pool.app-client/id}]}]}
                                                            {:name :custom
                                                             :type :plain-group
                                                             :value [{:name :id
@@ -1346,7 +1346,7 @@
                                                                      :type :plain-group
                                                                      :value [{:name :id
                                                                               :type :ref
-                                                                              :value :cloud-provider.aws.environment.prod.optional-services.cognito.app-client/id}]}]}
+                                                                              :value :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool.app-client/id}]}]}
                                                            {:name :custom
                                                             :type :plain-group
                                                             :value [{:name :id
