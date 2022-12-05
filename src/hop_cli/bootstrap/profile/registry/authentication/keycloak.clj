@@ -171,15 +171,17 @@
 (defmethod registry/pre-render-hook :auth-keycloak
   [_ settings]
   {:dependencies '[[dev.gethop/buddy-auth.jwt-oidc "0.10.4"]
-                   [duct/middleware.buddy "0.2.0"]]
+                   [duct/middleware.buddy "0.2.0"]
+                   [io.github.cljsjs/keycloak-js "20.0.1-0"]]
    :config-edn {:base (merge
                        (jwt-oidc-config settings)
                        (buddy-auth-config settings)
                        (user-api-config settings))
                 :common-config (common-config)
                 :config (keycloak-config)
-                :routes (routes settings)}
-   :load-frontend-app {:events ["[:dispatch [::init-keycloak]]"]
+                :api-routes (api-routes settings)}
+   :load-frontend-app {:requires [[(symbol (str (bp.util/get-settings-value settings :project/name) ".client.session"))]]
+                       :events ["[:dispatch [::init-keycloak]]"]
                        :code [load-frontend-app-code]}
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
