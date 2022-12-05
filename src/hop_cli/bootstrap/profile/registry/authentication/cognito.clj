@@ -82,6 +82,7 @@
                            :prod (build-env-variables settings :prod)}
    :extra-app-docker-compose-environment-variables ["OIDC_ISSUER_URL"
                                                     "OIDC_AUDIENCE"
-                                                    "OIDC_JWKS_URI"]
+                                                    "OIDC_JWKS_URI"
+                                                    "COGNITO_USER_POOL_ID"]
    :files [{:src "authentication/common"}
            {:src "authentication/cognito"}]})
