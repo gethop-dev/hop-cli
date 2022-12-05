@@ -32,7 +32,7 @@ docker-compose config --no-interpolate |
                           $all_env_vars | to_entries
                           |
                           map(
-                             select((.value != null) and (.value | contains("$")))
+                             select((.value != null) and (.value | contains("${")))
                              |
                              .key + "=" + .value
                           )
@@ -42,7 +42,7 @@ docker-compose config --no-interpolate |
                           $all_env_vars | to_entries
                           |
                           map(
-                             select((.value != null) and (.value | contains("$") | not))
+                             select((.value != null) and (.value | contains("${") | not))
                              |
                              .key
                           )
