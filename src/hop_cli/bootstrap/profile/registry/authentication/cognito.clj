@@ -38,7 +38,7 @@
   []
   {:auth-middleware (tagged-literal 'ig/ref :duct.middleware.buddy/authentication)})
 
-(defn- routes
+(defn- api-routes
   [settings]
   (let [project-name (bp.util/get-settings-value settings :project/name)]
     [(tagged-literal 'ig/ref (keyword (str project-name ".api/user")))]))
@@ -73,7 +73,7 @@
                        (user-api-config settings))
                 :common-config (common-config)
                 :config (cognito-config)
-                :routes (routes settings)}
+                :api-routes (api-routes settings)}
    :load-frontend-app {:requires '[[dev.gethop.session.re-frame.cognito :as session]]
                        :events ["[:dispatch [::init-cognito]]"]
                        :code [load-frontend-app-code]}
