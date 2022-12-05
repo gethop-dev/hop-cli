@@ -79,6 +79,7 @@
             :APP_DB_USER app-user
             :APP_DB_PASSWORD app-password
             :APP_DB_SCHEMA app-schema
+            :DB_HOST host
             :DB_PORT port
             :DB_NAME db
             :DB_ADMIN_USER admin-user

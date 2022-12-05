@@ -1,5 +1,6 @@
 -- SQL for creating the schemas and roles used by the project.
 -- This SQL script must be executed manually using the admin credentials:
+-- DB host: ${DB_HOST}
 -- DB name: ${DB_NAME}
 -- User: ${DB_ADMIN_USER}
 -- Password: ${DB_ADMIN_PASSWORD}
