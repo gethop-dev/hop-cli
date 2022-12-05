@@ -126,6 +126,7 @@
        :error-details result}
       (let [result (->> (:params result)
                         (map env-var->string-env-var)
+                         sort
                         (fs/write-lines file))]
         {:success? (boolean result)}))))
 
