@@ -35,7 +35,7 @@
   []
   {:auth-middleware (tagged-literal 'ig/ref :duct.middleware.buddy/authentication)})
 
-(defn- routes
+(defn- api-routes
   [settings]
   (let [project-name (bp.util/get-settings-value settings :project/name)]
     [(tagged-literal 'ig/ref (keyword (str project-name ".api/user")))]))
@@ -56,7 +56,7 @@
      :KEYCLOAK_APP_CLIENT_ID keycloak-app-client-id}))
 
 (defn- build-container-env-variables
-  [settings environment env-path]
+  [settings environment deployment-type env-path]
   (let [db-host (bp.util/get-settings-value settings (conj env-path :database :host))
         db-port (bp.util/get-settings-value settings (conj env-path :database :port))
         db-name (bp.util/get-settings-value settings (conj env-path :database :name))
@@ -69,15 +69,21 @@
         keycloak-admin-pwd (bp.util/get-settings-value settings (conj env-path :admin :password))
         project-protocol (bp.util/get-settings-value settings [:project :proxy environment :protocol])
         project-domain (bp.util/get-settings-value settings [:project :proxy environment :domain])
-        keycloak-uri (format "%s://%s/auth" project-protocol project-domain)
+        keycloak-uri (bp.util/get-settings-value settings (conj env-path :uri))
+        external-keycloak-uri (if (= :container deployment-type)
+                                (format "%s://%s/auth" project-protocol project-domain)
+                                keycloak-uri)
+        internal-keycloak-uri (if (= :container deployment-type)
+                                "http://keycloak:8080"
+                                keycloak-uri)
         memory-limit (bp.util/get-settings-value settings (conj env-path :memory-limit-mb))]
     ;; Application related environment variables
     {:KEYCLOAK_REALM keycloak-realm
-     :KEYCLOAK_URI keycloak-uri
+     :KEYCLOAK_URI external-keycloak-uri
      :KEYCLOAK_APP_CLIENT_ID keycloak-app-client-id
      :OIDC_AUDIENCE keycloak-app-client-id
-     :OIDC_ISSUER_URL (str keycloak-uri "/realms/" keycloak-realm)
-     :OIDC_JWKS_URI (str keycloak-uri "/realms/" keycloak-realm "/protocol/openid-connect/certs")
+     :OIDC_ISSUER_URL (str external-keycloak-uri "/realms/" keycloak-realm)
+     :OIDC_JWKS_URI (str internal-keycloak-uri "/realms/" keycloak-realm "/protocol/openid-connect/certs")
 
      ;; Keycloak service related environment variables
      :MEMORY_LIMIT_KEYCLOAK (str memory-limit "m")
@@ -90,7 +96,7 @@
      :KC_DB_PASSWORD db-pwd
      :KC_PROXY "edge"
      :KC_HOSTNAME_PATH "/auth"
-     :KC_HOSTNAME_ADMIN_URL keycloak-uri}))
+     :KC_HOSTNAME_ADMIN_URL external-keycloak-uri}))
 
 (defn- build-env-variables
   [settings environment]
@@ -99,7 +105,7 @@
         env-path (conj base-path :environment environment)]
     (if (= :external deployment-type)
       (build-external-env-variables settings env-path)
-      (build-container-env-variables settings environment env-path))))
+      (build-container-env-variables settings environment deployment-type env-path))))
 
 (defn- build-docker-compose-files
   [settings]
