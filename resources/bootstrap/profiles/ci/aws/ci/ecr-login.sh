@@ -3,4 +3,9 @@
 
 set -eu
 
-$(aws ecr get-login --no-include-email --region "${AWS_DEFAULT_REGION}" | sed 's/\r$//')
+AWS_ACCOUNT_NUMBER=$(aws sts get-caller-identity --query Account --output text |
+    sed "s/$(printf '\r')\$//")
+
+aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" |
+    sed "s/$(printf '\r')\$//" |
+    docker login --username AWS --password-stdin "${AWS_ACCOUNT_NUMBER}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
