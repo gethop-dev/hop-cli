@@ -19,44 +19,37 @@ trap "rm -rf ${DOCKER_COMPOSE_TMPDIR}" INT TERM EXIT
 export COMPOSE_FILE="{{project.docker-compose.to-deploy}}"
 #shellcheck disable=SC2016
 docker-compose config --no-interpolate |
-    yq --yaml-output '
-                      # Take all the "environment" sections from all the
-                      # services. Do not fail if the environment section does not
-                      # exist in one or more services.
-                      .services[].environment?
-                      # Update their value using the expression below.
-                      |=
+    yq '.services[].environment?
+                  |=
+                  (
+                      with(select(. == null);
+                          . = []
+                      )
+                      |
+                      . as $all_env_vars
+                      |
                       (
-                          # If the environment section did not exist or was empty,
-                          if . == null
-                          then
-                              # Set it to an empty array
-                              []
-                          else
-                              # Otherwise process each entry individually as a
-                              # hash-map of {key: value}, where "key" is the
-                              # variable name, and "value" is its associated
-                              # value.
-                              to_entries |
-                              map(
-                                  # If the entry value contains a dollar sign,
-                                  # we want to keep the variable name ("key") and its
-                                  # value ("value"), because we are building the value
-                                  # from other environment variables.
-                                  if (.value != null) and (.value | contains("${"))
-                                  then
-                                      # Build a string by join both the name and
-                                      # the value with an equal sign
-                                      [.key, .value] | join("=")
-                                  else
-                                      # If it did not contain a dollar sign,
-                                      # simply keep the name of the variable
-                                      # (the "key" in the hash-map)
-                                     .key
-                                  end
-                              )
-                          end
-                      )' \
+                          $all_env_vars | to_entries
+                          |
+                          map(
+                             select((.value != null) and (.value | contains("$")))
+                             |
+                             .key + "=" + .value
+                          )
+                      )
+                      *+
+                      (
+                          $all_env_vars | to_entries
+                          |
+                          map(
+                             select((.value != null) and (.value | contains("$") | not))
+                             |
+                             .key
+                          )
+                      )
+                      |
+                      sort
+                  )' \
         >"${DOCKER_COMPOSE_TMPDIR}/docker-compose.yml"
 sed -i \
     -e "s|${DOCKER_IMAGE_REPOSITORY}:latest|${DOCKER_IMAGE_REPOSITORY}:${TAG}|g" \
