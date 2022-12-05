@@ -7,6 +7,7 @@
   (:require [<<project.name>>.client.config :as client.config]
             [<<project.name>>.client.routes :as routes]
             [<<project.name>>.client.view :as view]
+            [day8.re-frame.http-fx]
             [re-frame.core :as rf]
             [reagent.dom :as rd]
             <<#project.load-frontend-app.requires>><<&.>><</project.load-frontend-app.requires>>))
