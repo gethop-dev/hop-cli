@@ -62,11 +62,11 @@ sed -i \
     -e "s|${DOCKER_IMAGE_REPOSITORY}:latest|${DOCKER_IMAGE_REPOSITORY}:${TAG}|g" \
     -e "s|${CURR_DIR}|/var/app/current|g" \
     "${DOCKER_COMPOSE_TMPDIR}/docker-compose.yml"
-cp -ra --parents "${SOURCE_BUNDLE_FILES[@]}" "${DOCKER_COMPOSE_TMPDIR}"
+cp -ra --parents "${EB_SOURCE_BUNDLE_FILES[@]}" "${DOCKER_COMPOSE_TMPDIR}"
 pushd "${DOCKER_COMPOSE_TMPDIR}"
-zip -r "${KEY}" "${SOURCE_BUNDLE_FILES[@]}" docker-compose.yml
-cp "${KEY}" "${CURR_DIR}/local.zip"
-aws s3 cp "${KEY}" "s3://${EB_S3_BUCKET}/${KEY}"
+zip -r "${EB_SOURCE_BUNDLE_NAME}" "${EB_SOURCE_BUNDLE_FILES[@]}" docker-compose.yml
+cp "${EB_SOURCE_BUNDLE_NAME}" "${CURR_DIR}/local.zip"
+aws s3 cp "${EB_SOURCE_BUNDLE_NAME}" "s3://${EB_S3_BUCKET}/${EB_SOURCE_BUNDLE_NAME}"
 popd
 
 TS=$(date +%s)
@@ -74,13 +74,13 @@ VERSION_LABEL="${TS}-${TAG}"
 
 # Create a new version
 aws elasticbeanstalk create-application-version \
-    --application-name "${APPLICATION_NAME}" \
+    --application-name "${EB_APPLICATION_NAME}" \
     --version-label="${VERSION_LABEL}" \
-    --source-bundle "S3Bucket=${EB_S3_BUCKET},S3Key=${KEY}" \
+    --source-bundle "S3Bucket=${EB_S3_BUCKET},S3Key=${EB_SOURCE_BUNDLE_NAME}" \
     --no-auto-create-application
 
 # Update test environment
 aws elasticbeanstalk update-environment \
-    --application-name "${APPLICATION_NAME}" \
-    --environment-name "${TEST_ENV_NAME}" \
+    --application-name "${EB_APPLICATION_NAME}" \
+    --environment-name "${EB_TEST_ENV_NAME}" \
     --version-label "${VERSION_LABEL}"

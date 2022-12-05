@@ -11,8 +11,8 @@ if [[ "${BRANCH:=}" != "${DEPLOYMENT_BRANCH}" ]]; then
     exit 0
 fi
 
-# Update test environment
+# Update prod environment
 aws elasticbeanstalk update-environment \
-    --application-name "${APPLICATION_NAME}" \
-    --environment-name "${PROD_ENV_NAME}" \
+    --application-name "${EB_APPLICATION_NAME}" \
+    --environment-name "${EB_PROD_ENV_NAME}" \
     --version-label "${VERSION_LABEL}"

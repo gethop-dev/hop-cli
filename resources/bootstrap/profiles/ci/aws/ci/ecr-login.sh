@@ -9,4 +9,4 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" |
     sed "s/$(printf '\r')\$//" |
-    docker login --username AWS --password-stdin "${AWS_ACCOUNT_NUMBER}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+    docker login --username AWS --password-stdin "${ECR_REGISTRY}"

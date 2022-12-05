@@ -12,6 +12,9 @@ source "${SCRIPT_PARENT_DIR}/common-vars.sh"
 AWS_ACCOUNT_NUMBER=$(aws sts get-caller-identity --query Account --output text |
                          sed "s/$(printf '\r')\$//")
 
+# ECR registry in which the application image will be stored
+ECR_REGISTRY="${AWS_ACCOUNT_NUMBER}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+
 # S3 Bucket where the bundle for the ElasticBeanstalk deployment is stored
 EB_S3_BUCKET="elasticbeanstalk-${AWS_DEFAULT_REGION}-${AWS_ACCOUNT_NUMBER}"
 
@@ -19,17 +22,17 @@ EB_S3_BUCKET="elasticbeanstalk-${AWS_DEFAULT_REGION}-${AWS_ACCOUNT_NUMBER}"
 # It should contain all the directories and
 # files that are used as volumes by the differente containers of the
 # app (nginx, etc.). Directories are added recursively.
-SOURCE_BUNDLE_FILES=({{#project.deploy-files}}{{&.}}{{/project.deploy-files}})
+EB_SOURCE_BUNDLE_FILES=({{#project.deploy-files}}{{&.}}{{/project.deploy-files}})
 
 # Name for the zip file where we bundle the files specified in
 # SOURCE_BUNDLE_FILES. IMPORTANT: the name must be a valid S3 key, as
 # we are storing the file in S3 using this name as the key
-KEY="${TAG}.zip"
+EB_SOURCE_BUNDLE_NAME="${TAG}.zip"
 
 # Name of the Beanstalk application for the builds
-APPLICATION_NAME="{{project.profiles.ci.continuous-deployment.aws.eb-application-name}}"
+EB_APPLICATION_NAME="{{project.profiles.ci.continuous-deployment.aws.eb-application-name}}"
 
 # Name of the Beanstalk environment where we deploy the builds to
-TEST_ENV_NAME="{{project.profiles.ci.continuous-deployment.aws.environment.test.eb-env-name}}"
+EB_TEST_ENV_NAME="{{project.profiles.ci.continuous-deployment.aws.environment.test.eb-env-name}}"
 
-PROD_ENV_NAME="{{project.profiles.ci.continuous-deployment.aws.environment.prod.eb-env-name}}"
+EB_PROD_ENV_NAME="{{project.profiles.ci.continuous-deployment.aws.environment.prod.eb-env-name}}"
