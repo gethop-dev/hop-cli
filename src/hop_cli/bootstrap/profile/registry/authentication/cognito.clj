@@ -32,7 +32,7 @@
   [settings]
   (let [project-name (bp.util/get-settings-value settings :project/name)]
     {(keyword (str project-name ".api/user"))
-     (tagged-literal 'ig/ref (keyword (:project/name settings) "common-config"))}))
+     (tagged-literal 'ig/ref (keyword project-name "common-config"))}))
 
 (defn- common-config
   []
