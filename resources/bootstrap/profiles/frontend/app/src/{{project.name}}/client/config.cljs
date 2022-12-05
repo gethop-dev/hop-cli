@@ -10,7 +10,7 @@
 
 (rf/reg-event-fx
  ::config-loaded
- (fn [{:keys [db]} [_ on-success-evt config]]
+ (fn [{:keys [db]} [_ on-success-evt {:keys [config]}]]
    (merge
     {:db (assoc db :config config)}
     (when on-success-evt
