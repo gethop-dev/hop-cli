@@ -2,6 +2,7 @@
   (:require [babashka.cli :as cli]
             [hop-cli.aws.cli :as aws.cli]
             [hop-cli.bootstrap.cli :as bootstrap.cli]
+            [hop-cli.keycloak.cli :as keycloak.cli]
             [hop-cli.util.error :as error]
             [hop-cli.util.help :as help]))
 
@@ -17,6 +18,10 @@
     :fn (fn [_] (aws.cli/main (rest args)))
     :error-fn error/generic-error-handler
     :desc "AWS utility commands"}
+   {:cmds ["keycloak"]
+    :fn (fn [_] (keycloak.cli/main (rest args)))
+    :error-fn error/generic-error-handler
+    :desc "Keycloak utility commands"}
    {:cmds []
     :fn print-help-handler}])
 

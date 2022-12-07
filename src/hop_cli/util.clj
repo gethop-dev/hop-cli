@@ -1,5 +1,14 @@
 (ns hop-cli.util
-  (:require [clojure.walk :as walk]))
+  (:require [clojure.string :as str]
+            [clojure.walk :as walk]))
+
+(defn cli-stdin-map->map
+  [stdin-parameters]
+  (reduce (fn [acc s]
+            (let [[k v] (str/split s #"=" 2)]
+              (assoc acc (keyword k) v)))
+          {}
+          stdin-parameters))
 
 (defn update-map-vals
   ([m update-fn & {:keys [recursive?] :or {recursive? true}}]

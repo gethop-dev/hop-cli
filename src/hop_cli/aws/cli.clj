@@ -1,21 +1,13 @@
 (ns hop-cli.aws.cli
   (:require [babashka.cli :as cli]
             [clojure.pprint :refer [pprint]]
-            [clojure.string :as str]
             [hop-cli.aws.cloudformation :as cloudformation]
             [hop-cli.aws.cognito :as cognito]
             [hop-cli.aws.env-vars :as env-vars]
             [hop-cli.aws.ssl :as ssl]
+            [hop-cli.util :as util]
             [hop-cli.util.error :as error]
             [hop-cli.util.help :as help]))
-
-(defn- stdin-map->map
-  [stdin-parameters]
-  (reduce (fn [acc s]
-            (let [[k v] (str/split s #"=" 2)]
-              (assoc acc (keyword k) v)))
-          {}
-          stdin-parameters))
 
 (defn- generic-handler-wrapper
   [handler-fn {:keys [opts]}]
@@ -23,12 +15,12 @@
 
 (defn- cf-create-stack-handler
   [{:keys [opts]}]
-  (let [parsed-opts (update opts :parameters stdin-map->map)]
+  (let [parsed-opts (update opts :parameters util/cli-stdin-map->map)]
     (pprint (cloudformation/create-stack parsed-opts))))
 
 (defn- cognito-create-user-handler
   [{:keys [opts]}]
-  (let [parsed-opts (update opts :attributes stdin-map->map)]
+  (let [parsed-opts (update opts :attributes util/cli-stdin-map->map)]
     (pprint (cognito/admin-create-user parsed-opts))))
 
 (declare print-help-handler)
