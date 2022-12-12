@@ -6,7 +6,7 @@ Parameters:
     Type: "String"
 
 Resources:
-  CIGroup:
+  CiGroup:
     Type: AWS::IAM::Group
     Properties:
       GroupName: !Sub "${ResourceNamePrefix}-ci"
@@ -14,15 +14,17 @@ Resources:
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
         - "arn:aws:iam::aws:policy/AdministratorAccess-AWSElasticBeanstalk"
-  CIUser:
+
+  CiUser:
     Type: AWS::IAM::User
     Properties:
       UserName: !Sub "${ResourceNamePrefix}-ci"
       Path: /
       Groups:
-        - !Ref "CIGroup"
-  CIUserAccessKey:
-    Type: "AWS::IAM::AccessKey"
-    Properties:
-      Status: "Active"
-      UserName: !Ref "CIUser"
+        - !Ref "CiGroup"
+
+Outputs:
+  CiUserARN:
+    Value: !GetAtt "CiUser.Arn"
+  CiUserName:
+    Value: !Ref "CiUser"

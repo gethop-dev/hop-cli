@@ -18,7 +18,8 @@
              :capability :CAPABILITY_NAMED_IAM
              :stack-name-kw :cloud-provider.aws.account/stack-name
              :iam-users
-             [:cloud-provider.aws.account.iam.local-dev-user/name]
+             [:cloud-provider.aws.account.iam.local-dev-user/name
+              :cloud-provider.aws.account.iam.ci-user/name]
              :input-parameter-mapping
              {:cloud-provider.aws.account.vpc/cidr :VpcCIDR
               :cloud-provider.aws.account/resource-name-prefix :ResourceNamePrefix}
@@ -26,6 +27,8 @@
              {:EbServiceRoleARN :cloud-provider.aws.account.iam/eb-service-role-arn
               :LocalDevUserARN :cloud-provider.aws.account.iam.local-dev-user/arn
               :LocalDevUserName :cloud-provider.aws.account.iam.local-dev-user/name
+              :CiUserARN :cloud-provider.aws.account.iam.ci-user/arn
+              :CiUserName :cloud-provider.aws.account.iam.ci-user/name
               :RDSMonitoringRoleARN :cloud-provider.aws.account.iam/rds-monitoring-role-arm
               :PublicRouteTable1Id :cloud-provider.aws.account.vpc/public-route-table-id
               :VpcId :cloud-provider.aws.account.vpc/id}}

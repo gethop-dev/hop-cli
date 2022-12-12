@@ -13,7 +13,7 @@ Parameters:
     Type: "String"
 
 Resources:
-  IamCI:
+  IamCi:
     Type: "AWS::CloudFormation::Stack"
     Properties:
       TemplateURL: !Sub "${TemplateBucketURL}/account/iam-ci.yaml"
@@ -56,5 +56,9 @@ Outputs:
     Value: !GetAtt "IamLocalDevUser.Outputs.LocalDevUserARN"
   LocalDevUserName:
     Value: !GetAtt "IamLocalDevUser.Outputs.LocalDevUserName"
+  CiUserARN:
+    Value: !GetAtt "IamCi.Outputs.CiUserARN"
+  CiUserName:
+    Value: !GetAtt "IamCi.Outputs.CiUserName"
   RDSMonitoringRoleARN:
     Value: !GetAtt "IamRds.Outputs.RDSMonitoringRoleARN"

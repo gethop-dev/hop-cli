@@ -36,6 +36,21 @@
       (println (format "role_arn = %s" local-role-arn))
       (println "You may want to share those details with other team members that will work on this project."))))
 
+(defn- build-print-ci-credentials-message
+  [settings]
+  (let [ci-user-name (bp.util/get-settings-value settings :project.profiles.aws.credentials.ci-user/name)
+        access-key-id (bp.util/get-settings-value settings :project.profiles.aws.credentials.ci-user/access-key-id)
+        secret-access-key (bp.util/get-settings-value settings :project.profiles.aws.credentials.ci-user/secret-access-key)]
+    (if (and access-key-id secret-access-key)
+      (with-out-str
+        (println (format "A new AWS user was created for CI purposes. You will need to configure the credentials in your CI provider."))
+        (println (format "Username: %s" ci-user-name))
+        (println (format "Access Key Id: %s" access-key-id))
+        (println (format "Secret Access Key: %s" secret-access-key)))
+      (with-out-str
+        (println "The account AWS stack was already created, so no new CI AWS user was provisioned.")
+        (println "You can reuse the credentials created in previous projects, or create new ones.")))))
+
 (defmethod registry/pre-render-hook :aws
   [_ settings]
   {:files [{:src "aws/.platform" :dst ".platform"}
@@ -45,5 +60,6 @@
 
 (defmethod registry/post-render-hook :aws
   [_ settings]
-  {:post-installation-messages {:dev [(build-setup-aws-vault-local-dev-user-instructions settings)
+  {:post-installation-messages {:dev [(build-print-ci-credentials-message settings)
+                                      (build-setup-aws-vault-local-dev-user-instructions settings)
                                       (build-setup-aws-vault-project-dev-role-instructions settings)]}})
