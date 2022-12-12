@@ -136,6 +136,9 @@
                                                             :value [{:name :eb-env-name
                                                                      :type :ref
                                                                      :value :cloud-provider.aws.environment.prod.eb/environment-name}]}]}]}]}]}
+                     {:name :observability-runtime-configurable-logging
+                      :type :plain-group
+                      :value []}
                      {:name :object-storage-s3
                       :type :plain-group
                       :value [{:name :environment

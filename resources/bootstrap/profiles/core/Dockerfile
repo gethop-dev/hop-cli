@@ -85,6 +85,9 @@ RUN lein uberjar
 # prod =========================================================================
 FROM base AS prod
 
+ARG GIT_TAG
+ENV GIT_TAG=$GIT_TAG
+
 WORKDIR /opt
 
 # hadolint ignore=DL3022

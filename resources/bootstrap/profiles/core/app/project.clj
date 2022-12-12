@@ -9,7 +9,9 @@
                                                        [ring/ring-jetty-adapter]]]
                  [ring "1.9.6"]
                  [duct/module.logging "0.5.0"]
+                 [duct/logger.timbre "0.5.0"]
                  [metosin/reitit "0.5.18"]
+                 [metosin/malli "0.9.2"]
                  {{#project.dependencies}}{{&.}}{{/project.dependencies}}]
   :plugins [[duct/lein-duct "0.12.3"]]
   :main ^:skip-aot {{#lambdas.to-snake-case}}{{project.name}}{{/lambdas.to-snake-case}}.main
