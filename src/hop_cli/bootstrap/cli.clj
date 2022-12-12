@@ -2,19 +2,14 @@
   (:require [babashka.cli :as cli]
             [babashka.fs :as fs]
             [clojure.pprint :refer [pprint]]
-            [hop-cli.bootstrap.infrastructure.aws :as aws]
             [hop-cli.bootstrap.main :as main]
             [hop-cli.bootstrap.settings :as settings]
             [hop-cli.util.error :as error]
             [hop-cli.util.help :as help]))
 
 (defn- bootstrap-handler
-  [{:keys [opts]}]
-  (pprint (main/bootstrap-hop opts)))
-
-(defn- provision-prod-infrastructure-handler
-  [{:keys [opts]}]
-  (pprint (aws/provision-prod-infrastructure (:settings-file-path opts))))
+  [environments {:keys [opts]}]
+  (pprint (main/bootstrap-hop (assoc opts :environments environments))))
 
 (defn- copy-settings-handler
   [{:keys [opts]}]
@@ -25,7 +20,7 @@
 (defn- cli-cmd-table
   []
   [{:cmds ["new-project"]
-    :fn bootstrap-handler
+    :fn (partial bootstrap-handler [:dev :test])
     :error-fn error/generic-error-handler
     :desc "Bootstraps a new HOP based project"
     :spec {:settings-file-path {:alias :s
@@ -46,14 +41,19 @@
                  :desc "Destination file or directory."
                  :require true}}}
    {:cmds ["prod-infrastructure"]
-    :fn provision-prod-infrastructure-handler
+    :fn (partial bootstrap-handler [:prod])
     :error-fn error/generic-error-handler
     :desc "Provision a production cloud infrastructure."
     :spec {:settings-file-path {:alias :s
                                 :desc "The HOP settings file path."
                                 :require true
                                 :validate (comp fs/exists? fs/file)
-                                :error-msgs {:validate "Couldn't find HOP setting.edn file. Aborting..."}}}}
+                                :error-msgs {:validate "Couldn't find HOP setting.edn file. Aborting..."}}
+           :target-project-dir {:alias :d
+                                :desc "Directory where the project is located."
+                                :require true
+                                :validate (comp fs/exists? fs/file)
+                                :error-msgs {:validate "Project directory must exist. Please input a different directory."}}}}
    {:cmds []
     :fn print-help-handler}])
 

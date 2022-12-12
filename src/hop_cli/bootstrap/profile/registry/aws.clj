@@ -20,7 +20,7 @@
         (println (format "Access Key Id: %s" access-key-id))
         (println (format "Secret Access Key: %s" secret-access-key)))
       (with-out-str
-        (println "Make sure you have the %s aws-vault profile configured" local-dev-user-profile)))))
+        (println (format "Make sure you have the %s aws-vault profile configured" local-dev-user-profile))))))
 
 (defn- build-setup-aws-vault-project-dev-role-instructions
   [settings]
@@ -45,5 +45,5 @@
 
 (defmethod registry/post-render-hook :aws
   [_ settings]
-  {:post-installation-messages [(build-setup-aws-vault-local-dev-user-instructions settings)
-                                (build-setup-aws-vault-project-dev-role-instructions settings)]})
+  {:post-installation-messages {:dev [(build-setup-aws-vault-local-dev-user-instructions settings)
+                                      (build-setup-aws-vault-project-dev-role-instructions settings)]}})

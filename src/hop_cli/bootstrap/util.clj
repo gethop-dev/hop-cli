@@ -1,5 +1,6 @@
 (ns hop-cli.bootstrap.util
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [meta-merge.core :refer [meta-merge]]))
 
 (defn get-env-type
   [environment]
@@ -37,6 +38,12 @@
   (if (coll? ks)
     (assoc-in settings ks v)
     (assoc-in settings (settings-kw->settings-path ks) v)))
+
+(defn merge-settings-value
+  [settings ks v]
+  (if (coll? ks)
+    (update-in settings ks meta-merge v)
+    (update-in settings (settings-kw->settings-path ks) meta-merge v)))
 
 (defn build-profile-docker-files-to-copy
   [docker-compose-files profile-root-path extra-docker-files]

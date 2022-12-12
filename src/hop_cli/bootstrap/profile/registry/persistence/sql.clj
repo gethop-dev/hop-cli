@@ -134,15 +134,17 @@
         template-content (slurp (fs/file template-file))]
     (str/replace template-content #"\$\{([^}]+)\}" #(replace-env-variable settings environment %1))))
 
-(defn build-init-db-sql-string
+(defn build-post-installation-messages
   [settings]
-  (with-out-str
-    (println "Once the DB is up and running you need to run the following SQL statements:")
-    (println "\nFor test env:\n")
-    (println (build-environment-init-db-sql-string settings :test))
-    (println "\nFor prod env:\n")
-    (println (build-environment-init-db-sql-string settings :prod))
-    (println "The scripts are stored in the project under postgres/init-scripts for reference.")))
+  {:test
+   [(with-out-str
+      (println "Once the DB is up and running you need to run the following SQL statements:")
+      (println (build-environment-init-db-sql-string settings :test)))]
+   :prod
+   [(with-out-str
+      (println "Once the DB is up and running you need to run the following SQL statements:")
+      (println (build-environment-init-db-sql-string settings :prod))
+      (println "The scripts are stored in the project under postgres/init-scripts for reference."))]})
 
 (defmethod registry/pre-render-hook :persistence-sql
   [_ settings]
@@ -178,4 +180,4 @@
 
 (defmethod registry/post-render-hook :persistence-sql
   [_ settings]
-  {:post-installation-messages [(build-init-db-sql-string settings)]})
+  {:post-installation-messages (build-post-installation-messages settings)})

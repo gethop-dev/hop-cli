@@ -72,10 +72,11 @@
 (defn execute-profiles!
   [settings]
   (let [profiles (get-selected-profiles settings)
+        environments (bp.util/get-settings-value settings :project/environments)
         updated-settings
         (-> settings
             (execute-profile-hook profiles registry/pre-render-hook)
             (settings-reader/resolve-refs [:project])
-            (generate-project!)
+            (cond-> (get (set environments) :dev) (generate-project!))
             (execute-profile-hook profiles registry/post-render-hook))]
     {:success? true :settings updated-settings}))

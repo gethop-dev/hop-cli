@@ -1,5 +1,6 @@
 (ns hop-cli.bootstrap.main
-  (:require [hop-cli.bootstrap.infrastructure :as infrastructure]
+  (:require [clojure.string :as str]
+            [hop-cli.bootstrap.infrastructure :as infrastructure]
             [hop-cli.bootstrap.infrastructure.aws]
             [hop-cli.bootstrap.profile :as profile]
             [hop-cli.bootstrap.settings-reader :as sr]
@@ -7,7 +8,7 @@
             [hop-cli.util.thread-transactions :as tht]))
 
 (defn bootstrap-hop
-  [{:keys [settings-file-path target-project-dir]}]
+  [{:keys [settings-file-path target-project-dir environments]}]
   (->
    [{:txn-fn
      (fn read-settings [_]
@@ -16,7 +17,9 @@
          (if (:success? result)
            {:success? true
             :settings
-            (assoc-in (:settings result) [:project :target-dir] target-project-dir)}
+            (-> (:settings result)
+                (assoc-in [:project :target-dir] target-project-dir)
+                (assoc-in [:project :environments] environments))}
            {:success? false
             :reason :could-not-read-settings
             :error-details result})))}
@@ -55,11 +58,13 @@
             :error-details result})))}
     {:txn-fn
      (fn post-installation-messages
-       [{:keys [settings] :as prv-result}]
+       [{:keys [settings]}]
        (println "Project generation finished. Now follow these manual steps to complete the bootstrap.")
-       (let [messages (bp.util/get-settings-value settings :project/post-installation-messages)]
-         (doseq [[n msg] (map-indexed vector messages)]
-           (println (format "Post-installation step #%s" n))
-           (println msg))
-         prv-result))}]
+       (doseq [environment environments]
+         (println (format "Steps to complete the %s environment setup" (str/upper-case (name environment))))
+         (let [messages (bp.util/get-settings-value settings [:project :post-installation-messages environment])]
+           (doseq [[n msg] (map-indexed vector messages)]
+             (println (format "Step #%s" n))
+             (println msg))))
+       {:success? true})}]
    (tht/thread-transactions {})))

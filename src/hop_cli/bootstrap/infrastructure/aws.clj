@@ -17,6 +17,8 @@
   {:account {:master-template "account.yaml"
              :capability :CAPABILITY_NAMED_IAM
              :stack-name-kw :cloud-provider.aws.account/stack-name
+             :iam-users
+             [:cloud-provider.aws.account.iam.local-dev-user/name]
              :input-parameter-mapping
              {:cloud-provider.aws.account.vpc/cidr :VpcCIDR
               :cloud-provider.aws.account/resource-name-prefix :ResourceNamePrefix}
@@ -152,8 +154,33 @@
    {}
    mapping))
 
+(defn- provision-iam-user-access-key
+  [settings name-kw]
+  (let [user-name (bp.util/get-settings-value settings name-kw)
+        result (aws.iam/create-access-key {:username user-name})]
+    (if-not (:success? result)
+      {:success? false
+       :reason :could-not-create-iam-user-credentials
+       :error-details {:name-kw name-kw :result result}}
+      (let [path (butlast (bp.util/settings-kw->settings-path name-kw))]
+        {:success? true
+         :settings (-> settings
+                       (bp.util/merge-settings-value path (:access-key result)))}))))
+
+(defn- provision-iam-user-access-keys
+  [settings name-kws]
+  (reduce
+   (fn [{:keys [settings]} name-kw]
+     (let [result (provision-iam-user-access-key settings name-kw)]
+       (if (:success? result)
+         result
+         (reduced {:success? false :error-details result}))))
+   {:success? true :settings settings}
+   name-kws))
+
 (defn- provision-cfn-stack
-  [settings {:keys [input-parameter-mapping output-parameter-mapping stack-name-kw] :as template-opts}]
+  [settings {:keys [input-parameter-mapping output-parameter-mapping
+                    stack-name-kw iam-users] :as template-opts}]
   (let [stack-name (bp.util/get-settings-value settings stack-name-kw)
         project-name (bp.util/get-settings-value settings :project/name)
         bucket-name (bp.util/get-settings-value settings :cloud-provider.aws.cloudformation/template-bucket-name)
@@ -172,132 +199,131 @@
           (let [outputs (:outputs wait-result)
                 new-settings (select-and-rename-keys outputs output-parameter-mapping)
                 updated-settings (meta-merge settings new-settings)]
-            {:success? true
-             :settings updated-settings})))
+            (if (empty? iam-users)
+              {:success? true :settings updated-settings}
+              (let [result (provision-iam-user-access-keys updated-settings iam-users)]
+                (if-not (:success? result)
+                  {:success? false
+                   :reason :could-not-provision-iam-user-access-keys
+                   :error-details result}
+                  {:success? true
+                   :settings (:settings result)}))))))
       result)))
 
-(defn- create-local-dev-user-credentials
-  [settings]
-  (let [name-key :cloud-provider.aws.account.iam.local-dev-user/name
-        local-dev-user-name (bp.util/get-settings-value settings name-key)
-        result (aws.iam/create-access-key {:username local-dev-user-name})]
-    (if-not (:success? result)
-      {:success? false
-       :reason {:username local-dev-user-name :result result}}
-      {:success? true
-       :settings (-> settings
-                     (bp.util/assoc-in-settings-value
-                      :cloud-provider.aws.account.iam.local-dev-user/access-key-id
-                      (get-in result [:access-key :id]))
-                     (bp.util/assoc-in-settings-value
-                      :cloud-provider.aws.account.iam.local-dev-user/secret-access-key
-                      (get-in result [:access-key :secret])))})))
+(defn- get-or-provision-cfn-stack
+  [settings {:keys [stack-name-kw output-parameter-mapping] :as template-opts}]
+  (let [stack-name (bp.util/get-settings-value settings stack-name-kw)
+        result (aws.cloudformation/describe-stack {:stack-name stack-name})]
+    (if (and (:success? result) (:stack result))
+      (let [outputs (get-in result [:stack :outputs])
+            new-settings (select-and-rename-keys outputs output-parameter-mapping)
+            updated-settings (meta-merge settings new-settings)]
+        (println "Skipping account stack creation because it already exists")
+        {:success? true
+         :settings updated-settings})
+      (provision-cfn-stack settings template-opts))))
 
 (defmethod infrastructure/provision-initial-infrastructure :aws
   [settings]
-  (->
-   [{:txn-fn
-     (fn upload-cloudformation-templates
-       [_]
-       (let [bucket-name (bp.util/get-settings-value settings :cloud-provider.aws.cloudformation/template-bucket-name)
-             opts {:bucket-name bucket-name
-                   :directory-path cfn-templates-path}
-             _log (println (format "Uploading cloudformation templates to %s bucket..." bucket-name))
-             result (aws.cloudformation/update-templates opts)]
-         (if (:success? result)
-           {:success? true}
-           {:success? false
-            :reason :could-not-upload-cfn-templates
-            :error-details result})))}
-    {:txn-fn
-     (fn provision-account
-       [_]
-       (let [{:keys [stack-name-kw output-parameter-mapping] :as template-opts} (:account cfn-templates)
-             stack-name (bp.util/get-settings-value settings stack-name-kw)
-             result (aws.cloudformation/describe-stack {:stack-name stack-name})]
-         (if (and (:success? result) (:stack result))
-           (let [outputs (get-in result [:stack :outputs])
-                 new-settings (select-and-rename-keys outputs output-parameter-mapping)
-                 updated-settings (meta-merge settings new-settings)]
-             (println "Skipping account stack creation because it already exists")
-             {:success? true
-              :settings updated-settings})
-           (let [result (provision-cfn-stack settings template-opts)]
-             (if (:success? result)
-               (let [result (create-local-dev-user-credentials (:settings result))]
-                 (if (:success? result)
-                   {:success? true
-                    :settings (:settings result)}
-                   {:success? false
-                    :reason :could-not-obtain-and-print-local-user-credentials
-                    :error-details result}))
-               {:success? false
-                :reason :could-not-provision-account-cfn
-                :error-details result})))))}
-    {:txn-fn
-     (fn create-and-upload-self-signed-certificate
-       [{:keys [settings]}]
-       (if (bp.util/get-settings-value settings :cloud-provider.aws.project.elb/certificate-arn)
-         (do
-           (println "Skipping self-signed certificate upload.")
-           {:success? true
-            :settings settings})
-         (let [_log (println "Creating and uploading self-signed certificate...")
-               result (aws.ssl/create-and-upload-self-signed-certificate {})]
+  (let [environments (set (bp.util/get-settings-value settings :project/environments))]
+    (->
+     [{:txn-fn
+       (fn upload-cloudformation-templates
+         [_]
+         (let [bucket-name (bp.util/get-settings-value settings :cloud-provider.aws.cloudformation/template-bucket-name)
+               opts {:bucket-name bucket-name
+                     :directory-path cfn-templates-path}
+               _log (println (format "Uploading cloudformation templates to %s bucket..." bucket-name))
+               result (aws.cloudformation/update-templates opts)]
            (if (:success? result)
-             (let [certificate-arn (:certificate-arn result)
-                   updated-settings
-                   (assoc-in settings [:cloud-provider :aws :project :elb :certificate-arn] certificate-arn)]
-               {:success? true
-                :settings updated-settings})
+             {:success? true}
              {:success? false
-              :reason :could-not-create-and-upload-self-signed-certificate
-              :error-details result}))))}
-    {:txn-fn
-     (fn provision-project
-       [{:keys [settings]}]
-       (let [result (provision-cfn-stack settings (:project cfn-templates))]
-         (if (:success? result)
-           {:success? true
-            :settings (:settings result)}
-           {:success? false
-            :reason :could-not-provision-project-cfn
-            :error-details result})))}
-    {:txn-fn
-     (fn provision-dev-env
-       [{:keys [settings]}]
-       (let [result (provision-cfn-stack settings (:dev-env cfn-templates))]
-         (if (:success? result)
-           {:success? true
-            :settings (:settings result)}
-           {:success? false
-            :reason :could-not-provision-dev-env
-            :error-details result})))}
-    {:txn-fn
-     (fn provision-test-env
-       [{:keys [settings]}]
-       (let [result (provision-cfn-stack settings (:test-env cfn-templates))]
-         (if (:success? result)
-           {:success? true
-            :settings (:settings result)}
-           {:success? false
-            :reason :could-not-provision-test-env
-            :error-details result})))}]
-   (tht/thread-transactions {})))
+              :reason :could-not-upload-cfn-templates
+              :error-details result})))}
+      {:txn-fn
+       (fn provision-account
+         [_]
+         (let [result (get-or-provision-cfn-stack settings (:account cfn-templates))]
+           (if-not (:success? result)
+             {:success? false
+              :reason :could-not-provision-account-cfn}
+             result)))}
+      {:txn-fn
+       (fn create-and-upload-self-signed-certificate
+         [{:keys [settings]}]
+         (if (bp.util/get-settings-value settings :cloud-provider.aws.project.elb/certificate-arn)
+           (do
+             (println "Skipping self-signed certificate upload.")
+             {:success? true
+              :settings settings})
+           (let [_log (println "Creating and uploading self-signed certificate...")
+                 result (aws.ssl/create-and-upload-self-signed-certificate {})]
+             (if (:success? result)
+               (let [certificate-arn (:certificate-arn result)
+                     updated-settings
+                     (assoc-in settings [:cloud-provider :aws :project :elb :certificate-arn] certificate-arn)]
+                 {:success? true
+                  :settings updated-settings})
+               {:success? false
+                :reason :could-not-create-and-upload-self-signed-certificate
+                :error-details result}))))}
+      {:txn-fn
+       (fn provision-project
+         [{:keys [settings]}]
+         (let [result (get-or-provision-cfn-stack settings (:project cfn-templates))]
+           (if (:success? result)
+             {:success? true
+              :settings (:settings result)}
+             {:success? false
+              :reason :could-not-provision-project-cfn
+              :error-details result})))}
+      {:txn-fn
+       (fn provision-dev-env
+         [{:keys [settings] :as prv-result}]
+         (if-not (get environments :dev)
+           prv-result
+           (let [result (provision-cfn-stack settings (:dev-env cfn-templates))]
+             (if (:success? result)
+               {:success? true
+                :settings (:settings result)}
+               {:success? false
+                :reason :could-not-provision-dev-env
+                :error-details result}))))}
+      {:txn-fn
+       (fn provision-test-env
+         [{:keys [settings] :as prv-result}]
+         (if-not (get environments :test)
+           prv-result
+           (let [result (provision-cfn-stack settings (:test-env cfn-templates))]
+             (if (:success? result)
+               {:success? true
+                :settings (:settings result)}
+               {:success? false
+                :reason :could-not-provision-test-env
+                :error-details result}))))}
+      {:txn-fn
+       (fn provision-prod-env
+         [{:keys [settings] :as prv-result}]
+         (if-not (get environments :prod)
+           prv-result
+           (let [result (provision-cfn-stack settings (:prod-env cfn-templates))]
+             (if (:success? result)
+               {:success? true
+                :settings (:settings result)}
+               {:success? false
+                :reason :could-not-provision-prod-env
+                :error-details result}))))}]
+     (tht/thread-transactions {}))))
 
-(defn provision-prod-infrastructure
-  [settings]
-  (provision-cfn-stack settings (:prod-env cfn-templates)))
-
-(defmethod infrastructure/save-environment-variables :aws
-  [settings]
-  (let [config {:environment "test"
+(defn- save-environment-variables
+  [settings environment]
+  (let [config {:environment (name environment)
                 :project-name
                 (bp.util/get-settings-value settings :project/name)
                 :kms-key-alias
-                (bp.util/get-settings-value settings :aws.environment.test.kms/key-alias)}
+                (bp.util/get-settings-value settings [:aws :environment environment :kms :key-alias])}
         ssm-env-vars (->> (bp.util/get-settings-value settings :project/environment-variables)
-                          :test
+                          environment
                           walk/stringify-keys
                           (map zipmap (repeat [:name :value]))
                           (map #(update % :value str))
@@ -307,3 +333,14 @@
       result
       {:success? false
        :error-details result})))
+
+(defmethod infrastructure/save-environment-variables :aws
+  [settings]
+  (let [environments (->> (bp.util/get-settings-value settings :project/environments)
+                          (remove #{:dev})
+                          (set))
+        results (map (partial save-environment-variables settings) environments)]
+    (if (every? :success? results)
+      {:success? true}
+      {:success? false
+       :error-details (zipmap environments results)})))
