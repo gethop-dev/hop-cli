@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: ""
+
+Parameters:
+  ProjectName:
+    Description: "Project name"
+    Type: "String"
+  Environment:
+    Description: "Server environment"
+    Type: "String"
+    AllowedValues:
+      - "dev"
+      - "test"
+      - "prod"
+  LogGroupName:
+    Type: "String"
+  LogRetentionDays:
+    Type: "Number"
+  ConsumerRoleName:
+    Type: "String"
+
+Resources:
+  CloudwatchLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    Properties:
+      LogGroupName: !Ref "LogGroupName"
+      RetentionInDays: !Ref "LogRetentionDays"
+      Tags:
+        - Key: "project-name"
+          Value: !Ref "ProjectName"
+        - Key: "environment"
+          Value: !Ref "Environment"
+
+  CloudwatchPolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: !Sub "${ProjectName}-${Environment}-env-cloudwatch"
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - "logs:CreateLogStream"
+              - "logs:DescribeLogStreams"
+              - "logs:PutLogEvents"
+            Resource:
+              - !GetAtt "CloudwatchLogGroup.Arn"
+      Roles:
+        - !Ref "ConsumerRoleName"
+
+Outputs:
+  LogGroupName:
+    Value: !Ref "CloudwatchLogGroup"

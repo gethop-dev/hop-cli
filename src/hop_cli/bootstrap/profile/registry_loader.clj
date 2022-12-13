@@ -14,4 +14,4 @@
   "List of the HOP profiles in the prefered order of execution"
   [:core :persistence-sql :auth-cognito :auth-keycloak :bi-grafana
    :frontend :observability-runtime-configurable-logging
-   :aws :object-storage-s3 :ci])
+   :observability-cloudwatch-logging :aws :object-storage-s3 :ci])

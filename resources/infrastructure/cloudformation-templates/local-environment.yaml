@@ -15,16 +15,28 @@ Parameters:
       - "dev"
   LocalDevUserARN:
     Type: "String"
+  CloudwatchLogGroupName:
+    Description: "Cloudwatch Log group name"
+    Type: "String"
+    Default: ""
+  CloudwatchLogRetentionDays:
+    Description: "Cloudwatch Log retention days"
+    Type: "Number"
+    Default: 1
   IncludeCognito:
     Type: "String"
     Default: "false"
   IncludeS3:
     Type: "String"
     Default: "false"
+  IncludeCloudwatch:
+    Type: "String"
+    Default: "false"
 
 Conditions:
   IncludeCognitoCond: !Equals ["true", !Ref "IncludeCognito"]
   IncludeS3Cond: !Equals ["true", !Ref "IncludeS3"]
+  IncludeCloudwatchCond: !Equals ["true", !Ref "IncludeCloudwatch"]
 
 Resources:
   Cognito:
@@ -69,6 +81,17 @@ Resources:
         ProjectName: !Ref "ProjectName"
         Environment: !Ref "Environment"
         ConsumerRoleARN: !GetAtt "IAM.Outputs.ConsumerRoleARN"
+  Cloudwatch:
+    Type: "AWS::CloudFormation::Stack"
+    Condition: "IncludeCloudwatchCond"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/cloudwatch.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
+        LogGroupName: !Ref "CloudwatchLogGroupName"
+        LogRetentionDays: !Ref "CloudwatchLogRetentionDays"
 
 Outputs:
   CognitoUserPoolId:
@@ -85,5 +108,8 @@ Outputs:
   S3BucketName:
     Condition: "IncludeS3Cond"
     Value: !GetAtt "S3.Outputs.BucketName"
+  CloudwatchLogGroupName:
+    Condition: "IncludeCloudwatchCond"
+    Value: !GetAtt "Cloudwatch.Outputs.LogGroupName"
   DevRoleArn:
     Value: !GetAtt "IAM.Outputs.ConsumerRoleARN"

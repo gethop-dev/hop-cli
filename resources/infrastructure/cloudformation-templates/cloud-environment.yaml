@@ -51,6 +51,14 @@ Parameters:
     Description: "Database name"
     Type: "String"
     Default: "ebdb"
+  CloudwatchLogGroupName:
+    Description: "Cloudwatch Log group name"
+    Type: "String"
+    Default: ""
+  CloudwatchLogRetentionDays:
+    Description: "Cloudwatch Log retention days"
+    Type: "Number"
+    Default: 1
   IncludeCognito:
     Type: "String"
     Default: "false"
@@ -60,11 +68,15 @@ Parameters:
   IncludeRds:
     Type: "String"
     Default: "true"
+  IncludeCloudwatch:
+    Type: "String"
+    Default: "false"
 
 Conditions:
   IncludeCognitoCond: !Equals ["true", !Ref "IncludeCognito"]
   IncludeS3Cond: !Equals ["true", !Ref "IncludeS3"]
   IncludeRDSCond: !Equals ["true", !Ref "IncludeRds"]
+  IncludeCloudwatchCond: !Equals ["true", !Ref "IncludeCloudwatch"]
 
 Resources:
   Cognito:
@@ -151,6 +163,17 @@ Resources:
         Environment: !Ref "Environment"
         RdsSecurityGroupId: !GetAtt "RDS.Outputs.RdsSecurityGroupId"
         EbSecurityGroupId: !GetAtt "EB.Outputs.EbSecurityGroupId"
+  Cloudwatch:
+    Type: "AWS::CloudFormation::Stack"
+    Condition: "IncludeCloudwatchCond"
+    Properties:
+      TemplateURL: !Sub "${TemplateBucketURL}/environment/cloudwatch.yaml"
+      Parameters:
+        ProjectName: !Ref "ProjectName"
+        Environment: !Ref "Environment"
+        ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
+        LogGroupName: !Ref "CloudwatchLogGroupName"
+        LogRetentionDays: !Ref "CloudwatchLogRetentionDays"
 
 Outputs:
   CognitoUserPoolId:
@@ -176,3 +199,6 @@ Outputs:
   S3BucketName:
     Condition: "IncludeS3Cond"
     Value: !GetAtt "S3.Outputs.BucketName"
+  CloudwatchLogGroupName:
+    Condition: "IncludeCloudwatchCond"
+    Value: !GetAtt "Cloudwatch.Outputs.LogGroupName"

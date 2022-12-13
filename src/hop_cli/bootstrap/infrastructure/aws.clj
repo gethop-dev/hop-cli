@@ -56,12 +56,16 @@
              :input-parameter-mapping
              {:cloud-provider.aws.account.iam.local-dev-user/arn :LocalDevUserARN
               :cloud-provider.aws.environment.dev.optional-services.cognito/enabled :IncludeCognito
-              :cloud-provider.aws.environment.dev.optional-services.s3/enabled :IncludeS3}
+              :cloud-provider.aws.environment.dev.optional-services.s3/enabled :IncludeS3
+              :cloud-provider.aws.environment.dev.optional-services.cloudwatch/enabled :IncludeCloudwatch
+              :cloud-provider.aws.environment.dev.optional-services.cloudwatch/log-group-name :CloudwatchLogGroupName
+              :cloud-provider.aws.environment.dev.optional-services.cloudwatch/retention-days :CloudwatchLogRetentionDays}
              :output-parameter-mapping
              {:S3BucketName :cloud-provider.aws.environment.dev.optional-services.s3/bucket-name
               :CognitoUserPoolId :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/id
               :CognitoUserPoolURL :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/url
               :CognitoSPAClientId :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.app-client/id
+              :CloudwatchLogGroupName :cloud-provider.aws.environment.dev.optional-services.cloudwatch/log-group-name
               :DevRoleArn :cloud-provider.aws.environment.dev.iam.role/arn}}
 
    :test-env {:master-template "cloud-environment.yaml"
@@ -85,7 +89,10 @@
                :cloud-provider.aws.environment.test.optional-services.cognito/enabled :IncludeCognito
                :cloud-provider.aws.environment.test.optional-services.s3/enabled :IncludeS3
                :cloud-provider.aws.environment.test.optional-services.rds/enabled :IncludeRds
-               :cloud-provider.aws.environment.test.eb/ec2-instance-type :EbInstanceType}
+               :cloud-provider.aws.environment.test.optional-services.cloudwatch/enabled :IncludeCloudwatch
+               :cloud-provider.aws.environment.test.eb/ec2-instance-type :EbInstanceType
+               :cloud-provider.aws.environment.test.optional-services.cloudwatch/log-group-name :CloudwatchLogGroupName
+               :cloud-provider.aws.environment.test.optional-services.cloudwatch/retention-days :CloudwatchLogRetentionDays}
               :output-parameter-mapping
               {:CognitoUserPoolId :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/id
                :CognitoUserPoolURL :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/url
@@ -93,7 +100,8 @@
                :RdsAddress :cloud-provider.aws.environment.test.optional-services.rds/host
                :EbEnvironmentName :cloud-provider.aws.environment.test.eb/environment-name
                :EbEnvironmentURL :cloud-provider.aws.environment.test.eb/environment-url
-               :S3BucketName :cloud-provider.aws.environment.test.optional-services.s3/bucket-name}}
+               :S3BucketName :cloud-provider.aws.environment.test.optional-services.s3/bucket-name
+               :CloudwatchLogGroupName :cloud-provider.aws.environment.test.optional-services.cloudwatch/log-group-name}}
 
    :prod-env {:master-template "cloud-environment.yaml"
               :capability :CAPABILITY_NAMED_IAM
@@ -116,7 +124,10 @@
                :cloud-provider.aws.environment.prod.optional-services.cognito/enabled :IncludeCognito
                :cloud-provider.aws.environment.prod.optional-services.s3/enabled :IncludeS3
                :cloud-provider.aws.environment.prod.optional-services.rds/enabled :IncludeRds
-               :cloud-provider.aws.environment.prod.eb/ec2-instance-type :EbInstanceType}
+               :cloud-provider.aws.environment.prod.optional-services.cloudwatch/enabled :IncludeCloudwatch
+               :cloud-provider.aws.environment.prod.eb/ec2-instance-type :EbInstanceType
+               :cloud-provider.aws.environment.prod.optional-services.cloudwatch/log-group-name :CloudwatchLogGroupName
+               :cloud-provider.aws.environment.prod.optional-services.cloudwatch/retention-days :CloudwatchLogRetentionDays}
               :output-parameter-mapping
               {:CognitoUserPoolId :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/id
                :CognitoUserPoolURL :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/url
@@ -124,7 +135,8 @@
                :RdsAddress :cloud-provider.aws.environment.prod.optional-services.rds/host
                :EbEnvironmentName :cloud-provider.aws.environment.prod.eb/environment-name
                :EbEnvironmentURL :cloud-provider.aws.environment.prod.eb/environment-url
-               :S3BucketName :cloud-provider.aws.environment.prod.optional-services.s3/bucket-name}}})
+               :S3BucketName :cloud-provider.aws.environment.prod.optional-services.s3/bucket-name
+               :CloudwatchLogGroupName :cloud-provider.aws.environment.prod.optional-services.cloudwatch/log-group-name}}})
 
 (defn wait-for-stack-completion
   [stack-name]

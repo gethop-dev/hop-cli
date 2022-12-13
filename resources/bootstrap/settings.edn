@@ -139,6 +139,34 @@
                      {:name :observability-runtime-configurable-logging
                       :type :plain-group
                       :value []}
+                     {:name :observability-cloudwatch-logging
+                      :type :plain-group
+                      :value [{:name :environment
+                               :type :plain-group
+                               :value [{:name :dev
+                                        :type :plain-group
+                                        :value [{:name :log-group-name
+                                                 :type :ref
+                                                 :value :cloud-provider.aws.environment.dev.optional-services.cloudwatch/log-group-name}
+                                                {:name :min-log-level
+                                                 :type :keyword
+                                                 :value :info}]}
+                                       {:name :test
+                                        :type :plain-group
+                                        :value [{:name :log-group-name
+                                                 :type :ref
+                                                 :value :cloud-provider.aws.environment.test.optional-services.cloudwatch/log-group-name}
+                                                {:name :min-log-level
+                                                 :type :keyword
+                                                 :value :info}]}
+                                       {:name :prod
+                                        :type :plain-group
+                                        :value [{:name :log-group-name
+                                                 :type :ref
+                                                 :value :cloud-provider.aws.environment.prod.optional-services.cloudwatch/log-group-name}
+                                                {:name :min-log-level
+                                                 :type :keyword
+                                                 :value :info}]}]}]}
                      {:name :object-storage-s3
                       :type :plain-group
                       :value [{:name :environment
@@ -1435,7 +1463,15 @@
                                                    :value []}
                                                   {:name :s3
                                                    :type :plain-group
-                                                   :value []}]}]}
+                                                   :value []}
+                                                  {:name :cloudwatch
+                                                   :type :plain-group
+                                                   :value [{:name :log-group-name
+                                                            :type :string
+                                                            :value "/aws/eb/hop-dev"}
+                                                           {:name :retention-days
+                                                            :type :integer
+                                                            :value 1}]}]}]}
                               {:name :test
                                :tag "Test"
                                :type :plain-group
@@ -1482,7 +1518,15 @@
                                                                     {:name :password
                                                                      :tag "Database admin password"
                                                                      :type :auto-gen-password
-                                                                     :value {:length 24}}]}]}]}
+                                                                     :value {:length 24}}]}]}
+                                                  {:name :cloudwatch
+                                                   :type :plain-group
+                                                   :value [{:name :log-group-name
+                                                            :type :string
+                                                            :value "/aws/eb/hop-test"}
+                                                           {:name :retention-days
+                                                            :type :integer
+                                                            :value 60}]}]}
                                        {:name :kms
                                         :tag "KMS"
                                         :type :plain-group
@@ -1536,7 +1580,15 @@
                                                                     {:name :password
                                                                      :tag "Database admin password"
                                                                      :type :auto-gen-password
-                                                                     :value {:length 24}}]}]}]}
+                                                                     :value {:length 24}}]}]}
+                                                  {:name :cloudwatch
+                                                   :type :plain-group
+                                                   :value [{:name :log-group-name
+                                                            :type :string
+                                                            :value "/aws/eb/hop-prod"}
+                                                           {:name :retention-days
+                                                            :type :integer
+                                                            :value 365}]}]}
                                        {:name :kms
                                         :tag "KMS"
                                         :type :plain-group
