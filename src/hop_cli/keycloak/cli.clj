@@ -83,8 +83,8 @@
              {:alias :r :require true}]
             [:username
              {:alias :u :require true}]])}
-   {:cmds ["get-token"]
-    :fn #(pprint (api.openid-connect/get-token (:opts %1)))
+   {:cmds ["get-id-token"]
+    :fn #(pprint (api.openid-connect/get-id-token (:opts %1)))
     :error-fn error/generic-error-handler
     :desc "Returns id, access and refresh tokens for the given user credentials"
     :spec [[:base-url

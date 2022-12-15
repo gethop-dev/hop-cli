@@ -20,6 +20,14 @@
       {:success? false
        :error-details result})))
 
+(defn get-id-token
+  [opts]
+  (let [result (get-token opts)]
+    (if (:success? result)
+      {:success? true
+       :id-token (-> result :token :id_token)}
+      result)))
+
 (defn get-admin-access-token
   [opts]
   (let [opts (set/rename-keys opts {:admin-username :username
