@@ -15,19 +15,30 @@
    (let [target-dir (bp.util/get-settings-value settings :project/target-dir)]
      (str (fs/normalize target-dir) fs/file-separator subpath))))
 
-(defn- build-bootstrap-resource-path
-  [subpath]
-  (io/resource (str "bootstrap/profiles/" subpath)))
+(defn- get-jar-file-path
+  []
+  (->> (io/resource "bootstrap")
+       (.toString)
+       (re-find #"^jar:file:([^!]+)\!")
+       (second)))
 
-(defn- copy-files!
-  [settings]
+(defn- copy-files!*
+  [settings bootstrap-path-prefix]
   (let [files-to-copy (bp.util/get-settings-value settings [:project :files])]
     (doseq [{:keys [src dst]} files-to-copy
-            :let [src-path (build-bootstrap-resource-path src)
+            :let [src-path (fs/path bootstrap-path-prefix "profiles" src)
                   dst-path (build-target-project-path settings dst)]]
       (if (fs/directory? src-path)
         (fs/copy-tree src-path dst-path {:replace-existing true})
         (fs/copy src-path dst-path {:replace-existing true})))))
+
+(defn- copy-files!
+  [settings]
+  (if-let [jar-file-path (get-jar-file-path)]
+    (fs/with-temp-dir [temp-dir {}]
+      (fs/unzip jar-file-path temp-dir)
+      (copy-files!* settings (fs/path temp-dir "bootstrap")))
+    (copy-files!* settings (io/resource "bootstrap"))))
 
 (defn- write-dev-environment-variables-to-file!
   [settings]
