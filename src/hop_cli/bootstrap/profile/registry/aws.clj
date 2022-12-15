@@ -20,6 +20,7 @@
         (println (format "Access Key Id: %s" access-key-id))
         (println (format "Secret Access Key: %s" secret-access-key)))
       (with-out-str
+        (println "The account AWS stack was already created, so no new local development AWS user was created.")
         (println (format "Make sure you have the %s aws-vault profile configured" local-dev-user-profile))))))
 
 (defn- build-setup-aws-vault-project-dev-role-instructions
@@ -48,7 +49,7 @@
         (println (format "Access Key Id: %s" access-key-id))
         (println (format "Secret Access Key: %s" secret-access-key)))
       (with-out-str
-        (println "The account AWS stack was already created, so no new CI AWS user was provisioned.")
+        (println "The account AWS stack was already created, so no new CI AWS user was created.")
         (println "You can reuse the credentials created in previous projects, or create new ones.")))))
 
 (defmethod registry/pre-render-hook :aws
