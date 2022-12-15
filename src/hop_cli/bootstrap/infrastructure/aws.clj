@@ -253,7 +253,7 @@
              {:success? true
               :settings (bp.util/assoc-in-settings-value settings
                                                          :cloud-provider.aws.account/id
-                                                         caller-identity)}
+                                                         (:Account caller-identity))}
              {:success? false
               :reason :failed-to-get-aws-account-id
               :error-details result})))}
