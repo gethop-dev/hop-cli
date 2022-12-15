@@ -57,6 +57,6 @@
        :reason :file-parent-directory-does-not-exist}
 
       :else
-      (let [src-file default-settings-file-path
-            result (copy* src-file dst-file)]
+      (let [src-file default-settings-file-path]
+        (copy* src-file dst-file)
         {:success? true}))))
