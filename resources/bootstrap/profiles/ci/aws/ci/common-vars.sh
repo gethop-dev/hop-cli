@@ -10,7 +10,7 @@ source "${SCRIPT_PARENT_DIR}/common-vars.sh"
 
 # The AWS account-id is obtained from the credentials
 AWS_ACCOUNT_NUMBER=$(aws sts get-caller-identity --query Account --output text |
-                         sed "s/$(printf '\r')\$//")
+    sed "s/$(printf '\r')\$//")
 
 # ECR registry in which the application image will be stored
 ECR_REGISTRY="${AWS_ACCOUNT_NUMBER}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
