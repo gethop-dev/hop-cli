@@ -13,7 +13,7 @@
 
 (defn- copy-settings-handler
   [{:keys [opts]}]
-  (pprint (settings/copy (:dst opts))))
+  (pprint (settings/copy (:settings-file-path opts))))
 
 (declare print-help-handler)
 
@@ -37,9 +37,9 @@
     :fn copy-settings-handler
     :error-fn error/generic-error-handler
     :desc "Makes a copy of the default hop-cli configuration file."
-    :spec {:dst {:alias :d
-                 :desc "Destination file or directory."
-                 :require true}}}
+    :spec {:settings-file-path {:alias :s
+                                :desc "Destination file."
+                                :require true}}}
    {:cmds ["prod-infrastructure"]
     :fn (partial bootstrap-handler [:prod])
     :error-fn error/generic-error-handler

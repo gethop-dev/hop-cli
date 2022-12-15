@@ -39,27 +39,24 @@
 
 (defn- copy*
   [src-file dst-file]
-  (if (fs/directory? dst-file)
-    (fs/copy src-file (get-new-dst-file dst-file (fs/file-name src-file)))
+  (with-open [is (io/input-stream (io/resource src-file))]
     (if (fs/exists? dst-file)
-      (fs/copy src-file (get-new-dst-file (fs/parent dst-file) (fs/file-name dst-file)))
-      (fs/copy src-file dst-file))))
+      (io/copy is (get-new-dst-file (fs/parent dst-file) (fs/file-name dst-file)))
+      (io/copy is dst-file))))
 
 (defn copy
   [dst]
-  (let [dst-file (fs/canonicalize (fs/file dst))]
+  (let [dst-file (fs/file (fs/canonicalize dst))]
     (cond
-      (and (fs/directory? dst-file)
-           (not (fs/exists? dst-file)))
+      (fs/directory? dst-file)
       {:success? false
-       :reason :directory-does-not-exist}
+       :reason :must-be-a-file}
 
       (not (fs/exists? (fs/parent dst-file)))
       {:success? false
-       :reason :directory-does-not-exist}
+       :reason :file-parent-directory-does-not-exist}
 
       :else
-      (let [src-file (fs/file (io/resource default-settings-file-path))
+      (let [src-file default-settings-file-path
             result (copy* src-file dst-file)]
-        {:success? true
-         :file (.toString result)}))))
+        {:success? true}))))
