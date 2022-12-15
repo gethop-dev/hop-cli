@@ -16,6 +16,7 @@ Parameters:
       - "prod"
   DatabaseEngineVersion:
     Type: "String"
+    Default: "14"
   RDSMonitoringRoleARN:
     Type: "String"
   VpcId:
@@ -43,6 +44,7 @@ Parameters:
     Description: "Password for master user in RDS database"
     Type: "String"
     NoEcho: true
+    Default: ""
   DatabasePort:
     Description: "Database port"
     Type: "String"
