@@ -60,11 +60,12 @@
      (fn post-installation-messages
        [{:keys [settings]}]
        (println "Project generation finished. Now follow these manual steps to complete the bootstrap.")
-       (doseq [environment environments]
+       (doseq [environment environments
+               :let [messages (bp.util/get-settings-value settings [:project :post-installation-messages environment])]
+               :when (seq messages)]
          (println (format "Steps to complete the %s environment setup" (str/upper-case (name environment))))
-         (let [messages (bp.util/get-settings-value settings [:project :post-installation-messages environment])]
-           (doseq [[n msg] (map-indexed vector messages)]
-             (println (format "Step #%s" n))
-             (println msg))))
+         (doseq [[n msg] (map-indexed vector messages)]
+           (println (format "Step #%s" n))
+           (println msg)))
        {:success? true})}]
    (tht/thread-transactions {})))
