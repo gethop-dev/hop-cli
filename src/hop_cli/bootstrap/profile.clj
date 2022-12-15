@@ -32,6 +32,7 @@
         (fs/copy-tree src-path dst-path {:replace-existing true})
         (fs/copy src-path dst-path {:replace-existing true})))))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn- copy-files!
   [settings]
   (if-let [jar-file-path (get-jar-file-path)]
