@@ -45,7 +45,7 @@
           {:name :profiles
            :tag "Profiles"
            :type :multiple-choice-group
-           :value [:core :persistence-sql :auth-keycloak :bi-grafana :object-storage-s3 :frontend :aws :ci]
+           :value [:core]
            :choices [{:name :core
                       :type :plain-group
                       :value [{:name :environment
@@ -1396,14 +1396,7 @@
   :choices [{:name :aws
              :tag "AWS infrastructure"
              :type :plain-group
-             :value [{:name :cloudformation
-                      :tag "Account"
-                      :type :plain-group
-                      :value [{:name :template-bucket-name
-                               :tag "Cloudformation Template Bucket"
-                               :type :string
-                               :value "cloudformation-templates-223330293187"}]}
-                     {:name :account
+             :value [{:name :account
                       :tag "Account"
                       :type :plain-group
                       :value [{:name :stack-name
@@ -1457,7 +1450,7 @@
                                         :value "hop-test-dev"}
                                        {:name :optional-services
                                         :type :multiple-choice-group
-                                        :value [:cognito :s3]
+                                        :value []
                                         :choices [{:name :cognito
                                                    :type :plain-group
                                                    :value []}
@@ -1490,7 +1483,7 @@
                                                  :value "t3.micro"}]}
                                        {:name :optional-services
                                         :type :multiple-choice-group
-                                        :value [:rds :cognito :s3]
+                                        :value []
                                         :choices [{:name :cognito
                                                    :type :plain-group
                                                    :value []}
@@ -1552,7 +1545,7 @@
                                                  :value "t3.micro"}]}
                                        {:name :optional-services
                                         :type :multiple-choice-group
-                                        :value [:rds :cognito :s3]
+                                        :value []
                                         :choices [{:name :cognito
                                                    :type :plain-group
                                                    :value []}
