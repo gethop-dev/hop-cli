@@ -165,7 +165,9 @@
      (let [p1 (bp.util/settings-kw->settings-path k1)
            p2 (bp.util/settings-kw->settings-path k2)
            v (get-in m p1)]
-       (assoc-in r p2 v)))
+       (if-not (nil? v)
+         (assoc-in r p2 v)
+         r)))
    {}
    mapping))
 
