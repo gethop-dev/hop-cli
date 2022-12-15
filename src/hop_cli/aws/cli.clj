@@ -114,7 +114,7 @@
     :spec {}}
 
    ;; Cognito
-   {:cmds ["cognito" "admin-create-user"]
+   {:cmds ["cognito" "create-user"]
     :fn cognito-create-user-handler
     :error-fn error/generic-error-handler
     :desc "Create a user in the specified Cognito identity pool"
@@ -130,7 +130,7 @@
            :temporary-password
            {:alias :p}}}
 
-   {:cmds ["cognito" "admin-set-user-password"]
+   {:cmds ["cognito" "set-user-password"]
     :fn (partial generic-handler-wrapper cognito/admin-set-user-password)
     :error-fn error/generic-error-handler
     :desc "Change the password of the user"
