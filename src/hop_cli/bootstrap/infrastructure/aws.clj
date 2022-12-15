@@ -2,6 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.walk :as walk]
             [hop-cli.aws.api.ssm :as api.ssm]
+            [hop-cli.aws.api.sts :as api.sts]
             [hop-cli.aws.cloudformation :as aws.cloudformation]
             [hop-cli.aws.iam :as aws.iam]
             [hop-cli.aws.ssl :as aws.ssl]
@@ -244,21 +245,38 @@
   (let [environments (set (bp.util/get-settings-value settings :project/environments))]
     (->
      [{:txn-fn
-       (fn upload-cloudformation-templates
+       (fn get-aws-account-identity
          [_]
-         (let [bucket-name (bp.util/get-settings-value settings :cloud-provider.aws.cloudformation/template-bucket-name)
+         (let [{:keys [success? caller-identity] :as result}
+               (api.sts/get-caller-identity)]
+           (if success?
+             {:success? true
+              :settings (bp.util/assoc-in-settings-value settings
+                                                         :cloud-provider.aws.account/id
+                                                         caller-identity)}
+             {:success? false
+              :reason :failed-to-get-aws-account-id
+              :error-details result})))}
+      {:txn-fn
+       (fn upload-cloudformation-templates
+         [{:keys [settings]}]
+         (let [account-id (bp.util/get-settings-value settings :cloud-provider.aws.account/id)
+               bucket-name (str "cloudformation-templates-" account-id)
                opts {:bucket-name bucket-name
                      :directory-path cfn-templates-path}
                _log (println (format "Uploading cloudformation templates to %s bucket..." bucket-name))
                result (aws.cloudformation/update-templates opts)]
            (if (:success? result)
-             {:success? true}
+             {:success? true
+              :settings (bp.util/assoc-in-settings-value settings
+                                                         :cloud-provider.aws.cloudformation/template-bucket-name
+                                                         bucket-name)}
              {:success? false
               :reason :could-not-upload-cfn-templates
               :error-details result})))}
       {:txn-fn
        (fn provision-account
-         [_]
+         [{:keys [settings]}]
          (let [result (get-or-provision-cfn-stack settings (:account cfn-templates))]
            (if-not (:success? result)
              {:success? false
