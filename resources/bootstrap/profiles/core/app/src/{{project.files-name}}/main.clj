@@ -12,7 +12,7 @@
 (defn -main [& args]
   (let [keys     (or (duct/parse-keys args) [:duct/daemon])
         profiles [:duct.profile/prod]]
-    (-> (duct/resource "<<project.name>>/config.edn")
+    (-> (duct/resource "<<project.files-name>>/config.edn")
         (duct/read-config)
         (duct/exec-config profiles keys))
     (System/exit 0)))

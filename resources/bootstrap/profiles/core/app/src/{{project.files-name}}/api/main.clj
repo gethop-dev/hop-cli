@@ -83,5 +83,5 @@
                                            :validatorUrl nil
                                            :apisSorter "alpha"
                                            :operationsSorter "alpha"})
-    (reitit.ring/create-resource-handler {:path "/" :root "<<project.name>>/public"})
+    (reitit.ring/create-resource-handler {:path "/" :root "<<project.files-name>>/public"})
     (reitit.ring/create-default-handler))))

@@ -14,8 +14,8 @@
                  [metosin/malli "0.9.2"]
                  {{#project.dependencies}}{{&.}}{{/project.dependencies}}]
   :plugins [[duct/lein-duct "0.12.3"]]
-  :main ^:skip-aot {{#lambdas.to-snake-case}}{{project.name}}{{/lambdas.to-snake-case}}.main
-  :resource-paths ["resources" "target/resources" "target/resources/{{#lambdas.to-snake-case}}{{project.name}}{{/lambdas.to-snake-case}}"]
+  :main ^:skip-aot {{project.files-name}}.main
+  :resource-paths ["resources" "target/resources" "target/resources/{{project.files-name}}"]
   :middleware [lein-duct.plugin/middleware]
   :profiles {:dev [:project/dev :profiles/dev]
              :repl {:prep-tasks ^:replace ["javac" "compile"]

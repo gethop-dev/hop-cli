@@ -11,4 +11,4 @@
   ["/"
    {:get {:no-doc true
           :handler (fn [_]
-                     (r/resource-response "<<project.name>>/index.html"))}}])
+                     (r/resource-response "<<project.files-name>>/index.html"))}}])

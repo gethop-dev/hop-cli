@@ -2,6 +2,7 @@
   (:require [babashka.fs :as fs]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [clojure.string :as str]
             [clojure.walk :as walk]
             [hop-cli.bootstrap.util :as bp.util]
             [hop-cli.util :as util]
@@ -232,6 +233,12 @@
     (assoc node :value (util.random/generate-random-password value))
     node))
 
+(defn- inject-project-files-name
+  [settings]
+  (let [project-name (bp.util/get-settings-value settings :project/name)
+        project-files-name (str/replace project-name #"\-" "_")]
+    (bp.util/assoc-in-settings-value settings :project/files-name project-files-name)))
+
 (defn- build-refs
   [{:keys [type value] :as node}]
   (if (= :ref type)
@@ -249,6 +256,7 @@
       {:success? true
        :settings (->> settings
                       (walk/prewalk (comp build-refs inject-auto-generated-passwords))
-                      (settings->settings-nested-map))}
+                      (settings->settings-nested-map)
+                      (inject-project-files-name))}
       {:success? false
        :error-details (me/humanize (m/explain settings-schema settings))})))
