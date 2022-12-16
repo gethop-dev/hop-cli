@@ -112,7 +112,9 @@
                                       (renderer)
                                       (format-file-content path)))]
             (util.file/update-file-content! path update-file-fn)
-            (util.file/update-file-name! path renderer)))
+            (util.file/update-file-name! path renderer)
+            (when (= "sh" (fs/extension path))
+              (fs/set-posix-file-permissions path "rwxr-xr-x"))))
         :continue)
       :post-visit-dir
       (fn [path _]
