@@ -25,9 +25,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install kislyuk/yq
-        run: pip install --no-cache-dir yq==2.14.0
-
       - name: Bob checks
         run: |
           docker run --rm \
