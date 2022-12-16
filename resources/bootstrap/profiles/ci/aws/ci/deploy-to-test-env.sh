@@ -20,37 +20,41 @@ export COMPOSE_FILE="{{project.docker-compose.to-deploy}}"
 #shellcheck disable=SC2016
 docker-compose config --no-interpolate |
     yq '.services[].environment?
-                  |=
-                  (
-                      with(select(. == null);
-                          . = []
-                      )
-                      |
-                      . as $all_env_vars
-                      |
-                      (
-                          $all_env_vars | to_entries
-                          |
-                          map(
-                             select((.value != null) and (.value | contains("${")))
-                             |
-                             .key + "=" + .value
-                          )
-                      )
-                      *+
-                      (
-                          $all_env_vars | to_entries
-                          |
-                          map(
-                             select((.value != null) and (.value | contains("${") | not))
-                             |
-                             .key
-                          )
-                      )
-                      |
-                      sort
-                  )' \
-        >"${DOCKER_COMPOSE_TMPDIR}/docker-compose.yml"
+        |=
+        (
+            with(select(. == null);
+                . = []
+            )
+            |
+            . as $all_env_vars
+            |
+            (
+                $all_env_vars
+                |
+                to_entries
+                |
+                map(
+                    select(  (.value != null) and (.value | contains("$")))
+                    |
+                    .key + "=" + .value
+                )
+                +
+                (
+                    $all_env_vars
+                    |
+                    to_entries
+                    |
+                    map(
+                        select((.value != null) and (.value | contains("$") | not))
+                        |
+                        .key
+                    )
+                )
+            )
+            |
+            sort
+        )' \
+            >"${DOCKER_COMPOSE_TMPDIR}/docker-compose.yml"
 sed -i \
     -e "s|${DOCKER_IMAGE_REPOSITORY}:latest|${DOCKER_IMAGE_REPOSITORY}:${TAG}|g" \
     -e "s|${CURR_DIR}|/var/app/current|g" \
