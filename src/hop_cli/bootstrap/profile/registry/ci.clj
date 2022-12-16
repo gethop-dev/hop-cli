@@ -9,5 +9,5 @@
             (conj {:src "ci/bitbucket-pipelines"})
             (bp.util/get-settings-value settings :project.profiles.ci.provider.github-actions/enabled)
             (conj {:src "ci/github-actions"})
-            (bp.util/get-settings-value settings :project.profiles.ci.continuous-deployment.aws/enabled)
+            (bp.util/get-settings-value settings :project.profiles.ci.continuous-deployment.provider.aws/enabled)
             (conj {:src "ci/aws/ci" :dst "ci/aws"}))})

@@ -112,30 +112,32 @@
                                           :type :plain-group
                                           :value []}]}
                               {:name :continuous-deployment
-                               :type :single-choice-group
-                               :value :aws
-                               :choices [{:name :aws
-                                          :type :plain-group
-                                          :value [{:name :eb-application-name
-                                                   :type :ref
-                                                   :value :cloud-provider.aws.project.eb/application-name}
-                                                  {:name :git
+                               :type :plain-group
+                               :value [{:name :provider
+                                        :type :single-choice-group
+                                        :value :aws
+                                        :choices [{:name :aws
                                                    :type :plain-group
-                                                   :value [{:name :deployment-branch
-                                                            :type :string
-                                                            :value "master"}]}
-                                                  {:name :environment
-                                                   :type :plain-group
-                                                   :value [{:name :test
+                                                   :value [{:name :eb-application-name
+                                                            :type :ref
+                                                            :value :cloud-provider.aws.project.eb/application-name}
+                                                           {:name :git
                                                             :type :plain-group
-                                                            :value [{:name :eb-env-name
-                                                                     :type :ref
-                                                                     :value :cloud-provider.aws.environment.test.eb/environment-name}]}
-                                                           {:name :prod
+                                                            :value [{:name :deployment-branch
+                                                                     :type :string
+                                                                     :value "master"}]}
+                                                           {:name :environment
                                                             :type :plain-group
-                                                            :value [{:name :eb-env-name
-                                                                     :type :ref
-                                                                     :value :cloud-provider.aws.environment.prod.eb/environment-name}]}]}]}]}]}
+                                                            :value [{:name :test
+                                                                     :type :plain-group
+                                                                     :value [{:name :eb-env-name
+                                                                              :type :ref
+                                                                              :value :cloud-provider.aws.environment.test.eb/environment-name}]}
+                                                                    {:name :prod
+                                                                     :type :plain-group
+                                                                     :value [{:name :eb-env-name
+                                                                              :type :ref
+                                                                              :value :cloud-provider.aws.environment.prod.eb/environment-name}]}]}]}]}]}]}
                      {:name :observability-runtime-configurable-logging
                       :type :plain-group
                       :value []}

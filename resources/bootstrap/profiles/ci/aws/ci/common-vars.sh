@@ -30,9 +30,9 @@ EB_SOURCE_BUNDLE_FILES=({{#project.deploy-files}}{{&.}}{{/project.deploy-files}}
 EB_SOURCE_BUNDLE_NAME="${TAG}.zip"
 
 # Name of the Beanstalk application for the builds
-EB_APPLICATION_NAME="{{project.profiles.ci.continuous-deployment.aws.eb-application-name}}"
+EB_APPLICATION_NAME="{{project.profiles.ci.continuous-deployment.provider.aws.eb-application-name}}"
 
 # Name of the Beanstalk environment where we deploy the builds to
-EB_TEST_ENV_NAME="{{project.profiles.ci.continuous-deployment.aws.environment.test.eb-env-name}}"
+EB_TEST_ENV_NAME="{{project.profiles.ci.continuous-deployment.provider.aws.environment.test.eb-env-name}}"
 
-EB_PROD_ENV_NAME="{{project.profiles.ci.continuous-deployment.aws.environment.prod.eb-env-name}}"
+EB_PROD_ENV_NAME="{{project.profiles.ci.continuous-deployment.provider.aws.environment.prod.eb-env-name}}"
