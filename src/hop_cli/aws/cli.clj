@@ -1,7 +1,6 @@
 (ns hop-cli.aws.cli
   (:require [babashka.cli :as cli]
             [clojure.pprint :refer [pprint]]
-            [hop-cli.aws.cloudformation :as cloudformation]
             [hop-cli.aws.cognito :as cognito]
             [hop-cli.aws.env-vars :as env-vars]
             [hop-cli.aws.ssl :as ssl]
@@ -12,11 +11,6 @@
 (defn- generic-handler-wrapper
   [handler-fn {:keys [opts]}]
   (pprint (handler-fn opts)))
-
-(defn- cf-create-stack-handler
-  [{:keys [opts]}]
-  (let [parsed-opts (update opts :parameters util/cli-stdin-map->map)]
-    (pprint (cloudformation/create-stack parsed-opts))))
 
 (defn- cognito-create-user-handler
   [{:keys [opts]}]
@@ -64,47 +58,6 @@
            {:alias :p :require true}
            :environment
            {:alias :e :require true}}}
-
-   ;; Cloudformation
-   {:cmds ["cloudformation" "update-templates"]
-    :fn (partial generic-handler-wrapper cloudformation/update-templates)
-    :error-fn error/generic-error-handler
-    :desc "Updates CF templates in the specified bucket. If the bucket doesn't exist it is created"
-    :spec {:directory-path
-           {:alias :d :require true
-            :desc "Path to cloudformation templates directory"}}}
-
-   {:cmds ["cloudformation" "create-stack"]
-    :fn cf-create-stack-handler
-    :error-fn error/generic-error-handler
-    :desc "Creates a Cloudformation stack"
-    :spec {:project-name
-           {:alias :p :require true}
-           :environment
-           {:alias :e :require true}
-           :stack-name
-           {:alias :s
-            :require true}
-           :s3-bucket-name
-           {:alias :b
-            :desc "S3 Bucket name where Cloudformation templates are stored."
-            :require true}
-           :master-template
-           {:alias :m
-            :desc "Master template filename."
-            :require true}
-           :parameters
-           {:alias :pa
-            :coerce []
-            :desc "Stack parameters."}
-           :dependee-stack-names
-           {:alias :ds
-            :coerce []
-            :desc "The stack names that the new stack depends on."}
-           :capability
-           {:alias :c
-            :coerce :keyword
-            :desc "Stack capability."}}}
 
    ;; SSL manager
    {:cmds ["ssl" "create-and-upload-self-signed-certificate"]
