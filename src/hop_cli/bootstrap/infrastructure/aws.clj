@@ -3,7 +3,8 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.bootstrap.infrastructure.aws
-  (:require [clojure.java.io :as io]
+  (:require [babashka.fs :as fs]
+            [clojure.java.io :as io]
             [clojure.walk :as walk]
             [hop-cli.aws.api.ssm :as api.ssm]
             [hop-cli.aws.api.sts :as api.sts]
@@ -12,11 +13,12 @@
             [hop-cli.aws.ssl :as aws.ssl]
             [hop-cli.bootstrap.infrastructure :as infrastructure]
             [hop-cli.bootstrap.util :as bp.util]
+            [hop-cli.util.file :as util.file]
             [hop-cli.util.thread-transactions :as tht]
             [meta-merge.core :refer [meta-merge]]))
 
 (def ^:const cfn-templates-path
-  (io/resource "infrastructure/cloudformation-templates"))
+  "infrastructure/cloudformation-templates")
 
 (def cfn-templates
   {:account {:master-template "account.yaml"
@@ -244,6 +246,23 @@
          :settings updated-settings})
       (provision-cfn-stack settings template-opts))))
 
+(defn- upload-cloudformation-templates*
+  [settings directory-path]
+  (let [account-id (bp.util/get-settings-value settings :cloud-provider.aws.account/id)
+        bucket-name (str "cloudformation-templates-" account-id)
+        opts {:bucket-name bucket-name
+              :directory-path directory-path}
+        _log (println (format "Uploading cloudformation templates to %s bucket..." bucket-name))
+        result (aws.cloudformation/update-templates opts)]
+    (if (:success? result)
+      {:success? true
+       :settings (bp.util/assoc-in-settings-value settings
+                                                  :cloud-provider.aws.cloudformation/template-bucket-name
+                                                  bucket-name)}
+      {:success? false
+       :reason :could-not-upload-cfn-templates
+       :error-details result})))
+
 (defmethod infrastructure/provision-initial-infrastructure :aws
   [settings]
   (let [environments (set (bp.util/get-settings-value settings :project/environments))]
@@ -264,20 +283,11 @@
       {:txn-fn
        (fn upload-cloudformation-templates
          [{:keys [settings]}]
-         (let [account-id (bp.util/get-settings-value settings :cloud-provider.aws.account/id)
-               bucket-name (str "cloudformation-templates-" account-id)
-               opts {:bucket-name bucket-name
-                     :directory-path cfn-templates-path}
-               _log (println (format "Uploading cloudformation templates to %s bucket..." bucket-name))
-               result (aws.cloudformation/update-templates opts)]
-           (if (:success? result)
-             {:success? true
-              :settings (bp.util/assoc-in-settings-value settings
-                                                         :cloud-provider.aws.cloudformation/template-bucket-name
-                                                         bucket-name)}
-             {:success? false
-              :reason :could-not-upload-cfn-templates
-              :error-details result})))}
+         (if-let [jar-file-path (util.file/get-jar-file-path)]
+           (fs/with-temp-dir [temp-dir {}]
+             (fs/unzip jar-file-path temp-dir)
+             (upload-cloudformation-templates* settings (fs/path temp-dir cfn-templates-path)))
+           (upload-cloudformation-templates* settings (io/resource cfn-templates-path))))}
       {:txn-fn
        (fn provision-account
          [{:keys [settings]}]

@@ -10,6 +10,7 @@
             [hop-cli.bootstrap.profile.template :as profile.template]
             [hop-cli.bootstrap.settings-reader :as settings-reader]
             [hop-cli.bootstrap.util :as bp.util]
+            [hop-cli.util.file :as util.file]
             [meta-merge.core :refer [meta-merge]]))
 
 (defn- build-target-project-path
@@ -18,13 +19,6 @@
   ([settings subpath]
    (let [target-dir (bp.util/get-settings-value settings :project/target-dir)]
      (str (fs/normalize target-dir) fs/file-separator subpath))))
-
-(defn- get-jar-file-path
-  []
-  (->> (io/resource "bootstrap")
-       (.toString)
-       (re-find #"^jar:file:([^!]+)\!")
-       (second)))
 
 (defn- copy-files!*
   [settings bootstrap-path-prefix]
@@ -39,7 +33,7 @@
 #_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn- copy-files!
   [settings]
-  (if-let [jar-file-path (get-jar-file-path)]
+  (if-let [jar-file-path (util.file/get-jar-file-path)]
     (fs/with-temp-dir [temp-dir {}]
       (fs/unzip jar-file-path temp-dir)
       (copy-files!* settings (fs/path temp-dir "bootstrap")))

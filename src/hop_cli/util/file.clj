@@ -3,7 +3,8 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.util.file
-  (:require [babashka.fs :as fs]))
+  (:require [babashka.fs :as fs]
+            [clojure.java.io :as io]))
 
 (defn update-file-content!
   [path update-fn]
@@ -20,3 +21,10 @@
     (when (not= current-name new-name)
       (let [new-path (.resolveSibling path new-name)]
         (fs/move path new-path)))))
+
+(defn get-jar-file-path
+  []
+  (->> (io/resource "bootstrap")
+       (.toString)
+       (re-find #"^jar:file:([^!]+)\!")
+       (second)))
