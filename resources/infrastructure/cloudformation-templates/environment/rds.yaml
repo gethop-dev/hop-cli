@@ -91,7 +91,7 @@ Resources:
       MonitoringRoleArn: !Ref "RDSMonitoringRoleARN"
       AutoMinorVersionUpgrade: true
       PreferredMaintenanceWindow: "Sat:05:00-Sat:05:30"
-      DeletionProtection: false #TODO Set to true once we finish
+      DeletionProtection: true
       Tags:
         - Key: "project-name"
           Value: !Ref "ProjectName"
