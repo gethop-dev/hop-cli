@@ -1,4 +1,4 @@
-name: Lint CloudFormation Templates
+name: CI
 
 on:
   push:
@@ -10,9 +10,8 @@ on:
       - ".gitignore"
 
 jobs:
-  cloudformation-linter:
+  cloudformation-templates:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -24,7 +23,7 @@ jobs:
         run: |
           cfn-lint --version
           cfn-lint resources/infrastructure/cloudformation-templates/**/*.yaml --format=pretty
-  cli:
+  clojure-code:
     runs-on: ubuntu-latest
     permissions:
       contents: write
