@@ -127,7 +127,12 @@
                                           :value []}]}
                               {:name :continuous-deployment
                                :type :plain-group
-                               :value [{:name :provider
+                               :value [{:name :git
+                                        :type :plain-group
+                                        :value [{:name :deployment-branch
+                                                 :type :string
+                                                 :value "main"}]}
+                                       {:name :provider
                                         :type :single-choice-group
                                         :value :aws
                                         :choices [{:name :aws
@@ -135,11 +140,6 @@
                                                    :value [{:name :eb-application-name
                                                             :type :ref
                                                             :value :cloud-provider.aws.project.eb/application-name}
-                                                           {:name :git
-                                                            :type :plain-group
-                                                            :value [{:name :deployment-branch
-                                                                     :type :string
-                                                                     :value "main"}]}
                                                            {:name :environment
                                                             :type :plain-group
                                                             :value [{:name :test
