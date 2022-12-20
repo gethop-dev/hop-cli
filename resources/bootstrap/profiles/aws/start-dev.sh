@@ -61,9 +61,9 @@ docker-compose run --no-deps --rm app lein clean
 #shellcheck disable=SC2016
 local_dev_creds=$(aws-vault exec --no-session "${PROFILE_PREFIX}/${LOCAL_USER_NAME}" -- \
     bash -c 'echo "${AWS_ACCESS_KEY_ID},${AWS_SECRET_ACCESS_KEY},${AWS_DEFAULT_REGION}"')
-TEST_AWS_ACCESS_KEY_ID=$(echo "${local_dev_creds}" | cut --delimiter=',' --fields=1)
-TEST_AWS_SECRET_ACCESS_KEY=$(echo "${local_dev_creds}" | cut --delimiter=',' --fields=2)
-TEST_AWS_DEFAULT_REGION=$(echo "${local_dev_creds}" | cut --delimiter=',' --fields=3)
+TEST_AWS_ACCESS_KEY_ID=$(echo "${local_dev_creds}" | cut -d ',' -f 1)
+TEST_AWS_SECRET_ACCESS_KEY=$(echo "${local_dev_creds}" | cut -d ',' -f 2)
+TEST_AWS_DEFAULT_REGION=$(echo "${local_dev_creds}" | cut -d ',' -f 3)
 aws-vault exec "${PROFILE_PREFIX}/${PROJECT}-dev-env" --duration 12h -- env \
     TEST_AWS_ACCESS_KEY_ID="${TEST_AWS_ACCESS_KEY_ID}" \
     TEST_AWS_DEFAULT_REGION="${TEST_AWS_DEFAULT_REGION}" \
