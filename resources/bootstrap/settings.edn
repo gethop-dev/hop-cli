@@ -139,7 +139,7 @@
                                                             :type :plain-group
                                                             :value [{:name :deployment-branch
                                                                      :type :string
-                                                                     :value "master"}]}
+                                                                     :value "main"}]}
                                                            {:name :environment
                                                             :type :plain-group
                                                             :value [{:name :test
