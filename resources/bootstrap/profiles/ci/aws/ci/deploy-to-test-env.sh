@@ -54,7 +54,7 @@ docker-compose config --no-interpolate |
             |
             sort
         )' \
-            >"${DOCKER_COMPOSE_TMPDIR}/docker-compose.yml"
+        >"${DOCKER_COMPOSE_TMPDIR}/docker-compose.yml"
 sed -i \
     -e "s|${DOCKER_IMAGE_REPOSITORY}:latest|${DOCKER_IMAGE_REPOSITORY}:${TAG}|g" \
     -e "s|${CURR_DIR}|/var/app/current|g" \
