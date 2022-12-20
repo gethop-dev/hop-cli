@@ -47,7 +47,7 @@ if [[ -n "${VOLUMES}" ]]; then
     #shellcheck disable=SC2086
     docker volume rm ${VOLUMES}
 fi
-docker-compose run --no-deps app lein clean
+docker-compose run --no-deps --rm app lein clean
 
 # Finally launch the application itself, using the development
 # environment user credentials. Also make sure to check that we are

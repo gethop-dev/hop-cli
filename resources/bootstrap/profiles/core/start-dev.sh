@@ -33,7 +33,7 @@ if [[ -n "${VOLUMES}" ]]; then
     #shellcheck disable=SC2086
     docker volume rm ${VOLUMES}
 fi
-docker-compose run --no-deps app lein clean
+docker-compose run --no-deps --rm app lein clean
 
 # Make sure we are not trying to use any environment vars in
 # docker-compose.yml that are not set.
