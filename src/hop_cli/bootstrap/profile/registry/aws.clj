@@ -65,6 +65,6 @@
 
 (defmethod registry/post-render-hook :aws
   [_ settings]
-  {:post-installation-messages {:dev [(build-print-ci-credentials-message settings)
-                                      (build-setup-aws-vault-local-dev-user-instructions settings)
-                                      (build-setup-aws-vault-project-dev-role-instructions settings)]}})
+  {:post-installation-messages {:dev [(build-setup-aws-vault-local-dev-user-instructions settings)
+                                      (build-setup-aws-vault-project-dev-role-instructions settings)
+                                      (build-print-ci-credentials-message settings)]}})
