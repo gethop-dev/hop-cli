@@ -99,7 +99,21 @@
                                                  :value :cloud-provider.aws.account.iam.local-dev-user/secret-access-key}
                                                 {:name :role-arn
                                                  :type :ref
-                                                 :value :cloud-provider.aws.environment.dev.iam.role/arn}]}]}]}
+                                                 :value :cloud-provider.aws.environment.dev.iam.role/arn}]}
+                                       {:name :ci-user
+                                        :type :plain-group
+                                        :value [{:name :name
+                                                 :type :ref
+                                                 :value :cloud-provider.aws.account.iam.ci-user/name}
+                                                {:name :arn
+                                                 :type :ref
+                                                 :value :cloud-provider.aws.account.iam.ci-user/arn}
+                                                {:name :access-key-id
+                                                 :type :ref
+                                                 :value :cloud-provider.aws.account.iam.ci-user/access-key-id}
+                                                {:name :secret-access-key
+                                                 :type :ref
+                                                 :value :cloud-provider.aws.account.iam.ci-user/secret-access-key}]}]}]}
                      {:name :ci
                       :type :plain-group
                       :value [{:name :provider

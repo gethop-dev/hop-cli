@@ -16,7 +16,7 @@
         result (aws/invoke iam-client opts)]
     (if-let [access-key (:AccessKey result)]
       {:success? true
-       :access-key {:id (:AccessKeyId access-key)
-                    :secret (:SecretAccessKey access-key)}}
+       :access-key {:access-key-id (:AccessKeyId access-key)
+                    :secret-access-key (:SecretAccessKey access-key)}}
       {:success? false
        :reason result})))
