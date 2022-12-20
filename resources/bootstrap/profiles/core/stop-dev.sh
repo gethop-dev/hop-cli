@@ -8,4 +8,4 @@ set -eu -o pipefail
 export COMPOSE_FILE="{{project.docker-compose.to-develop}}"
 
 # Stop any containers still running. Don't wait for them to finish :-)
-docker-compose down -t0
+docker-compose down --timeout 0

@@ -12,24 +12,25 @@ export COMPOSE_FILE="{{project.docker-compose.to-develop}}"
 compose_project="$(docker/compose-project-name.sh)"
 
 # Stop any containers still running. Don't wait for them to finish :-)
-docker-compose down -t0
+docker-compose down --timeout 0
 
 # Clean up any left overs from previous runs, to make sure we start
 # with a clean environment (stale Docker containers, stale Clojure
 # code, etc). Make sure we only clean up containers (and their linked
 # volumes) that belong to the project, and leave other containers
 # alone.
-CONTAINERS=$(docker ps -aq --filter "status=exited" --filter "status=dead" \
+CONTAINERS=$(docker ps --all --quiet --filter "status=exited" --filter "status=dead" \
     --filter "status=created" --filter "name=^${compose_project}_")
 if [[ -n "${CONTAINERS}" ]]; then
     echo "Removing exited/dead containers..."
     #shellcheck disable=SC2086
     docker rm -v ${CONTAINERS}
 fi
-VOLUMES=$(docker volume ls -qf dangling=true)
+VOLUMES=$(docker volume ls --quiet \
+    --filter "label=com.docker.compose.project=${compose_project}")
 
 if [[ -n "${VOLUMES}" ]]; then
-    echo "Removing dangling volumes..."
+    echo "Removing existing project volumes..."
     #shellcheck disable=SC2086
     docker volume rm ${VOLUMES}
 fi
@@ -43,4 +44,4 @@ docker-compose run --no-deps --rm app lein clean
 docker-compose up --build --detach --force-recreate --renew-anon-volumes
 
 # And show the logs
-docker-compose logs -ft
+docker-compose logs --follow --timestamps
