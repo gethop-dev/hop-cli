@@ -39,10 +39,11 @@ if [[ -n "${CONTAINERS}" ]]; then
     #shellcheck disable=SC2086
     docker rm -v ${CONTAINERS}
 fi
-VOLUMES=$(docker volume ls -qf dangling=true)
+VOLUMES=$(docker volume ls --quiet \
+    --filter "label=com.docker.compose.project=${compose_project}")
 
 if [[ -n "${VOLUMES}" ]]; then
-    echo "Removing dangling volumes..."
+    echo "Removing existing project volumes..."
     #shellcheck disable=SC2086
     docker volume rm ${VOLUMES}
 fi

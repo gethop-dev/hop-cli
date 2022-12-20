@@ -1,6 +1,8 @@
 services:
   postgres:
     image: postgres:{{project.profiles.persistence-sql.database.version}}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PORT=${DB_PORT}
       - POSTGRES_DB=${DB_NAME}
@@ -19,3 +21,5 @@ services:
       - GF_DATABASE_USER
       - GF_DATABASE_PASSWORD
       - GF_DATABASE_SCHEMA{{/project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.grafana.enabled}}
+volumes:
+  postgres_data:
