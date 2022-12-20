@@ -43,15 +43,13 @@
 
 (defn- build-print-ci-credentials-message
   [settings]
-  (let [ci-user-name (bp.util/get-settings-value settings :project.profiles.aws.credentials.ci-user/name)
-        access-key-id (bp.util/get-settings-value settings :project.profiles.aws.credentials.ci-user/access-key-id)
+  (let [access-key-id (bp.util/get-settings-value settings :project.profiles.aws.credentials.ci-user/access-key-id)
         secret-access-key (bp.util/get-settings-value settings :project.profiles.aws.credentials.ci-user/secret-access-key)]
     (if (and access-key-id secret-access-key)
       (with-out-str
         (println (format "A new AWS user was created for CI purposes. You will need to configure the credentials in your CI provider."))
-        (println (format "Username: %s" ci-user-name))
-        (println (format "Access Key Id: %s" access-key-id))
-        (println (format "Secret Access Key: %s" secret-access-key)))
+        (println (format "AWS_ACCESS_KEY_ID: %s" access-key-id))
+        (println (format "AWS_SECRET_ACCESS_KEY: %s" secret-access-key)))
       (with-out-str
         (println "The account AWS stack was already created, so no new CI AWS user was created.")
         (println "You can reuse the credentials created in previous projects, or create new ones.")))))
