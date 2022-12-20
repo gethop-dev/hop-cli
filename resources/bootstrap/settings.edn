@@ -1406,7 +1406,6 @@
                                                                      :type :string
                                                                      :value ""}]}]}]}]}]}]}]}
  {:name :cloud-provider
-  :tag "AWS infrastructure"
   :type :single-choice-group
   :value :aws
   :choices [{:name :aws
@@ -1463,7 +1462,7 @@
                                :value [{:name :stack-name
                                         :tag "Stack-name"
                                         :type :string
-                                        :value "hop-test-dev"}
+                                        :value "hop-project-dev"}
                                        {:name :optional-services
                                         :type :multiple-choice-group
                                         :value []
@@ -1487,11 +1486,11 @@
                                :value [{:name :stack-name
                                         :tag "Stack-name"
                                         :type :string
-                                        :value "hop-test-test"}
+                                        :value "hop-project-test"}
                                        {:name :notifications-email
                                         :tag "Notifications email"
                                         :type :string
-                                        :value "devops+test@magnet.coop"}
+                                        :value "devops+test@mail.invalid"}
                                        {:name :eb
                                         :type :plain-group
                                         :value [{:name :ec2-instance-type
@@ -1553,7 +1552,7 @@
                                        {:name :notifications-email
                                         :tag "Notifications email"
                                         :type :string
-                                        :value "devops+prod@magnet.coop"}
+                                        :value "devops+prod@mail.invalid"}
                                        {:name :eb
                                         :type :plain-group
                                         :value [{:name :ec2-instance-type
