@@ -3,53 +3,55 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.aws.api.s3
-  (:require [com.grzm.awyeah.client.api :as aws]))
-
-(defonce s3-client
-  (aws/client {:api :s3}))
+  (:require [com.grzm.awyeah.client.api :as aws]
+            [hop-cli.aws.api.client :as aws.client]))
 
 (defn head-bucket
-  [_config {:keys [bucket-name]}]
-  (let [request {:Bucket bucket-name}
-        opts {:op :HeadBucket
+  [{:keys [bucket-name] :as opts}]
+  (let [s3-client (aws.client/gen-client :s3 opts)
+        request {:Bucket bucket-name}
+        args {:op :HeadBucket
               :request request}
-        result (aws/invoke s3-client opts)]
+        result (aws/invoke s3-client args)]
     (if (= {} result)
       {:success? true}
       {:success? false
        :error-details result})))
 
 (defn create-bucket
-  [{:keys [region]} {:keys [bucket-name]}]
-  (let [request {:Bucket bucket-name
+  [{:keys [bucket-name region] :as opts}]
+  (let [s3-client (aws.client/gen-client :s3 opts)
+        request {:Bucket bucket-name
                  :CreateBucketConfiguration {:LocationConstraint region}}
-        opts {:op :CreateBucket
+        args {:op :CreateBucket
               :request request}
-        result (aws/invoke s3-client opts)]
+        result (aws/invoke s3-client args)]
     (if (:Error result)
       {:success? false
        :error-details result}
       {:success? true})))
 
 (defn delete-bucket
-  [_config bucket-name]
-  (let [request {:Bucket bucket-name}
-        opts {:op :DeleteBucket
+  [{:keys [bucket-name] :as opts}]
+  (let [s3-client (aws.client/gen-client :s3 opts)
+        request {:Bucket bucket-name}
+        args {:op :DeleteBucket
               :request request}
-        result (aws/invoke s3-client opts)]
+        result (aws/invoke s3-client args)]
     (if (:Error result)
       {:success? false
        :error-details result}
       {:success? true})))
 
 (defn put-object
-  [_config {:keys [bucket-name key body]}]
-  (let [request {:Bucket bucket-name
+  [{:keys [bucket-name key body] :as opts}]
+  (let [s3-client (aws.client/gen-client :s3 opts)
+        request {:Bucket bucket-name
                  :Key key
                  :Body body}
-        opts {:op :PutObject
+        args {:op :PutObject
               :request request}
-        result (aws/invoke s3-client opts)]
+        result (aws/invoke s3-client args)]
     (if (:category result)
       {:success? false
        :error-details {:result result}}

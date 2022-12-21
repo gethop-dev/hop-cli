@@ -4,9 +4,8 @@
 
 (ns hop-cli.aws.api.cloudformation
   (:require [clojure.set :as set]
-            [com.grzm.awyeah.client.api :as aws]))
-
-(def cf-client (aws/client {:api :cloudformation}))
+            [com.grzm.awyeah.client.api :as aws]
+            [hop-cli.aws.api.client :as aws.client]))
 
 (defn- parameters->api-parameters
   [parameters]
@@ -47,11 +46,12 @@
       (update :status keyword)))
 
 (defn describe-stack
-  [{:keys [stack-name]}]
-  (let [request {:StackName stack-name}
-        opts {:op :DescribeStacks
+  [{:keys [stack-name] :as opts}]
+  (let [cf-client (aws.client/gen-client :cloudformation opts)
+        request {:StackName stack-name}
+        args {:op :DescribeStacks
               :request request}
-        result (aws/invoke cf-client opts)]
+        result (aws/invoke cf-client args)]
     (if (:cognitect.anomalies/category result)
       {:success? false
        :error-details result}
@@ -60,8 +60,9 @@
          :stack (api-stack->stack api-stack)}))))
 
 (defn create-stack
-  [{:keys [project-name environment stack-name parameters capability s3-bucket-name master-template]}]
-  (let [request {:StackName stack-name
+  [{:keys [project-name environment stack-name parameters capability s3-bucket-name master-template] :as opts}]
+  (let [cf-client (aws.client/gen-client :cloudformation opts)
+        request {:StackName stack-name
                  :Parameters (parameters->api-parameters parameters)
                  :Capabilities (capability->api-capabilities capability)
                  :Tags (cond-> []
@@ -70,9 +71,9 @@
                          (seq environment)
                          (conj {:Key "environment" :Value environment}))
                  :TemplateURL (get-template-url s3-bucket-name master-template)}
-        opts {:op :CreateStack
+        args {:op :CreateStack
               :request request}
-        result (aws/invoke cf-client opts)]
+        result (aws/invoke cf-client args)]
     (if (:cognitect.anomalies/category result)
       {:success? false
        :error-details result}
@@ -90,12 +91,13 @@
     Parameters)})
 
 (defn get-template-summary
-  [{:keys [s3-bucket-name master-template]}]
-  (let [template-url (get-template-url s3-bucket-name master-template)
+  [{:keys [s3-bucket-name master-template] :as opts}]
+  (let [cf-client (aws.client/gen-client :cloudformation opts)
+        template-url (get-template-url s3-bucket-name master-template)
         request {:TemplateURL template-url}
-        opts {:op :GetTemplateSummary
+        args {:op :GetTemplateSummary
               :request request}
-        result (aws/invoke cf-client opts)]
+        result (aws/invoke cf-client args)]
     (if (:cognitect.anomalies/category result)
       {:success? false
        :error-details result}

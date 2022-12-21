@@ -40,50 +40,48 @@
    (str/ends-with? (fs/file-name file) cloudformation-template-ext)))
 
 (defn upload-files
-  [{:keys [directory-path] :as config} {:keys [bucket-name]}]
+  [{:keys [directory-path bucket-name region]}]
   (let [directory-file (fs/file directory-path)
         files (->> directory-file
                    file-seq
                    (filter template-file?))]
     (keep (fn [file]
-            (api.s3/put-object config {:bucket-name bucket-name
-                                       :key (compose-file-key file (str directory-file))
-                                       :body (io/input-stream file)}))
+            (api.s3/put-object {:region region
+                                :bucket-name bucket-name
+                                :key (compose-file-key file (str directory-file))
+                                :body (io/input-stream file)}))
           files)))
 
 (defn bucket-exists?
-  [config bucket-name]
-  (:success? (api.s3/head-bucket config {:bucket-name bucket-name})))
+  [opts]
+  (:success? (api.s3/head-bucket opts)))
 
 (defn update-templates
-  [{:keys [bucket-name] :as config}]
+  [opts]
   (->
    [{:txn-fn
      (fn txn-1-create-bucket
        [_]
-       (if (bucket-exists? config bucket-name)
-         {:success? true
-          :bucket-name bucket-name}
-         (let [result (api.s3/create-bucket config {:bucket-name bucket-name})]
+       (if (bucket-exists? opts)
+         {:success? true}
+         (let [result (api.s3/create-bucket opts)]
            (if-not (:success? result)
              result
-             {:success? true
-              :bucket-name bucket-name}))))
+             {:success? true}))))
      :rollback-fn
-      ;;FIXME This will fail if bucket is not empty. We need a strategy for it.
+     ;;FIXME This will fail if bucket is not empty. We need a strategy for it.
      (fn rollback-fn-1-delete-bucket
-       [{:keys [bucket-name] :as prev-result}]
-       (let [result (api.s3/delete-bucket config bucket-name)]
+       [prev-result]
+       (let [result (api.s3/delete-bucket opts)]
          (when-not (:success? result)
            (println "An error has occurred when deleting a bucket."))
-         (dissoc prev-result :bucket-name)))}
+         prev-result))}
     {:txn-fn
      (fn txn-2-upload-files
-       [{:keys [bucket-name]}]
-       (let [results (upload-files config {:bucket-name bucket-name})]
+       [_]
+       (let [results (upload-files opts)]
          (if-not (every? :success? results)
            {:success? false
-            :bucket-name bucket-name
             :error-details results}
            {:success? true})))}]
    (tht/thread-transactions {})))
@@ -131,9 +129,9 @@
       result)))
 
 (defn- get-dependee-outputs
-  [{:keys [dependee-stack-names]}]
+  [{:keys [dependee-stack-names] :as opts}]
   (let [describe-stack-results
-        (map #(api.cf/describe-stack {:stack-name %}) dependee-stack-names)]
+        (map #(api.cf/describe-stack (merge opts {:stack-name %})) dependee-stack-names)]
     (if-not (every? :success? describe-stack-results)
       {:success? false
        :error-details (remove :success? describe-stack-results)}

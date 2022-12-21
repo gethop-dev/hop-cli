@@ -146,9 +146,9 @@
                :CloudwatchLogGroupName :cloud-provider.aws.environment.prod.optional-services.cloudwatch/log-group-name}}})
 
 (defn wait-for-stack-completion
-  [stack-name]
+  [{:keys [stack-name] :as opts}]
   (loop []
-    (let [result (aws.cloudformation/describe-stack {:stack-name stack-name})
+    (let [result (aws.cloudformation/describe-stack opts)
           status (get-in result [:stack :status])]
       (cond
         (= status :CREATE_IN_PROGRESS)
@@ -207,16 +207,18 @@
   (let [stack-name (bp.util/get-settings-value settings stack-name-kw)
         project-name (bp.util/get-settings-value settings :project/name)
         bucket-name (bp.util/get-settings-value settings :cloud-provider.aws.cloudformation/template-bucket-name)
+        region (bp.util/get-settings-value settings :cloud-provider.aws.account/region)
         parameters (select-and-rename-keys settings input-parameter-mapping)
         opts (assoc template-opts
                     :project-name project-name
                     :parameters parameters
                     :stack-name stack-name
-                    :s3-bucket-name bucket-name)
+                    :s3-bucket-name bucket-name
+                    :region region)
         _log (println (format "Provisioning cloudformation %s stack..." stack-name))
         result (aws.cloudformation/create-stack opts)]
     (if (:success? result)
-      (let [wait-result (wait-for-stack-completion stack-name)]
+      (let [wait-result (wait-for-stack-completion opts)]
         (if-not (:success? wait-result)
           wait-result
           (let [outputs (:outputs wait-result)
@@ -236,7 +238,9 @@
 (defn- get-or-provision-cfn-stack
   [settings {:keys [stack-name-kw output-parameter-mapping] :as template-opts}]
   (let [stack-name (bp.util/get-settings-value settings stack-name-kw)
-        result (aws.cloudformation/describe-stack {:stack-name stack-name})]
+        region (bp.util/get-settings-value settings :cloud-provider.aws.account/region)
+        result (aws.cloudformation/describe-stack {:stack-name stack-name
+                                                   :region region})]
     (if (and (:success? result) (:stack result))
       (let [outputs (get-in result [:stack :outputs])
             new-settings (select-and-rename-keys outputs output-parameter-mapping)
@@ -249,9 +253,11 @@
 (defn- upload-cloudformation-templates*
   [settings directory-path]
   (let [account-id (bp.util/get-settings-value settings :cloud-provider.aws.account/id)
-        bucket-name (str "cloudformation-templates-" account-id)
+        region (bp.util/get-settings-value settings :cloud-provider.aws.account/region)
+        bucket-name (str "cloudformation-templates-" region "-" account-id)
         opts {:bucket-name bucket-name
-              :directory-path directory-path}
+              :directory-path directory-path
+              :region region}
         _log (println (format "Uploading cloudformation templates to %s bucket..." bucket-name))
         result (aws.cloudformation/update-templates opts)]
     (if (:success? result)
@@ -265,13 +271,14 @@
 
 (defmethod infrastructure/provision-initial-infrastructure :aws
   [settings]
-  (let [environments (set (bp.util/get-settings-value settings :project/environments))]
+  (let [environments (set (bp.util/get-settings-value settings :project/environments))
+        region (bp.util/get-settings-value settings :cloud-provider.aws.account/region)]
     (->
      [{:txn-fn
        (fn get-aws-account-identity
          [_]
          (let [{:keys [success? caller-identity] :as result}
-               (api.sts/get-caller-identity)]
+               (api.sts/get-caller-identity {:region region})]
            (if success?
              {:success? true
               :settings (bp.util/assoc-in-settings-value settings
@@ -306,7 +313,7 @@
              {:success? true
               :settings settings})
            (let [_log (println "Creating and uploading self-signed certificate...")
-                 result (aws.ssl/create-and-upload-self-signed-certificate {})]
+                 result (aws.ssl/create-and-upload-self-signed-certificate {:region region})]
              (if (:success? result)
                (let [certificate-arn (:certificate-arn result)
                      updated-settings
@@ -370,7 +377,9 @@
                 :project-name
                 (bp.util/get-settings-value settings :project/name)
                 :kms-key-alias
-                (bp.util/get-settings-value settings [:aws :environment environment :kms :key-alias])}
+                (bp.util/get-settings-value settings [:aws :environment environment :kms :key-alias])
+                :region
+                (bp.util/get-settings-value settings :cloud-provider.aws.account/region)}
         ssm-env-vars (->> (bp.util/get-settings-value settings :project/environment-variables)
                           environment
                           walk/stringify-keys

@@ -3,17 +3,16 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.aws.api.iam
-  (:require [com.grzm.awyeah.client.api :as aws]))
-
-(defonce iam-client
-  (aws/client {:api :iam}))
+  (:require [com.grzm.awyeah.client.api :as aws]
+            [hop-cli.aws.api.client :as aws.client]))
 
 (defn create-access-key
-  [{:keys [username]}]
-  (let [request {:UserName username}
-        opts {:op :CreateAccessKey
+  [{:keys [username] :as opts}]
+  (let [iam-client (aws.client/gen-client :iam opts)
+        request {:UserName username}
+        args {:op :CreateAccessKey
               :request request}
-        result (aws/invoke iam-client opts)]
+        result (aws/invoke iam-client args)]
     (if-let [access-key (:AccessKey result)]
       {:success? true
        :access-key {:access-key-id (:AccessKeyId access-key)

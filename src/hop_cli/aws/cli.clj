@@ -38,7 +38,10 @@
            {:alias :f :require true}
            :kms-key-alias
            {:alias :k :require true
-            :desc "Alias or name of the KMS key"}}}
+            :desc "Alias or name of the KMS key"}
+           :region
+           {:alias :r :require false
+            :desc "Region"}}}
 
    {:cmds ["env-vars" "download"]
     :fn (partial generic-handler-wrapper env-vars/download-env-vars)
@@ -52,7 +55,10 @@
            {:alias :f :require true}
            :kms-key-alias
            {:alias :k :require true
-            :desc "Alias or name of the KMS key"}}}
+            :desc "Alias or name of the KMS key"}
+           :region
+           {:alias :r :require false
+            :desc "Region"}}}
 
    {:cmds ["env-vars" "apply-changes"]
     :fn (partial generic-handler-wrapper env-vars/apply-env-var-changes)
@@ -61,14 +67,19 @@
     :spec {:project-name
            {:alias :p :require true}
            :environment
-           {:alias :e :require true}}}
+           {:alias :e :require true}
+           :region
+           {:alias :r :require false
+            :desc "Region"}}}
 
    ;; SSL manager
    {:cmds ["ssl" "create-and-upload-self-signed-certificate"]
     :fn (partial generic-handler-wrapper ssl/create-and-upload-self-signed-certificate)
     :error-fn error/generic-error-handler
     :desc "Creates an uploads a SSL self-signed certificate to ACM"
-    :spec {}}
+    :spec {:region
+           {:alias :r :require false
+            :desc "Region"}}}
 
    ;; Cognito
    {:cmds ["cognito" "create-user"]
@@ -85,7 +96,10 @@
             :coerce []
             :desc "Attributes in the form of param1=value1 param2=value2..."}
            :temporary-password
-           {:alias :p}}}
+           {:alias :p}
+           :region
+           {:alias :r :require false
+            :desc "Region"}}}
 
    {:cmds ["cognito" "set-user-password"]
     :fn (partial generic-handler-wrapper cognito/admin-set-user-password)
@@ -99,7 +113,10 @@
            :password
            {:alias :p :require true}
            :temporary?
-           {:alias :t}}}
+           {:alias :t}
+           :region
+           {:alias :r :require false
+            :desc "Region"}}}
 
    {:cmds ["cognito" "get-id-token"]
     :fn (partial generic-handler-wrapper cognito/get-id-token)
@@ -113,7 +130,10 @@
            {:alias :u :require true
             :desc "Username or email"}
            :password
-           {:alias :p :require true}}}
+           {:alias :p :require true}
+           :region
+           {:alias :r :require false
+            :desc "Region"}}}
 
    ;; Help
    {:cmds []

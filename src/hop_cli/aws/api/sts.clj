@@ -3,14 +3,13 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.aws.api.sts
-  (:require [com.grzm.awyeah.client.api :as aws]))
-
-(defonce sts-client
-  (aws/client {:api :sts}))
+  (:require [com.grzm.awyeah.client.api :as aws]
+            [hop-cli.aws.api.client :as aws.client]))
 
 (defn get-caller-identity
-  []
-  (let [request {:op :GetCallerIdentity
+  [opts]
+  (let [sts-client (aws.client/gen-client :sts opts)
+        request {:op :GetCallerIdentity
                  :request {}}
         result (aws/invoke sts-client request)]
     (if (:category result)

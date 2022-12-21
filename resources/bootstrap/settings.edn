@@ -76,7 +76,11 @@
                                                  :value 4096}]}]}]}
                      {:name :aws
                       :type :plain-group
-                      :value [{:name :aws-vault
+                      :value [{:name :region
+                               :tag "Region"
+                               :type :ref
+                               :value :cloud-provider.aws.account/region}
+                              {:name :aws-vault
                                :type :plain-group
                                :value [{:name :profile-prefix
                                         :type :string
@@ -1414,7 +1418,11 @@
              :value [{:name :account
                       :tag "Account"
                       :type :plain-group
-                      :value [{:name :stack-name
+                      :value [{:name :region
+                               :tag "Region"
+                               :type :string
+                               :value "eu-west-1"}
+                              {:name :stack-name
                                :tag "Stack-name"
                                :type :string
                                :value "hop-account"}

@@ -135,6 +135,6 @@
         {:success? (boolean result)}))))
 
 (defn apply-env-var-changes
-  [config]
-  (api.eb/update-env-variable config {:name last-ssm-script-update-env-var
-                                      :value (.toString (Date.))}))
+  [opts]
+  (api.eb/update-env-variable (merge opts {:name last-ssm-script-update-env-var
+                                           :value (.toString (Date.))})))

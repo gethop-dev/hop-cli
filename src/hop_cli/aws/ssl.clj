@@ -24,16 +24,16 @@
       {:success? true})))
 
 (defn create-and-upload-self-signed-certificate
-  [_]
+  [opts]
   (let [key-file (File/createTempFile "hop" ".pem")
         cert-file (File/createTempFile "hop" ".pem")]
     (try
       (let [result (create-self-signed-certificate key-file cert-file)]
         (if-not (:success? result)
           result
-          (let [opts {:certificate (slurp cert-file)
-                      :private-key (slurp key-file)}
-                result (api.acm/import-certificate opts)]
+          (let [result (api.acm/import-certificate
+                        (merge opts {:certificate (slurp cert-file)
+                                     :private-key (slurp key-file)}))]
             (if (:success? result)
               result
               {:success? false

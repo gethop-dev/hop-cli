@@ -5,10 +5,8 @@
 (ns hop-cli.aws.api.ssm
   (:require [clojure.set :as set]
             [clojure.string :as str]
-            [com.grzm.awyeah.client.api :as aws]))
-
-(defonce ssm-client
-  (aws/client {:api :ssm}))
+            [com.grzm.awyeah.client.api :as aws]
+            [hop-cli.aws.api.client :as aws.client]))
 
 (defn- api-name->name
   [api-name]
@@ -31,7 +29,8 @@
 
 (defn put-parameter
   [{:keys [project-name environment kms-key-alias] :as config} opts {:keys [name value]}]
-  (let [request {:Name (name->api-name config name)
+  (let [ssm-client (aws.client/gen-client :ssm config)
+        request {:Name (name->api-name config name)
                  :Value value
                  :Type "SecureString"
                  :Tier "Standard"
@@ -45,9 +44,9 @@
                            :Value environment}])
                   (not (:new? opts))
                   (assoc :Overwrite true))
-        opts {:op :PutParameter
+        args {:op :PutParameter
               :request request}
-        result (aws/invoke ssm-client opts)]
+        result (aws/invoke ssm-client args)]
     (if (:Version result)
       {:success? true}
       {:success? false
@@ -78,15 +77,16 @@
        :error-details (filter (comp not :success?) results)})))
 
 (defn get-parameters
-  [{:keys [project-name environment]}]
+  [{:keys [project-name environment] :as config}]
   (loop [params []
          next-token nil]
-    (let [request {:Path (format "/%s/%s/env-variables" project-name environment)
+    (let [ssm-client (aws.client/gen-client :ssm config)
+          request {:Path (format "/%s/%s/env-variables" project-name environment)
                    :WithDecryption true
                    :NextToken next-token}
-          opts {:op :GetParametersByPath
+          args {:op :GetParametersByPath
                 :request request}
-          result (aws/invoke ssm-client opts)]
+          result (aws/invoke ssm-client args)]
       (if-let [new-params (:Parameters result)]
         (let [all-params (concat params (map api-param->param new-params))]
           (if-let [next-token (:NextToken result)]
@@ -99,22 +99,23 @@
 
 (defn delete-parameters
   [config parameters]
-  (loop [params parameters
-         deleted-params []
-         invalid-params []]
-    (if (empty? params)
-      {:success? true
-       :deleted-params deleted-params
-       :invalid-params invalid-params}
-      (let [params-to-delete (take 10 params)
-            param-names (map #(name->api-name config (:name %)) params-to-delete)
-            request {:Names param-names}
-            opts {:op :DeleteParameters
-                  :request request}
-            result (aws/invoke ssm-client opts)]
-        (if (:category result)
-          {:success? false
-           :error-details {:result result
-                           :deleted-params deleted-params
-                           :invalid-params invalid-params}}
-          (recur (nthnext params 10) (:DeletedParameters result) (:InvalidParameters result)))))))
+  (let [ssm-client (aws.client/gen-client :ssm config)]
+    (loop [params parameters
+           deleted-params []
+           invalid-params []]
+      (if (empty? params)
+        {:success? true
+         :deleted-params deleted-params
+         :invalid-params invalid-params}
+        (let [params-to-delete (take 10 params)
+              param-names (map #(name->api-name config (:name %)) params-to-delete)
+              request {:Names param-names}
+              args {:op :DeleteParameters
+                    :request request}
+              result (aws/invoke ssm-client args)]
+          (if (:category result)
+            {:success? false
+             :error-details {:result result
+                             :deleted-params deleted-params
+                             :invalid-params invalid-params}}
+            (recur (nthnext params 10) (:DeletedParameters result) (:InvalidParameters result))))))))

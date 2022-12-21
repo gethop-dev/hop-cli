@@ -32,24 +32,28 @@
   (let [project-name (bp.util/get-settings-value settings :project/name)
         profile-prefix (bp.util/get-settings-value settings :project.profiles.aws.aws-vault/profile-prefix)
         local-user-name (bp.util/get-settings-value settings :project.profiles.aws.credentials.local-dev-user/name)
-        local-role-arn (bp.util/get-settings-value settings :project.profiles.aws.credentials.local-dev-user/role-arn)]
+        local-role-arn (bp.util/get-settings-value settings :project.profiles.aws.credentials.local-dev-user/role-arn)
+        region (bp.util/get-settings-value settings :project.profiles.aws/region)]
     (with-out-str
       (println (format "Configure the development role used in the %s project" project-name))
       (println "Add the following profile to your aws config file (usually in '~/.aws/config')")
       (println (format "[profile %s/%s-dev-env]" profile-prefix project-name))
       (println (format "source_profile = %s/%s" profile-prefix local-user-name))
       (println (format "role_arn = %s" local-role-arn))
+      (println (format "region = %s" region))
       (println "You may want to share those details with other team members that will work on this project."))))
 
 (defn- build-print-ci-credentials-message
   [settings]
   (let [access-key-id (bp.util/get-settings-value settings :project.profiles.aws.credentials.ci-user/access-key-id)
-        secret-access-key (bp.util/get-settings-value settings :project.profiles.aws.credentials.ci-user/secret-access-key)]
+        secret-access-key (bp.util/get-settings-value settings :project.profiles.aws.credentials.ci-user/secret-access-key)
+        region (bp.util/get-settings-value settings :project.profiles.aws/region)]
     (if (and access-key-id secret-access-key)
       (with-out-str
         (println (format "A new AWS user was created for CI purposes. You will need to configure the credentials in your CI provider."))
         (println (format "AWS_ACCESS_KEY_ID: %s" access-key-id))
-        (println (format "AWS_SECRET_ACCESS_KEY: %s" secret-access-key)))
+        (println (format "AWS_SECRET_ACCESS_KEY: %s" secret-access-key))
+        (println (format "AWS_DEFAULT_REGION: %s" region)))
       (with-out-str
         (println "The account AWS stack was already created, so no new CI AWS user was created.")
         (println "You can reuse the credentials created in previous projects, or create new ones.")))))

@@ -3,18 +3,17 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.aws.api.acm
-  (:require [com.grzm.awyeah.client.api :as aws]))
-
-(defonce acm-client
-  (aws/client {:api :acm}))
+  (:require [com.grzm.awyeah.client.api :as aws]
+            [hop-cli.aws.api.client :as aws.client]))
 
 (defn import-certificate
-  [{:keys [certificate private-key]}]
-  (let [request {:Certificate certificate
+  [{:keys [certificate private-key] :as opts}]
+  (let [acm-client (aws.client/gen-client :acm opts)
+        request {:Certificate certificate
                  :PrivateKey private-key}
-        opts {:op :ImportCertificate
+        args {:op :ImportCertificate
               :request request}
-        result (aws/invoke acm-client opts)]
+        result (aws/invoke acm-client args)]
     (if-let [certificate-arn (:CertificateArn result)]
       {:success? true
        :certificate-arn certificate-arn}
