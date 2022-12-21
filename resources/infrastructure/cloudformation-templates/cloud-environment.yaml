@@ -155,7 +155,7 @@ Resources:
         EbApplicationName: !Ref "EbApplicationName"
         InstanceType: !Ref "EbInstanceType"
         ElbSecurityGroupId: !Ref "ElbSecurityGroupId"
-        EbPlatformARN: !Ref "EbPlatformARN"
+        PlatformARN: !Ref "EbPlatformARN"
         KmsKeyAlias: !GetAtt "KMS.Outputs.KmsKeyAlias"
         InstanceRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
   RdsEbConnection:
