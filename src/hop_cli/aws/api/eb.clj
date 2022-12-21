@@ -20,3 +20,25 @@
       {:success? false
        :error-details result}
       result)))
+
+(defn get-latest-eb-docker-platform-arn
+  [opts]
+  (let [eb-client (aws.client/gen-client :elasticbeanstalk opts)
+        request {:Filters [{:Type "PlatformBranchName"
+                            :Operator "="
+                            :Values ["Docker running on 64bit Amazon Linux 2"]}]}
+        args {:op :ListPlatformVersions
+              :request request}
+        result (aws/invoke eb-client args)]
+    (if (:PlatformSummaryList result)
+      (if-let [platform-arn (->> (:PlatformSummaryList result)
+                                 (sort-by :PlatformVersion (complement comp))
+                                 (first)
+                                 (:PlatformArn))]
+        {:success? true
+         :platform-arn platform-arn}
+        {:success? false
+         :reason :docker-platform-arn-not-found
+         :error-details result})
+      {:success? false
+       :error-details result})))

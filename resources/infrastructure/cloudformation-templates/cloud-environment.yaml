@@ -32,6 +32,8 @@ Parameters:
   EbInstanceType:
     Type: "String"
     Default: "t3.micro"
+  EbPlatformARN:
+    Type: "String"
   LoadBalancerARN:
     Type: "String"
   ElbSecurityGroupId:
@@ -153,6 +155,7 @@ Resources:
         EbApplicationName: !Ref "EbApplicationName"
         InstanceType: !Ref "EbInstanceType"
         ElbSecurityGroupId: !Ref "ElbSecurityGroupId"
+        EbPlatformARN: !Ref "EbPlatformARN"
         KmsKeyAlias: !GetAtt "KMS.Outputs.KmsKeyAlias"
         InstanceRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
   RdsEbConnection:

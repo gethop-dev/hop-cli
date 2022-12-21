@@ -27,6 +27,8 @@ Parameters:
     Type: "String"
   ElbSecurityGroupId:
     Type: "String"
+  PlatformARN:
+    Type: "String"
   KmsKeyAlias:
     Type: "String"
   InstanceRoleName:
@@ -57,7 +59,7 @@ Resources:
     Type: AWS::ElasticBeanstalk::ConfigurationTemplate
     Properties:
       ApplicationName: !Ref "EbApplicationName"
-      SolutionStackName: "64bit Amazon Linux 2 v3.4.19 running Docker"
+      PlatformArn: !Ref "PlatformARN"
       OptionSettings:
         # Capacity
         - Namespace: aws:elasticbeanstalk:environment

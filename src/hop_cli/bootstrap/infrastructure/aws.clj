@@ -6,6 +6,7 @@
   (:require [babashka.fs :as fs]
             [clojure.java.io :as io]
             [clojure.walk :as walk]
+            [hop-cli.aws.api.eb :as aws.eb]
             [hop-cli.aws.api.ssm :as api.ssm]
             [hop-cli.aws.api.sts :as api.sts]
             [hop-cli.aws.cloudformation :as aws.cloudformation]
@@ -90,7 +91,8 @@
                :cloud-provider.aws.account.vpc/id :VpcId
                :cloud-provider.aws.project.vpc/subnet-ids :SubnetIds
                :cloud-provider.aws.account.iam/eb-service-role-arn :EbServiceRoleARN
-               :cloud-provider.aws.project.eb/application-name  :EbApplicationName
+               :cloud-provider.aws.project.eb/application-name :EbApplicationName
+               :cloud-provider.aws/eb-docker-platform-arn :EbPlatformARN
                :cloud-provider.aws.project.elb/arn :LoadBalancerARN
                :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId
                :cloud-provider.aws.environment.test.optional-services.cognito/enabled :IncludeCognito
@@ -126,6 +128,7 @@
                :cloud-provider.aws.project.vpc/subnet-ids :SubnetIds
                :cloud-provider.aws.account.iam/eb-service-role-arn :EbServiceRoleARN
                :cloud-provider.aws.project.eb/application-name  :EbApplicationName
+               :cloud-provider.aws/eb-docker-platform-arn :EbPlatformARN
                :cloud-provider.aws.project.elb/arn :LoadBalancerARN
                :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId
                :cloud-provider.aws.environment.prod.optional-services.cognito/enabled :IncludeCognito
@@ -286,6 +289,18 @@
                                                          (:Account caller-identity))}
              {:success? false
               :reason :failed-to-get-aws-account-id
+              :error-details result})))}
+      {:txn-fn
+       (fn get-eb-docker-platform-arn
+         [{:keys [settings]}]
+         (let [result (aws.eb/get-latest-eb-docker-platform-arn {:region region})]
+           (if (:success? result)
+             {:success? true
+              :settings (bp.util/assoc-in-settings-value settings
+                                                         :cloud-provider.aws/eb-docker-platform-arn
+                                                         (:platform-arn result))}
+             {:success? false
+              :reason :could-not-get-eb-docker-platform-arn
               :error-details result})))}
       {:txn-fn
        #_{:clj-kondo/ignore [:unresolved-symbol]}
