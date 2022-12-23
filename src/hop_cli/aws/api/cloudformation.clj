@@ -35,7 +35,8 @@
 
 (def ^:const stack-field-mapping
   {:Outputs :outputs
-   :StackStatus :status})
+   :StackStatus :status
+   :StackStatusReason :status-reason})
 
 (defn- api-stack->stack
   [api-stack]
