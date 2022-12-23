@@ -317,7 +317,8 @@
          (let [result (get-or-provision-cfn-stack settings (:account cfn-templates))]
            (if-not (:success? result)
              {:success? false
-              :reason :could-not-provision-account-cfn}
+              :reason :could-not-provision-account-cfn
+              :error-details result}
              result)))}
       {:txn-fn
        (fn create-and-upload-self-signed-certificate
