@@ -26,7 +26,7 @@
   [{:cmds ["new-project"]
     :fn (partial bootstrap-handler [:dev :test])
     :error-fn error/generic-error-handler
-    :desc "Bootstraps a new HOP based project"
+    :desc "Bootstraps a new HOP based project."
     :spec {:settings-file-path {:alias :s
                                 :desc "The HOP settings file path."
                                 :require true
@@ -37,10 +37,17 @@
                                 :require true
                                 :validate (comp not fs/exists? fs/file)
                                 :error-msgs {:validate "Project directory already exists. Please input a different directory."}}}}
+   {:cmds ["create-settings-file"]
+    :fn copy-settings-handler
+    :error-fn error/generic-error-handler
+    :desc "Creates a file with a copy of the default hop-cli configuration."
+    :spec {:settings-file-path {:alias :s
+                                :desc "Destination file."
+                                :require true}}}
    {:cmds ["copy-settings"]
     :fn copy-settings-handler
     :error-fn error/generic-error-handler
-    :desc "Makes a copy of the default hop-cli configuration file."
+    :desc "An alias for create-settings-file."
     :spec {:settings-file-path {:alias :s
                                 :desc "Destination file."
                                 :require true}}}
