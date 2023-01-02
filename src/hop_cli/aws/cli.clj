@@ -7,6 +7,7 @@
             [clojure.pprint :refer [pprint]]
             [hop-cli.aws.cognito :as cognito]
             [hop-cli.aws.env-vars :as env-vars]
+            [hop-cli.aws.rds :as rds]
             [hop-cli.aws.ssl :as ssl]
             [hop-cli.util :as util]
             [hop-cli.util.error :as error]
@@ -20,6 +21,13 @@
   [{:keys [opts]}]
   (let [parsed-opts (update opts :attributes util/cli-stdin-map->map)]
     (pprint (cognito/admin-create-user parsed-opts))))
+
+(defn- get-rds-port-forwarding-command-handler
+  [{:keys [opts]}]
+  (let [result (rds/get-port-forwarding-command opts)]
+    (if (:success? result)
+      (println (:command result))
+      (pprint result))))
 
 (declare print-help-handler)
 
@@ -131,6 +139,21 @@
             :desc "Username or email"}
            :password
            {:alias :p :require true}
+           :region
+           {:alias :r :require false
+            :desc "Region"}}}
+   ;; RDS
+   {:cmds ["rds" "get-port-forwarding-command"]
+    :fn get-rds-port-forwarding-command-handler
+    :error-fn error/generic-error-handler
+    :desc "Get command to open a port forwarding tunnel to a RDS instance"
+    :spec {:project-name
+           {:alias :p :require true}
+           :environment
+           {:alias :e :require true}
+           :local-port
+           {:alias :lp :require true
+            :desc "Local port"}
            :region
            {:alias :r :require false
             :desc "Region"}}}
