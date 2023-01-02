@@ -22,9 +22,9 @@
   (let [parsed-opts (update opts :attributes util/cli-stdin-map->map)]
     (pprint (cognito/admin-create-user parsed-opts))))
 
-(defn- get-rds-port-forwarding-command-handler
+(defn- start-rds-port-forwarding-session-handler
   [{:keys [opts]}]
-  (let [result (rds/get-port-forwarding-command opts)]
+  (let [result (rds/start-port-forwarding-session opts)]
     (if (:success? result)
       (println (:command result))
       (pprint result))))
@@ -143,10 +143,10 @@
            {:alias :r :require false
             :desc "Region"}}}
    ;; RDS
-   {:cmds ["rds" "get-port-forwarding-command"]
-    :fn get-rds-port-forwarding-command-handler
+   {:cmds ["rds" "start-port-forwarding-session"]
+    :fn start-rds-port-forwarding-session-handler
     :error-fn error/generic-error-handler
-    :desc "Get command to open a port forwarding tunnel to a RDS instance"
+    :desc "Execute command to start a port forwarding session to a RDS instance"
     :spec {:project-name
            {:alias :p :require true}
            :environment

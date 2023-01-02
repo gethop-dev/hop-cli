@@ -3,27 +3,19 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.aws.rds
-  (:require [clojure.string :as str]
+  (:require [babashka.process :refer [shell]]
+            [clojure.string :as str]
             [hop-cli.aws.api.rds :as api.rds]
             [hop-cli.aws.api.resourcegroupstagging :as api.resourcegroupstagging]))
 
-(defn- build-port-forwarding-command
+(defn- exec-port-forwarding-command
   [ec2-id {:keys [host port]} local-port]
-  (with-out-str
-    (println "Run the following command to open a port forwarding tunnel to the RDS instance:")
-    (println)
-    (println
-     (format "aws ssm start-session \\
- --target %s \\
- --document-name AWS-StartPortForwardingSessionToRemoteHost \\
- --parameters '{\"host\":[\"%s\"],
-                \"portNumber\":[\"%s\"], \"localPortNumber\":[\"%s\"]}'"
-             ec2-id host port local-port))
-    (println)
-    (println "Note: To run the command the AWS CLI Session Manager plugin is required:")
-    (println "https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html")))
+  (let [target-cmd (format "aws ssm start-session --target %s --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters '{\"host\":[\"%s\"],\"portNumber\":[\"%s\"], \"localPortNumber\":[\"%s\"]}'"
+                           ec2-id host port local-port)]
+    (println "Running AWS Session Manager. Please, press `ctrl+c` in order to cancel the process.")
+    (shell target-cmd)))
 
-(defn get-port-forwarding-command
+(defn start-port-forwarding-session
   [{:keys [project-name environment local-port region]}]
   (let [args {:tags {:project-name project-name
                      :environment environment}
@@ -40,7 +32,7 @@
                 (api.rds/get-instance-connection-details {:arn db-arn :region region})]
             (if success?
               {:success? true
-               :command (build-port-forwarding-command ec2-id connection-details local-port)}
+               :command (exec-port-forwarding-command ec2-id connection-details local-port)}
               {:success? false
                :reason :could-not-find-rds-connection-details
                :error-details {:arn db-arn :result get-rds-result}}))
