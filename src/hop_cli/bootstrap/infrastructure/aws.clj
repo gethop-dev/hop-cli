@@ -183,7 +183,9 @@
 (defn- provision-iam-user-access-key
   [settings name-kw]
   (let [user-name (bp.util/get-settings-value settings name-kw)
-        result (aws.iam/create-access-key {:username user-name})]
+        region (bp.util/get-settings-value settings :cloud-provider.aws.account/region)
+        result (aws.iam/create-access-key {:username user-name
+                                           :region region})]
     (if-not (:success? result)
       {:success? false
        :reason :could-not-create-iam-user-credentials
