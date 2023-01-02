@@ -16,7 +16,7 @@
      (format "aws ssm start-session \\
  --target %s \\
  --document-name AWS-StartPortForwardingSessionToRemoteHost \\
- --parameters '{\"host \":[\"%s\"],
+ --parameters '{\"host\":[\"%s\"],
                 \"portNumber\":[\"%s\"], \"localPortNumber\":[\"%s\"]}'"
              ec2-id host port local-port))
     (println)
