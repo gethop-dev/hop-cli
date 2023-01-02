@@ -7,7 +7,6 @@
             [clojure.java.io :as io]
             [clojure.set :as set]
             [clojure.walk :as walk]
-            [hop-cli.aws.api.cloudformation :as api.cf]
             [hop-cli.aws.api.eb :as aws.eb]
             [hop-cli.aws.api.ssm :as api.ssm]
             [hop-cli.aws.api.sts :as api.sts]
