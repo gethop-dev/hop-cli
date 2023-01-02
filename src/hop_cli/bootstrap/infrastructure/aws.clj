@@ -5,7 +5,9 @@
 (ns hop-cli.bootstrap.infrastructure.aws
   (:require [babashka.fs :as fs]
             [clojure.java.io :as io]
+            [clojure.set :as set]
             [clojure.walk :as walk]
+            [hop-cli.aws.api.cloudformation :as api.cf]
             [hop-cli.aws.api.eb :as aws.eb]
             [hop-cli.aws.api.ssm :as api.ssm]
             [hop-cli.aws.api.sts :as api.sts]
@@ -148,6 +150,45 @@
                :S3BucketName :cloud-provider.aws.environment.prod.optional-services.s3/bucket-name
                :CloudwatchLogGroupName :cloud-provider.aws.environment.prod.optional-services.cloudwatch/log-group-name}}})
 
+(defn- stack-event->output-stack-event
+  [stack-event]
+  (-> stack-event
+      (select-keys [:resource-status-reason :logical-resource-id])
+      (set/rename-keys {:resource-status-reason :reason
+                        :logical-resource-id :resource-name})))
+
+(defn- stack-resource-creation-failed?
+  [stack-event]
+  (= (:resource-status stack-event) :CREATE_FAILED))
+
+(defn- get-failed-stack-events
+  [stack-events]
+  (->> stack-events
+       (filter stack-resource-creation-failed?)
+       (map stack-event->output-stack-event)))
+
+(defn- get-stack-errors
+  [stack-name]
+  (let [{:keys [success? stack-events] :as result}
+        (aws.cloudformation/describe-stack-events {:stack-name stack-name})]
+    (if-not success?
+      result
+      (let [failed-resource (->> stack-events
+                                 (filter (fn [event]
+                                           (and (stack-resource-creation-failed? event)
+                                                (not= (:resource-status-reason event) "Resource creation cancelled"))))
+                                 first)]
+        (if-not (= (:resource-type failed-resource) "AWS::CloudFormation::Stack")
+          {:success? false
+           :error-details (stack-event->output-stack-event failed-resource)}
+          (let [{:keys [success? stack-events] :as result}
+                (->> {:stack-name (:physical-resource-id failed-resource)}
+                     (aws.cloudformation/describe-stack-events))]
+            (if-not success?
+              result
+              {:success? false
+               :error-details (get-failed-stack-events stack-events)})))))))
+
 (defn wait-for-stack-completion
   [{:keys [stack-name] :as opts}]
   (loop []
@@ -165,8 +206,7 @@
          :outputs (get-in result [:stack :outputs])}
 
         :else
-        {:success? false
-         :error-details result}))))
+        (get-stack-errors stack-name)))))
 
 (defn select-and-rename-keys
   [m mapping]

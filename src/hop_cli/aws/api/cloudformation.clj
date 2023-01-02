@@ -105,3 +105,31 @@
       {:success? true
        :template-summary (api-template-summary->template-summary result)
        :stack-id (:StackId result)})))
+
+(def stack-event-field-mapping
+  {:ResourceStatusReason :resource-status-reason
+   :ResourceStatus :resource-status
+   :ResourceType :resource-type
+   :PhysicalResourceId :physical-resource-id
+   :LogicalResourceId :logical-resource-id
+   :Timestamp :timestamp})
+
+(defn- api-stack-event->stack-event
+  [api-stack-event]
+  (-> api-stack-event
+      (select-keys (keys stack-event-field-mapping))
+      (set/rename-keys stack-event-field-mapping)
+      (update :resource-status keyword)))
+
+(defn describe-stack-events
+  [{:keys [stack-name] :as opts}]
+  (let [cf-client (aws.client/gen-client :cloudformation opts)
+        request {:StackName stack-name}
+        args {:op :DescribeStackEvents
+              :request request}
+        result (aws/invoke cf-client args)]
+    (if (:cognitect.anomalies/category result)
+      {:success? false
+       :error-details result}
+      {:success? true
+       :stack-events (map api-stack-event->stack-event (:StackEvents result))})))

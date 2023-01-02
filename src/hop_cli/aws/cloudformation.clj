@@ -155,3 +155,7 @@
 (defn describe-stack
   [opts]
   (api.cf/describe-stack opts))
+
+(defn describe-stack-events
+  [opts]
+  (api.cf/describe-stack-events opts))
