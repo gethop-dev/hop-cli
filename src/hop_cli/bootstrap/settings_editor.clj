@@ -35,15 +35,12 @@
      :body (slurp body)}
     {:status 404}))
 
-(def default-port 8090)
-
 (defn serve-settings-editor
   "Serves static assets using web server.
-		Options:
-			* `:port` - port"
+   Options:
+     * `:port` - port"
   [{:keys [port] :as opts}]
-  (let [port (or port default-port)
-        base-path "bootstrap"
+  (let [base-path "bootstrap"
         settings-editor-dir (str base-path "/settings-editor")]
     (binding [*out* *err*]
       (println (str "Serving assets at http://localhost:" port)))
