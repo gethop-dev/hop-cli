@@ -34,6 +34,13 @@ if [[ -n "${VOLUMES}" ]]; then
     #shellcheck disable=SC2086
     docker volume rm ${VOLUMES}
 fi
+
+
+# Make sure the Maven cache directory exists before launching the app
+# container. If it doesn't, the first time we launch the app container
+# is going to be created owned by root (because it is a bind mount
+# point). And that is going to prevent downloading any dependencies!
+mkdir -p ~/.m2/
 docker-compose run --no-deps --rm app lein clean
 
 # Make sure we are not trying to use any environment vars in
