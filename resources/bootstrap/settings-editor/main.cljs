@@ -1,8 +1,26 @@
 (require '[ajax.core :refer [GET]]
+         '[cljs.pprint :as pprint]
          '[clojure.string :as str]
          '[reagent.core :as r]
          '[reagent.dom :as rdom]
          '[re-frame.core :as rf])
+
+(defn download-blob [file-name file-type data]
+      (let [blob (js/Blob. #js [data] #js {:type file-type})
+            object-url (js/URL.createObjectURL blob)
+            anchor-element
+            (doto (js/document.createElement "a")
+                  (-> .-href (set! object-url))
+                  (-> .-download (set! file-name)))]
+           (.appendChild (.-body js/document) anchor-element)
+           (.click anchor-element)
+           (.removeChild (.-body js/document) anchor-element)
+           (js/URL.revokeObjectURL object-url)))
+
+(rf/reg-fx
+ :save-to-file
+ (fn [{:keys [file-name file-type data]}]
+     (download-blob file-name file-type data)))
 
 (rf/reg-fx
  :do-get-request
@@ -14,6 +32,17 @@
  ::settings-edn-loaded
  (fn [db [_ response]]
    (assoc db :settings (clojure.edn/read-string response))))
+
+(rf/reg-event-fx
+ ::save-settings-to-file
+ (fn [{:keys [db]} _]
+     (let [settings-data (:settings db)
+           pprinted-settings (with-out-str (pprint/pprint settings-data))
+           file-name "settings.edn"
+           file-type "application/edn"]
+          {:fx [[:save-to-file {:file-name file-name
+                                :file-type file-type
+                                :data pprinted-settings}]]})))
 
 (rf/reg-event-fx
  ::load-app
@@ -171,7 +200,10 @@
       (let [path [0]]
         (when (seq @settings)
           [:div
-           (form-component (get-in @settings path) {:path path})])))))
+           (form-component (get-in @settings path) {:path path})
+           [:div.footer
+            [:button {:on-click #(rf/dispatch [::save-settings-to-file])}
+             "Save settings"]]])))))
 
 (rdom/render [root-component]
              (.getElementById js/document "app"))
