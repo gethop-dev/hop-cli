@@ -6,6 +6,15 @@
   (:require [com.grzm.awyeah.client.api :as aws]
             [hop-cli.aws.api.client :as aws.client]))
 
+(defn- api-resource->resource
+  [{:keys [ResourceARN Tags]}]
+  {:arn ResourceARN
+   :tags (reduce
+          (fn [m {:keys [Key Value]}]
+            (assoc m Key Value))
+          {}
+          Tags)})
+
 (defn get-resource-arns
   [{:keys [tags resource-types] :as opts}]
   (let [client (aws.client/gen-client :resourcegroupstaggingapi opts)
@@ -16,6 +25,6 @@
         result (aws/invoke client args)]
     (if (:ResourceTagMappingList result)
       {:success? true
-       :resource-arns (map :ResourceARN (:ResourceTagMappingList result))}
+       :resources (map api-resource->resource (:ResourceTagMappingList result))}
       {:success? false
        :error-details result})))

@@ -22,13 +22,6 @@
   (let [parsed-opts (update opts :attributes util/cli-stdin-map->map)]
     (pprint (cognito/admin-create-user parsed-opts))))
 
-(defn- start-rds-port-forwarding-session-handler
-  [{:keys [opts]}]
-  (let [result (rds/start-port-forwarding-session opts)]
-    (if (:success? result)
-      (println (:command result))
-      (pprint result))))
-
 (declare print-help-handler)
 
 (defn- cli-cmd-table
@@ -144,7 +137,7 @@
             :desc "Region"}}}
    ;; RDS
    {:cmds ["rds" "start-port-forwarding-session"]
-    :fn start-rds-port-forwarding-session-handler
+    :fn (partial generic-handler-wrapper rds/start-port-forwarding-session)
     :error-fn error/generic-error-handler
     :desc "Execute command to start a port forwarding session to a RDS instance"
     :spec {:project-name
