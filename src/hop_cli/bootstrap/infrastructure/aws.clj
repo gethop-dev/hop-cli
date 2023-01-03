@@ -196,7 +196,7 @@
       (cond
         (= status :CREATE_IN_PROGRESS)
         (do
-          (println (format "%s stack creation in progress. Rechecking the status in 10 seconds..." stack-name))
+          (println (format " >> %s stack creation in progress. Rechecking the status in 10 seconds..." stack-name))
           (Thread/sleep 10000)
           (recur))
 
@@ -259,7 +259,7 @@
                     :stack-name stack-name
                     :s3-bucket-name bucket-name
                     :region region)
-        _log (println (format "Provisioning cloudformation %s stack..." stack-name))
+        _log (println (format "Provisioning cloudformation %s stack. This will take a while. Please, be patient..." stack-name))
         result (aws.cloudformation/create-stack opts)]
     (if (:success? result)
       (let [wait-result (wait-for-stack-completion opts)]
