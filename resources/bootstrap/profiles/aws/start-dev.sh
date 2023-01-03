@@ -49,7 +49,6 @@ if [[ -n "${VOLUMES}" ]]; then
     docker volume rm ${VOLUMES}
 fi
 
-
 # Make sure the Maven cache directory exists before launching the app
 # container. If it doesn't, the first time we launch the app
 # container, the directory is going to be created owned by root
