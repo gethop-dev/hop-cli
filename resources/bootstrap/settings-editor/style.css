@@ -1,6 +1,25 @@
-#app {
-  border: 2px solid black;
-  border-radius: 20px;
-  width: 500px;
-  height: 500px;
+.plain-group {
+  margin: 20px;
+  padding: 10px;
+  border: 2px solid yellow;
+}
+
+.single-choice-group {
+  margin: 20px;
+  padding: 10px;
+  border: 2px solid green;
+}
+
+.multiple-choice-group {
+  margin: 20px;
+  padding: 10px;
+  border: 2px solid red;
+}
+
+.form__input {
+  width: 100%;
+}
+
+.form__title {
+  font-weight: bold;
 }

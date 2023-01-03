@@ -2,7 +2,7 @@
   :tag "Project"
   :type :plain-group
   :value [{:name :name
-           :tag "Project Name"
+           :tag "Name"
            :type :string
            :value "hop"}
           {:name :docker
@@ -14,34 +14,38 @@
                     :choices [{:name :aws
                                :type :plain-group
                                :value [{:name :app-repository-url
+																				:tag "App repository URL"
                                         :type :ref
                                         :value :cloud-provider.aws.project.ecr/app-repository-url}]}]}]}
           {:name :proxy
            :type :plain-group
            :value [{:name :dev
                     :type :plain-group
-                    :value [{:name :domain
+                    :value [{:name :protocol
                              :type :string
-                             :value "localhost"}
-                            {:name :protocol
+                             :value "http"
+														 :read-only? true}
+                            {:name :domain
                              :type :string
-                             :value "http"}]}
+                             :value "localhost"}]}
                    {:name :test
                     :type :plain-group
-                    :value [{:name :domain
+                    :value [{:name :protocol
                              :type :string
-                             :value "app.test.invalid"}
-                            {:name :protocol
+                             :value "https"
+														 :read-only? true}
+                            {:name :domain
                              :type :string
-                             :value "https"}]}
+                             :value "app.test.invalid"}]}
                    {:name :prod
                     :type :plain-group
-                    :value [{:name :domain
+                    :value [{:name :protocol
                              :type :string
-                             :value "app.invalid"}
-                            {:name :protocol
+                             :value "https"
+														 :read-only? true}
+                            {:name :domain
                              :type :string
-                             :value "https"}]}]}
+                             :value "app.invalid"}]}]}
           {:name :profiles
            :tag "Profiles"
            :type :multiple-choice-group
@@ -170,6 +174,7 @@
                                                  :value :cloud-provider.aws.environment.dev.optional-services.cloudwatch/log-group-name}
                                                 {:name :min-log-level
                                                  :type :keyword
+																								 :read-only? true
                                                  :value :info}]}
                                        {:name :test
                                         :type :plain-group
@@ -178,6 +183,7 @@
                                                  :value :cloud-provider.aws.environment.test.optional-services.cloudwatch/log-group-name}
                                                 {:name :min-log-level
                                                  :type :keyword
+																								 :read-only? true
                                                  :value :info}]}
                                        {:name :prod
                                         :type :plain-group
@@ -186,6 +192,7 @@
                                                  :value :cloud-provider.aws.environment.prod.optional-services.cloudwatch/log-group-name}
                                                 {:name :min-log-level
                                                  :type :keyword
+																								 :read-only? true
                                                  :value :info}]}]}]}
                      {:name :object-storage-s3
                       :type :plain-group
@@ -255,6 +262,7 @@
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
                                                             :type :keyword
+																														:read-only? true
                                                             :value :container}
                                                            {:name :environment
                                                             :type :plain-group
@@ -338,6 +346,7 @@
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
                                                             :type :keyword
+																														:read-only? true
                                                             :value :external}
                                                            {:name :environment
                                                             :type :plain-group
@@ -418,6 +427,7 @@
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
                                                             :type :keyword
+																														:read-only? true
                                                             :value :external}
                                                            {:name :environment
                                                             :type :plain-group
@@ -602,6 +612,7 @@
                                                             :value :project.profiles.persistence-sql.deployment.to-develop.?/deployment-type}
                                                            {:name :deployment-type
                                                             :type :keyword
+																														:read-only? true
                                                             :value :container}
                                                            {:name :environment
                                                             :type :plain-group
@@ -695,6 +706,7 @@
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
                                                             :type :keyword
+																														:read-only? true
                                                             :value :external}
                                                            {:name :environment
                                                             :type :plain-group
@@ -728,6 +740,7 @@
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
                                                             :type :keyword
+																														:read-only? true
                                                             :value :container}
                                                            {:name :environment
                                                             :type :plain-group
@@ -905,6 +918,7 @@
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
                                                             :type :keyword
+																														:read-only? true
                                                             :value :external}
                                                            {:name :environment
                                                             :type :plain-group
@@ -969,6 +983,7 @@
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
                                                             :type :keyword
+																														:read-only? true
                                                             :value :container}
                                                            {:name :environment
                                                             :type :plain-group
@@ -1051,6 +1066,7 @@
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
                                                             :type :keyword
+																														:read-only? true
                                                             :value :external}
                                                            {:name :environment
                                                             :type :plain-group
@@ -1092,6 +1108,7 @@
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
                                                             :type :keyword
+																														:read-only? true
                                                             :value :container}
                                                            {:name :environment
                                                             :type :plain-group
@@ -1249,6 +1266,7 @@
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
                                                             :type :keyword
+																														:read-only? true
                                                             :value :external}
                                                            {:name :environment
                                                             :type :plain-group
