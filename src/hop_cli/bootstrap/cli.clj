@@ -8,6 +8,7 @@
             [clojure.pprint :refer [pprint]]
             [hop-cli.bootstrap.main :as main]
             [hop-cli.bootstrap.settings :as settings]
+            [hop-cli.bootstrap.settings-editor :as settings-editor]
             [hop-cli.util.error :as error]
             [hop-cli.util.help :as help]))
 
@@ -18,6 +19,10 @@
 (defn- copy-settings-handler
   [{:keys [opts]}]
   (pprint (settings/copy (:settings-file-path opts))))
+
+(defn- open-settings-editor-handler
+  [{:keys [opts]}]
+  (pprint (settings-editor/serve-settings-editor opts)))
 
 (declare print-help-handler)
 
@@ -65,6 +70,17 @@
                                 :require true
                                 :validate (comp fs/exists? fs/file)
                                 :error-msgs {:validate "Project directory must exist. Please input a different directory."}}}}
+   {:cmds ["open-settings-editor"]
+    :fn open-settings-editor-handler
+    :error-fn error/generic-error-handler
+    :spec {:port {:alias :p
+                  :default 8090
+                  :desc "Serving port"
+                  :validate pos-int?
+                  :coerce :int
+                  :error-msgs {:validate "Invalid port number format."
+                               :coerce "Port is not a valid number. Aborting... "}}}
+    :desc "Opens a web-based wizard for editing settings.edn file"}
    {:cmds []
     :fn print-help-handler}])
 
