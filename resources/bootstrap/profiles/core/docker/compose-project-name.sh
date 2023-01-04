@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eu -o pipefail
+
 # docker-compose versions prior to 1.21.0 stripped dashes and
 # underscores from project names. Later versions don't. As we want to
 # build the same project name docker-compose would, we need to use a
@@ -14,13 +16,13 @@ else
 fi
 
 # Tell docker-compose to use the (lowercased) project name as the
-# containers project name. 'realpath' gives us the absolute path to
-# this script. We get the full directory path from it with 'dirname'
-# to get the directory for this script, and again the `dirname` to get
-# the parant directory for the script. From there we take the simple
+# containers project name. 'readlink -f' gives us the absolute path to
+# this script. We get the full directory path from it; with 'dirname'
+# we get the directory for this script, and again the `dirname` to get
+# the parent directory for the script. From there we take the simple
 # name (base name) to get the name of the parent directory, where all
 # the docker-compose files are.
-DIR_NAME="$(basename "$(dirname "$(dirname "$(realpath "$0")")")")"
+DIR_NAME="$(basename "$(dirname "$(dirname "$(readlink -f "$0")")")")"
 COMPOSE_PROJECT="$(echo -n "${DIR_NAME}" | tr '[:upper:]' '[:lower:]' | sed "${SED_EXPR}")"
 
 # Write project name to stdout, so the calling script can capture it.
