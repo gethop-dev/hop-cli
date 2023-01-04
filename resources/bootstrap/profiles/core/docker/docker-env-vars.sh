@@ -25,7 +25,7 @@ function get_missing_env_vars() {
                 map(
                     select((.value == null))
                     |
-                    .key  "="  ">>HOP_ENV_VAR_MISSING_VALUE<<"
+                    .key + "=" + ">>HOP_ENV_VAR_MISSING_VALUE<<"
                 )
             )' |
         awk -F'=' '/>>HOP_ENV_VAR_MISSING_VALUE<</ {print $1}'
