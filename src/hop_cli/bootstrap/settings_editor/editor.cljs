@@ -2,8 +2,7 @@
   (:require [clojure.string :as str]
             [re-frame.core :as rf]
             [settings :as settings]
-            [sidebar :as sidebar]
-            [toolbar :as toolbar]))
+            [sidebar :as sidebar]))
 
 (defn input
   [node opts conf]
