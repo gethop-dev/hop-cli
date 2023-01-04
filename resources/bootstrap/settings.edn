@@ -701,7 +701,27 @@
                                                                                                   :value :project.profiles.auth-keycloak.deployment.to-develop.?.environment.dev.other-clients.grafana/id}
                                                                                                  {:name :client-secret
                                                                                                   :type :ref
-                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-develop.?.environment.dev.other-clients.grafana/secret}]}]}]}]}]}
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-develop.?.environment.dev.other-clients.grafana/secret}]}
+                                                                                        {:name :custom
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :token-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :api-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :auth-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :logout-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :client-id
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :client-secret
+                                                                                                  :type :password
+                                                                                                  :value ""}]}]}]}]}]}
                                                   {:name :external
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
@@ -828,7 +848,27 @@
                                                                                                   :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.test.other-clients.grafana/id}
                                                                                                  {:name :client-secret
                                                                                                   :type :ref
-                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.test.other-clients.grafana/secret}]}]}]}
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.test.other-clients.grafana/secret}]}
+                                                                                        {:name :custom
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :token-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :api-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :auth-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :logout-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :client-id
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :client-secret
+                                                                                                  :type :password
+                                                                                                  :value ""}]}]}]}
                                                                     {:name :prod
                                                                      :tag "Prod Environment"
                                                                      :type :plain-group
@@ -913,7 +953,27 @@
                                                                                                   :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.prod.other-clients.grafana/id}
                                                                                                  {:name :client-secret
                                                                                                   :type :ref
-                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.prod.other-clients.grafana/secret}]}]}]}]}]}
+                                                                                                  :value :project.profiles.auth-keycloak.deployment.to-deploy.?.environment.prod.other-clients.grafana/secret}]}
+                                                                                        {:name :custom
+                                                                                         :type :plain-group
+                                                                                         :value [{:name :token-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :api-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :auth-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :logout-url
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :client-id
+                                                                                                  :type :string
+                                                                                                  :value ""}
+                                                                                                 {:name :client-secret
+                                                                                                  :type :password
+                                                                                                  :value ""}]}]}]}]}]}
                                                   {:name :external
                                                    :type :plain-group
                                                    :value [{:name :deployment-type
