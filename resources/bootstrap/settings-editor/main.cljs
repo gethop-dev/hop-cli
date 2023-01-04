@@ -1,26 +1,12 @@
-(require '[ajax.core :refer [GET]]
-         '[cljs.pprint :as pprint]
-         '[clojure.string :as str]
-         '[reagent.core :as r]
-         '[reagent.dom :as rdom]
-         '[re-frame.core :as rf])
-
-(defn download-blob [file-name file-type data]
-      (let [blob (js/Blob. #js [data] #js {:type file-type})
-            object-url (js/URL.createObjectURL blob)
-            anchor-element
-            (doto (js/document.createElement "a")
-                  (-> .-href (set! object-url))
-                  (-> .-download (set! file-name)))]
-           (.appendChild (.-body js/document) anchor-element)
-           (.click anchor-element)
-           (.removeChild (.-body js/document) anchor-element)
-           (js/URL.revokeObjectURL object-url)))
-
-(rf/reg-fx
- :save-to-file
- (fn [{:keys [file-name file-type data]}]
-     (download-blob file-name file-type data)))
+(ns main
+  (:require [ajax.core :refer [GET]]
+            [cljs.pprint :as pprint]
+            [clojure.edn :as edn]
+            [clojure.string :as str]
+            [file]
+            [re-frame.core :as rf]
+            [reagent.core :as r]
+            [reagent.dom :as rdom]))
 
 (rf/reg-fx
  :do-get-request
@@ -29,28 +15,44 @@
                         (rf/dispatch (conj handler-evt response)))})))
 
 (rf/reg-event-db
- ::settings-edn-loaded
- (fn [db [_ response]]
-   (assoc db :settings (clojure.edn/read-string response))))
+ ::set-settings
+ (fn [db [_ settings]]
+   (assoc db :settings settings)))
+
+(rf/reg-event-fx
+ ::default-settings-loaded
+ (fn [_ [_ response]]
+   {:fx [[:dispatch [::set-settings (edn/read-string response)]]]}))
+
+(rf/reg-event-fx
+ ::settings-file-loaded
+ (fn [_ [_ {:keys [content] :as _file}]]
+   {:fx [[:dispatch [::set-settings (edn/read-string content)]]]}))
 
 (rf/reg-event-fx
  ::save-settings-to-file
  (fn [{:keys [db]} _]
-     (let [settings-data (:settings db)
-           pprinted-settings (with-out-str (pprint/pprint settings-data))
-           file-name "settings.edn"
-           file-type "application/edn"]
-          {:fx [[:save-to-file {:file-name file-name
-                                :file-type file-type
-                                :data pprinted-settings}]]})))
+   (let [settings-data (:settings db)
+         pprinted-settings (with-out-str (pprint/pprint settings-data))
+         file-name "settings.edn"
+         file-type "application/edn"]
+     {:fx [[:write-to-file {:file-name file-name
+                            :file-type file-type
+                            :data pprinted-settings}]]})))
 
 (rf/reg-event-fx
- ::load-app
+ ::read-settings-from-file
+ (fn [_ [_ js-file]]
+   {:fx [[:read-from-file {:js-file js-file
+                           :on-read-evt [::settings-file-loaded]}]]}))
+
+(rf/reg-event-fx
+ ::load-default-settings
  (fn [_]
    {:do-get-request {:uri "/settings.edn"
-                     :handler-evt [::settings-edn-loaded]}}))
+                     :handler-evt [::default-settings-loaded]}}))
 
-(rf/dispatch-sync [::load-app])
+(rf/dispatch-sync [::load-default-settings])
 
 (rf/reg-event-db
  ::update-settings-value
@@ -194,12 +196,33 @@
   [node _]
   [:span (:name node)])
 
+(defn- event->js-files
+  [event]
+  (.. event  -target -files))
+
+(defn- handle-file-upload
+  [event]
+  (let [js-file (-> event
+                 event->js-files
+                 (aget 0))]
+    (rf/dispatch [::read-settings-from-file js-file])))
+
+(defn- settings-file-loader []
+  [:input.settings-file-loader
+   {:id "settings-file-loader-input"
+    :type "file"
+    :multiple false
+    :accept [".edn"]
+    :on-change handle-file-upload}])
+
 (defn root-component []
   (let [settings (rf/subscribe [::settings])]
     (fn []
       (let [path [0]]
         (when (seq @settings)
           [:div
+           [:div.settings-file-loader
+            (settings-file-loader)]
            (form-component (get-in @settings path) {:path path})
            [:div.footer
             [:button {:on-click #(rf/dispatch [::save-settings-to-file])}
