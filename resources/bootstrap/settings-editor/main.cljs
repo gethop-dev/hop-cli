@@ -5,8 +5,9 @@
             [clojure.string :as str]
             [file]
             [re-frame.core :as rf]
-            [reagent.core :as r]
-            [reagent.dom :as rdom]))
+            [reagent.dom :as rdom]
+            [settings :as settings]
+            [sidebar]))
 
 (rf/reg-fx
  :do-get-request
@@ -14,20 +15,15 @@
    (GET uri {:handler (fn [response]
                         (rf/dispatch (conj handler-evt response)))})))
 
-(rf/reg-event-db
- ::set-settings
- (fn [db [_ settings]]
-   (assoc db :settings settings)))
-
 (rf/reg-event-fx
  ::default-settings-loaded
  (fn [_ [_ response]]
-   {:fx [[:dispatch [::set-settings (edn/read-string response)]]]}))
+   {:fx [[:dispatch [::settings/set-settings (edn/read-string response)]]]}))
 
 (rf/reg-event-fx
  ::settings-file-loaded
  (fn [_ [_ {:keys [content] :as _file}]]
-   {:fx [[:dispatch [::set-settings (edn/read-string content)]]]}))
+   {:fx [[:dispatch [::settings/set-settings (edn/read-string content)]]]}))
 
 (rf/reg-event-fx
  ::save-settings-to-file
@@ -54,21 +50,6 @@
 
 (rf/dispatch-sync [::load-default-settings])
 
-(rf/reg-event-db
- ::update-settings-value
- (fn [db [_ path value]]
-   (assoc-in db (cons :settings (conj path :value)) value)))
-
-(rf/reg-sub
- ::settings-value
- (fn [db [_ path]]
-   (get-in db (cons :settings path))))
-
-(rf/reg-sub
- ::settings
- (fn [db _]
-   (get db :settings)))
-
 (defmulti form-component
   (fn [{:keys [type]} _opts]
     type))
@@ -77,6 +58,7 @@
   [node opts]
   (let [initial-path (:path opts)]
     [:div.plain-group
+     {:id (settings/build-node-id (:path opts))}
      [:span.form__title (name (:name node))]
      (for [[index child] (keep-indexed vector (:value node))
            :let [path (conj initial-path :value index)]]
@@ -89,6 +71,7 @@
         {:keys [path]} opts
         id (str/join "-" path)]
     [:div
+     {:id (settings/build-node-id (:path opts))}
      [:label
       {:for id}
       (name (:name node))]
@@ -104,7 +87,7 @@
                                    :integer (js/parseInt (.. e -target -value))
                                    :boolean (boolean (.. e -target -checked))
                                    (.. e -target -value))]
-                       (rf/dispatch [::update-settings-value path value])))}
+                       (rf/dispatch [::settings/update-settings-value path value])))}
        conf)]]))
 
 (defn select
@@ -129,7 +112,7 @@
                                    (mapv #(keyword (.-value %))
                                          (.. e -target -selectedOptions))
                                    (keyword (.. e -target -value)))]
-                       (rf/dispatch [::update-settings-value path value])))}
+                       (rf/dispatch [::settings/update-settings-value path value])))}
        conf)
       (for [choice choices]
         ^{:key (:name choice)}
@@ -170,22 +153,17 @@
 
 (defmethod form-component :single-choice-group
   [node opts]
-  (let [selected-choice (some (fn [choice]
-                                (when (= (:name choice) (:value node))
-                                  choice))
-                              (:choices node))
-        selected-choice-index (.indexOf (:choices node) selected-choice)]
+  (let [[index selected-choice] (settings/get-selected-single-choice node)]
     [:div.single-choice-group
+     {:id (settings/build-node-id (:path opts))}
      [select node opts {:label-class "form__title"}]
-     (form-component selected-choice (update opts :path conj :choices selected-choice-index))]))
+     (form-component selected-choice (update opts :path conj :choices index))]))
 
 (defmethod form-component :multiple-choice-group
   [node opts]
-  (let [selected-choices (filter (fn [[index choice]]
-                                   (when (get (set (:value node)) (:name choice))
-                                     [index choice]))
-                                 (keep-indexed vector (:choices node)))]
+  (let [selected-choices (settings/get-selected-multiple-choices node)]
     [:div.multiple-choice-group
+     {:id (settings/build-node-id (:path opts))}
      [select node opts {:multiple true
                         :label-class "form__title"}]
      (for [[index choice] selected-choices]
@@ -216,17 +194,20 @@
     :on-change handle-file-upload}])
 
 (defn root-component []
-  (let [settings (rf/subscribe [::settings])]
+  (let [settings (rf/subscribe [::settings/settings])]
     (fn []
-      (let [path [0]]
-        (when (seq @settings)
-          [:div
-           [:div.settings-file-loader
-            (settings-file-loader)]
-           (form-component (get-in @settings path) {:path path})
-           [:div.footer
-            [:button {:on-click #(rf/dispatch [::save-settings-to-file])}
-             "Save settings"]]])))))
+      (when (seq @settings)
+        [:div.settings-editor
+         [sidebar/main @settings]
+         [:div.settings-editor__main
+          (for [[index node] (keep-indexed vector @settings)]
+            ^{:key (:name node)}
+            (form-component node {:path [index]}))]
+         [:div.settings-editor__footer
+          [:div.settings-file-loader
+           (settings-file-loader)]
+          [:button {:on-click #(rf/dispatch [::save-settings-to-file])}
+           "Save settings"]]]))))
 
 (rdom/render [root-component]
              (.getElementById js/document "app"))

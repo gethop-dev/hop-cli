@@ -1,3 +1,27 @@
+.settings-editor {
+  display: grid;
+  grid-template-areas: "sidebar main" "footer footer";
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 1fr auto;
+  height: 100%;
+}
+
+.settings-editor__main {
+  grid-area: main;
+  overflow-y: auto;
+}
+
+.settings-editor__sidebar {
+  grid-area: sidebar;
+  overflow-y: auto;
+}
+
+.settings-editor__footer {
+  grid-area: footer;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .plain-group {
   margin: 20px;
   padding: 10px;
@@ -22,4 +46,13 @@
 
 .form__title {
   font-weight: bold;
+}
+
+.sidebar-element {
+  padding: 0 10px;
+}
+
+.sidebar-element__title:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
