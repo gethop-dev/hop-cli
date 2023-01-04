@@ -40,6 +40,10 @@
      (for [[index child-node] children]
        (sidebar-element child-node (update opts :path conj :choices index)))]))
 
+(defmethod sidebar-element :default
+  [_ _]
+  [:span "Default"])
+
 (defn main
   [settings]
   [:div.settings-editor__sidebar
