@@ -19,8 +19,9 @@
     (str/lower-case ext)))
 
 (defn- ext-mime-type
-  "Get the mimetype from the filename extension. Takes an optional map of
-			 extensions to mimetypes that overrides values in the default-mime-types map."
+  "Get the mimetype from the filename extension.
+  Takes an optional map of extensions to mimetypes that overrides
+  values in the default-mime-types map."
   ([filename]
    (ext-mime-type filename {}))
   ([filename mime-types]
@@ -36,26 +37,27 @@
     {:status 404}))
 
 (defn serve-settings-editor
-  "Serves static assets using web server.
-   Options:
-     * `:port` - port"
+  "Serves static assets using web server."
   [{:keys [port] :as opts}]
-  (let [base-path "bootstrap"
-        settings-editor-dir (str base-path "/settings-editor")]
+  (let [src-path "hop_cli/bootstrap/settings_editor"
+        resources-path "bootstrap/settings-editor"]
     (binding [*out* *err*]
-      (println (str "Serving assets at http://localhost:" port)))
+      (println (str "Settings Editor running at http://localhost:" port)))
     (server/run-server
      (fn [{:keys [uri]}]
        (let [f (URLDecoder/decode uri)
-             index-file (str settings-editor-dir "/index.html")]
+             index-file (str resources-path "/index.html")]
          (cond
            (= "/" f)
            (response index-file)
 
            (= "/settings.edn" f)
-           (response (str base-path f))
+           (response "bootstrap/settings.edn")
+
+           (str/ends-with? f ".cljs")
+           (response (str src-path f))
 
            :else
-           (response (str settings-editor-dir f)))))
+           (response (str resources-path f)))))
      opts)
     @(promise)))
