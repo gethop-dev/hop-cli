@@ -7,6 +7,7 @@
             [reagent.dom :as rdom]
             [settings :as settings]
             [sidebar]
+            [toolbar :as toolbar]
             [view :as view]))
 
 (def default-appdb
@@ -40,10 +41,12 @@
 (defn root-component []
   (let [active-view (rf/subscribe [::view/active-view])]
     (fn []
-      (case @active-view
-        :editor [editor/main]
-        :profile-picker [profile-picker/main]
-        [:div]))))
+      [:div.settings-editor
+       [toolbar/main]
+       (case @active-view
+         :editor [editor/main]
+         :profile-picker [profile-picker/main]
+         [:div])])))
 
 (rdom/render [root-component]
              (.getElementById js/document "app"))

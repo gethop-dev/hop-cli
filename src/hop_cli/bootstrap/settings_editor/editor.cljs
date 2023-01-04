@@ -1,33 +1,9 @@
 (ns editor
-  (:require [cljs.pprint :as pprint]
-            [clojure.edn :as edn]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [re-frame.core :as rf]
             [settings :as settings]
             [sidebar :as sidebar]
-            [view :as view]))
-
-(rf/reg-event-fx
- ::settings-file-loaded
- (fn [_ [_ {:keys [content] :as _file}]]
-   {:fx [[:dispatch [::settings/set-settings (edn/read-string content)]]]}))
-
-(rf/reg-event-fx
- ::save-settings-to-file
- (fn [{:keys [db]} _]
-   (let [settings-data (:settings db)
-         pprinted-settings (with-out-str (pprint/pprint settings-data))
-         file-name "settings.edn"
-         file-type "application/edn"]
-     {:fx [[:write-to-file {:file-name file-name
-                            :file-type file-type
-                            :data pprinted-settings}]]})))
-
-(rf/reg-event-fx
- ::read-settings-from-file
- (fn [_ [_ js-file]]
-   {:fx [[:read-from-file {:js-file js-file
-                           :on-read-evt [::settings-file-loaded]}]]}))
+            [toolbar :as toolbar]))
 
 (defn input
   [node opts conf]
@@ -154,40 +130,14 @@
   [node _]
   [:span (:name node)])
 
-(defn- event->js-files
-  [event]
-  (.. event  -target -files))
-
-(defn- handle-file-upload
-  [event]
-  (let [js-file (-> event
-                    event->js-files
-                    (aget 0))]
-    (rf/dispatch [::read-settings-from-file js-file])))
-
-(defn- settings-file-loader []
-  [:input.settings-file-loader
-   {:id "settings-file-loader-input"
-    :type "file"
-    :multiple false
-    :accept [".edn"]
-    :on-change handle-file-upload}])
-
 (defn main
   []
   (let [settings (rf/subscribe [::settings/settings])]
     (fn []
       (when (seq @settings)
-        [:div.settings-editor
+        [:div.settings-editor__main
          [sidebar/main @settings]
-         [:div.settings-editor__main
+         [:div.settings-editor__form
           (for [[index node] (keep-indexed vector @settings)]
             ^{:key (:name node)}
-            (form-component node {:path [index]}))]
-         [:div.settings-editor__footer
-          [:button {:on-click #(rf/dispatch [::view/set-active-view :profile-picker])}
-           "Edit selected profiles"]
-          [:div.settings-file-loader
-           (settings-file-loader)]
-          [:button {:on-click #(rf/dispatch [::save-settings-to-file])}
-           "Save settings"]]]))))
+            (form-component node {:path [index]}))]]))))

@@ -6,28 +6,66 @@ html, body, #app {
   box-sizing: border-box;
 }
 
+.btn {
+  padding: 10px 12px;
+  text-decoration: none;
+  transition: background-color .2s;
+  cursor: pointer;
+  border-color: transparent;
+  border-width: 1px;
+  display: inline-block;
+  background-color: #1de9b6;
+  color: #160041;
+  font-size: 12px;
+}
+
 .settings-editor {
   display: grid;
-  grid-template-areas: "sidebar main" "footer footer";
-  grid-template-columns: 300px 1fr;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: auto minmax(0, 1fr);
   height: 100%;
 }
 
 .settings-editor__main {
-  grid-area: main;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+}
+
+.settings-editor__form {
   overflow-y: auto;
+}
+
+.settings-editor__toolbar {
+  display: flex;
+  justify-content: space-between;
+  background-color: #160041;
+}
+
+.settings-editor__control-buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 10px;
+  padding-right: 10px;
+}
+
+.settings-editor__title {
+  margin: 0;
+  padding: 10px;
+  font-size: 20px;
+  color: #fff;
+}
+
+.settings-editor__file-loader-label {
+  cursor: pointer;
+}
+
+.settings-editor__file-loader-input {
+  display: none;
 }
 
 .settings-editor__sidebar {
-  grid-area: sidebar;
   overflow-y: auto;
-}
-
-.settings-editor__footer {
-  grid-area: footer;
-  display: flex;
-  justify-content: flex-end;
+  margin-top: 20px;
 }
 
 .plain-group {
@@ -63,4 +101,12 @@ html, body, #app {
 .sidebar-element__title:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.settings-editor__profile-picker {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
