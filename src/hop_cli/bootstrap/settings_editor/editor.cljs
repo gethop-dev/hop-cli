@@ -60,6 +60,35 @@
            {:value (:name choice)}
            (name (:name choice))])])]))
 
+(defn checkbox-group
+  [{:keys [value choices] :as node} {:keys [path]} {:keys [label-class hide-choices?]}]
+  (let [id (str/join "-" path)]
+    [:div
+     [:label
+      {:for id
+       :class (when label-class
+                label-class)}
+      (name (:name node))]
+     [:br]
+     (when-not hide-choices?
+       [:div
+        (for [choice choices
+              :let [child-path (conj path :choices (:name choice))
+                    child-id (str "checkbox-" (settings/build-node-id child-path))]]
+          ^{:key (:name choice)}
+          [:div
+           [:input
+            {:id child-id
+             :type "checkbox"
+             :checked (boolean (get (set value) (:name choice)))
+             :on-change
+             (fn [_]
+               (let [new-value (settings/toggle-value value (:name choice))]
+                 (rf/dispatch [::settings/update-settings-value path new-value])))}]
+           [:label
+            {:for child-id}
+            (:name choice)]])])]))
+
 (defmulti form-component
   (fn [{:keys [type]} _opts]
     type))
@@ -119,8 +148,8 @@
   (let [selected-choices (settings/get-selected-multiple-choices node)]
     [:div.multiple-choice-group
      {:id (settings/build-node-id (:path opts))}
-     [select node opts {:multiple true
-                        :label-class "form__title"}]
+     [checkbox-group node opts {:hide-choices? (= :profiles (:name node))
+                                :label-class "form__title"}]
      (for [[index choice] selected-choices]
        ^{:key (:name choice)}
        (form-component choice (update opts :path conj :choices index)))]))
