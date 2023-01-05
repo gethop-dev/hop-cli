@@ -129,6 +129,7 @@
   [node opts]
   [input node opts {:placeholder "Auto-generated"
                     :value ""
+                    :title (str (:value node))
                     :disabled true}])
 
 (defn reference->message
