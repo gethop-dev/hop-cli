@@ -131,9 +131,29 @@
                     :value ""
                     :disabled true}])
 
+(defn reference->message
+  [reference]
+  (let [origin (cond
+                 (str/starts-with? reference ":cloud-provider.")
+                 (str
+                  (second (re-find #":cloud-provider.([^.]+)." reference))
+                  " cloud provider")
+                 (str/starts-with? reference ":project.profiles.")
+                 (str
+                  (second (re-find #":project.profiles.([^.]+)." reference))
+                  " profile"))]
+    (if origin
+      (str "Obtained from " origin)
+      (str "Obtained automatically"))))
+
 (defmethod form-component :ref
   [node opts]
-  [input node opts {:disabled true}])
+  (let [reference (str (:value node))
+        message (reference->message reference)]
+    [input node opts {:placeholder message
+                      :value ""
+                      :title reference
+                      :disabled true}]))
 
 (defmethod form-component :single-choice-group
   [node opts]
