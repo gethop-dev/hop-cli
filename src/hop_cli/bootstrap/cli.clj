@@ -31,37 +31,37 @@
   [{:cmds ["new-project"]
     :fn (partial bootstrap-handler [:dev :test])
     :error-fn error/generic-error-handler
-    :desc "Bootstraps a new HOP based project."
+    :desc "Command for bootstrapping a new HOP Application. That includes provisioning the infrastructure and generating the project files."
     :spec {:settings-file-path {:alias :s
-                                :desc "The HOP settings file path."
+                                :desc "Path to the HOP CLI settings file."
                                 :require true
                                 :validate (comp fs/exists? fs/file)
-                                :error-msgs {:validate "Couldn't find HOP setting.edn file. Aborting..."}}
+                                :error-msgs {:validate "Couldn't find HOP settings file. Aborting..."}}
            :target-project-dir {:alias :d
-                                :desc "Target directory to create the new project."
+                                :desc "Directory in which the new project will be created."
                                 :require true
                                 :validate (comp not fs/exists? fs/file)
                                 :error-msgs {:validate "Project directory already exists. Please input a different directory."}}}}
    {:cmds ["create-settings-file"]
     :fn copy-settings-handler
     :error-fn error/generic-error-handler
-    :desc "Creates a file with a copy of the default hop-cli configuration."
+    :desc "Creates a file with a copy of the default HOP CLI configuration."
     :spec {:settings-file-path {:alias :s
-                                :desc "Destination file."
+                                :desc "Path where the settings file will be copied to."
                                 :require true}}}
    {:cmds ["copy-settings"]
     :fn copy-settings-handler
     :error-fn error/generic-error-handler
     :desc "An alias for create-settings-file."
     :spec {:settings-file-path {:alias :s
-                                :desc "Destination file."
+                                :desc "Path where the settings file will be copied to."
                                 :require true}}}
    {:cmds ["prod-infrastructure"]
     :fn (partial bootstrap-handler [:prod])
     :error-fn error/generic-error-handler
-    :desc "Provision a production cloud infrastructure."
+    :desc "Command for provisioning the infrastructure for the production environment."
     :spec {:settings-file-path {:alias :s
-                                :desc "The HOP settings file path."
+                                :desc "Path to the HOP CLI settings file. It should be the same file used when bootstrapping the HOP Application."
                                 :require true
                                 :validate (comp fs/exists? fs/file)
                                 :error-msgs {:validate "Couldn't find HOP setting.edn file. Aborting..."}}

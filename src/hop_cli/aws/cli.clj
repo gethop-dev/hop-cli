@@ -30,16 +30,18 @@
    {:cmds ["env-vars" "sync"]
     :fn (partial generic-handler-wrapper env-vars/sync-env-vars)
     :error-fn error/generic-error-handler
-    :desc "Synchronize local environment variables with AWS SSMPS"
+    :desc "Command for synchronizing local environment variables with the remote environment variables storage in AWS SSM Parameter Store."
     :spec {:project-name
            {:alias :p :require true}
            :environment
-           {:alias :e :require true}
+           {:alias :e
+            :desc "Target environment to update. E.g., prod, test"
+            :require true}
            :file
            {:alias :f :require true}
            :kms-key-alias
            {:alias :k :require true
-            :desc "Alias or name of the KMS key"}
+            :desc "Alias of the AWS KMS Key that will be used to encrypt the environment variables."}
            :region
            {:alias :r :require false
             :desc "Region"}}}
@@ -47,16 +49,20 @@
    {:cmds ["env-vars" "download"]
     :fn (partial generic-handler-wrapper env-vars/download-env-vars)
     :error-fn error/generic-error-handler
-    :desc "Download environment variables from AWS SSMPS"
+    :desc "Command for downloading the environment variables from AWS SSM Parameter Store into a file."
     :spec {:project-name
            {:alias :p :require true}
            :environment
-           {:alias :e :require true}
+           {:alias :e
+            :desc "Environment from where the variables will be obtained. E.g., prod, test"
+            :require true}
            :file
-           {:alias :f :require true}
+           {:alias :f
+            :desc "Path where the environment variables will be saved to."
+            :require true}
            :kms-key-alias
            {:alias :k :require true
-            :desc "Alias or name of the KMS key"}
+            :desc "Alias of the AWS KMS Key that will be used to decrypt the environment variables."}
            :region
            {:alias :r :require false
             :desc "Region"}}}
@@ -64,7 +70,7 @@
    {:cmds ["env-vars" "apply-changes"]
     :fn (partial generic-handler-wrapper env-vars/apply-env-var-changes)
     :error-fn error/generic-error-handler
-    :desc "Apply environment variables changes in a AWS Elasticbeanstalk environment"
+    :desc "Command for triggering an AWS Elastic Beanstalk environment restart. In order to update the environment variables in AWS Elastic Beanstalk, the environment has to be restarted. This can be done automatically by AWS (deploying a new application version...), using the AWS Console, or by running this command."
     :spec {:project-name
            {:alias :p :require true}
            :environment
@@ -77,7 +83,7 @@
    {:cmds ["ssl" "create-and-upload-self-signed-certificate"]
     :fn (partial generic-handler-wrapper ssl/create-and-upload-self-signed-certificate)
     :error-fn error/generic-error-handler
-    :desc "Creates an uploads a SSL self-signed certificate to ACM"
+    :desc "Command for creating and uploading a self-signed certificate to AWS Certificate Manager."
     :spec {:region
            {:alias :r :require false
             :desc "Region"}}}
@@ -86,7 +92,7 @@
    {:cmds ["cognito" "create-user"]
     :fn cognito-create-user-handler
     :error-fn error/generic-error-handler
-    :desc "Create a user in the specified Cognito identity pool"
+    :desc "Create user in the specified AWS Cognito User Pool."
     :spec {:user-pool-id
            {:alias :up :require true}
            :username
@@ -95,7 +101,7 @@
            :attributes
            {:alias :a
             :coerce []
-            :desc "Attributes in the form of param1=value1 param2=value2..."}
+            :desc "User attributes in the form of `ATTRIBUTE1=VAL1 ATTRIBUTE2=VAL2`"}
            :temporary-password
            {:alias :p}
            :region
@@ -105,7 +111,7 @@
    {:cmds ["cognito" "set-user-password"]
     :fn (partial generic-handler-wrapper cognito/admin-set-user-password)
     :error-fn error/generic-error-handler
-    :desc "Change the password of the user"
+    :desc "Change the password of the specified user."
     :spec {:user-pool-id
            {:alias :up :require true}
            :username
@@ -122,7 +128,7 @@
    {:cmds ["cognito" "get-id-token"]
     :fn (partial generic-handler-wrapper cognito/get-id-token)
     :error-fn error/generic-error-handler
-    :desc "Get ID token for the user"
+    :desc "Get OIDC identity token for the specified user."
     :spec {:user-pool-id
            {:alias :up :require true}
            :client-id
@@ -139,7 +145,7 @@
    {:cmds ["rds" "start-port-forwarding-session"]
     :fn (partial generic-handler-wrapper rds/start-port-forwarding-session)
     :error-fn error/generic-error-handler
-    :desc "Execute command to start a port forwarding session to a RDS instance"
+    :desc "Execute command to start a port forwarding session to a RDS instance. \nIn order to use this command you will need to have installed `awscli` and the `AWS Session Manager plugin` for the mentioned tool."
     :spec {:project-name
            {:alias :p :require true}
            :environment

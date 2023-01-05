@@ -42,7 +42,7 @@
              (with-access-token api.user/create-user)
              (pprint))
     :error-fn error/generic-error-handler
-    :desc "Creates a new user in the specified realm"
+    :desc "Create user in the specified Keycloak Realm."
     :spec (concat
            admin-auth-spec
            [[:realm-name
@@ -54,7 +54,7 @@
             [:attributes
              {:alias :a
               :coerce []
-              :desc "Attributes in the form of param1=value1 param2=value2..."}]
+              :desc "User attributes in the form of `ATTRIBUTE1=VAL1 ATTRIBUTE2=VAL2`"}]
             [:first-name {}]
             [:last-name {}]
             [:email {}]
@@ -64,7 +64,7 @@
              (with-access-token api.user/set-user-password)
              (pprint))
     :error-fn error/generic-error-handler
-    :desc "Changes the password of the given user"
+    :desc "Change the password of the specified user."
     :spec (concat
            admin-auth-spec
            [[:realm-name
@@ -80,7 +80,7 @@
              (with-access-token api.user/get-user)
              (pprint))
     :error-fn error/generic-error-handler
-    :desc "Returns the details about the given user"
+    :desc "Get the details about the specified Keycloak user."
     :spec (concat
            admin-auth-spec
            [[:realm-name
@@ -90,7 +90,7 @@
    {:cmds ["get-id-token"]
     :fn #(pprint (api.openid-connect/get-id-token (:opts %1)))
     :error-fn error/generic-error-handler
-    :desc "Returns id, access and refresh tokens for the given user credentials"
+    :desc "Get OIDC identity token for the specified user."
     :spec [[:base-url
             {:alias :bu :require true}]
            [:realm-name

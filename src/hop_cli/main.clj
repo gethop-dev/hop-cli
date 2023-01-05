@@ -17,7 +17,7 @@
   [{:cmds ["bootstrap"]
     :fn (fn [_] (bootstrap.cli/main (rest args)))
     :error-fn error/generic-error-handler
-    :desc "HOP bootstrap commands"}
+    :desc "HOP Application bootstrap commands"}
    {:cmds ["aws"]
     :fn (fn [_] (aws.cli/main (rest args)))
     :error-fn error/generic-error-handler
