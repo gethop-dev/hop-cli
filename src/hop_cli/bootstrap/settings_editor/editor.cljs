@@ -4,17 +4,23 @@
             [settings :as settings]
             [sidebar :as sidebar]))
 
+(defn- build-docstring
+  [{:keys [docstring]}]
+  (when docstring
+    (vec (concat [(first docstring) {:class "form__docstring"}] (rest docstring)))))
+
 (defn input
   [node opts conf]
   (let [{:keys [value read-only?]} node
         {:keys [path]} opts
         id (str/join "-" path)]
-    [:div
+    [:div.form__field
      {:id (settings/build-node-id (:path opts))}
      [:label
-      {:for id}
-      (name (:name node))]
-     [:br]
+      {:for id
+       :title (name (:name node))}
+      (or (:tag node) (name (:name node)))]
+     [build-docstring node]
      [:input.form__input
       (merge
        {:id id
@@ -35,13 +41,14 @@
         {:keys [path]} opts
         {:keys [label-class]} conf
         id (str/join "-" path)]
-    [:div
+    [:div.form__field
      [:label
       {:for id
        :class (when label-class
-                label-class)}
-      (name (:name node))]
-     [:br]
+                label-class)
+       :title (name (:name node))}
+      (or (:tag node) (name (:name node)))]
+     [build-docstring node]
      (when-not (= (:name node) :profiles)
        [:select
         (merge
@@ -58,18 +65,19 @@
           ^{:key (:name choice)}
           [:option
            {:value (:name choice)}
-           (name (:name choice))])])]))
+           (or (:tag choice) (name (:name choice)))])])]))
 
 (defn checkbox-group
   [{:keys [value choices] :as node} {:keys [path]} {:keys [label-class hide-choices?]}]
   (let [id (str/join "-" path)]
-    [:div
+    [:div.form__field
      [:label
       {:for id
        :class (when label-class
-                label-class)}
-      (name (:name node))]
-     [:br]
+                label-class)
+       :title (name (:name node))}
+      (or (:tag node) (name (:name node)))]
+     [build-docstring node]
      (when-not hide-choices?
        [:div
         (for [choice choices
@@ -87,7 +95,7 @@
                  (rf/dispatch [::settings/update-settings-value path new-value])))}]
            [:label
             {:for child-id}
-            (:name choice)]])])]))
+            (or (:tag choice) (name (:name choice)))]])])]))
 
 (defmulti form-component
   (fn [{:keys [type]} _opts]
@@ -96,9 +104,12 @@
 (defmethod form-component :plain-group
   [node opts]
   (let [initial-path (:path opts)]
-    [:div.plain-group
+    [:div.form__field.plain-group
      {:id (settings/build-node-id (:path opts))}
-     [:span.form__title (name (:name node))]
+     [:span.form__title
+      {:title (name (:name node))}
+      (or (:tag node) (name (:name node)))]
+     [build-docstring node]
      (for [[index child] (keep-indexed vector (:value node))
            :let [path (conj initial-path :value index)]]
        ^{:key (:name child)}

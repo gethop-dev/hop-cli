@@ -11,7 +11,7 @@
             [view :as view]))
 
 (def default-appdb
-  {:active-view :profile-picker})
+  {:active-view :editor})
 
 (rf/reg-fx
  :do-get-request
