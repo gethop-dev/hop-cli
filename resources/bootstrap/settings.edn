@@ -422,7 +422,7 @@
                                                                                        :type :integer
                                                                                        :value 512}
                                                                                       {:name :admin-user
-                                                                                       :tag "Administrator user"
+                                                                                       :tag "Admin user"
                                                                                        :docstring [:span "Superuser for the Database instance."]
                                                                                        :type :plain-group
                                                                                        :value [{:name :username
@@ -653,7 +653,7 @@
                                                                                        :type :ref
                                                                                        :value :cloud-provider.aws.environment.test.optional-services.rds/port}
                                                                                       {:name :admin-user
-                                                                                       :tag "Administrator user"
+                                                                                       :tag "Admin user"
                                                                                        :docstring [:span "Superuser for the Database instance."]
                                                                                        :type :plain-group
                                                                                        :value [{:name :username
@@ -751,7 +751,7 @@
                                                                                        :type :ref
                                                                                        :value :cloud-provider.aws.environment.prod.optional-services.rds/port}
                                                                                       {:name :admin-user
-                                                                                       :tag "Administrator user"
+                                                                                       :tag "Admin user"
                                                                                        :docstring [:span "Superuser for the Database instance."]
                                                                                        :type :plain-group
                                                                                        :value [{:name :username
@@ -1948,7 +1948,7 @@
                                                                               :value ""}]}]}]}]}]}]}]}]}
  {:name :cloud-provider
   :tag "Cloud provider"
-  :docstring [:span "Cloud provider on which the HOP application will be hosted. The HOP Command Line Interface tool will take care of the provisioning of the needed infrastructure."]
+  :docstring [:span "Cloud provider on which the HOP Application will be hosted. The HOP Command Line Interface tool will take care of the provisioning of the needed infrastructure."]
   :type :single-choice-group
   :value :aws
   :choices [{:name :aws
@@ -1956,7 +1956,7 @@
              :type :plain-group
              :value [{:name :account
                       :tag "Account resources"
-                      :docstring [:span "Provisioning of the account wide resources needed to deploy HOP applications. This configuration is only used the first time a HOP application is bootstrapped. Then the previous resources are reused."]
+                      :docstring [:span "Provisioning of the account-wide resources needed to deploy HOP Applications. This configuration is only used the first time a HOP Application is bootstrapped. Then the previous resources are reused."]
                       :type :plain-group
                       :value [{:name :region
                                :tag "Region"
@@ -1966,7 +1966,7 @@
                               {:name :stack-name
                                :tag "Stack-name"
                                :docstring [:span
-                                           "Name for the Cloudformation stack that will prepare your AWS account for running HOP projects. The account stack name must be unique in your AWS account. Note that you should use the same account stack name for all of your HOP projects. If the stack with that name exists, it will be used and no new stacks will be created or updated. For more information about the HOP Cloudformation stacks please "
+                                           "Name for the Cloudformation stack that will prepare your AWS account for running HOP Projects. The account stack name must be unique in your AWS account. Note that you should use the same account stack name for all of your HOP Projects. If the stack with that name exists, it will be used and no new stacks will be created or updated. For more information about the HOP Cloudformation stacks please "
                                            [:a
                                             {:href "https://docs.gethop.dev/en/latest/reference/aws-infrastructure/main.html#cloudformation"
                                              :target "_blank"}
@@ -1988,10 +1988,11 @@
                                         :value "172.31.0.0/16"}]}]}
                      {:name :project
                       :tag "Project"
+                      :docstring [:span "Provisioning of the project-wide resources needed to deploy HOP Application. This configuration is used everytime a new HOP Project is created. The resources are reused for each environment within that project."]
                       :type :plain-group
                       :value [{:name :stack-name
                                :tag "Stack-name"
-                               :docstring [:span "Name for the Cloudformation stack that will be used to generate project-wide resources. The project stack name must be unique in your AWS account. For more information about the HOP Cloudformation stacks please"
+                               :docstring [:span "Name for the Cloudformation stack that will be used to generate project-wide resources. The project stack name must be unique in your AWS account. For more information about the HOP Cloudformation stacks please "
                                            [:a
                                             {:href "https://docs.gethop.dev/en/latest/reference/aws-infrastructure/main.html#cloudformation"
                                              :target "_blank"}
@@ -2019,152 +2020,210 @@
                                                  :value "172.31.1.0/24"}]}]}]}
                      {:name :environment
                       :tag "Environment"
+                      :docstring [:span "Provisioning of resources needed to run a specific environment belonging to a HOP Application."]
                       :type :plain-group
                       :value [{:name :dev
-                               :tag "Dev"
+                               :tag "Development environment"
                                :type :plain-group
                                :value [{:name :stack-name
-                                        :tag "Stack-name"
+                                        :tag "Stack name"
                                         :type :string
                                         :value "hop-project-dev"}
                                        {:name :optional-services
                                         :type :multiple-choice-group
+                                        :tag "Optional services"
+                                        :docstring [:span "Other Amazon Web Services that the environment may use."]
                                         :value []
                                         :choices [{:name :cognito
+                                                   :tag "Cognito"
                                                    :type :plain-group
                                                    :value []}
                                                   {:name :s3
+                                                   :tag "S3"
                                                    :type :plain-group
                                                    :value []}
                                                   {:name :cloudwatch
+                                                   :tag "CloudWatch"
                                                    :type :plain-group
                                                    :value [{:name :log-group-name
+                                                            :tag "Log group name"
+                                                            :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                             :type :string
                                                             :value "/aws/eb/hop-dev"}
                                                            {:name :retention-days
+                                                            :tag "Retention days"
+                                                            :docstring [:span "The amount of days after which the logs will be deleted."]
                                                             :type :integer
                                                             :value 1}]}]}]}
                               {:name :test
-                               :tag "Test"
+                               :tag "Testing environment"
                                :type :plain-group
                                :value [{:name :stack-name
-                                        :tag "Stack-name"
+                                        :tag "Stack name"
                                         :type :string
                                         :value "hop-project-test"}
                                        {:name :notifications-email
                                         :tag "Notifications email"
+                                        :docstring [:span "Email address used to receive ElasticBeanstalk notifications about a specific environment."]
                                         :type :string
                                         :value "devops+test@mail.invalid"}
                                        {:name :eb
+                                        :tag "ElasticBeanstalk"
                                         :type :plain-group
                                         :value [{:name :ec2-instance-type
+                                                 :tag "EC2 Instance type"
+                                                 :docsting [:span "Type of Amazon Web Services EC2 Instance. For all possible values, please refer to the "
+                                                            [:a {:href "https://aws.amazon.com/ec2/instance-types/"
+                                                                 :target "_blank"}
+                                                             "AWS EC2 Instance types documentation"]]
                                                  :type :string
                                                  :value "t3.micro"}]}
                                        {:name :optional-services
                                         :type :multiple-choice-group
+                                        :tag "Optional services"
+                                        :docstring [:span "Other Amazon Web Services that the testing environment may use."]
                                         :value []
                                         :choices [{:name :cognito
+                                                   :tag "Cognito"
                                                    :type :plain-group
                                                    :value []}
                                                   {:name :s3
+                                                   :tag "S3"
                                                    :type :plain-group
                                                    :value []}
                                                   {:name :rds
                                                    :tag "RDS"
+                                                   :docstring [:span "Configuration of AWS RDS service for the Database instance of the testing environment."]
                                                    :type :plain-group
                                                    :value [{:name :version
+                                                            :tag "Version"
                                                             :type :string
                                                             :value "12"}
                                                            {:name :port
+                                                            :tag "Port"
                                                             :type :string
                                                             :value "5432"}
                                                            {:name :name
+                                                            :tag "Database name"
                                                             :type :string
                                                             :value "ebdb"}
                                                            {:name :admin-user
+                                                            :tag "Admin user"
+                                                            :docstring [:span "Superuser for the Database instance."]
                                                             :type :plain-group
                                                             :value [{:name :username
-                                                                     :tag "Database admin username"
+                                                                     :tag "Username"
                                                                      :type :string
                                                                      :value "postgres"}
                                                                     {:name :password
-                                                                     :tag "Database admin password"
+                                                                     :tag "Password"
                                                                      :type :auto-gen-password
                                                                      :value {:length 24}}]}]}
                                                   {:name :cloudwatch
+                                                   :tag "CloudWatch"
                                                    :type :plain-group
                                                    :value [{:name :log-group-name
+                                                            :tag "Log group name"
+                                                            :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                             :type :string
                                                             :value "/aws/eb/hop-test"}
                                                            {:name :retention-days
+                                                            :tag "Retention days"
+                                                            :docstring [:span "The amount of days after which the logs will be deleted."]
                                                             :type :integer
                                                             :value 60}]}]}
                                        {:name :kms
                                         :tag "KMS"
+                                        :docstring [:span "Service used to manage symmetric encryption keys required by the testing environment."]
                                         :type :plain-group
                                         :value [{:name :key-alias
                                                  :tag "Key Alias"
+                                                 :docstring [:span "Alias of the KMS key. It should have a shape of: alias/<name>"]
                                                  :type :string
                                                  :value "alias/hop-test"}]}]}
                               {:name :prod
-                               :tag "Prod"
+                               :tag "Production environment"
                                :type :plain-group
                                :value [{:name :stack-name
-                                        :tag "Stack-name"
+                                        :tag "Stack name"
                                         :type :string
                                         :value "hop-project-prod"}
                                        {:name :notifications-email
                                         :tag "Notifications email"
+                                        :docstring [:span "Email address used to receive ElasticBeanstalk notifications about a specific environment."]
                                         :type :string
                                         :value "devops+prod@mail.invalid"}
                                        {:name :eb
+                                        :tag "ElasticBeanstalk"
                                         :type :plain-group
                                         :value [{:name :ec2-instance-type
+                                                 :tag "EC2 Instance type"
+                                                 :docsting [:span "Type of Amazon Web Services EC2 Instance. For all possible values, please refer to the "
+                                                            [:a {:href "https://aws.amazon.com/ec2/instance-types/"
+                                                                 :target "_blank"}
+                                                             "AWS EC2 Instance types documentation"]]
                                                  :type :string
                                                  :value "t3.micro"}]}
                                        {:name :optional-services
+                                        :tag "Optional services"
+                                        :docstring [:span "Other Amazon Web Services that the production environment may use."]
                                         :type :multiple-choice-group
                                         :value []
                                         :choices [{:name :cognito
+                                                   :tag "Cognito"
                                                    :type :plain-group
                                                    :value []}
                                                   {:name :s3
+                                                   :tag "S3"
                                                    :type :plain-group
                                                    :value []}
                                                   {:name :rds
                                                    :tag "RDS"
+                                                   :docstring [:span "Configuration of AWS RDS service for the Database instance of the production environment."]
                                                    :type :plain-group
                                                    :value [{:name :version
+                                                            :tag "Version"
                                                             :type :string
                                                             :value "12"}
                                                            {:name :port
+                                                            :tag "Port"
                                                             :type :string
                                                             :value "5432"}
                                                            {:name :name
+                                                            :tag "Name"
                                                             :type :string
                                                             :value "ebdb"}
                                                            {:name :admin-user
+                                                            :tag "Admin user"
+                                                            :docstring [:span "Superuser for the Database instance."]
                                                             :type :plain-group
                                                             :value [{:name :username
-                                                                     :tag "Database admin username"
+                                                                     :tag "Username"
                                                                      :type :string
                                                                      :value "postgres"}
                                                                     {:name :password
-                                                                     :tag "Database admin password"
+                                                                     :tag "Password"
                                                                      :type :auto-gen-password
                                                                      :value {:length 24}}]}]}
                                                   {:name :cloudwatch
+                                                   :tag "CloudWatch"
                                                    :type :plain-group
                                                    :value [{:name :log-group-name
+                                                            :tag "Log group name"
+                                                            :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                             :type :string
                                                             :value "/aws/eb/hop-prod"}
                                                            {:name :retention-days
+                                                            :tag "Retention days"
+                                                            :docstring [:span "The amount of days after which the logs will be deleted."]
                                                             :type :integer
                                                             :value 365}]}]}
                                        {:name :kms
                                         :tag "KMS"
+                                        :docstring [:span "Service used to manage symmetric encryption keys required by the production environment."]
                                         :type :plain-group
                                         :value [{:name :key-alias
                                                  :tag "Key Alias"
+                                                 :docstring [:span "Alias of the KMS key. It should have a shape of: alias/<name>"]
                                                  :type :string
                                                  :value "alias/hop-prod"}]}]}]}]}]}]
