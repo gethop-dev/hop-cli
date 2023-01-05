@@ -110,10 +110,12 @@
       {:title (name (:name node))}
       (or (:tag node) (name (:name node)))]
      [build-docstring node]
-     (for [[index child] (keep-indexed vector (:value node))
-           :let [path (conj initial-path :value index)]]
-       ^{:key (:name child)}
-       (form-component child (assoc opts :path path)))]))
+     (if-not (seq (:value node))
+       [:span "No available configuration options."]
+       (for [[index child] (keep-indexed vector (:value node))
+             :let [path (conj initial-path :value index)]]
+         ^{:key (:name child)}
+         (form-component child (assoc opts :path path))))]))
 
 (defmethod form-component :string
   [node opts]
