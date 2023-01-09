@@ -10,12 +10,11 @@
     (vec (concat [(first docstring) {:class "form__docstring"}] (rest docstring)))))
 
 (defn input
-  [node opts conf]
-  (let [{:keys [value read-only? pattern]} node
-        {:keys [path]} opts
+  [node _opts conf]
+  (let [{:keys [path value read-only? pattern]} node
         id (str/join "-" path)]
     [:div.form__field
-     {:id (settings/build-node-id (:path opts))}
+     {:id (settings/build-node-id path)}
      [:label
       {:for id
        :title (name (:name node))}
@@ -40,9 +39,8 @@
         (merge conf))]]))
 
 (defn select
-  [node opts conf]
-  (let [{:keys [value choices]} node
-        {:keys [path]} opts
+  [node _opts conf]
+  (let [{:keys [path value choices]} node
         {:keys [label-class]} conf
         id (str/join "-" path)]
     [:div.form__field
@@ -72,8 +70,8 @@
            (or (:tag choice) (name (:name choice)))])])]))
 
 (defn checkbox-group
-  [{:keys [value choices] :as node}
-   {:keys [path on-change-fn label-class hide-choices?]}
+  [{:keys [path value choices] :as node}
+   {:keys [on-change-fn label-class hide-choices?]}
    config]
   (let [id (str/join "-" path)]
     [:div.form__field
@@ -87,8 +85,7 @@
      (when-not hide-choices?
        [:div
         (for [choice choices
-              :let [child-path (conj path :choices (:name choice))
-                    child-id (str "checkbox-" (settings/build-node-id child-path))]]
+              :let [child-id (str "checkbox-" (settings/build-node-id (:path choice)))]]
           ^{:key (:name choice)}
           [:div
            [:input
@@ -112,19 +109,17 @@
 
 (defmethod form-component :plain-group
   [node opts]
-  (let [initial-path (:path opts)]
-    [:div.form__field.plain-group
-     {:id (settings/build-node-id (:path opts))}
-     [:span.form__title
-      {:title (name (:name node))}
-      (or (:tag node) (name (:name node)))]
-     [build-docstring node]
-     (if-not (seq (:value node))
-       [:span "No available configuration options."]
-       (for [[index child] (keep-indexed vector (:value node))
-             :let [path (conj initial-path :value index)]]
-         ^{:key (:name child)}
-         (form-component child (assoc opts :path path))))]))
+  [:div.form__field.plain-group
+   {:id (settings/build-node-id (:path node))}
+   [:span.form__title
+    {:title (name (:name node))}
+    (or (:tag node) (name (:name node)))]
+   [build-docstring node]
+   (if-not (seq (:value node))
+     [:span "No available configuration options."]
+     (for [child (:value node)]
+       ^{:key (:name child)}
+       (form-component child opts)))])
 
 (defmethod form-component :string
   [node opts]
@@ -188,24 +183,24 @@
 
 (defmethod form-component :single-choice-group
   [node opts]
-  (let [[index selected-choice] (settings/get-selected-single-choice node)]
+  (let [selected-choice (settings/get-selected-single-choice node)]
     [:div.single-choice-group
-     {:id (settings/build-node-id (:path opts))}
+     {:id (settings/build-node-id (:path node))}
      [select node opts {:label-class "form__title"}]
-     (form-component selected-choice (update opts :path conj :choices index))]))
+     (form-component selected-choice opts)]))
 
 (defmethod form-component :multiple-choice-group
   [node opts]
   (let [selected-choices (settings/get-selected-multiple-choices node)]
     [:div.multiple-choice-group
-     {:id (settings/build-node-id (:path opts))}
+     {:id (settings/build-node-id (:path node))}
      [checkbox-group node
       (merge opts {:hide-choices? (= :profiles (:name node))
                    :label-class "form__title"})
       {}]
-     (for [[index choice] selected-choices]
+     (for [choice selected-choices]
        ^{:key (:name choice)}
-       (form-component choice (update opts :path conj :choices index)))]))
+       (form-component choice opts))]))
 
 (defmethod form-component :default
   [node _]
@@ -220,6 +215,6 @@
          [sidebar/main @settings]
          [:form.settings-editor__form
           {:id "settings-editor-form"}
-          (for [[index node] (keep-indexed vector @settings)]
+          (for [node @settings]
             ^{:key (:name node)}
-            (form-component node {:path [index]}))]]))))
+            (form-component node {}))]]))))

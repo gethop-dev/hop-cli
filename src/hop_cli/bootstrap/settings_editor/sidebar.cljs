@@ -15,30 +15,30 @@
   [node opts]
   [:div.sidebar-element
    [:span.sidebar-element__title
-    {:on-click #(scroll-to-path (:path opts))}
+    {:on-click #(scroll-to-path (:path node))}
     (:name node)]
-   (for [[index child-node] (keep-indexed vector (:value node))
+   (for [child-node (:value node)
          :when (settings/group? child-node)]
-     (sidebar-element child-node (update opts :path conj :value index)))])
+     (sidebar-element child-node opts))])
 
 (defmethod sidebar-element :single-choice-group
   [node opts]
-  (let [[index child-node] (settings/get-selected-single-choice node)]
+  (let [child-node (settings/get-selected-single-choice node)]
     [:div.sidebar-element
      [:span.sidebar-element__title
-      {:on-click #(scroll-to-path (:path opts))}
+      {:on-click #(scroll-to-path (:path node))}
       (:name node)]
-     (sidebar-element child-node (update opts :path conj :choices index))]))
+     (sidebar-element child-node opts)]))
 
 (defmethod sidebar-element :multiple-choice-group
   [node opts]
   (let [children (settings/get-selected-multiple-choices node)]
     [:div.sidebar-element
      [:span.sidebar-element__title
-      {:on-click #(scroll-to-path (:path opts))}
+      {:on-click #(scroll-to-path (:path node))}
       (:name node)]
-     (for [[index child-node] children]
-       (sidebar-element child-node (update opts :path conj :choices index)))]))
+     (for [child-node children]
+       (sidebar-element child-node opts))]))
 
 (defmethod sidebar-element :default
   [_ _]
@@ -47,5 +47,5 @@
 (defn main
   [settings]
   [:div.settings-editor__sidebar
-   (for [[index node] (keep-indexed vector settings)]
-     (sidebar-element node {:path [index]}))])
+   (for [node settings]
+     (sidebar-element node {}))])

@@ -13,7 +13,7 @@
 (rf/reg-event-fx
  ::save-settings-to-file
  (fn [{:keys [db]} _]
-   (let [settings-data (:settings db)
+   (let [settings-data (settings/remove-paths (:settings db))
          pprinted-settings (with-out-str (pprint/pprint settings-data))
          file-name "settings.edn"
          file-type "application/edn"]

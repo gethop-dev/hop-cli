@@ -36,7 +36,6 @@
            [:h1 "Profiles selection"]
            [:span "Some profiles have dependencies over others. Therefore, the application will enforce their selection on your behalf."]
            [:div.settings-editor__profile-picker-choices
-            [editor/checkbox-group profile-node {:path profile-node-path
-                                                 :on-change-fn (profile-picker-handler profile-node)} {}]]
+            [editor/checkbox-group profile-node {:on-change-fn (profile-picker-handler profile-node)} {}]]
            [:button.btn {:on-click #(rf/dispatch [::view/set-active-view :editor])}
             "Next"]])))))
