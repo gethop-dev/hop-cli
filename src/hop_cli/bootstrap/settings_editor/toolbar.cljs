@@ -38,7 +38,7 @@
                     (aget 0))]
     (rf/dispatch [::read-settings-from-file js-file])))
 
-(defn- settings-file-loader []
+(defn- settings-file-import-btn []
   [:div.settings-editor__file-loader
    [:label.btn.settings-editor__file-loader-label
     {:for "settings-file-loader-input"}
@@ -50,13 +50,30 @@
      :accept [".edn"]
      :on-change handle-file-upload}]])
 
-(defn main
+(defn- settings-form-valid?
   []
+  (let [js-element (js/document.getElementById "settings-editor-form")]
+    (.checkValidity js-element)))
+
+(defn- settings-file-export-btn
+  [active-view]
+  (let [disabled? (not= active-view :editor)]
+    [:button.btn
+     {:class (when disabled? "btn--disabled")
+      :disabled disabled?
+      :on-click
+      (fn [_]
+        (if (settings-form-valid?)
+          (rf/dispatch [::save-settings-to-file])
+          (js/alert "Some setting configuration option values are invalid.")))}
+     "Export settings"]))
+
+(defn main
+  [active-view]
   [:div.settings-editor__toolbar
    [:h1.settings-editor__title "HOP CLI Settings Editor"]
    [:div.settings-editor__control-buttons
     [:button.btn {:on-click #(rf/dispatch [::view/set-active-view :profile-picker])}
      "Edit selected profiles"]
-    [settings-file-loader]
-    [:button.btn {:on-click #(rf/dispatch [::save-settings-to-file])}
-     "Export settings"]]])
+    [settings-file-import-btn]
+    [settings-file-export-btn active-view]]])

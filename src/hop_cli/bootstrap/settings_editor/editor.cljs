@@ -11,7 +11,7 @@
 
 (defn input
   [node opts conf]
-  (let [{:keys [value read-only?]} node
+  (let [{:keys [value read-only? pattern]} node
         {:keys [path]} opts
         id (str/join "-" path)]
     [:div.form__field
@@ -22,8 +22,9 @@
       (or (:tag node) (name (:name node)))]
      [build-docstring node]
      [:input.form__input
-      (merge
+      (cond->
        {:id id
+        :required true
         :disabled read-only?
         :value (str value)
         :on-change (fn [e]
@@ -33,7 +34,10 @@
                                    :boolean (boolean (.. e -target -checked))
                                    (.. e -target -value))]
                        (rf/dispatch [::settings/update-settings-value path value])))}
-       conf)]]))
+        pattern
+        (assoc :pattern pattern)
+        conf
+        (merge conf))]]))
 
 (defn select
   [node opts conf]
@@ -119,11 +123,19 @@
 
 (defmethod form-component :string
   [node opts]
-  [input node opts {}])
+  [input node opts {:type "text"}])
 
 (defmethod form-component :keyword
   [node opts]
-  [input node opts {}])
+  [input node opts {:type "text"}])
+
+(defmethod form-component :url
+  [node opts]
+  [input node opts {:type "url"}])
+
+(defmethod form-component :email
+  [node opts]
+  [input node opts {:type "email"}])
 
 (defmethod form-component :integer
   [node opts]
@@ -199,7 +211,8 @@
       (when (seq @settings)
         [:div.settings-editor__main
          [sidebar/main @settings]
-         [:div.settings-editor__form
+         [:form.settings-editor__form
+          {:id "settings-editor-form"}
           (for [[index node] (keep-indexed vector @settings)]
             ^{:key (:name node)}
             (form-component node {:path [index]}))]]))))

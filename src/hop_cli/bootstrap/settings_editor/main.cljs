@@ -42,7 +42,7 @@
   (let [active-view (rf/subscribe [::view/active-view])]
     (fn []
       [:div.settings-editor
-       [toolbar/main]
+       [toolbar/main @active-view]
        (case @active-view
          :editor [editor/main]
          :profile-picker [profile-picker/main]

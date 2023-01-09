@@ -27,10 +27,17 @@
 (def setting-tag-schema
   [:string {:min 1}])
 
+(def setting-pattern-schema
+  [:string])
+
+(def setting-read-only-schema
+  [:boolean])
+
 (def setting-type-schema
   [:enum
    ;; non-group values
    :integer :nat-int :float :number :string
+   :url :email
    :regexp :char :boolean :symbol :list :keyword
    :vector :map :set :uuid :inst :ref
    :password :auto-gen-password
@@ -54,7 +61,9 @@
    [:docstring {:optional true}  setting-docstring-schema]
    [:min-hop-version {:optional true} setting-min-hop-version-schema]
    [:tag {:optional true} setting-tag-schema]
-   [:type setting-type-schema]])
+   [:type setting-type-schema]
+   [:pattern setting-pattern-schema]
+   [:read-only? setting-read-only-schema]])
 
 (def setting-value-integer-schema
   ;; Built-in, in malli.core/predicate-schemas
@@ -122,6 +131,12 @@
 (def setting-value-password-schema
   string?)
 
+(def setting-value-url-schema
+  string?)
+
+(def setting-value-email-schema
+  string?)
+
 (def setting-value-auto-gen-password-schema
   [:map
    [:length pos-int?]])
@@ -159,6 +174,8 @@
                [:auto-gen-password (conj setting-common-schema [:value setting-value-auto-gen-password-schema])]
                [:keyword (conj setting-common-schema [:value setting-value-keyword-schema])]
                [:ref (conj setting-common-schema [:value setting-value-ref-schema])]
+               [:email (conj setting-common-schema [:value setting-value-email-schema])]
+               [:url (conj setting-common-schema [:value setting-value-url-schema])]
                [:plain-group
                 ;; `:plain-group` key is special, as it contains a vector of other
                 ;; `settings-schema`. In this case we need to use a local registry

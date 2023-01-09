@@ -6,7 +6,8 @@
            :tag "Name"
            :docstring [:span "Single word or composite name separated by dashes or underscores."]
            :type :string
-           :value "hop"}
+           :value "hop"
+           :pattern "[a-zA-Z_-]+"}
           {:name :docker
            :tag "Docker"
            :type :plain-group
@@ -37,7 +38,8 @@
                             {:name :domain
                              :tag "Domain"
                              :type :string
-                             :value "localhost"}]}
+                             :value "localhost"
+                             :pattern "[^\\s]+"}]}
                    {:name :test
                     :tag "Testing environment"
                     :type :plain-group
@@ -49,7 +51,8 @@
                             {:name :domain
                              :tag "Domain"
                              :type :string
-                             :value "app.test.invalid"}]}
+                             :value "app.test.invalid"
+                             :pattern "[^\\s]+"}]}
                    {:name :prod
                     :tag "Production environment"
                     :type :plain-group
@@ -61,7 +64,8 @@
                             {:name :domain
                              :tag "Domain"
                              :type :string
-                             :value "app.invalid"}]}]}
+                             :value "app.invalid"
+                             :pattern "[^\\s]+"}]}]}
           {:name :profiles
            :tag "Profiles"
            :type :multiple-choice-group
@@ -131,7 +135,8 @@
                                         :tag "Profile prefix"
                                         :docstring [:span "Prefix for the AWS profiles used to run the project. The prefix will be used in the following notation: <prefix>/<name>"]
                                         :type :string
-                                        :value "hop"}]}
+                                        :value "hop"
+                                        :pattern "[^\\s]+"}]}
                               {:name :credentials
                                :type :plain-group
                                :tag "Credentials"
@@ -265,8 +270,8 @@
                                                  :tag "Min log level"
                                                  :docstring [:span "Minimum logging level configuration. Possible values: :trace, :debug, :info, :warn, :error, :fatal or :report."]
                                                  :type :keyword
-                                                 :read-only? true
-                                                 :value :info}]}
+                                                 :value :info
+                                                 :pattern "trace|debug|info|warn|error|fatal|report"}]}
                                        {:name :test
                                         :tag "Testing environment"
                                         :type :plain-group
@@ -279,7 +284,7 @@
                                                  :tag "Min log level"
                                                  :docstring [:span "Minimum logging level configuration. Possible values: :trace, :debug, :info, :warn, :error, :fatal or :report."]
                                                  :type :keyword
-                                                 :read-only? true
+                                                 :pattern "trace|debug|info|warn|error|fatal|report"
                                                  :value :info}]}
                                        {:name :prod
                                         :tag "Production environment"
@@ -293,11 +298,12 @@
                                                  :tag "Min log level"
                                                  :docstring [:span "Minimum logging level configuration. Possible values: :trace, :debug, :info, :warn, :error, :fatal or :report."]
                                                  :type :keyword
-                                                 :read-only? true
+                                                 :pattern "trace|debug|info|warn|error|fatal|report"
                                                  :value :info}]}]}]}
                      {:name :object-storage-s3
                       :tag "Object Storage - AWS S3"
                       :docstring [:span "Profile for setting up an Object Storage boundary for using Amazon Web Services S3."]
+                      :depends-on-profiles [:core :aws]
                       :type :plain-group
                       :value [{:name :environment
                                :tag "Environment"
@@ -324,7 +330,8 @@
                                                             :value [{:name :name
                                                                      :tag "Name"
                                                                      :type :string
-                                                                     :value ""}]}]}]}
+                                                                     :value ""
+                                                                     :pattern "[^\\s]+"}]}]}]}
                                        {:name :test
                                         :tag "Testing environment"
                                         :type :plain-group
@@ -347,7 +354,8 @@
                                                             :value [{:name :name
                                                                      :tag "Name"
                                                                      :type :string
-                                                                     :value ""}]}]}]}
+                                                                     :value ""
+                                                                     :pattern "[^\\s]+"}]}]}]}
                                        {:name :prod
                                         :tag "Production environment"
                                         :type :plain-group
@@ -370,10 +378,12 @@
                                                             :value [{:name :name
                                                                      :tag "Name"
                                                                      :type :string
-                                                                     :value ""}]}]}]}]}]}
+                                                                     :value ""
+                                                                     :pattern "[^\\s]+"}]}]}]}]}]}
                      {:name :persistence-sql
                       :tag "Persistence - SQL"
                       :docstring [:span "Profile for setting up a SQL boundary for data persistence."]
+                      :depends-on-profiles [:core]
                       :type :plain-group
                       :value [{:name :database
                                :type :plain-group
@@ -381,7 +391,8 @@
                                :value [{:name :version
                                         :tag "Postgres version"
                                         :type :string
-                                        :value "12"}]}
+                                        :value "12"
+                                        :pattern "[^\\s]+"}]}
                               {:name :deployment
                                :tag "Deployment"
                                :docstring [:span "The settings of the profile are splitted between two sets of deployment groups: development and deployment."]
@@ -412,11 +423,13 @@
                                                                               :value [{:name :name
                                                                                        :tag "Name"
                                                                                        :type :string
-                                                                                       :value "ebdb"}
+                                                                                       :value "db"
+                                                                                       :pattern "[^\\s]+"}
                                                                                       {:name :port
                                                                                        :tag "Port"
                                                                                        :type :string
-                                                                                       :value "5432"}
+                                                                                       :value "5432"
+                                                                                       :pattern "[0-9]{4}"}
                                                                                       {:name :memory-limit-mb
                                                                                        :tag "Container memory limit (mb)"
                                                                                        :type :integer
@@ -428,7 +441,8 @@
                                                                                        :value [{:name :username
                                                                                                 :tag "Username"
                                                                                                 :type :string
-                                                                                                :value "postgres"}
+                                                                                                :value "postgres"
+                                                                                                :pattern "[^\\s]+"}
                                                                                                {:name :password
                                                                                                 :tag "Password"
                                                                                                 :type :string
@@ -440,7 +454,8 @@
                                                                                        :value [{:name :username
                                                                                                 :tag "Username"
                                                                                                 :type :string
-                                                                                                :value "app"}
+                                                                                                :value "app"
+                                                                                                :pattern "[^\\s]+"}
                                                                                                {:name :password
                                                                                                 :tag "Password"
                                                                                                 :type :string
@@ -454,6 +469,7 @@
                                                                                                              "PostgreSQL schema"]
                                                                                                             " for the Clojure application."]
                                                                                                 :type :string
+                                                                                                :pattern "[^\\s]+"
                                                                                                 :value "app"}]}
                                                                                       {:name :other-users
                                                                                        :tag "Other database users"
@@ -466,6 +482,7 @@
                                                                                                   :value [{:name :username
                                                                                                            :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "keycloak"}
                                                                                                           {:name :password
                                                                                                            :tag  "Password"
@@ -473,6 +490,7 @@
                                                                                                            :value "sa"}
                                                                                                           {:name :schema
                                                                                                            :tag "Schema"
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :docstring [:span
                                                                                                                        [:a
                                                                                                                         {:href "https://www.postgresql.org/docs/current/ddl-schemas.html"
@@ -488,6 +506,7 @@
                                                                                                   :value [{:name :username
                                                                                                            :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana"}
                                                                                                           {:name :password
                                                                                                            :tag "Password"
@@ -495,6 +514,7 @@
                                                                                                            :value "sa"}
                                                                                                           {:name :schema
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana"
                                                                                                            :tag "Schema"
                                                                                                            :docstring [:span
@@ -510,6 +530,7 @@
                                                                                                   :value [{:name :username
                                                                                                            :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana_datasource"}
                                                                                                           {:name :password
                                                                                                            :tag "Password"
@@ -536,18 +557,22 @@
                                                                               :value [{:name :type
                                                                                        :tag "Type"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "postgresql"}
                                                                                       {:name :host
                                                                                        :tag "Host"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "db.host"}
                                                                                       {:name :name
                                                                                        :tag "Name"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "ebdb"}
                                                                                       {:name :port
                                                                                        :tag "Port"
                                                                                        :type :string
+                                                                                       :pattern "[0-9]{4}"
                                                                                        :value "5432"}
                                                                                       {:name :app-user
                                                                                        :tag "Clojure application user"
@@ -556,6 +581,7 @@
                                                                                        :value [{:name :username
                                                                                                 :tag "Username"
                                                                                                 :type :string
+                                                                                                :pattern "[^\\s]+"
                                                                                                 :value "app"}
                                                                                                {:name :password
                                                                                                 :tag "Password"
@@ -564,6 +590,7 @@
                                                                                                {:name :schema
                                                                                                 :tag "Schema"
                                                                                                 :type :string
+                                                                                                :pattern "[^\\s]+"
                                                                                                 :value "app"}]}
                                                                                       {:name :other-users
                                                                                        :tag "Other database users"
@@ -576,6 +603,7 @@
                                                                                                   :value [{:name :username
                                                                                                            :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "keycloak"}
                                                                                                           {:name :password
                                                                                                            :tag "Password"
@@ -584,6 +612,7 @@
                                                                                                           {:name :schema
                                                                                                            :tag "Schema"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "keycloak"}]}
                                                                                                  {:name :grafana
                                                                                                   :tag "Grafana"
@@ -591,6 +620,7 @@
                                                                                                   :value [{:name :username
                                                                                                            :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana"}
                                                                                                           {:name :password
                                                                                                            :tag "Password"
@@ -599,6 +629,7 @@
                                                                                                           {:name :schema
                                                                                                            :tag "Schema"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana"}]}
                                                                                                  {:name :grafana-datasource
                                                                                                   :tag "Grafana datasource"
@@ -607,6 +638,7 @@
                                                                                                   :value [{:name :username
                                                                                                            :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana_datasource"}
                                                                                                           {:name :password
                                                                                                            :tag "Password"
@@ -669,8 +701,9 @@
                                                                                        :docstring [:span "User that the Clojure application will use to connect to the database."]
                                                                                        :type :plain-group
                                                                                        :value [{:name :username
-                                                                                                :tag "Username "
+                                                                                                :tag "Username"
                                                                                                 :type :string
+                                                                                                :pattern "[^\\s]+"
                                                                                                 :value "app"}
                                                                                                {:name :password
                                                                                                 :tag "Password"
@@ -679,6 +712,7 @@
                                                                                                {:name :schema
                                                                                                 :tag "Schema"
                                                                                                 :type :string
+                                                                                                :pattern "[^\\s]+"
                                                                                                 :value "app"}]}
                                                                                       {:name :other-users
                                                                                        :tag "Other database users"
@@ -691,6 +725,7 @@
                                                                                                   :value [{:name :username
                                                                                                            :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "keycloak"}
                                                                                                           {:name :password
                                                                                                            :tag "Password"
@@ -699,6 +734,7 @@
                                                                                                           {:name :schema
                                                                                                            :tag "Schema"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "keycloak"}]}
                                                                                                  {:name :grafana
                                                                                                   :tag "Grafana"
@@ -706,6 +742,7 @@
                                                                                                   :value [{:name :username
                                                                                                            :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana"}
                                                                                                           {:name :password
                                                                                                            :tag "Password"
@@ -714,6 +751,7 @@
                                                                                                           {:name :schema
                                                                                                            :tag "Schema"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana"}]}
                                                                                                  {:name :grafana-datasource
                                                                                                   :tag "Grafana datasource"
@@ -722,6 +760,7 @@
                                                                                                   :value [{:name :username
                                                                                                            :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana_datasource"}
                                                                                                           {:name :password
                                                                                                            :tag "Password"
@@ -767,8 +806,9 @@
                                                                                        :docstring [:span "User that the Clojure application will use to connect to the database."]
                                                                                        :type :plain-group
                                                                                        :value [{:name :username
-                                                                                                :tag "Username "
+                                                                                                :tag "Username"
                                                                                                 :type :string
+                                                                                                :pattern "[^\\s]+"
                                                                                                 :value "app"}
                                                                                                {:name :password
                                                                                                 :tag "Password"
@@ -777,6 +817,7 @@
                                                                                                {:name :schema
                                                                                                 :tag "Schema"
                                                                                                 :type :string
+                                                                                                :pattern "[^\\s]+"
                                                                                                 :value "app"}]}
                                                                                       {:name :other-users
                                                                                        :tag "Other database users"
@@ -789,6 +830,7 @@
                                                                                                   :value [{:name :username
                                                                                                            :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "keycloak"}
                                                                                                           {:name :password
                                                                                                            :tag "Password"
@@ -797,6 +839,7 @@
                                                                                                           {:name :schema
                                                                                                            :tag "Schema"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "keycloak"}]}
                                                                                                  {:name :grafana
                                                                                                   :tag "Grafana"
@@ -804,6 +847,7 @@
                                                                                                   :value [{:name :username
                                                                                                            :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana"}
                                                                                                           {:name :password
                                                                                                            :tag "Password"
@@ -812,14 +856,16 @@
                                                                                                           {:name :schema
                                                                                                            :tag "Schema"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana"}]}
                                                                                                  {:name :grafana-datasource
                                                                                                   :tag "Grafana datasource"
                                                                                                   :docstring [:span "User that Grafana will use to interact with the database to fetch data needed in the Dashboards."]
                                                                                                   :type :plain-group
                                                                                                   :value [{:name :username
-                                                                                                           :tag Username
+                                                                                                           :tag "Username"
                                                                                                            :type :string
+                                                                                                           :pattern "[^\\s]+"
                                                                                                            :value "grafana_datasource"}
                                                                                                           {:name :password
                                                                                                            :tag "Password"
@@ -829,9 +875,11 @@
                      {:name :bi-grafana
                       :tag "Business Intelligence - Grafana"
                       :type :plain-group
+                      :depends-on-profiles [:core :persistence-sql]
                       :value [{:name :version
                                :tag "Grafana version"
                                :type :string
+                               :pattern "[^\\s]+"
                                :value "9.2.6"}
                               {:name :deployment
                                :tag "Deployment"
@@ -879,6 +927,7 @@
                                                                               :type :plain-group
                                                                               :value [{:name :username
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :tag "Username"
                                                                                        :value "admin"}
                                                                                       {:name :password
@@ -919,6 +968,7 @@
                                                                               :type :plain-group
                                                                               :value [{:name :username
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :tag "Username"
                                                                                        :value "grafana_integration"}
                                                                                       {:name :password
@@ -962,23 +1012,24 @@
                                                                                          :type :plain-group
                                                                                          :value [{:name :token-url
                                                                                                   :tag "Token Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :api-url
                                                                                                   :tag "Api Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :auth-url
                                                                                                   :tag "Auth Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :logout-url
                                                                                                   :tag "Logout Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :client-id
                                                                                                   :tag "Client Id"
                                                                                                   :type :string
+                                                                                                  :pattern "[^\\s]+"
                                                                                                   :value ""}
                                                                                                  {:name :client-secret
                                                                                                   :tag "Client Secret"
@@ -1001,7 +1052,7 @@
                                                                      :type :plain-group
                                                                      :value [{:name :uri
                                                                               :docstring [:span "E.g., http://localhost/grafana"]
-                                                                              :type :string
+                                                                              :type :url
                                                                               :tag "Uri"
                                                                               :value ""}
                                                                              {:name :sso
@@ -1013,6 +1064,7 @@
                                                                               :tag "Clojure application integration"
                                                                               :value [{:name :username
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :tag "Username"
                                                                                        :value ""}
                                                                                       {:name :password
@@ -1056,6 +1108,7 @@
                                                                               :type :plain-group
                                                                               :value [{:name :username
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :tag "Username"
                                                                                        :value "admin"}
                                                                                       {:name :password
@@ -1096,6 +1149,7 @@
                                                                               :docstring [:span "User that the Clojure application will use to interact with Grafana."]
                                                                               :value [{:name :username
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :tag "Username"
                                                                                        :value "grafana_integration"}
                                                                                       {:name :password
@@ -1139,23 +1193,24 @@
                                                                                          :type :plain-group
                                                                                          :value [{:name :token-url
                                                                                                   :tag "Token Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :api-url
                                                                                                   :tag "Api Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :auth-url
                                                                                                   :tag "Auth Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :logout-url
                                                                                                   :tag "Logout Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :client-id
                                                                                                   :tag "Client Id"
                                                                                                   :type :string
+                                                                                                  :pattern "[^\\s]+"
                                                                                                   :value ""}
                                                                                                  {:name :client-secret
                                                                                                   :tag "Client Secret"
@@ -1182,6 +1237,7 @@
                                                                               :type :plain-group
                                                                               :value [{:name :username
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :tag "Username"
                                                                                        :value "admin"}
                                                                                       {:name :password
@@ -1222,6 +1278,7 @@
                                                                               :docstring [:span "User that the Clojure application will use to interact with Grafana."]
                                                                               :value [{:name :username
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :tag "Username"
                                                                                        :value "grafana_integration"}
                                                                                       {:name :password
@@ -1265,23 +1322,24 @@
                                                                                          :type :plain-group
                                                                                          :value [{:name :token-url
                                                                                                   :tag "Token Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :api-url
                                                                                                   :tag "Api Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :auth-url
                                                                                                   :tag "Auth Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :logout-url
                                                                                                   :tag "Logout Url"
-                                                                                                  :type :string
+                                                                                                  :type :url
                                                                                                   :value ""}
                                                                                                  {:name :client-id
                                                                                                   :tag "Client Id"
                                                                                                   :type :string
+                                                                                                  :pattern "[^\\s]+"
                                                                                                   :value ""}
                                                                                                  {:name :client-secret
                                                                                                   :tag "Client Secret"
@@ -1303,7 +1361,7 @@
                                                                      :type :plain-group
                                                                      :tag "Testing environment"
                                                                      :value [{:name :uri
-                                                                              :type :string
+                                                                              :type :url
                                                                               :tag "Uri"
                                                                               :docstring [:span "E.g., http://localhost/grafana"]
                                                                               :value ""}
@@ -1316,6 +1374,7 @@
                                                                               :tag "Clojure application integration"
                                                                               :value [{:name :username
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :tag "Username"
                                                                                        :value ""}
                                                                                       {:name :password
@@ -1326,7 +1385,7 @@
                                                                      :type :plain-group
                                                                      :tag "Production environment"
                                                                      :value [{:name :uri
-                                                                              :type :string
+                                                                              :type :url
                                                                               :tag "Uri"
                                                                               :docstring [:span "E.g., http://localhost/grafana"]
                                                                               :value ""}
@@ -1339,6 +1398,7 @@
                                                                               :tag "Clojure application integration"
                                                                               :value [{:name :username
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :tag "Username"
                                                                                        :value ""}
                                                                                       {:name :password
@@ -1348,10 +1408,12 @@
                      {:name :auth-keycloak
                       :tag "Authentication - Keycloak"
                       :docstring [:span "Profile for setting up Keycloak as OIDC authentication provider."]
+                      :depends-on-profiles [:core :persistence-sql]
                       :type :plain-group
                       :value [{:name :version
                                :tag "Version"
                                :type :string
+                               :pattern "[^\\s]+"
                                :value "20.0"}
                               {:name :deployment
                                :tag "Deployment"
@@ -1384,6 +1446,7 @@
                                                                               :value [{:name :username
                                                                                        :tag "Username"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "admin"}
                                                                                       {:name :password
                                                                                        :tag "Password"
@@ -1400,6 +1463,7 @@
                                                                               :value [{:name :id
                                                                                        :tag "Id"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "hop-spa-XXXXXXXX"}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
@@ -1412,6 +1476,7 @@
                                                                                          :value [{:name :id
                                                                                                   :tag "Id"
                                                                                                   :type :string
+                                                                                                  :pattern "[^\\s]+"
                                                                                                   :value "hop-grafana-XXXXXXX"}
                                                                                                  {:name :secret
                                                                                                   :tag "Secret"
@@ -1423,6 +1488,7 @@
                                                                               :value [{:name :name
                                                                                        :tag "Name"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "hop"}]}
                                                                              {:name :theme
                                                                               :tag "Theme"
@@ -1430,6 +1496,7 @@
                                                                               :value [{:name :name
                                                                                        :tag "Name"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "hop"}]}
                                                                              {:name :database
                                                                               :tag "Database"
@@ -1480,11 +1547,12 @@
                                                                               :value [{:name :name
                                                                                        :tag "Name"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value ""}]}
                                                                              {:name :uri
                                                                               :tag "URI"
                                                                               :docstring [:span "E.g., http://localhost/auth"]
-                                                                              :type :string
+                                                                              :type :url
                                                                               :value ""}
                                                                              {:name :app-client
                                                                               :tag "Clojure application app-client"
@@ -1492,6 +1560,7 @@
                                                                               :value [{:name :id
                                                                                        :tag "Id"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value ""}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
@@ -1504,6 +1573,7 @@
                                                                                          :value [{:name :id
                                                                                                   :tag "Id"
                                                                                                   :type :string
+                                                                                                  :pattern "[^\\s]+"
                                                                                                   :value ""}
                                                                                                  {:name :secret
                                                                                                   :tag "Secret"
@@ -1535,6 +1605,7 @@
                                                                               :value [{:name :username
                                                                                        :tag "Username"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "admin"}
                                                                                       {:name :password
                                                                                        :tag "Password"
@@ -1551,6 +1622,7 @@
                                                                               :value [{:name :id
                                                                                        :tag "Id"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "hop-spa-XXXXXXXX"}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
@@ -1563,6 +1635,7 @@
                                                                                          :value [{:name :id
                                                                                                   :tag "Id"
                                                                                                   :type :string
+                                                                                                  :pattern "[^\\s]+"
                                                                                                   :value "hop-grafana-XXXXXXX"}
                                                                                                  {:name :secret
                                                                                                   :tag "Secret"
@@ -1574,6 +1647,7 @@
                                                                               :value [{:name :name
                                                                                        :tag "Name"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "hop"}]}
                                                                              {:name :theme
                                                                               :tag "Theme"
@@ -1581,6 +1655,7 @@
                                                                               :value [{:name :name
                                                                                        :tag "Name"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "hop"}]}
                                                                              {:name :database
                                                                               :tag "Database"
@@ -1619,6 +1694,7 @@
                                                                               :value [{:name :username
                                                                                        :tag "Username"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "admin"}
                                                                                       {:name :password
                                                                                        :tag "Password"
@@ -1635,6 +1711,7 @@
                                                                               :value [{:name :id
                                                                                        :tag "Id"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "hop-spa-XXXXXXXX"}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
@@ -1647,6 +1724,7 @@
                                                                                          :value [{:name :id
                                                                                                   :tag "Id"
                                                                                                   :type :string
+                                                                                                  :pattern "[^\\s]+"
                                                                                                   :value "hop-grafana-XXXXXXX"}
                                                                                                  {:name :secret
                                                                                                   :tag "Secret"
@@ -1658,6 +1736,7 @@
                                                                               :value [{:name :name
                                                                                        :tag "Name"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "hop"}]}
                                                                              {:name :theme
                                                                               :tag "Theme"
@@ -1665,6 +1744,7 @@
                                                                               :value [{:name :name
                                                                                        :tag "Name"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value "hop"}]}
                                                                              {:name :database
                                                                               :tag "Database"
@@ -1715,11 +1795,12 @@
                                                                               :value [{:name :name
                                                                                        :tag "Name"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value ""}]}
                                                                              {:name :uri
                                                                               :tag "URI"
                                                                               :docstring [:span "E.g., http://localhost/auth"]
-                                                                              :type :string
+                                                                              :type :url
                                                                               :value ""}
                                                                              {:name :app-client
                                                                               :tag "Clojure application app-client"
@@ -1727,6 +1808,7 @@
                                                                               :value [{:name :id
                                                                                        :tag "Id"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value ""}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
@@ -1739,6 +1821,7 @@
                                                                                          :value [{:name :id
                                                                                                   :tag "Id"
                                                                                                   :type :string
+                                                                                                  :pattern "[^\\s]+"
                                                                                                   :value ""}
                                                                                                  {:name :secret
                                                                                                   :tag "Secret"
@@ -1753,11 +1836,12 @@
                                                                               :value [{:name :name
                                                                                        :tag "Name"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value ""}]}
                                                                              {:name :uri
                                                                               :tag "URI"
                                                                               :docstring [:span "E.g., http://localhost/auth"]
-                                                                              :type :string
+                                                                              :type :url
                                                                               :value ""}
                                                                              {:name :app-client
                                                                               :tag "Clojure application app-client"
@@ -1765,6 +1849,7 @@
                                                                               :value [{:name :id
                                                                                        :tag "Id"
                                                                                        :type :string
+                                                                                       :pattern "[^\\s]+"
                                                                                        :value ""}]}
                                                                              {:name :other-clients
                                                                               :tag "Other clients"
@@ -1777,6 +1862,7 @@
                                                                                          :value [{:name :id
                                                                                                   :tag "Id"
                                                                                                   :type :string
+                                                                                                  :pattern "[^\\s]+"
                                                                                                   :value ""}
                                                                                                  {:name :secret
                                                                                                   :tag "Secret"
@@ -1785,6 +1871,7 @@
                      {:name :auth-cognito
                       :tag "Authentication - AWS Cognito"
                       :docstring [:span "Profile for setting up Amazon Web Services Cognito as OIDC authentication provider."]
+                      :depends-on-profiles [:core :aws]
                       :type :plain-group
                       :value [{:name :environment
                                :tag "Environment"
@@ -1821,11 +1908,12 @@
                                                             :value [{:name :id
                                                                      :tag "Id"
                                                                      :type :string
+                                                                     :pattern "[^\\s]+"
                                                                      :value ""}
                                                                     {:name :url
                                                                      :tag "Url"
                                                                      :docstring [:span "E.g., https://cognito-idp.<region>.amazonaws.com/<user-pool-id>"]
-                                                                     :type :string
+                                                                     :type :url
                                                                      :value ""}
                                                                     {:name :app-client
                                                                      :tag "Clojure application app-client"
@@ -1840,6 +1928,7 @@
                                                                      :value [{:name :id
                                                                               :tag "Id"
                                                                               :type :string
+                                                                              :pattern "[^\\s]+"
                                                                               :value ""}]}]}]}]}
                                        {:name :test
                                         :tag "Testing environment"
@@ -1873,11 +1962,12 @@
                                                             :value [{:name :id
                                                                      :tag "Id"
                                                                      :type :string
+                                                                     :pattern "[^\\s]+"
                                                                      :value ""}
                                                                     {:name :url
                                                                      :tag "Url"
                                                                      :docstring [:span "E.g., https://cognito-idp.<region>.amazonaws.com/<user-pool-id>"]
-                                                                     :type :string
+                                                                     :type :url
                                                                      :value ""}
                                                                     {:name :app-client
                                                                      :tag "Clojure application app-client"
@@ -1892,6 +1982,7 @@
                                                                      :value [{:name :id
                                                                               :tag "Id"
                                                                               :type :string
+                                                                              :pattern "[^\\s]+"
                                                                               :value ""}]}]}]}]}
                                        {:name :prod
                                         :tag "Production environmnet"
@@ -1926,11 +2017,13 @@
                                                             :value [{:name :id
                                                                      :tag "Id"
                                                                      :type :string
+                                                                     :pattern "[^\\s]+"
                                                                      :value ""}
                                                                     {:name :url
                                                                      :tag "Url"
                                                                      :docstring [:span "E.g., https://cognito-idp.<region>.amazonaws.com/<user-pool-id>"]
-                                                                     :type :string
+                                                                     :type :url
+                                                                     :pattern "[^\\s]+"
                                                                      :value ""}
                                                                     {:name :app-client
                                                                      :tag "Clojure application app-client"
@@ -1945,6 +2038,7 @@
                                                                      :value [{:name :id
                                                                               :tag "Id"
                                                                               :type :string
+                                                                              :pattern "[^\\s]+"
                                                                               :value ""}]}]}]}]}]}]}]}]}
  {:name :cloud-provider
   :tag "Cloud provider"
@@ -1962,6 +2056,7 @@
                                :tag "Region"
                                :docstring [:span "Region in which the application is deployed. Make sure the selected region supports all the services used by HOP."]
                                :type :string
+                               :pattern "[^\\s]+"
                                :value "eu-west-1"}
                               {:name :stack-name
                                :tag "Stack-name"
@@ -1972,11 +2067,13 @@
                                              :target "_blank"}
                                             "check the documentation."]]
                                :type :string
+                               :pattern "[^\\s]+"
                                :value "hop-account"}
                               {:name :resource-name-prefix
                                :tag "Resource name prefix"
                                :docstring [:span "Prefix for the resource names created by the HOP Cloudformation Account stack. This is used to avoid conflicts with already existing AWS resources."]
                                :type :string
+                               :pattern "[^\\s]+"
                                :value "hop"}
                               {:name :vpc
                                :tag "VPC"
@@ -1985,6 +2082,7 @@
                                         :tag "VPC CIDR"
                                         :docstring [:span "IP block that will be used in your VPC. Make sure to use a CIDR that does not conflict with an existing one in your account."]
                                         :type :string
+                                        :pattern "[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}\\/[0-9]{1,2}"
                                         :value "172.31.0.0/16"}]}]}
                      {:name :project
                       :tag "Project"
@@ -1998,6 +2096,7 @@
                                              :target "_blank"}
                                             "check the documentation."]]
                                :type :string
+                               :pattern "[^\\s]+"
                                :value "hop-project"}
                               {:name :vpc
                                :tag "VPC"
@@ -2009,6 +2108,7 @@
                                                  :tag "CIDR"
                                                  :docstring [:span "IP block that will be used in your subnet-1. Make sure the subnet IP CIDR align with the VPC CIDR block and that it does not conflict with other subnets CIDRs."]
                                                  :type :string
+                                                 :pattern "[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}\\/[0-9]{1,2}"
                                                  :value "172.31.0.0/24"}]}
                                        {:name :subnet-2
                                         :tag "Subnet 2"
@@ -2017,6 +2117,7 @@
                                                  :tag "CIDR"
                                                  :docstring [:span "IP block that will be used in your subnet-2. Make sure the subnet IP CIDR align with the VPC CIDR block and that it does not conflict with other subnets CIDRs."]
                                                  :type :string
+                                                 :pattern "[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}\\/[0-9]{1,2}"
                                                  :value "172.31.1.0/24"}]}]}]}
                      {:name :environment
                       :tag "Environment"
@@ -2028,6 +2129,7 @@
                                :value [{:name :stack-name
                                         :tag "Stack name"
                                         :type :string
+                                        :pattern "[^\\s]+"
                                         :value "hop-project-dev"}
                                        {:name :optional-services
                                         :type :multiple-choice-group
@@ -2049,6 +2151,7 @@
                                                             :tag "Log group name"
                                                             :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                             :type :string
+                                                            :pattern "[^\\s]+"
                                                             :value "/aws/eb/hop-dev"}
                                                            {:name :retention-days
                                                             :tag "Retention days"
@@ -2061,11 +2164,12 @@
                                :value [{:name :stack-name
                                         :tag "Stack name"
                                         :type :string
+                                        :pattern "[^\\s]+"
                                         :value "hop-project-test"}
                                        {:name :notifications-email
                                         :tag "Notifications email"
                                         :docstring [:span "Email address used to receive ElasticBeanstalk notifications about a specific environment."]
-                                        :type :string
+                                        :type :email
                                         :value "devops+test@mail.invalid"}
                                        {:name :eb
                                         :tag "ElasticBeanstalk"
@@ -2077,6 +2181,7 @@
                                                                  :target "_blank"}
                                                              "AWS EC2 Instance types documentation"]]
                                                  :type :string
+                                                 :pattern "[^\\s]+"
                                                  :value "t3.micro"}]}
                                        {:name :optional-services
                                         :type :multiple-choice-group
@@ -2098,14 +2203,17 @@
                                                    :value [{:name :version
                                                             :tag "Version"
                                                             :type :string
+                                                            :pattern "[^\\s]+"
                                                             :value "12"}
                                                            {:name :port
                                                             :tag "Port"
                                                             :type :string
+                                                            :pattern "[0-9]+"
                                                             :value "5432"}
                                                            {:name :name
                                                             :tag "Database name"
                                                             :type :string
+                                                            :pattern "[^\\s]+"
                                                             :value "ebdb"}
                                                            {:name :admin-user
                                                             :tag "Admin user"
@@ -2114,6 +2222,7 @@
                                                             :value [{:name :username
                                                                      :tag "Username"
                                                                      :type :string
+                                                                     :pattern "[^\\s]+"
                                                                      :value "postgres"}
                                                                     {:name :password
                                                                      :tag "Password"
@@ -2126,6 +2235,7 @@
                                                             :tag "Log group name"
                                                             :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                             :type :string
+                                                            :pattern "[^\\s]+"
                                                             :value "/aws/eb/hop-test"}
                                                            {:name :retention-days
                                                             :tag "Retention days"
@@ -2140,6 +2250,7 @@
                                                  :tag "Key Alias"
                                                  :docstring [:span "Alias of the KMS key. It should have a shape of: alias/<name>"]
                                                  :type :string
+                                                 :pattern "alias\\/[^\\s]+"
                                                  :value "alias/hop-test"}]}]}
                               {:name :prod
                                :tag "Production environment"
@@ -2147,11 +2258,12 @@
                                :value [{:name :stack-name
                                         :tag "Stack name"
                                         :type :string
+                                        :pattern "[^\\s]+"
                                         :value "hop-project-prod"}
                                        {:name :notifications-email
                                         :tag "Notifications email"
                                         :docstring [:span "Email address used to receive ElasticBeanstalk notifications about a specific environment."]
-                                        :type :string
+                                        :type :email
                                         :value "devops+prod@mail.invalid"}
                                        {:name :eb
                                         :tag "ElasticBeanstalk"
@@ -2163,6 +2275,7 @@
                                                                  :target "_blank"}
                                                              "AWS EC2 Instance types documentation"]]
                                                  :type :string
+                                                 :pattern "[^\\s]+"
                                                  :value "t3.micro"}]}
                                        {:name :optional-services
                                         :tag "Optional services"
@@ -2184,14 +2297,17 @@
                                                    :value [{:name :version
                                                             :tag "Version"
                                                             :type :string
+                                                            :pattern "[^\\s]+"
                                                             :value "12"}
                                                            {:name :port
                                                             :tag "Port"
                                                             :type :string
+                                                            :pattern "[0-9]{4}"
                                                             :value "5432"}
                                                            {:name :name
                                                             :tag "Name"
                                                             :type :string
+                                                            :pattern "[^\\s]+"
                                                             :value "ebdb"}
                                                            {:name :admin-user
                                                             :tag "Admin user"
@@ -2200,6 +2316,7 @@
                                                             :value [{:name :username
                                                                      :tag "Username"
                                                                      :type :string
+                                                                     :pattern "[^\\s]+"
                                                                      :value "postgres"}
                                                                     {:name :password
                                                                      :tag "Password"
@@ -2212,6 +2329,7 @@
                                                             :tag "Log group name"
                                                             :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                             :type :string
+                                                            :pattern "[^\\s]+"
                                                             :value "/aws/eb/hop-prod"}
                                                            {:name :retention-days
                                                             :tag "Retention days"
@@ -2226,4 +2344,5 @@
                                                  :tag "Key Alias"
                                                  :docstring [:span "Alias of the KMS key. It should have a shape of: alias/<name>"]
                                                  :type :string
+                                                 :pattern "alias\\/[^\\s]+"
                                                  :value "alias/hop-prod"}]}]}]}]}]}]

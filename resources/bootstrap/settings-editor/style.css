@@ -93,6 +93,10 @@ html, body, #app {
   margin: 5px 0;
 }
 
+.form__input:invalid {
+  outline: 2px solid red;
+}
+
 .form__docstring {
   font-size: 12px;
   color: gray;
