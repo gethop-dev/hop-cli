@@ -72,7 +72,9 @@
            (or (:tag choice) (name (:name choice)))])])]))
 
 (defn checkbox-group
-  [{:keys [value choices] :as node} {:keys [path]} {:keys [label-class hide-choices?]}]
+  [{:keys [value choices] :as node}
+   {:keys [path on-change-fn label-class hide-choices?]}
+   config]
   (let [id (str/join "-" path)]
     [:div.form__field
      [:label
@@ -90,13 +92,16 @@
           ^{:key (:name choice)}
           [:div
            [:input
-            {:id child-id
-             :type "checkbox"
-             :checked (boolean (get (set value) (:name choice)))
-             :on-change
-             (fn [_]
-               (let [new-value (settings/toggle-value value (:name choice))]
-                 (rf/dispatch [::settings/update-settings-value path new-value])))}]
+            (merge
+             {:id child-id
+              :type "checkbox"
+              :checked (boolean (get (set value) (:name choice)))
+              :on-change (if (fn? on-change-fn)
+                           (partial on-change-fn choice path)
+                           (fn [_]
+                             (let [new-value (settings/toggle-value value (:name choice))]
+                               (rf/dispatch [::settings/update-settings-value path new-value]))))}
+             config)]
            [:label
             {:for child-id}
             (or (:tag choice) (name (:name choice)))]])])]))
@@ -194,8 +199,10 @@
   (let [selected-choices (settings/get-selected-multiple-choices node)]
     [:div.multiple-choice-group
      {:id (settings/build-node-id (:path opts))}
-     [checkbox-group node opts {:hide-choices? (= :profiles (:name node))
-                                :label-class "form__title"}]
+     [checkbox-group node
+      (merge opts {:hide-choices? (= :profiles (:name node))
+                   :label-class "form__title"})
+      {}]
      (for [[index choice] selected-choices]
        ^{:key (:name choice)}
        (form-component choice (update opts :path conj :choices index)))]))

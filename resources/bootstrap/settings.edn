@@ -73,6 +73,7 @@
            :choices [{:name :core
                       :tag "Core"
                       :docstring [:span "Base profile that adds the barebones to the HOP project (mandatory)."]
+                      :depends-on-profiles []
                       :type :plain-group
                       :value [{:name :environment
                                :tag "Environment"
@@ -121,6 +122,7 @@
                      {:name :aws
                       :tag "Amazon Web Services profile"
                       :docstring [:span "Profile for setting up the project to be deployed in Amazon Web Services."]
+                      :depends-on-profiles [:core]
                       :type :plain-group
                       :value [{:name :region
                                :tag "Region"
@@ -188,6 +190,7 @@
                      {:name :ci
                       :tag "CI/CD"
                       :docstring [:span "Profile for setting up a Continuous Integration and Continuous Deployment pipeline."]
+                      :depends-on-profiles [:core]
                       :type :plain-group
                       :value [{:name :provider
                                :tag "Provider"
@@ -249,11 +252,13 @@
                      {:name :observability-runtime-configurable-logging
                       :tag "Observability - Runtime Configurable Logging"
                       :docstring [:span "Profile for making the project's logger configurable at runtime."]
+                      :depends-on-profiles [:core]
                       :type :plain-group
                       :value []}
                      {:name :observability-cloudwatch-logging
                       :tag "Observability - AWS CloudWatch Logging"
                       :docstring [:span "Profile that configures a Amazon Web Services CloudWatch Timbre logging appender."]
+                      :depends-on-profiles [:core :aws]
                       :type :plain-group
                       :value [{:name :environment
                                :tag "Environment"
