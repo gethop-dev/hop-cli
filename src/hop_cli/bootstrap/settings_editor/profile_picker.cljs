@@ -39,7 +39,7 @@
             {:title "Profiles selection"
              :subtitle "HOP CLI Settings Editor"
              :active-view :profile-picker}]
-           [:span "Some profiles have dependencies over others. Therefore, the application will enforce their selection on your behalf."]
+           [:span "Some profiles depend on others. Therefore, the application will enforce their selection on your behalf."]
            [editor/checkbox-group profile-node
             {:on-change-fn (profile-picker-handler profile-node)
              :hide-label? true
