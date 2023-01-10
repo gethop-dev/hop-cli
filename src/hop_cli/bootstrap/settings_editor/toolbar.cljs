@@ -1,6 +1,7 @@
 (ns toolbar
   (:require [cljs.pprint :as pprint]
             [clojure.edn :as edn]
+            [clojure.string :as str]
             [re-frame.core :as rf]
             [settings :as settings]))
 
@@ -56,6 +57,18 @@
   (let [js-element (js/document.getElementById "settings-editor-form")]
     (.checkValidity js-element)))
 
+(defn lookup-selected-refs
+  [settings]
+  (let [refs (settings/get-selected-refs settings)
+        results (mapv (fn [ref-node]
+                        (let [result (settings/lookup-ref settings (settings/get-path-from-ref-node ref-node))]
+                          (assoc result :node ref-node)))
+                      refs)]
+    (if (every? :success? results)
+      {:success? true}
+      {:success? false
+       :error-details (remove :success? results)})))
+
 (defn- settings-file-export-btn
   [active-view]
   (let [disabled? (not= active-view :editor)]
@@ -64,9 +77,17 @@
       :disabled disabled?
       :on-click
       (fn [_]
-        (if (settings-form-valid?)
-          (rf/dispatch [::save-settings-to-file])
-          (js/alert "Some setting configuration option values are invalid.")))}
+        (let [settings @(rf/subscribe [::settings/settings])
+              result (lookup-selected-refs settings)]
+          (cond
+            (not (settings-form-valid?))
+            (js/alert "Some setting configuration option values are invalid.")
+
+            (not (:success? result))
+            (js/alert "Some setting references can't be resolved. Please check for invalid fields.")
+
+            :else
+            (rf/dispatch [::save-settings-to-file]))))}
      [:img.toolbar__btn-icon
       {:src "img/export.svg"}]
      "Export settings"]))

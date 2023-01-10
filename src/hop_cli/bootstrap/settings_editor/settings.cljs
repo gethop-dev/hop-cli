@@ -26,6 +26,47 @@
               choice))
           (:choices node)))
 
+(defn get-selected-children
+  [node]
+  (cond
+    (vector? node)
+    node
+
+    (= (:type node) :plain-group)
+    (:value node)
+
+    (= (:type node) :single-choice-group)
+    [(get-selected-single-choice node)]
+
+    (= (:type node) :multiple-choice-group)
+    (get-selected-multiple-choices node)
+
+    :else []))
+
+(defn get-children
+  [node]
+  (cond
+    (vector? node)
+    node
+
+    (= (:type node) :plain-group)
+    (:value node)
+
+    (= (:type node) :single-choice-group)
+    (:choices node)
+
+    (= (:type node) :multiple-choice-group)
+    (:choices node)
+
+    :else []))
+
+(defn find-child
+  [children child-name]
+  (some (fn [child-node]
+          (when (= (:name child-node) child-name)
+            child-node))
+        children))
+
 (defn get-node-path
   [settings node-name-path]
   (loop [settings settings
@@ -96,6 +137,49 @@
                     (dissoc node :path :node-name-path)
                     node))
                 settings))
+
+
+(defn get-selected-refs
+  [node]
+  (cond
+    (vector? node)
+    (mapcat get-selected-refs node)
+
+    (= (:type node) :ref)
+    [node]
+
+    (= (:type node) :single-choice-group)
+    (get-selected-refs (settings/get-selected-single-choice node))
+
+    (= (:type node) :multiple-choice-group)
+    (mapcat get-selected-refs (settings/get-selected-multiple-choices node))
+
+    (= (:type node) :plain-group)
+    (mapcat get-selected-refs (:value node))
+
+    :else []))
+
+(defn lookup-ref
+  [settings node-name-path]
+  (loop [node settings
+         node-name-path node-name-path]
+    (if-not (seq node-name-path)
+      {:success? true}
+      (let [next-node-name (if (= (first node-name-path) :?)
+                             (:value node)
+                             (first node-name-path))
+            children-nodes (settings/get-children node)
+            selected-children-nodes (settings/get-selected-children node)]
+        (if-not (settings/find-child children-nodes next-node-name)
+          {:success? true}
+          (if-let [next-node (settings/find-child selected-children-nodes next-node-name)]
+            (recur next-node (rest node-name-path))
+            {:success? false}))))))
+
+(defn get-path-from-ref-node
+  [{:keys [value]}]
+  (->> (str/split (str (namespace value) "." (name value)) #"\.")
+       (map keyword)))
 
 (rf/reg-sub
  ::settings

@@ -299,8 +299,13 @@ html, body, #app {
   margin: 5px 0;
 }
 
+.form__input-checkbox {
+  align-self: flex-start;
+}
+
+.form__input--invalid,
 .form__input:invalid {
-  outline: 2px solid red;
+  border: 2px solid red !important;
 }
 
 .form__docstring {

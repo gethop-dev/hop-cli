@@ -217,7 +217,8 @@
 (defmethod form-component :boolean
   [node opts]
   [input node opts {:type "checkbox"
-                    :checked (:value node)}])
+                    :checked (:value node)
+                    :class "form__input-checkbox"}])
 
 (defmethod form-component :password
   [node opts]
@@ -248,11 +249,16 @@
 (defmethod form-component :ref
   [node opts]
   (let [reference (str (:value node))
-        message (reference->message reference)]
+        message (reference->message reference)
+        settings (:settings opts)
+        node-name-path (settings/get-path-from-ref-node node)
+        invalid-selected-ref? (not (:success? (settings/lookup-ref settings node-name-path)))]
     [input node opts {:placeholder message
                       :value ""
                       :title reference
-                      :disabled true}]))
+                      :disabled true
+                      :class (when invalid-selected-ref?
+                               "form__input--invalid")}]))
 
 (defn- single-choice-group
   [node _opts]
@@ -323,6 +329,7 @@
          [sidebar/main @settings]
          [:form.editor__form
           {:id "settings-editor-form"}
-          (for [node @settings]
-            ^{:key (:name node)}
-            (form-component node {}))]]))))
+          (doall
+           (for [node @settings]
+             ^{:key (:name node)}
+             (form-component node {:settings @settings})))]]))))
