@@ -111,3 +111,16 @@
  ::update-settings-value
  (fn [db [_ path value]]
    (assoc-in db (cons :settings (conj path :value)) value)))
+
+(rf/reg-sub
+ ::visible-settings-node-ids
+ (fn [db _]
+   (get db :visible-settings-node-ids)))
+
+(rf/reg-event-fx
+ ::update-visible-settings-node-ids
+ (fn [{:keys [db]} [_ to-add to-remove]]
+   (let [visible-ids (->> (:visible-settings-node-ids db)
+                          (remove #(get (set to-remove) %))
+                          (concat to-add))]
+     {:db (assoc db :visible-settings-node-ids visible-ids)})))

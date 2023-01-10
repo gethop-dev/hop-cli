@@ -2,6 +2,7 @@
   (:require [editor :as editor]
             [re-frame.core :as rf]
             [settings :as settings]
+            [toolbar :as toolbar]
             [view :as view]))
 
 (defn- profile-picker-handler
@@ -32,10 +33,19 @@
       (let [profile-node-path (settings/get-node-path @settings [:project :profiles])
             profile-node (get-in @settings profile-node-path)]
         (when profile-node
-          [:div.settings-editor__profile-picker
-           [:h1 "Profiles selection"]
+          [:div.profile-picker
+           [:div]
+           [toolbar/main
+            {:title "Profiles selection"
+             :subtitle "HOP CLI Settings Editor"
+             :active-view :profile-picker}]
            [:span "Some profiles have dependencies over others. Therefore, the application will enforce their selection on your behalf."]
-           [:div.settings-editor__profile-picker-choices
-            [editor/checkbox-group profile-node {:on-change-fn (profile-picker-handler profile-node)} {}]]
-           [:button.btn {:on-click #(rf/dispatch [::view/set-active-view :editor])}
+           [editor/checkbox-group profile-node
+            {:on-change-fn (profile-picker-handler profile-node)
+             :hide-label? true
+             :choices-group-class "profile-picker__choices"
+             :choice-class "profile-picker__choice"}
+            {}]
+           [:button.btn.profile-picker__next-btn
+            {:on-click #(rf/dispatch [::view/set-active-view :editor])}
             "Next"]])))))

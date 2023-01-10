@@ -7,7 +7,6 @@
             [reagent.dom :as rdom]
             [settings :as settings]
             [sidebar]
-            [toolbar :as toolbar]
             [view :as view]))
 
 (def default-appdb
@@ -38,11 +37,22 @@
 
 (rf/dispatch-sync [::load-app])
 
+(defn- navigation
+  []
+  [:div.navigation
+   [:img.navigation__logo
+    {:src "img/hop-logo-small.svg"}]
+   [:a.navigation__link
+    {:href "https://gethop.dev"
+     :target "_blank"}
+    [:img
+     {:src "img/open-url.svg"}]]])
+
 (defn root-component []
   (let [active-view (rf/subscribe [::view/active-view])]
     (fn []
       [:div.settings-editor
-       [toolbar/main @active-view]
+       [navigation]
        (case @active-view
          :editor [editor/main]
          :profile-picker [profile-picker/main]

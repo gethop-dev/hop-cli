@@ -2,8 +2,7 @@
   (:require [cljs.pprint :as pprint]
             [clojure.edn :as edn]
             [re-frame.core :as rf]
-            [settings :as settings]
-            [view :as view]))
+            [settings :as settings]))
 
 (rf/reg-event-fx
  ::settings-file-loaded
@@ -39,11 +38,13 @@
     (rf/dispatch [::read-settings-from-file js-file])))
 
 (defn- settings-file-import-btn []
-  [:div.settings-editor__file-loader
-   [:label.btn.settings-editor__file-loader-label
+  [:div
+   [:label.btn.btn--flat.toolbar__btn
     {:for "settings-file-loader-input"}
+    [:img.toolbar__btn-icon
+     {:src "img/import.svg"}]
     "Import settings"]
-   [:input.settings-editor__file-loader-input
+   [:input.toolbar__file-input
     {:id "settings-file-loader-input"
      :type "file"
      :multiple false
@@ -58,7 +59,7 @@
 (defn- settings-file-export-btn
   [active-view]
   (let [disabled? (not= active-view :editor)]
-    [:button.btn
+    [:button.btn.btn--flat.toolbar__btn
      {:class (when disabled? "btn--disabled")
       :disabled disabled?
       :on-click
@@ -66,14 +67,17 @@
         (if (settings-form-valid?)
           (rf/dispatch [::save-settings-to-file])
           (js/alert "Some setting configuration option values are invalid.")))}
+     [:img.toolbar__btn-icon
+      {:src "img/export.svg"}]
      "Export settings"]))
 
 (defn main
-  [active-view]
-  [:div.settings-editor__toolbar
-   [:h1.settings-editor__title "HOP CLI Settings Editor"]
-   [:div.settings-editor__control-buttons
-    [:button.btn {:on-click #(rf/dispatch [::view/set-active-view :profile-picker])}
-     "Edit selected profiles"]
-    [settings-file-import-btn]
-    [settings-file-export-btn active-view]]])
+  [{:keys [title subtitle active-view]}]
+  [:div.toolbar
+   [:div.toolbar__title-container
+    [:h1.toolbar__title
+     title]
+    [:h2.toolbar__subtitle
+     subtitle]]
+   [settings-file-import-btn]
+   [settings-file-export-btn active-view]])

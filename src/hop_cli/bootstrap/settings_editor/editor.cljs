@@ -1,13 +1,27 @@
 (ns editor
   (:require [clojure.string :as str]
             [re-frame.core :as rf]
+            [reagent.core :as r]
             [settings :as settings]
-            [sidebar :as sidebar]))
+            [sidebar :as sidebar]
+            [toolbar :as toolbar]
+            [view :as view]))
 
 (defn- build-docstring
   [{:keys [docstring]}]
   (when docstring
     (vec (concat [(first docstring) {:class "form__docstring"}] (rest docstring)))))
+
+(defn- collapse-btn
+  [collapsed?]
+  [:button.btn.btn--flat.form__collapse-btn
+   {:class (when @collapsed? "form__collapse-btn--collapsed")}
+   [:img.form__collapse-btn-icon
+    {:src "img/left-arrow.svg"
+     :on-click
+     (fn [e]
+       (.preventDefault e)
+       (swap! collapsed? not))}]])
 
 (defn input
   [node _opts conf]
@@ -15,7 +29,7 @@
         id (str/join "-" path)]
     [:div.form__field
      {:id (settings/build-node-id path)}
-     [:label
+     [:label.form__input-label
       {:for id
        :title (name (:name node))}
       (or (:tag node) (name (:name node)))]
@@ -39,23 +53,29 @@
         (merge conf))]]))
 
 (defn select
-  [node _opts conf]
+  [node opts conf]
   (let [{:keys [path value choices]} node
+        {:keys [collapsed-state]} opts
         {:keys [label-class]} conf
         id (str/join "-" path)]
     [:div.form__field
-     [:label
-      {:for id
-       :class (when label-class
-                label-class)
-       :title (name (:name node))}
-      (or (:tag node) (name (:name node)))]
-     [build-docstring node]
+     [:div.form__group-header
+      [:div.form__title-container
+       [:label
+        {:for id
+         :class (when label-class
+                  label-class)
+         :title (name (:name node))}
+        (or (:tag node) (name (:name node)))]
+       [build-docstring node]]
+      (when collapsed-state
+        [collapse-btn collapsed-state])]
      (when-not (= (:name node) :profiles)
-       [:select
+       [:select.form__selector
         (merge
          {:id id
           :value value
+          :class (when (and collapsed-state @collapsed-state) "collapsed")
           :on-change (fn [e]
                        (let [value (if (:multiple conf)
                                      (mapv #(keyword (.-value %))
@@ -71,23 +91,34 @@
 
 (defn checkbox-group
   [{:keys [path value choices] :as node}
-   {:keys [on-change-fn label-class hide-choices?]}
+   {:keys [on-change-fn label-class
+           hide-choices? hide-label? collapsed-state
+           field-class choices-group-class choice-class]}
    config]
   (let [id (str/join "-" path)]
     [:div.form__field
-     [:label
-      {:for id
-       :class (when label-class
-                label-class)
-       :title (name (:name node))}
-      (or (:tag node) (name (:name node)))]
-     [build-docstring node]
+     {:class field-class}
+     (when-not hide-label?
+       [:div.form__group-header
+        [:div.form__title-container
+         [:label
+          {:for id
+           :class (when label-class
+                    label-class)
+           :title (name (:name node))}
+          (or (:tag node) (name (:name node)))]
+         [build-docstring node]]
+        (when collapsed-state
+          [collapse-btn collapsed-state])])
      (when-not hide-choices?
        [:div
+        {:class [choices-group-class
+                 (when (and collapsed-state @collapsed-state) "collapsed")]}
         (for [choice choices
               :let [child-id (str "checkbox-" (settings/build-node-id (:path choice)))]]
           ^{:key (:name choice)}
           [:div
+           {:class choice-class}
            [:input
             (merge
              {:id child-id
@@ -107,19 +138,61 @@
   (fn [{:keys [type]} _opts]
     type))
 
+(defonce intersection-observer
+  (js/IntersectionObserver.
+   (fn [entries]
+     (let [ids-to-add
+           (->> entries
+                (filter #(.-isIntersecting %))
+                (mapv #(.. % -target -id)))
+           ids-to-remove
+           (->> entries
+                (remove #(.-isIntersecting %))
+                (mapv #(.. % -target -id)))]
+       (rf/dispatch [::settings/update-visible-settings-node-ids ids-to-add ids-to-remove])))))
+
+(defn- navigation-wrapper
+  [node render-fn]
+  (r/create-class
+   {:component-did-mount
+    (fn [_this]
+      (let [element-id (settings/build-node-id (:path node))
+            element (js/document.getElementById element-id)]
+        (.observe intersection-observer element)))
+    :component-will-unmount
+    (fn [_this]
+      (let [element-id (settings/build-node-id (:path node))
+            element (js/document.getElementById element-id)]
+        (.unobserve intersection-observer element)))
+    :reagent-render render-fn}))
+
+(defn- plain-group
+  [node _opts]
+  (let [collapsed? (r/atom false)]
+    (navigation-wrapper
+     node
+     (fn [node opts]
+       [:div.form__field.plain-group
+        {:id (settings/build-node-id (:path node))}
+        [:div.form__group-header
+         [:div.form__title-container
+          [:span.form__title
+           {:title (name (:name node))}
+           (or (:tag node) (name (:name node)))]
+          [build-docstring node]]
+         [collapse-btn collapsed?]]
+        [:div.plain-group__children
+         {:class (when @collapsed? "collapsed")}
+         (if-not (seq (:value node))
+           [:span
+            "No available configuration options."]
+           (for [child (:value node)]
+             ^{:key (:name child)}
+             (form-component child opts)))]]))))
+
 (defmethod form-component :plain-group
   [node opts]
-  [:div.form__field.plain-group
-   {:id (settings/build-node-id (:path node))}
-   [:span.form__title
-    {:title (name (:name node))}
-    (or (:tag node) (name (:name node)))]
-   [build-docstring node]
-   (if-not (seq (:value node))
-     [:span "No available configuration options."]
-     (for [child (:value node)]
-       ^{:key (:name child)}
-       (form-component child opts)))])
+  [plain-group node opts])
 
 (defmethod form-component :string
   [node opts]
@@ -181,26 +254,49 @@
                       :title reference
                       :disabled true}]))
 
+(defn- single-choice-group
+  [node _opts]
+  (let [collapsed? (r/atom false)]
+    (navigation-wrapper
+     node
+     (fn [node opts]
+       (let [selected-choice (settings/get-selected-single-choice node)]
+         [:div.single-choice-group
+          {:id (settings/build-node-id (:path node))}
+          [select node
+           (assoc opts :collapsed-state collapsed?)
+           {:label-class "form__title"}]
+          [:div.single-choice-group__choice-container
+           {:class (when @collapsed? "collapsed")}
+           (form-component selected-choice opts)]])))))
+
 (defmethod form-component :single-choice-group
   [node opts]
-  (let [selected-choice (settings/get-selected-single-choice node)]
-    [:div.single-choice-group
-     {:id (settings/build-node-id (:path node))}
-     [select node opts {:label-class "form__title"}]
-     (form-component selected-choice opts)]))
+  [single-choice-group node opts])
+
+(defn- multiple-choice-group
+  [node _opts]
+  (let [collapsed? (r/atom false)]
+    (navigation-wrapper
+     node
+     (fn [node opts]
+       (let [selected-choices (settings/get-selected-multiple-choices node)]
+         [:div.multiple-choice-group
+          {:id (settings/build-node-id (:path node))}
+          [checkbox-group node
+           (merge opts {:collapsed-state collapsed?
+                        :hide-choices? (= :profiles (:name node))
+                        :label-class "form__title"})
+           {}]
+          [:div.multiple-choice-group__choices-container
+           {:class (when @collapsed? "collapsed")}
+           (for [choice selected-choices]
+             ^{:key (:name choice)}
+             (form-component choice opts))]])))))
 
 (defmethod form-component :multiple-choice-group
   [node opts]
-  (let [selected-choices (settings/get-selected-multiple-choices node)]
-    [:div.multiple-choice-group
-     {:id (settings/build-node-id (:path node))}
-     [checkbox-group node
-      (merge opts {:hide-choices? (= :profiles (:name node))
-                   :label-class "form__title"})
-      {}]
-     (for [choice selected-choices]
-       ^{:key (:name choice)}
-       (form-component choice opts))]))
+  [multiple-choice-group node opts])
 
 (defmethod form-component :default
   [node _]
@@ -211,9 +307,21 @@
   (let [settings (rf/subscribe [::settings/settings])]
     (fn []
       (when (seq @settings)
-        [:div.settings-editor__main
+        [:div.editor
+         [:div.editor__header
+          [:button.btn.btn--flat.editor__back-btn
+           {:on-click
+            (fn [_]
+              (rf/dispatch [::view/set-active-view :profile-picker]))}
+           [:img.editor__btn-icon
+            {:src "img/left-arrow.svg"}]
+           "Edit selected profiles"]]
+         [toolbar/main
+          {:active-view :editor
+           :title "Settings editor"
+           :subtitle "HOP CLI Settings Editor"}]
          [sidebar/main @settings]
-         [:form.settings-editor__form
+         [:form.editor__form
           {:id "settings-editor-form"}
           (for [node @settings]
             ^{:key (:name node)}

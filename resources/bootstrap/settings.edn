@@ -274,8 +274,8 @@
                                                 {:name :min-log-level
                                                  :tag "Min log level"
                                                  :docstring [:span "Minimum logging level configuration. Possible values: :trace, :debug, :info, :warn, :error, :fatal or :report."]
-                                                 :type :keyword
-                                                 :value :info
+                                                 :type :string
+                                                 :value "info"
                                                  :pattern "trace|debug|info|warn|error|fatal|report"}]}
                                        {:name :test
                                         :tag "Testing environment"
@@ -288,9 +288,9 @@
                                                 {:name :min-log-level
                                                  :tag "Min log level"
                                                  :docstring [:span "Minimum logging level configuration. Possible values: :trace, :debug, :info, :warn, :error, :fatal or :report."]
-                                                 :type :keyword
+                                                 :type :string
                                                  :pattern "trace|debug|info|warn|error|fatal|report"
-                                                 :value :info}]}
+                                                 :value "info"}]}
                                        {:name :prod
                                         :tag "Production environment"
                                         :type :plain-group
@@ -302,9 +302,9 @@
                                                 {:name :min-log-level
                                                  :tag "Min log level"
                                                  :docstring [:span "Minimum logging level configuration. Possible values: :trace, :debug, :info, :warn, :error, :fatal or :report."]
-                                                 :type :keyword
+                                                 :type :string
                                                  :pattern "trace|debug|info|warn|error|fatal|report"
-                                                 :value :info}]}]}]}
+                                                 :value "info"}]}]}]}
                      {:name :object-storage-s3
                       :tag "Object Storage - AWS S3"
                       :docstring [:span "Profile for setting up an Object Storage boundary for using Amazon Web Services S3."]
