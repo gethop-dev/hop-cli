@@ -1,7 +1,6 @@
 (ns toolbar
   (:require [cljs.pprint :as pprint]
             [clojure.edn :as edn]
-            [clojure.string :as str]
             [re-frame.core :as rf]
             [settings :as settings]))
 
