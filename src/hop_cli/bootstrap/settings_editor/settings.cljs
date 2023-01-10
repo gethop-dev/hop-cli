@@ -138,7 +138,6 @@
                     node))
                 settings))
 
-
 (defn get-selected-refs
   [node]
   (cond
