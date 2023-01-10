@@ -5,25 +5,43 @@
             [toolbar :as toolbar]
             [view :as view]))
 
+(defn- get-dependent-profiles-error-msg
+  [dependent-profiles]
+  (with-out-str
+    (println "This profile can not be unchecked because there are one or more dependent profiles.")
+    (println)
+    (println "Please uncheck the dependent profiles first before unchecking this one.")
+    (println)
+    (println "Dependent profiles:")
+    (doseq [{:keys [tag]} dependent-profiles]
+      (println "  - " tag))))
+
+(defn- dependent-profile?
+  [event-profile selected-profiles {:keys [name depends-on-profiles]}]
+  (and (get (set depends-on-profiles) (:name event-profile))
+       (get (set selected-profiles) name)))
+
 (defn- profile-picker-handler
   [profiles-node]
   (fn [event-profile path e]
     (let [selected-profiles (:value profiles-node)
           dependees (:depends-on-profiles event-profile)
-          dependent-profiles? (some (fn [{:keys [name depends-on-profiles]}]
-                                      (and (get (set depends-on-profiles) (:name event-profile))
-                                           (get (set selected-profiles) name)))
-                                    (:choices profiles-node))
+          dependent-profiles (filter (partial dependent-profile?
+                                              event-profile
+                                              selected-profiles)
+                                     (:choices profiles-node))
           checked? (.. e -target -checked)
           new-selected-profiles (cond
                                   checked?
                                   (distinct (concat selected-profiles [(:name event-profile)] dependees))
 
-                                  dependent-profiles?
+                                  (seq dependent-profiles)
                                   selected-profiles
 
                                   :else
                                   (remove #{(:name event-profile)} selected-profiles))]
+      (when (and (not checked?) (seq dependent-profiles))
+        (js/alert (get-dependent-profiles-error-msg dependent-profiles)))
       (rf/dispatch [::settings/update-settings-value path new-selected-profiles]))))
 
 (defn main
