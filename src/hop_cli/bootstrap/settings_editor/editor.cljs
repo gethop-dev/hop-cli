@@ -156,14 +156,14 @@
   (r/create-class
    {:component-did-mount
     (fn [_this]
-      (let [element-id (settings/build-node-id (:path node))
-            element (js/document.getElementById element-id)]
-        (.observe intersection-observer element)))
+      (let [element-id (settings/build-node-id (:path node))]
+        (when-let [element (js/document.getElementById element-id)]
+          (.observe intersection-observer element))))
     :component-will-unmount
     (fn [_this]
-      (let [element-id (settings/build-node-id (:path node))
-            element (js/document.getElementById element-id)]
-        (.unobserve intersection-observer element)))
+      (let [element-id (settings/build-node-id (:path node))]
+        (when-let [element (js/document.getElementById element-id)]
+          (.unobserve intersection-observer element))))
     :reagent-render render-fn}))
 
 (defn- plain-group
