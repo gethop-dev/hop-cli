@@ -1,6 +1,7 @@
 (ns toolbar
   (:require [cljs.pprint :as pprint]
             [clojure.edn :as edn]
+            [clojure.string :as str]
             [re-frame.core :as rf]
             [settings :as settings]))
 
@@ -19,6 +20,15 @@
      {:fx [[:write-to-file {:file-name file-name
                             :file-type file-type
                             :data pprinted-settings}]]})))
+
+(rf/reg-event-fx
+ ::save-settings-errors-to-file
+ (fn [_ [_ errors]]
+   (let [file-name "settings-errors.txt"
+         file-type "text/plain"]
+     {:fx [[:write-to-file {:file-name file-name
+                            :file-type file-type
+                            :data errors}]]})))
 
 (rf/reg-event-fx
  ::read-settings-from-file
@@ -60,13 +70,31 @@
   [settings]
   (let [refs (settings/get-selected-refs settings)
         results (mapv (fn [ref-node]
-                        (let [result (settings/lookup-ref settings (settings/get-path-from-ref-node ref-node))]
+                        (let [ref-path (settings/get-path-from-ref-node ref-node)
+                              result (settings/lookup-ref settings ref-path)]
                           (assoc result :node ref-node)))
                       refs)]
     (if (every? :success? results)
       {:success? true}
       {:success? false
        :error-details (remove :success? results)})))
+
+(defn- get-unresolved-refs-error-msg
+  []
+  (with-out-str
+    (println "Some references can not be resolved. This might be caused by invalid configuration options' values or missing configuration.")
+    (println)
+    (println "Please take a look at downloaded file for a full list of errors.")))
+
+(defn- get-unresolved-refs-errors-msgs
+  [ref-nodes]
+  (with-out-str
+    (println "Reference errors found in:")
+    (doseq [{:keys [node-name-path] :as ref-node} ref-nodes]
+      (println)
+      (println (str/join " → " (map name node-name-path)))
+      (println "The reference above is pointing to an invalid value or unconfigured option in:")
+      (println (str/join " → " (map name (settings/get-path-from-ref-node ref-node)))))))
 
 (defn- settings-file-export-btn
   [active-view]
@@ -77,13 +105,16 @@
       :on-click
       (fn [_]
         (let [settings @(rf/subscribe [::settings/settings])
-              result (lookup-selected-refs settings)]
+              {:keys [success? error-details]}(lookup-selected-refs settings)]
           (cond
             (not (settings-form-valid?))
             (js/alert "Some setting configuration option values are invalid.")
 
-            (not (:success? result))
-            (js/alert "Some setting references can't be resolved. Please check for invalid fields.")
+            (not success?)
+            (do
+              (rf/dispatch [::save-settings-errors-to-file
+                            (get-unresolved-refs-errors-msgs (mapv :node error-details))])
+              (js/alert (get-unresolved-refs-error-msg)))
 
             :else
             (rf/dispatch [::save-settings-to-file]))))}
