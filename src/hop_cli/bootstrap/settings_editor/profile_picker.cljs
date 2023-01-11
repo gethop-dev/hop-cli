@@ -49,7 +49,7 @@
         (js/alert (get-dependent-profiles-error-msg dependent-profiles))
 
         :else
-        (rf/dispatch [::settings/update-settings-value path new-selected-profiles])))))
+        (rf/dispatch [::settings/update-settings-value path (vec new-selected-profiles)])))))
 
 (defn main
   []

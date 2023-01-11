@@ -95,7 +95,7 @@
 (defn toggle-value
   [old-values new-value]
   (if (get (set old-values) new-value)
-    (remove #{new-value} old-values)
+    (vec (remove #{new-value} old-values))
     (conj old-values new-value)))
 
 (defn- add-path-to-children
