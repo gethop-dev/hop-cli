@@ -69,7 +69,7 @@
           {:name :profiles
            :tag "Profiles"
            :type :multiple-choice-group
-           :value [:core]
+           :value [:core :aws]
            :choices [{:name :core
                       :tag "Core"
                       :docstring [:span "Base profile that adds the barebones to the HOP project (mandatory)."]
