@@ -119,6 +119,10 @@
                                                  :docstring [:span "Application container memory limit in megabytes."]
                                                  :type :integer
                                                  :value 4096}]}]}]}
+                     {:name :frontend
+                      :tag "Frontend"
+                      :type :plain-group
+                      :value []}
                      {:name :aws
                       :tag "Amazon Web Services profile"
                       :docstring [:span "Profile for setting up the project to be deployed in Amazon Web Services."]
