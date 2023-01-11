@@ -3,16 +3,18 @@
 set -eu -o pipefail
 
 function get_missing_env_vars() {
-    if docker-compose config --no-normalize >/dev/null 2>/dev/null; then
-        # docker-compose v2.x
-        COMPAT_ARG='--no-normalize'
-    else
-        # docker-compose v1.x
-        COMPAT_ARG=''
-    fi
+    DOCKER_COMPOSE_VERSION="$(docker-compose --version | sed 's/.* version \([^ ,]*\).*/\1/g')"
 
-    #shellcheck disable=SC2086
-    docker-compose config ${COMPAT_ARG} |
+    case "${DOCKER_COMPOSE_VERSION}" in
+    1.*)
+        DOCKER_COMPOSE_ARGS=('config')
+        ;;
+    *)
+        DOCKER_COMPOSE_ARGS=('config' '--no-normalize')
+        ;;
+    esac
+
+    docker-compose "${DOCKER_COMPOSE_ARGS[@]}" |
         docker run --rm -i mikefarah/yq '.services[].environment?
             |=
             (
