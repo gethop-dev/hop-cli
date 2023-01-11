@@ -62,8 +62,8 @@
    [:min-hop-version {:optional true} setting-min-hop-version-schema]
    [:tag {:optional true} setting-tag-schema]
    [:type setting-type-schema]
-   [:pattern setting-pattern-schema]
-   [:read-only? setting-read-only-schema]])
+   [:pattern {:optional true} setting-pattern-schema]
+   [:read-only? {:optional true} setting-read-only-schema]])
 
 (def setting-value-integer-schema
   ;; Built-in, in malli.core/predicate-schemas
