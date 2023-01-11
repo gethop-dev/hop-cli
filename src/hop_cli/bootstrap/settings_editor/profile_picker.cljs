@@ -40,9 +40,16 @@
 
                                   :else
                                   (remove #{(:name event-profile)} selected-profiles))]
-      (when (and (not checked?) (seq dependent-profiles))
-        (js/alert (get-dependent-profiles-error-msg dependent-profiles)))
-      (rf/dispatch [::settings/update-settings-value path new-selected-profiles]))))
+      (cond
+        (get #{:core :aws} (:name event-profile))
+        (js/alert "This profile is mandatory and can not be unchecked.")
+
+        (and (not checked?)
+             (seq dependent-profiles))
+        (js/alert (get-dependent-profiles-error-msg dependent-profiles))
+
+        :else
+        (rf/dispatch [::settings/update-settings-value path new-selected-profiles])))))
 
 (defn main
   []
