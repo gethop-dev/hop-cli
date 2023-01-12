@@ -75,12 +75,12 @@
     :error-fn error/generic-error-handler
     :spec {:port {:alias :p
                   :default 8090
-                  :desc "Serving port"
+                  :desc "Port on which the web server will be launched."
                   :validate pos-int?
                   :coerce :int
                   :error-msgs {:validate "Invalid port number format."
                                :coerce "Port is not a valid number. Aborting... "}}}
-    :desc "Opens a web-based wizard for editing settings.edn file"}
+    :desc "Opens a web-based wizard for creating or editing the settings file."}
    {:cmds []
     :fn print-help-handler}])
 
