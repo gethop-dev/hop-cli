@@ -3,7 +3,8 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.util
-  (:require [clojure.string :as str]
+  (:require [clojure.java.io :as io]
+            [clojure.string :as str]
             [clojure.walk :as walk]))
 
 (defn cli-stdin-map->map
@@ -21,3 +22,7 @@
       (fn [x] (if (and (map? x) (not (record? x)))
                 (update-map-vals x update-fn :recursive? false) x)) m)
      (reduce-kv #(assoc %1 %2 (update-fn %3)) {} m))))
+
+(defn get-version
+  []
+  (str/trim (slurp (io/resource "version.txt"))))

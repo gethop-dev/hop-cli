@@ -4,7 +4,8 @@
 
 (ns hop-cli.util.help
   (:require [clojure.pprint :as pprint]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [hop-cli.util :as util]))
 
 (defn calc-command-length
   [separator-len cmds]
@@ -36,6 +37,7 @@
          desc-offset (+ (count cmd-trailer) max-cmd-len (count desc-separator))
          desc-trailer (apply str (repeat desc-offset " "))
          desc-width (- max-width desc-offset)]
+     (println (format "Version: %s" (util/get-version)))
      (println (format "Usage: %s <subcommand> <options>" main-cmd))
      (println)
      (println "Subcommands")

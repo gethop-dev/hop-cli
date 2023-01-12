@@ -7,6 +7,7 @@
             [hop-cli.aws.cli :as aws.cli]
             [hop-cli.bootstrap.cli :as bootstrap.cli]
             [hop-cli.keycloak.cli :as keycloak.cli]
+            [hop-cli.util :as util]
             [hop-cli.util.error :as error]
             [hop-cli.util.help :as help]))
 
@@ -14,7 +15,11 @@
 
 (defn- cli-cmd-table
   [args]
-  [{:cmds ["bootstrap"]
+  [{:cmds ["version"]
+    :fn (fn [_] (println (util/get-version)))
+    :error-fn error/generic-error-handler
+    :desc "Get HOP CLI version"}
+   {:cmds ["bootstrap"]
     :fn (fn [_] (bootstrap.cli/main (rest args)))
     :error-fn error/generic-error-handler
     :desc "HOP Application bootstrap commands"}
