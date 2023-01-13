@@ -6,7 +6,6 @@
 (ns <<project.name>>.api.logging
   (:require [<<project.name>>.service.timbre :as srv.timbre]
             [<<project.name>>.api.util.responses :as util.r]
-            [clojure.edn :as edn]
             [duct.logger :refer [log]]
             [integrant.core :as ig]))
 

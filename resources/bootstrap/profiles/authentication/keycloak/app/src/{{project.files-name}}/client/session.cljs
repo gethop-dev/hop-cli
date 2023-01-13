@@ -6,7 +6,6 @@
 (ns <<project.name>>.client.session
   (:require [<<project.name>>.client.session.oidc-sso :as oidc-sso]
             [<<project.name>>.client.session.user :as user]
-            [<<project.name>>.client.view :as view]
             [cljsjs.keycloak-js]
             [re-frame.core :as rf]
             [reagent.core :as r]))
@@ -127,7 +126,7 @@
 
 (rf/reg-event-fx
  ::user-login
- (fn [{:keys [db]} [_]]
+ (fn [{:keys [_]} [_]]
    {::login []}))
 
 (rf/reg-fx
