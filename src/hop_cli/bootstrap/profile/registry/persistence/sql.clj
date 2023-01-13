@@ -142,11 +142,11 @@
   [settings]
   {:test
    [(with-out-str
-      (println "Once the DB is up and running you need to run the following SQL statements:")
+      (println "Once the DB is up and running you need to run the following SQL statements:\n")
       (println (build-environment-init-db-sql-string settings :test)))]
    :prod
    [(with-out-str
-      (println "Once the DB is up and running you need to run the following SQL statements:")
+      (println "Once the DB is up and running you need to run the following SQL statements:\n")
       (println (build-environment-init-db-sql-string settings :prod))
       (println "The scripts are stored in the project under postgres/init-scripts for reference."))]})
 

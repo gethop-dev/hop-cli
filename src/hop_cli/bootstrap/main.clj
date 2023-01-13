@@ -16,14 +16,16 @@
   (->
    [{:txn-fn
      (fn read-settings [_]
-       (println "Reading settings.edn...")
+       (print "Reading settings file...")
        (let [result (sr/read-settings settings-file-path)]
          (if (:success? result)
-           {:success? true
-            :settings
-            (-> (:settings result)
-                (assoc-in [:project :target-dir] target-project-dir)
-                (assoc-in [:project :environments] environments))}
+           (do
+             (println "Done.")
+             {:success? true
+              :settings
+              (-> (:settings result)
+                  (assoc-in [:project :target-dir] target-project-dir)
+                  (assoc-in [:project :environments] environments))})
            {:success? false
             :reason :could-not-read-settings
             :error-details result})))}
@@ -41,35 +43,39 @@
     {:txn-fn
      (fn execute-profiles
        [{:keys [settings]}]
-       (println "Generating project...")
+       (print "Generating project...")
        (let [result (profile/execute-profiles! settings)]
          (if (:success? result)
-           {:success? true
-            :settings (:settings result)}
+           (do
+             (println "Done.")
+             {:success? true
+              :settings (:settings result)})
            {:success? false
             :reason :could-not-execute-profiles
             :error-details result})))}
     {:txn-fn
      (fn save-environment-variables
        [{:keys [settings]}]
-       (println "Saving environment variables...")
+       (print "Saving environment variables...")
        (let [result (infrastructure/save-environment-variables settings)]
          (if (:success? result)
-           {:success? true
-            :settings settings}
+           (do
+             (println "Done.")
+             {:success? true
+              :settings settings})
            {:success? false
             :reason :could-not-save-env-variables
             :error-details result})))}
     {:txn-fn
      (fn post-installation-messages
        [{:keys [settings]}]
-       (println "Project generation finished. Now follow these manual steps to complete the bootstrap.")
+       (println "\nProject generation finished. Now follow these manual steps to complete the bootstrap.")
        (doseq [environment environments
                :let [messages (bp.util/get-settings-value settings [:project :post-installation-messages environment])]
                :when (seq messages)]
-         (println (format "\nSteps to complete the %s environment setup" (str/upper-case (name environment))))
+         (println (format "\nSteps to complete the %s environment setup\n" (str/upper-case (name environment))))
          (doseq [[n msg] (map-indexed vector messages)]
-           (println (format "Step #%s" n))
+           (println (format "Step #%s\n" n))
            (println msg)))
        {:success? true})}]
    (tht/thread-transactions {})))

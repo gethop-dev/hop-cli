@@ -201,8 +201,10 @@
           (recur))
 
         (= status :CREATE_COMPLETE)
-        {:success? true
-         :outputs (get-in result [:stack :outputs])}
+        (do
+          (println "Done.")
+          {:success? true
+           :outputs (get-in result [:stack :outputs])})
 
         :else
         (get-stack-errors stack-name)))))
@@ -302,13 +304,15 @@
         opts {:bucket-name bucket-name
               :directory-path directory-path
               :region region}
-        _log (println (format "Uploading cloudformation templates to %s bucket..." bucket-name))
+        _log (print (format "Uploading cloudformation templates to %s bucket..." bucket-name))
         result (aws.cloudformation/update-templates opts)]
     (if (:success? result)
-      {:success? true
-       :settings (bp.util/assoc-in-settings-value settings
-                                                  :cloud-provider.aws.cloudformation/template-bucket-name
-                                                  bucket-name)}
+      (do
+        (println "Done.")
+        {:success? true
+         :settings (bp.util/assoc-in-settings-value settings
+                                                    :cloud-provider.aws.cloudformation/template-bucket-name
+                                                    bucket-name)})
       {:success? false
        :reason :could-not-upload-cfn-templates
        :error-details result})))
@@ -369,10 +373,11 @@
              (println "Skipping self-signed certificate upload.")
              {:success? true
               :settings settings})
-           (let [_log (println "Creating and uploading self-signed certificate...")
+           (let [_log (print "Creating and uploading self-signed certificate...")
                  result (aws.ssl/create-and-upload-self-signed-certificate {:region region})]
              (if (:success? result)
-               (let [certificate-arn (:certificate-arn result)
+               (let [_log (println "Done.")
+                     certificate-arn (:certificate-arn result)
                      updated-settings
                      (assoc-in settings [:cloud-provider :aws :project :elb :certificate-arn] certificate-arn)]
                  {:success? true
