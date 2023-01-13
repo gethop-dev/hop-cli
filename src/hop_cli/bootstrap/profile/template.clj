@@ -61,7 +61,7 @@
   [coll]
   (if (seq coll)
     (->> coll
-         (map #(format "      - %s" %))
+         (map #(format "      %s:" %))
          (cons "    environment:")
          (interpose "\n"))
     []))

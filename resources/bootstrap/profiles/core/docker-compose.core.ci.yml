@@ -5,9 +5,11 @@ services:
       context: .
       target: "ci"
     environment:
-      - JVM_OPTS=-XshowSettings:vm -Xmx2048m -server
+      JVM_OPTS: -XshowSettings:vm -Xmx2048m -server
     entrypoint: /bin/bash
-    command: ["-c", "tail -f /dev/null"]
+    command:
+      - -c
+      - tail -f /dev/null
     deploy:
       resources:
         limits:

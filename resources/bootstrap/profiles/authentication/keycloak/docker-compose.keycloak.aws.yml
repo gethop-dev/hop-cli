@@ -1,4 +1,9 @@
 services:
   keycloak:
     volumes:
-      - /var/app/current/keycloak/themes/{{project.profiles.auth-keycloak.to-deploy.container.theme.name}}:/opt/jboss/keycloak/themes/{{project.profiles.auth-keycloak.to-deploy.container.theme.name}}:ro
+      - type: bind
+        source: /var/app/current/keycloak/themes/{{project.profiles.auth-keycloak.to-deploy.container.theme.name}}
+        target: /opt/jboss/keycloak/themes/{{project.profiles.auth-keycloak.to-deploy.container.theme.name}}
+        read_only: true
+        bind: {}
+

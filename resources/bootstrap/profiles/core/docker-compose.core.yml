@@ -12,9 +12,16 @@ services:
         limits:
           memory: ${MEMORY_LIMIT_PROXY}
     ports:
-      - "80:80"
+      - mode: ingress
+        target: 80
+        published: 80
+        protocol: tcp
     depends_on:
       app:
         condition: service_started
     volumes:
-      - ./proxy/conf.d:/etc/nginx/conf.d:ro
+      - type: bind
+        source: ./proxy/conf.d
+        target: /etc/nginx/conf.d
+        read_only: true
+        bind: {}

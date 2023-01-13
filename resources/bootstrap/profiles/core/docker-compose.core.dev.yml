@@ -4,12 +4,33 @@ services:
     build:
       context: .
       target: "dev"
-    command: ["lein", "repl", ":headless"]
+    command:
+      - lein
+      - repl
+      - :headless
     ports:
-      - "3000:3000"
-      - "4001:4001"
-      - "3449:3449"
+      - mode: ingress
+        target: 3000
+        published: 3000
+        protocol: tcp
+      - mode: ingress
+        target: 4001
+        published: 4001
+        protocol: tcp
+      - mode: ingress
+        target: 3449
+        published: 3449
+        protocol: tcp
     volumes:
-      - ./app:/app:delegated
-      - ~/.m2:/root/.m2:delegated
-      - ~/.m2:/home/hop/.m2:delegated
+      - type: bind
+        source: ./app
+        target: /app
+        bind: {}
+      - type: bind
+        source: ~/.m2
+        target: /root/.m2
+        bind: {}
+      - type: bind
+        source: ~/.m2
+        target: /home/hop/.m2
+        bind: {}
