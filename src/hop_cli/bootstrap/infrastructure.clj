@@ -13,3 +13,13 @@
 
 (defmulti save-environment-variables get-deployment-target-key)
 
+(defmethod provision-initial-infrastructure :default
+  [settings]
+  {:success? true
+   :settings settings})
+
+(defmethod save-environment-variables :default
+  [settings]
+  {:success? true
+   :saved-env-files (bp.util/write-environments-env-vars-to-file! settings
+                                                                  [:test :prod])})

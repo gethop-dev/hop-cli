@@ -13,19 +13,12 @@
             [hop-cli.util.file :as util.file]
             [meta-merge.core :refer [meta-merge]]))
 
-(defn- build-target-project-path
-  ([settings]
-   (build-target-project-path settings nil))
-  ([settings subpath]
-   (let [target-dir (bp.util/get-settings-value settings :project/target-dir)]
-     (str (fs/normalize target-dir) fs/file-separator subpath))))
-
 (defn- copy-files!*
   [settings bootstrap-path-prefix]
   (let [files-to-copy (bp.util/get-settings-value settings [:project :files])]
     (doseq [{:keys [src dst]} files-to-copy
             :let [src-path (fs/path bootstrap-path-prefix "profiles" src)
-                  dst-path (build-target-project-path settings dst)]]
+                  dst-path (bp.util/build-target-project-path settings dst)]]
       (if (fs/directory? src-path)
         (fs/copy-tree src-path dst-path {:replace-existing true})
         (fs/copy src-path dst-path {:replace-existing true})))))
@@ -38,16 +31,6 @@
       (fs/unzip jar-file-path temp-dir)
       (copy-files!* settings (fs/path temp-dir "bootstrap")))
     (copy-files!* settings (io/resource "bootstrap"))))
-
-(defn- write-dev-environment-variables-to-file!
-  [settings]
-  (let [env-variables (bp.util/get-settings-value settings
-                                                  [:project :environment-variables])
-        target-file (build-target-project-path settings ".env")]
-    (->> (:dev env-variables)
-         (map #(format "%s=%s" (name (first %)) (second %)))
-         sort
-         (fs/write-lines target-file))))
 
 (defn get-selected-profiles
   [settings]
@@ -73,10 +56,10 @@
 
 (defn- generate-project!
   [settings]
-  (let [project-path (build-target-project-path settings)]
+  (let [project-path (bp.util/build-target-project-path settings)]
     (copy-files! settings)
     (profile.template/render-profile-templates! settings project-path)
-    (write-dev-environment-variables-to-file! settings)
+    (bp.util/write-environment-variables-to-file! settings :dev ".env")
     settings))
 
 (defn execute-profiles!

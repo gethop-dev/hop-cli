@@ -3,7 +3,8 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.bootstrap.util
-  (:require [clojure.string :as str]
+  (:require [babashka.fs :as fs]
+            [clojure.string :as str]
             [meta-merge.core :refer [meta-merge]]))
 
 (defn get-env-type
@@ -59,3 +60,32 @@
     (if (and (seq compose-files) (seq extra-docker-files))
       (concat compose-files extra-docker-files)
       compose-files)))
+
+(defn build-target-project-path
+  ([settings]
+   (build-target-project-path settings nil))
+  ([settings subpath]
+   (let [target-dir (get-settings-value settings :project/target-dir)]
+     (str (fs/normalize target-dir) fs/file-separator subpath))))
+
+(defn write-environment-variables-to-file!
+  ([settings environment]
+   (write-environment-variables-to-file! settings
+                                         environment
+                                         (format ".env.%s" (name environment))))
+  ([settings environment file-name]
+   (let [env-variables (get-settings-value settings
+                                           [:project :environment-variables])
+         target-file (build-target-project-path settings file-name)]
+     (->> (get env-variables environment)
+          (map #(format "%s=%s" (name (first %)) (second %)))
+          sort
+          (fs/write-lines target-file)))))
+
+(defn write-environments-env-vars-to-file!
+  [settings environments]
+  (->> (get-settings-value settings :project/environments)
+       (filter #(get (set environments) %))
+       (set)
+       (map (partial write-environment-variables-to-file! settings))))
+
