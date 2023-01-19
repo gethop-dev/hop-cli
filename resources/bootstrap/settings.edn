@@ -22,7 +22,7 @@
                                :value [{:name :app-repository-url
                                         :tag "Application Repository URL"
                                         :type :ref
-                                        :value :cloud-provider.aws.project.ecr/app-repository-url}]}]}]}
+                                        :value :deployment-target.aws.project.ecr/app-repository-url}]}]}]}
           {:name :proxy
            :tag "Proxy"
            :docstring [:span "Settings for setting up the application's reverse proxy."]
@@ -132,7 +132,7 @@
                                :tag "Region"
                                :docstring [:span "Region in which the application is deployed."]
                                :type :ref
-                               :value :cloud-provider.aws.account/region}
+                               :value :deployment-target.aws.account/region}
                               {:name :aws-vault
                                :tag "AWS Vault"
                                :docstring [:span "Configuration for the AWS Vault tool that is used to manage credentials."]
@@ -153,24 +153,24 @@
                                         :value [{:name :name
                                                  :tag "Username"
                                                  :type :ref
-                                                 :value :cloud-provider.aws.account.iam.local-dev-user/name}
+                                                 :value :deployment-target.aws.account.iam.local-dev-user/name}
                                                 {:name :arn
                                                  :tag "ARN"
                                                  :type :ref
-                                                 :value :cloud-provider.aws.account.iam.local-dev-user/arn}
+                                                 :value :deployment-target.aws.account.iam.local-dev-user/arn}
                                                 {:name :access-key-id
                                                  :tag "Access Key Id"
                                                  :type :ref
-                                                 :value :cloud-provider.aws.account.iam.local-dev-user/access-key-id}
+                                                 :value :deployment-target.aws.account.iam.local-dev-user/access-key-id}
                                                 {:name :secret-access-key
                                                  :tag "Secret Access Key"
                                                  :type :ref
-                                                 :value :cloud-provider.aws.account.iam.local-dev-user/secret-access-key}
+                                                 :value :deployment-target.aws.account.iam.local-dev-user/secret-access-key}
                                                 {:name :role-arn
                                                  :tag "Role ARN"
                                                  :docstring [:span "ARN of the role that the local development user will assume to run the project."]
                                                  :type :ref
-                                                 :value :cloud-provider.aws.environment.dev.iam.role/arn}]}
+                                                 :value :deployment-target.aws.environment.dev.iam.role/arn}]}
                                        {:name :ci-user
                                         :tag "CI/CD user"
                                         :docstring [:span "Credentials for running and deploying the project in the CI/CD pipelines."]
@@ -178,19 +178,19 @@
                                         :value [{:name :name
                                                  :tag "Name"
                                                  :type :ref
-                                                 :value :cloud-provider.aws.account.iam.ci-user/name}
+                                                 :value :deployment-target.aws.account.iam.ci-user/name}
                                                 {:name :arn
                                                  :tag "ARN"
                                                  :type :ref
-                                                 :value :cloud-provider.aws.account.iam.ci-user/arn}
+                                                 :value :deployment-target.aws.account.iam.ci-user/arn}
                                                 {:name :access-key-id
                                                  :tag "Access Key Id"
                                                  :type :ref
-                                                 :value :cloud-provider.aws.account.iam.ci-user/access-key-id}
+                                                 :value :deployment-target.aws.account.iam.ci-user/access-key-id}
                                                 {:name :secret-access-key
                                                  :tag "Secret Access Key"
                                                  :type :ref
-                                                 :value :cloud-provider.aws.account.iam.ci-user/secret-access-key}]}]}]}
+                                                 :value :deployment-target.aws.account.iam.ci-user/secret-access-key}]}]}]}
                      {:name :ci
                       :tag "CI/CD"
                       :docstring [:span "Profile for setting up a Continuous Integration and Continuous Deployment pipeline."]
@@ -233,7 +233,7 @@
                                                             :tag "ElasticBeanstalk Application name"
                                                             :docstring [:span "Name for the ElasticBeanstalk application where the HOP project is deployed."]
                                                             :type :ref
-                                                            :value :cloud-provider.aws.project.eb/application-name}
+                                                            :value :deployment-target.aws.project.eb/application-name}
                                                            {:name :environment
                                                             :tag "Environment"
                                                             :type :plain-group
@@ -244,7 +244,7 @@
                                                                               :tag "ElasticBeanstalk Environment name"
                                                                               :docstring [:span "Name for the ElasticBeanstalk environment for the testing environment."]
                                                                               :type :ref
-                                                                              :value :cloud-provider.aws.environment.test.eb/environment-name}]}
+                                                                              :value :deployment-target.aws.environment.test.eb/environment-name}]}
                                                                     {:name :prod
                                                                      :tag "Production environment"
                                                                      :type :plain-group
@@ -252,7 +252,7 @@
                                                                               :tag "ElasticBeanstalk Environment name"
                                                                               :docstring [:span "Name for the ElasticBeanstalk environment for the production environment."]
                                                                               :type :ref
-                                                                              :value :cloud-provider.aws.environment.prod.eb/environment-name}]}]}]}]}]}]}
+                                                                              :value :deployment-target.aws.environment.prod.eb/environment-name}]}]}]}]}]}]}
                      {:name :observability-runtime-configurable-logging
                       :tag "Observability - Runtime Configurable Logging"
                       :docstring [:span "Profile for making the project's logger configurable at runtime."]
@@ -274,7 +274,7 @@
                                                  :tag "Log group name"
                                                  :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                  :type :ref
-                                                 :value :cloud-provider.aws.environment.dev.optional-services.cloudwatch/log-group-name}
+                                                 :value :deployment-target.aws.environment.dev.optional-services.cloudwatch/log-group-name}
                                                 {:name :min-log-level
                                                  :tag "Min log level"
                                                  :docstring [:span "Minimum logging level configuration. Possible values: :trace, :debug, :info, :warn, :error, :fatal or :report."]
@@ -288,7 +288,7 @@
                                                  :tag "Log group name"
                                                  :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                  :type :ref
-                                                 :value :cloud-provider.aws.environment.test.optional-services.cloudwatch/log-group-name}
+                                                 :value :deployment-target.aws.environment.test.optional-services.cloudwatch/log-group-name}
                                                 {:name :min-log-level
                                                  :tag "Min log level"
                                                  :docstring [:span "Minimum logging level configuration. Possible values: :trace, :debug, :info, :warn, :error, :fatal or :report."]
@@ -302,7 +302,7 @@
                                                  :tag "Log group name"
                                                  :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                  :type :ref
-                                                 :value :cloud-provider.aws.environment.prod.optional-services.cloudwatch/log-group-name}
+                                                 :value :deployment-target.aws.environment.prod.optional-services.cloudwatch/log-group-name}
                                                 {:name :min-log-level
                                                  :tag "Min log level"
                                                  :docstring [:span "Minimum logging level configuration. Possible values: :trace, :debug, :info, :warn, :error, :fatal or :report."]
@@ -331,7 +331,7 @@
                                                             :value [{:name :name
                                                                      :tag "Name"
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.dev.optional-services.s3/bucket-name}]}
+                                                                     :value :deployment-target.aws.environment.dev.optional-services.s3/bucket-name}]}
                                                            {:name :custom
                                                             :tag "Custom"
                                                             :docstring [:span "Existing S3 Bucket of your choice."]
@@ -355,7 +355,7 @@
                                                             :value [{:name :name
                                                                      :tag "Name"
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.test.optional-services.s3/bucket-name}]}
+                                                                     :value :deployment-target.aws.environment.test.optional-services.s3/bucket-name}]}
                                                            {:name :custom
                                                             :tag "Custom"
                                                             :docstring [:span "Existing S3 Bucket of your choice."]
@@ -379,7 +379,7 @@
                                                             :value [{:name :name
                                                                      :tag "Name"
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.prod.optional-services.s3/bucket-name}]}
+                                                                     :value :deployment-target.aws.environment.prod.optional-services.s3/bucket-name}]}
                                                            {:name :custom
                                                             :tag "Custom"
                                                             :docstring [:span "Existing S3 Bucket of your choice."]
@@ -684,15 +684,15 @@
                                                                                       {:name :host
                                                                                        :tag "Host"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.test.optional-services.rds/host}
+                                                                                       :value :deployment-target.aws.environment.test.optional-services.rds/host}
                                                                                       {:name :name
                                                                                        :tag "Name"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.test.optional-services.rds/name}
+                                                                                       :value :deployment-target.aws.environment.test.optional-services.rds/name}
                                                                                       {:name :port
                                                                                        :tag "Port"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.test.optional-services.rds/port}
+                                                                                       :value :deployment-target.aws.environment.test.optional-services.rds/port}
                                                                                       {:name :admin-user
                                                                                        :tag "Admin user"
                                                                                        :docstring [:span "Superuser for the Database instance."]
@@ -700,11 +700,11 @@
                                                                                        :value [{:name :username
                                                                                                 :tag "Username"
                                                                                                 :type :ref
-                                                                                                :value :cloud-provider.aws.environment.test.optional-services.rds.admin-user/username}
+                                                                                                :value :deployment-target.aws.environment.test.optional-services.rds.admin-user/username}
                                                                                                {:name :password
                                                                                                 :tag "Password"
                                                                                                 :type :ref
-                                                                                                :value :cloud-provider.aws.environment.test.optional-services.rds.admin-user/password}]}
+                                                                                                :value :deployment-target.aws.environment.test.optional-services.rds.admin-user/password}]}
                                                                                       {:name :app-user
                                                                                        :tag "Clojure application user"
                                                                                        :docstring [:span "User that the Clojure application will use to connect to the database."]
@@ -789,15 +789,15 @@
                                                                                       {:name :host
                                                                                        :tag "Host"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.prod.optional-services.rds/host}
+                                                                                       :value :deployment-target.aws.environment.prod.optional-services.rds/host}
                                                                                       {:name :name
                                                                                        :tag "Name"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.prod.optional-services.rds/name}
+                                                                                       :value :deployment-target.aws.environment.prod.optional-services.rds/name}
                                                                                       {:name :port
                                                                                        :tag "Port"
                                                                                        :type :ref
-                                                                                       :value :cloud-provider.aws.environment.prod.optional-services.rds/port}
+                                                                                       :value :deployment-target.aws.environment.prod.optional-services.rds/port}
                                                                                       {:name :admin-user
                                                                                        :tag "Admin user"
                                                                                        :docstring [:span "Superuser for the Database instance."]
@@ -805,11 +805,11 @@
                                                                                        :value [{:name :username
                                                                                                 :tag "Username"
                                                                                                 :type :ref
-                                                                                                :value :cloud-provider.aws.environment.prod.optional-services.rds.admin-user/username}
+                                                                                                :value :deployment-target.aws.environment.prod.optional-services.rds.admin-user/username}
                                                                                                {:name :password
                                                                                                 :tag "Password"
                                                                                                 :type :ref
-                                                                                                :value :cloud-provider.aws.environment.prod.optional-services.rds.admin-user/password}]}
+                                                                                                :value :deployment-target.aws.environment.prod.optional-services.rds.admin-user/password}]}
                                                                                       {:name :app-user
                                                                                        :tag "Clojure application user"
                                                                                        :docstring [:span "User that the Clojure application will use to connect to the database."]
@@ -1899,17 +1899,17 @@
                                                             :value [{:name :id
                                                                      :tag "Id"
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/id}
+                                                                     :value :deployment-target.aws.environment.dev.optional-services.cognito.user-pool/id}
                                                                     {:name :url
                                                                      :tag "Url"
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/url}
+                                                                     :value :deployment-target.aws.environment.dev.optional-services.cognito.user-pool/url}
                                                                     {:name :app-client
                                                                      :tag "Clojure application app-client"
                                                                      :type :plain-group
                                                                      :value [{:name :id
                                                                               :type :ref
-                                                                              :value :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.app-client/id}]}]}
+                                                                              :value :deployment-target.aws.environment.dev.optional-services.cognito.user-pool.app-client/id}]}]}
                                                            {:name :custom
                                                             :tag "Custom"
                                                             :docstring [:span "Existing Cognito User Pool of your choice."]
@@ -1953,17 +1953,17 @@
                                                             :value [{:name :id
                                                                      :tag "Id"
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/id}
+                                                                     :value :deployment-target.aws.environment.test.optional-services.cognito.user-pool/id}
                                                                     {:name :url
                                                                      :tag "Url"
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/url}
+                                                                     :value :deployment-target.aws.environment.test.optional-services.cognito.user-pool/url}
                                                                     {:name :app-client
                                                                      :tag "Clojure application app-client"
                                                                      :type :plain-group
                                                                      :value [{:name :id
                                                                               :type :ref
-                                                                              :value :cloud-provider.aws.environment.test.optional-services.cognito.user-pool.app-client/id}]}]}
+                                                                              :value :deployment-target.aws.environment.test.optional-services.cognito.user-pool.app-client/id}]}]}
                                                            {:name :custom
                                                             :tag "Custom"
                                                             :docstring [:span "Existing Cognito User Pool of your choice."]
@@ -2007,18 +2007,18 @@
                                                             :value [{:name :id
                                                                      :tag "Id"
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/id}
+                                                                     :value :deployment-target.aws.environment.prod.optional-services.cognito.user-pool/id}
                                                                     {:name :url
                                                                      :tag "Url"
                                                                      :type :ref
-                                                                     :value :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/url}
+                                                                     :value :deployment-target.aws.environment.prod.optional-services.cognito.user-pool/url}
                                                                     {:name :app-client
                                                                      :tag "Clojure application app-client"
                                                                      :type :plain-group
                                                                      :value [{:name :id
                                                                               :tag "Id"
                                                                               :type :ref
-                                                                              :value :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool.app-client/id}]}]}
+                                                                              :value :deployment-target.aws.environment.prod.optional-services.cognito.user-pool.app-client/id}]}]}
                                                            {:name :custom
                                                             :tag "Custom"
                                                             :docstring [:span "Existing Cognito User Pool of your choice."]
@@ -2049,7 +2049,7 @@
                                                                               :type :string
                                                                               :pattern "[^\\s]+"
                                                                               :value ""}]}]}]}]}]}]}]}]}
- {:name :cloud-provider
+ {:name :deployment-target
   :tag "Cloud provider"
   :docstring [:span "Cloud provider on which the HOP Application will be hosted. The HOP Command Line Interface tool will take care of the provisioning of the needed infrastructure."]
   :type :single-choice-group
