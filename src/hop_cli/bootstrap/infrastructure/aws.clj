@@ -439,7 +439,7 @@
                 :project-name
                 (bp.util/get-settings-value settings :project/name)
                 :kms-key-alias
-                (bp.util/get-settings-value settings [:aws :environment environment :kms :key-alias])
+                (bp.util/get-settings-value settings [:deployment-target :aws :environment environment :kms :key-alias])
                 :region
                 (bp.util/get-settings-value settings :deployment-target.aws.account/region)}
         ssm-env-vars (->> (bp.util/get-settings-value settings :project/environment-variables)
