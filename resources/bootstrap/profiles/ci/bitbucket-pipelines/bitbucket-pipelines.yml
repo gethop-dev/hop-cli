@@ -7,17 +7,17 @@ pipelines:
         script:
           - /usr/local/bin/all-checks.sh
           - ./ci/lint-and-test.sh
-          - ./ci/build-app-prod-docker-image.sh{{#cloud-provider.aws.enabled}}
+          - ./ci/build-app-prod-docker-image.sh{{#deployment-target.aws.enabled}}
           - ./ci/aws/ecr-login.sh
           - ./ci/publish-app-prod-docker-image.sh
-          - ./ci/aws/deploy-to-test-env.sh{{/cloud-provider.aws.enabled}}
+          - ./ci/aws/deploy-to-test-env.sh{{/deployment-target.aws.enabled}}
         services:
-          - docker{{#cloud-provider.aws.enabled}}
+          - docker{{#deployment-target.aws.enabled}}
     - step:
         deployment: production
         script:
           - ./ci/aws/deploy-to-prod-env.sh
-        trigger: manual{{/cloud-provider.aws.enabled}}
+        trigger: manual{{/deployment-target.aws.enabled}}
 definitions:
   services:
     docker:

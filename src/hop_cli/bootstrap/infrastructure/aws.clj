@@ -25,129 +25,129 @@
 (def cfn-templates
   {:account {:master-template "account.yaml"
              :capability :CAPABILITY_NAMED_IAM
-             :stack-name-kw :cloud-provider.aws.account/stack-name
+             :stack-name-kw :deployment-target.aws.account/stack-name
              :iam-users
-             [:cloud-provider.aws.account.iam.local-dev-user/name
-              :cloud-provider.aws.account.iam.ci-user/name]
+             [:deployment-target.aws.account.iam.local-dev-user/name
+              :deployment-target.aws.account.iam.ci-user/name]
              :input-parameter-mapping
-             {:cloud-provider.aws.account.vpc/cidr :VpcCIDR
-              :cloud-provider.aws.account/resource-name-prefix :ResourceNamePrefix}
+             {:deployment-target.aws.account.vpc/cidr :VpcCIDR
+              :deployment-target.aws.account/resource-name-prefix :ResourceNamePrefix}
              :output-parameter-mapping
-             {:EbServiceRoleARN :cloud-provider.aws.account.iam/eb-service-role-arn
-              :LocalDevUserARN :cloud-provider.aws.account.iam.local-dev-user/arn
-              :LocalDevUserName :cloud-provider.aws.account.iam.local-dev-user/name
-              :CiUserARN :cloud-provider.aws.account.iam.ci-user/arn
-              :CiUserName :cloud-provider.aws.account.iam.ci-user/name
-              :RDSMonitoringRoleARN :cloud-provider.aws.account.iam/rds-monitoring-role-arm
-              :PublicRouteTable1Id :cloud-provider.aws.account.vpc/public-route-table-id
-              :VpcId :cloud-provider.aws.account.vpc/id}}
+             {:EbServiceRoleARN :deployment-target.aws.account.iam/eb-service-role-arn
+              :LocalDevUserARN :deployment-target.aws.account.iam.local-dev-user/arn
+              :LocalDevUserName :deployment-target.aws.account.iam.local-dev-user/name
+              :CiUserARN :deployment-target.aws.account.iam.ci-user/arn
+              :CiUserName :deployment-target.aws.account.iam.ci-user/name
+              :RDSMonitoringRoleARN :deployment-target.aws.account.iam/rds-monitoring-role-arm
+              :PublicRouteTable1Id :deployment-target.aws.account.vpc/public-route-table-id
+              :VpcId :deployment-target.aws.account.vpc/id}}
 
    :project {:master-template "project.yaml"
              :capability :CAPABILITY_NAMED_IAM
-             :stack-name-kw :cloud-provider.aws.project/stack-name
+             :stack-name-kw :deployment-target.aws.project/stack-name
              :input-parameter-mapping
-             {:cloud-provider.aws.account.vpc/id :VpcId
-              :cloud-provider.aws.account.vpc/public-route-table-id :PublicRouteTable1Id
-              :cloud-provider.aws.project.vpc.subnet-1/cidr :Subnet1CIDR
-              :cloud-provider.aws.project.vpc.subnet-2/cidr :Subnet2CIDR
-              :cloud-provider.aws.project.elb/certificate-arn :ElbCertificateArn}
+             {:deployment-target.aws.account.vpc/id :VpcId
+              :deployment-target.aws.account.vpc/public-route-table-id :PublicRouteTable1Id
+              :deployment-target.aws.project.vpc.subnet-1/cidr :Subnet1CIDR
+              :deployment-target.aws.project.vpc.subnet-2/cidr :Subnet2CIDR
+              :deployment-target.aws.project.elb/certificate-arn :ElbCertificateArn}
              :output-parameter-mapping
-             {:EbApplicationName :cloud-provider.aws.project.eb/application-name
-              :ElbSecurityGroupId :cloud-provider.aws.project.elb/security-group-id
-              :LoadBalancerARN  :cloud-provider.aws.project.elb/arn
-              :SubnetIds :cloud-provider.aws.project.vpc/subnet-ids
-              :EcrAppRepositoryURL :cloud-provider.aws.project.ecr/app-repository-url}}
+             {:EbApplicationName :deployment-target.aws.project.eb/application-name
+              :ElbSecurityGroupId :deployment-target.aws.project.elb/security-group-id
+              :LoadBalancerARN  :deployment-target.aws.project.elb/arn
+              :SubnetIds :deployment-target.aws.project.vpc/subnet-ids
+              :EcrAppRepositoryURL :deployment-target.aws.project.ecr/app-repository-url}}
 
    :dev-env {:master-template "local-environment.yaml"
              :capability :CAPABILITY_NAMED_IAM
-             :stack-name-kw :cloud-provider.aws.environment.dev/stack-name
+             :stack-name-kw :deployment-target.aws.environment.dev/stack-name
              :environment "dev"
              :input-parameter-mapping
-             {:cloud-provider.aws.account.iam.local-dev-user/arn :LocalDevUserARN
-              :cloud-provider.aws.environment.dev.optional-services.cognito/enabled :IncludeCognito
-              :cloud-provider.aws.environment.dev.optional-services.s3/enabled :IncludeS3
-              :cloud-provider.aws.environment.dev.optional-services.cloudwatch/enabled :IncludeCloudwatch
-              :cloud-provider.aws.environment.dev.optional-services.cloudwatch/log-group-name :CloudwatchLogGroupName
-              :cloud-provider.aws.environment.dev.optional-services.cloudwatch/retention-days :CloudwatchLogRetentionDays}
+             {:deployment-target.aws.account.iam.local-dev-user/arn :LocalDevUserARN
+              :deployment-target.aws.environment.dev.optional-services.cognito/enabled :IncludeCognito
+              :deployment-target.aws.environment.dev.optional-services.s3/enabled :IncludeS3
+              :deployment-target.aws.environment.dev.optional-services.cloudwatch/enabled :IncludeCloudwatch
+              :deployment-target.aws.environment.dev.optional-services.cloudwatch/log-group-name :CloudwatchLogGroupName
+              :deployment-target.aws.environment.dev.optional-services.cloudwatch/retention-days :CloudwatchLogRetentionDays}
              :output-parameter-mapping
-             {:S3BucketName :cloud-provider.aws.environment.dev.optional-services.s3/bucket-name
-              :CognitoUserPoolId :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/id
-              :CognitoUserPoolURL :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool/url
-              :CognitoSPAClientId :cloud-provider.aws.environment.dev.optional-services.cognito.user-pool.app-client/id
-              :CloudwatchLogGroupName :cloud-provider.aws.environment.dev.optional-services.cloudwatch/log-group-name
-              :DevRoleArn :cloud-provider.aws.environment.dev.iam.role/arn}}
+             {:S3BucketName :deployment-target.aws.environment.dev.optional-services.s3/bucket-name
+              :CognitoUserPoolId :deployment-target.aws.environment.dev.optional-services.cognito.user-pool/id
+              :CognitoUserPoolURL :deployment-target.aws.environment.dev.optional-services.cognito.user-pool/url
+              :CognitoSPAClientId :deployment-target.aws.environment.dev.optional-services.cognito.user-pool.app-client/id
+              :CloudwatchLogGroupName :deployment-target.aws.environment.dev.optional-services.cloudwatch/log-group-name
+              :DevRoleArn :deployment-target.aws.environment.dev.iam.role/arn}}
 
    :test-env {:master-template "cloud-environment.yaml"
               :capability :CAPABILITY_NAMED_IAM
-              :stack-name-kw :cloud-provider.aws.environment.test/stack-name
+              :stack-name-kw :deployment-target.aws.environment.test/stack-name
               :environment "test"
               :input-parameter-mapping
-              {:cloud-provider.aws.environment.test.optional-services.rds/version :DatabaseEngineVersion
-               :cloud-provider.aws.environment.test.optional-services.rds/port :DatabasePort
-               :cloud-provider.aws.environment.test.optional-services.rds/name :DatabaseName
-               :cloud-provider.aws.environment.test.optional-services.rds.admin-user/password :DatabasePassword
-               :cloud-provider.aws.environment.test.optional-services.rds.admin-user/username :DatabaseUsername
-               :cloud-provider.aws.environment.test/notifications-email :NotificationsEmail
-               :cloud-provider.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
-               :cloud-provider.aws.account.vpc/id :VpcId
-               :cloud-provider.aws.project.vpc/subnet-ids :SubnetIds
-               :cloud-provider.aws.account.iam/eb-service-role-arn :EbServiceRoleARN
-               :cloud-provider.aws.project.eb/application-name :EbApplicationName
-               :cloud-provider.aws/eb-docker-platform-arn :EbPlatformARN
-               :cloud-provider.aws.project.elb/arn :LoadBalancerARN
-               :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId
-               :cloud-provider.aws.environment.test.optional-services.cognito/enabled :IncludeCognito
-               :cloud-provider.aws.environment.test.optional-services.s3/enabled :IncludeS3
-               :cloud-provider.aws.environment.test.optional-services.rds/enabled :IncludeRds
-               :cloud-provider.aws.environment.test.optional-services.cloudwatch/enabled :IncludeCloudwatch
-               :cloud-provider.aws.environment.test.eb/ec2-instance-type :EbInstanceType
-               :cloud-provider.aws.environment.test.optional-services.cloudwatch/log-group-name :CloudwatchLogGroupName
-               :cloud-provider.aws.environment.test.optional-services.cloudwatch/retention-days :CloudwatchLogRetentionDays}
+              {:deployment-target.aws.environment.test.optional-services.rds/version :DatabaseEngineVersion
+               :deployment-target.aws.environment.test.optional-services.rds/port :DatabasePort
+               :deployment-target.aws.environment.test.optional-services.rds/name :DatabaseName
+               :deployment-target.aws.environment.test.optional-services.rds.admin-user/password :DatabasePassword
+               :deployment-target.aws.environment.test.optional-services.rds.admin-user/username :DatabaseUsername
+               :deployment-target.aws.environment.test/notifications-email :NotificationsEmail
+               :deployment-target.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
+               :deployment-target.aws.account.vpc/id :VpcId
+               :deployment-target.aws.project.vpc/subnet-ids :SubnetIds
+               :deployment-target.aws.account.iam/eb-service-role-arn :EbServiceRoleARN
+               :deployment-target.aws.project.eb/application-name :EbApplicationName
+               :deployment-target.aws/eb-docker-platform-arn :EbPlatformARN
+               :deployment-target.aws.project.elb/arn :LoadBalancerARN
+               :deployment-target.aws.project.elb/security-group-id :ElbSecurityGroupId
+               :deployment-target.aws.environment.test.optional-services.cognito/enabled :IncludeCognito
+               :deployment-target.aws.environment.test.optional-services.s3/enabled :IncludeS3
+               :deployment-target.aws.environment.test.optional-services.rds/enabled :IncludeRds
+               :deployment-target.aws.environment.test.optional-services.cloudwatch/enabled :IncludeCloudwatch
+               :deployment-target.aws.environment.test.eb/ec2-instance-type :EbInstanceType
+               :deployment-target.aws.environment.test.optional-services.cloudwatch/log-group-name :CloudwatchLogGroupName
+               :deployment-target.aws.environment.test.optional-services.cloudwatch/retention-days :CloudwatchLogRetentionDays}
               :output-parameter-mapping
-              {:CognitoUserPoolId :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/id
-               :CognitoUserPoolURL :cloud-provider.aws.environment.test.optional-services.cognito.user-pool/url
-               :CognitoSPAClientId :cloud-provider.aws.environment.test.optional-services.cognito.user-pool.app-client/id
-               :RdsAddress :cloud-provider.aws.environment.test.optional-services.rds/host
-               :EbEnvironmentName :cloud-provider.aws.environment.test.eb/environment-name
-               :EbEnvironmentURL :cloud-provider.aws.environment.test.eb/environment-url
-               :S3BucketName :cloud-provider.aws.environment.test.optional-services.s3/bucket-name
-               :CloudwatchLogGroupName :cloud-provider.aws.environment.test.optional-services.cloudwatch/log-group-name}}
+              {:CognitoUserPoolId :deployment-target.aws.environment.test.optional-services.cognito.user-pool/id
+               :CognitoUserPoolURL :deployment-target.aws.environment.test.optional-services.cognito.user-pool/url
+               :CognitoSPAClientId :deployment-target.aws.environment.test.optional-services.cognito.user-pool.app-client/id
+               :RdsAddress :deployment-target.aws.environment.test.optional-services.rds/host
+               :EbEnvironmentName :deployment-target.aws.environment.test.eb/environment-name
+               :EbEnvironmentURL :deployment-target.aws.environment.test.eb/environment-url
+               :S3BucketName :deployment-target.aws.environment.test.optional-services.s3/bucket-name
+               :CloudwatchLogGroupName :deployment-target.aws.environment.test.optional-services.cloudwatch/log-group-name}}
 
    :prod-env {:master-template "cloud-environment.yaml"
               :capability :CAPABILITY_NAMED_IAM
-              :stack-name-kw :cloud-provider.aws.environment.prod/stack-name
+              :stack-name-kw :deployment-target.aws.environment.prod/stack-name
               :environment "prod"
               :input-parameter-mapping
-              {:cloud-provider.aws.environment.prod.optional-services.rds/version :DatabaseEngineVersion
-               :cloud-provider.aws.environment.prod.optional-services.rds/port :DatabasePort
-               :cloud-provider.aws.environment.prod.optional-services.rds/name :DatabaseName
-               :cloud-provider.aws.environment.prod.optional-services.rds.admin-user/password :DatabasePassword
-               :cloud-provider.aws.environment.prod.optional-services.rds.admin-user/username :DatabaseUsername
-               :cloud-provider.aws.environment.prod/notifications-email :NotificationsEmail
-               :cloud-provider.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
-               :cloud-provider.aws.account.vpc/id :VpcId
-               :cloud-provider.aws.project.vpc/subnet-ids :SubnetIds
-               :cloud-provider.aws.account.iam/eb-service-role-arn :EbServiceRoleARN
-               :cloud-provider.aws.project.eb/application-name  :EbApplicationName
-               :cloud-provider.aws/eb-docker-platform-arn :EbPlatformARN
-               :cloud-provider.aws.project.elb/arn :LoadBalancerARN
-               :cloud-provider.aws.project.elb/security-group-id :ElbSecurityGroupId
-               :cloud-provider.aws.environment.prod.optional-services.cognito/enabled :IncludeCognito
-               :cloud-provider.aws.environment.prod.optional-services.s3/enabled :IncludeS3
-               :cloud-provider.aws.environment.prod.optional-services.rds/enabled :IncludeRds
-               :cloud-provider.aws.environment.prod.optional-services.cloudwatch/enabled :IncludeCloudwatch
-               :cloud-provider.aws.environment.prod.eb/ec2-instance-type :EbInstanceType
-               :cloud-provider.aws.environment.prod.optional-services.cloudwatch/log-group-name :CloudwatchLogGroupName
-               :cloud-provider.aws.environment.prod.optional-services.cloudwatch/retention-days :CloudwatchLogRetentionDays}
+              {:deployment-target.aws.environment.prod.optional-services.rds/version :DatabaseEngineVersion
+               :deployment-target.aws.environment.prod.optional-services.rds/port :DatabasePort
+               :deployment-target.aws.environment.prod.optional-services.rds/name :DatabaseName
+               :deployment-target.aws.environment.prod.optional-services.rds.admin-user/password :DatabasePassword
+               :deployment-target.aws.environment.prod.optional-services.rds.admin-user/username :DatabaseUsername
+               :deployment-target.aws.environment.prod/notifications-email :NotificationsEmail
+               :deployment-target.aws.account.iam/rds-monitoring-role-arm :RDSMonitoringRoleARN
+               :deployment-target.aws.account.vpc/id :VpcId
+               :deployment-target.aws.project.vpc/subnet-ids :SubnetIds
+               :deployment-target.aws.account.iam/eb-service-role-arn :EbServiceRoleARN
+               :deployment-target.aws.project.eb/application-name  :EbApplicationName
+               :deployment-target.aws/eb-docker-platform-arn :EbPlatformARN
+               :deployment-target.aws.project.elb/arn :LoadBalancerARN
+               :deployment-target.aws.project.elb/security-group-id :ElbSecurityGroupId
+               :deployment-target.aws.environment.prod.optional-services.cognito/enabled :IncludeCognito
+               :deployment-target.aws.environment.prod.optional-services.s3/enabled :IncludeS3
+               :deployment-target.aws.environment.prod.optional-services.rds/enabled :IncludeRds
+               :deployment-target.aws.environment.prod.optional-services.cloudwatch/enabled :IncludeCloudwatch
+               :deployment-target.aws.environment.prod.eb/ec2-instance-type :EbInstanceType
+               :deployment-target.aws.environment.prod.optional-services.cloudwatch/log-group-name :CloudwatchLogGroupName
+               :deployment-target.aws.environment.prod.optional-services.cloudwatch/retention-days :CloudwatchLogRetentionDays}
               :output-parameter-mapping
-              {:CognitoUserPoolId :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/id
-               :CognitoUserPoolURL :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool/url
-               :CognitoSPAClientId :cloud-provider.aws.environment.prod.optional-services.cognito.user-pool.app-client/id
-               :RdsAddress :cloud-provider.aws.environment.prod.optional-services.rds/host
-               :EbEnvironmentName :cloud-provider.aws.environment.prod.eb/environment-name
-               :EbEnvironmentURL :cloud-provider.aws.environment.prod.eb/environment-url
-               :S3BucketName :cloud-provider.aws.environment.prod.optional-services.s3/bucket-name
-               :CloudwatchLogGroupName :cloud-provider.aws.environment.prod.optional-services.cloudwatch/log-group-name}}})
+              {:CognitoUserPoolId :deployment-target.aws.environment.prod.optional-services.cognito.user-pool/id
+               :CognitoUserPoolURL :deployment-target.aws.environment.prod.optional-services.cognito.user-pool/url
+               :CognitoSPAClientId :deployment-target.aws.environment.prod.optional-services.cognito.user-pool.app-client/id
+               :RdsAddress :deployment-target.aws.environment.prod.optional-services.rds/host
+               :EbEnvironmentName :deployment-target.aws.environment.prod.eb/environment-name
+               :EbEnvironmentURL :deployment-target.aws.environment.prod.eb/environment-url
+               :S3BucketName :deployment-target.aws.environment.prod.optional-services.s3/bucket-name
+               :CloudwatchLogGroupName :deployment-target.aws.environment.prod.optional-services.cloudwatch/log-group-name}}})
 
 (defn- stack-event->output-stack-event
   [stack-event]
@@ -224,7 +224,7 @@
 (defn- provision-iam-user-access-key
   [settings name-kw]
   (let [user-name (bp.util/get-settings-value settings name-kw)
-        region (bp.util/get-settings-value settings :cloud-provider.aws.account/region)
+        region (bp.util/get-settings-value settings :deployment-target.aws.account/region)
         result (aws.iam/create-access-key {:username user-name
                                            :region region})]
     (if-not (:success? result)
@@ -252,8 +252,8 @@
                     stack-name-kw iam-users] :as template-opts}]
   (let [stack-name (bp.util/get-settings-value settings stack-name-kw)
         project-name (bp.util/get-settings-value settings :project/name)
-        bucket-name (bp.util/get-settings-value settings :cloud-provider.aws.cloudformation/template-bucket-name)
-        region (bp.util/get-settings-value settings :cloud-provider.aws.account/region)
+        bucket-name (bp.util/get-settings-value settings :deployment-target.aws.cloudformation/template-bucket-name)
+        region (bp.util/get-settings-value settings :deployment-target.aws.account/region)
         parameters (select-and-rename-keys settings input-parameter-mapping)
         opts (assoc template-opts
                     :project-name project-name
@@ -284,7 +284,7 @@
 (defn- get-or-provision-cfn-stack
   [settings {:keys [stack-name-kw output-parameter-mapping] :as template-opts}]
   (let [stack-name (bp.util/get-settings-value settings stack-name-kw)
-        region (bp.util/get-settings-value settings :cloud-provider.aws.account/region)
+        region (bp.util/get-settings-value settings :deployment-target.aws.account/region)
         result (aws.cloudformation/describe-stack {:stack-name stack-name
                                                    :region region})]
     (if (and (:success? result) (:stack result))
@@ -298,8 +298,8 @@
 
 (defn- upload-cloudformation-templates*
   [settings directory-path]
-  (let [account-id (bp.util/get-settings-value settings :cloud-provider.aws.account/id)
-        region (bp.util/get-settings-value settings :cloud-provider.aws.account/region)
+  (let [account-id (bp.util/get-settings-value settings :deployment-target.aws.account/id)
+        region (bp.util/get-settings-value settings :deployment-target.aws.account/region)
         bucket-name (str "cloudformation-templates-" region "-" account-id)
         opts {:bucket-name bucket-name
               :directory-path directory-path
@@ -311,7 +311,7 @@
         (println "Done.")
         {:success? true
          :settings (bp.util/assoc-in-settings-value settings
-                                                    :cloud-provider.aws.cloudformation/template-bucket-name
+                                                    :deployment-target.aws.cloudformation/template-bucket-name
                                                     bucket-name)})
       {:success? false
        :reason :could-not-upload-cfn-templates
@@ -320,7 +320,7 @@
 (defmethod infrastructure/provision-initial-infrastructure :aws
   [settings]
   (let [environments (set (bp.util/get-settings-value settings :project/environments))
-        region (bp.util/get-settings-value settings :cloud-provider.aws.account/region)]
+        region (bp.util/get-settings-value settings :deployment-target.aws.account/region)]
     (->
      [{:txn-fn
        (fn get-aws-account-identity
@@ -330,7 +330,7 @@
            (if success?
              {:success? true
               :settings (bp.util/assoc-in-settings-value settings
-                                                         :cloud-provider.aws.account/id
+                                                         :deployment-target.aws.account/id
                                                          (:Account caller-identity))}
              {:success? false
               :reason :failed-to-get-aws-account-id
@@ -342,7 +342,7 @@
            (if (:success? result)
              {:success? true
               :settings (bp.util/assoc-in-settings-value settings
-                                                         :cloud-provider.aws/eb-docker-platform-arn
+                                                         :deployment-target.aws/eb-docker-platform-arn
                                                          (:platform-arn result))}
              {:success? false
               :reason :could-not-get-eb-docker-platform-arn
@@ -368,7 +368,7 @@
       {:txn-fn
        (fn create-and-upload-self-signed-certificate
          [{:keys [settings]}]
-         (if (bp.util/get-settings-value settings :cloud-provider.aws.project.elb/certificate-arn)
+         (if (bp.util/get-settings-value settings :deployment-target.aws.project.elb/certificate-arn)
            (do
              (println "Skipping self-signed certificate upload.")
              {:success? true
@@ -379,7 +379,7 @@
                (let [_log (println "Done.")
                      certificate-arn (:certificate-arn result)
                      updated-settings
-                     (assoc-in settings [:cloud-provider :aws :project :elb :certificate-arn] certificate-arn)]
+                     (assoc-in settings [:deployment-target :aws :project :elb :certificate-arn] certificate-arn)]
                  {:success? true
                   :settings updated-settings})
                {:success? false
@@ -441,7 +441,7 @@
                 :kms-key-alias
                 (bp.util/get-settings-value settings [:aws :environment environment :kms :key-alias])
                 :region
-                (bp.util/get-settings-value settings :cloud-provider.aws.account/region)}
+                (bp.util/get-settings-value settings :deployment-target.aws.account/region)}
         ssm-env-vars (->> (bp.util/get-settings-value settings :project/environment-variables)
                           environment
                           walk/stringify-keys

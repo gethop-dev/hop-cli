@@ -129,7 +129,7 @@
       (= :container deployment-type-to-dep)
       (assoc :to-deploy common)
 
-      (and (= :aws (:cloud-provider/value settings))
+      (and (= :aws (:deployment-target/value settings))
            (= :container deployment-type-to-dep))
       (update :to-deploy concat aws))))
 

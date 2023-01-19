@@ -234,10 +234,10 @@
 (defn reference->message
   [reference]
   (let [origin (cond
-                 (str/starts-with? reference ":cloud-provider.")
+                 (str/starts-with? reference ":deployment-target.")
                  (str
-                  (second (re-find #":cloud-provider.([^.]+)." reference))
-                  " cloud provider")
+                  (second (re-find #":deployment-target.([^.]+)." reference))
+                  " deployment target")
                  (str/starts-with? reference ":project.profiles.")
                  (str
                   (second (re-find #":project.profiles.([^.]+)." reference))

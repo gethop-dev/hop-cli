@@ -5,10 +5,11 @@
 (ns hop-cli.bootstrap.infrastructure
   (:require [hop-cli.bootstrap.util :as bp.util]))
 
-(defn get-cloud-provider-key
+(defn get-deployment-target-key
   [settings]
-  (bp.util/get-settings-value settings :cloud-provider/value))
+  (bp.util/get-settings-value settings :deployment-target/value))
 
-(defmulti provision-initial-infrastructure get-cloud-provider-key)
+(defmulti provision-initial-infrastructure get-deployment-target-key)
 
-(defmulti save-environment-variables get-cloud-provider-key)
+(defmulti save-environment-variables get-deployment-target-key)
+
