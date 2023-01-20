@@ -18,7 +18,8 @@
   [path update-fn]
   (let [current-name (fs/file-name path)
         new-name (update-fn current-name)]
-    (when (not= current-name new-name)
+    (if (= current-name new-name)
+      path
       (let [new-path (.resolveSibling path new-name)]
         (fs/move path new-path)))))
 

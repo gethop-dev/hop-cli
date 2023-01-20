@@ -114,11 +114,11 @@
           (let [update-file-fn (fn [file-content]
                                  (->> file-content
                                       (renderer)
-                                      (format-file-content path)))]
-            (util.file/update-file-content! path update-file-fn)
-            (util.file/update-file-name! path renderer)
-            (when (= "sh" (fs/extension path))
-              (fs/set-posix-file-permissions path "rwxr-xr-x"))))
+                                      (format-file-content path)))
+                _ (util.file/update-file-content! path update-file-fn)
+                new-path (util.file/update-file-name! path renderer)]
+            (when (= "sh" (fs/extension new-path))
+              (fs/set-posix-file-permissions new-path "rwxr-xr-x"))))
         :continue)
       :post-visit-dir
       (fn [path _]
