@@ -21,5 +21,4 @@
 (defmethod save-environment-variables :default
   [settings]
   {:success? true
-   :saved-env-files (bp.util/write-environments-env-vars-to-file! settings
-                                                                  [:test :prod])})
+   :saved-env-files (bp.util/write-environments-env-vars-to-file! settings)})

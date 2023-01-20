@@ -83,9 +83,9 @@
           (fs/write-lines target-file)))))
 
 (defn write-environments-env-vars-to-file!
-  [settings environments]
+  [settings]
   (->> (get-settings-value settings :project/environments)
-       (filter #(get (set environments) %))
+       (remove #{:dev})
        (set)
-       (map (partial write-environment-variables-to-file! settings))))
+       (mapv (partial write-environment-variables-to-file! settings))))
 
