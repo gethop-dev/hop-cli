@@ -1,0 +1,21 @@
+services:
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - mode: ingress
+        target: 80
+        publish: 80
+        protocol: tcp
+      - mode: ingress
+        target: 443
+        publish: 443
+        protocol: tcp
+    environment:
+      DOMAINS: ${HTTPS_PORTAL_DOMAIN}
+      STAGE: ${HTTPS_PORTAL_STAGE}
+      PERSISTENT_DATA_DIR:
+    volumes:
+      - type: bind
+        source: ${PERSISTENT_DATA_DIR}/https-portal-data
+        target: /var/lib/https-portal
+        bind: {}

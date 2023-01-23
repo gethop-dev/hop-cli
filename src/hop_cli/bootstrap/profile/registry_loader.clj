@@ -12,10 +12,11 @@
             [hop-cli.bootstrap.profile.registry.frontend]
             [hop-cli.bootstrap.profile.registry.object-storage.s3]
             [hop-cli.bootstrap.profile.registry.observability.runtime-configurable-logging]
+            [hop-cli.bootstrap.profile.registry.on-premises]
             [hop-cli.bootstrap.profile.registry.persistence.sql]))
 
 (def ^:const profile-list
   "List of the HOP profiles in the prefered order of execution"
   [:core :persistence-sql :auth-cognito :auth-keycloak :bi-grafana
    :frontend :observability-runtime-configurable-logging
-   :observability-cloudwatch-logging :aws :object-storage-s3 :ci])
+   :observability-cloudwatch-logging :aws :on-premises :object-storage-s3 :ci])

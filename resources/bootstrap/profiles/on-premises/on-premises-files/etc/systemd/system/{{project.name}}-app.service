@@ -1,0 +1,24 @@
+[Unit]
+Description={{project.name}} Application server
+After=network.target nss-lookup.target
+
+[Service]
+Environment="PERSISTENT_DATA_DIR={{project.profiles.on-premises.operating-system.persistent-data-dir}}"
+User={{project.profiles.on-premises.operating-system.app-user.name}}
+Group={{project.profiles.on-premises.operating-system.app-user.group}}
+SupplementaryGroups={{project.profiles.on-premises.operating-system.docker-user-group}}
+WorkingDirectory=/usr/local/hop/{{project.name}}/
+Type=simple
+# We wait 10 seconds to let Docker Compose create the RabbitMQ container
+# and create the RabbitMQ hostname. This prevents nginx from not starting if
+# the hostname does not exist.
+ExecStartPre=-/bin/echo "Waiting 10 seconds to start the application, to avoid race conditions."
+ExecStartPre=-/bin/sleep 10
+ExecStart=/usr/local/hop/{{project.name}}/bin/app-with-healthchecks.sh start
+ExecStop=/usr/local/hop/{{project.name}}/bin/app-with-healthchecks.sh stop
+KillMode=mixed
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

@@ -14,4 +14,6 @@
             (bp.util/get-settings-value settings :project.profiles.ci.provider.github-actions/enabled)
             (conj {:src "ci/github-actions"})
             (bp.util/get-settings-value settings :project.profiles.ci.continuous-deployment.provider.aws/enabled)
-            (conj {:src "ci/aws/ci" :dst "ci/aws"}))})
+            (conj {:src "ci/aws/ci" :dst "ci/aws"})
+            (bp.util/get-settings-value settings :project.profiles.ci.continuous-deployment.provider.on-premises/enabled)
+            (conj {:src "ci/on-premises/ci" :dst "ci/on-premises"}))})
