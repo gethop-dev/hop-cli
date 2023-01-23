@@ -1,0 +1,19 @@
+services:
+  postgres:
+    # Small trick to make sure that if PERSISTENT_DATA_DIR is not
+    # defined (we use it in the 'volumes' section), we fail to start
+    # the container. Without this trick, docker-compose warns about
+    # the variable being empty and defaulting to a blank string, but
+    # doesn't otherwise fail.
+    environment:
+      PERSISTENT_DATA_DIR:
+    volumes:
+      - type: bind
+        source: ${PERSISTENT_DATA_DIR}/postgres-data-dir
+        target: /var/lib/postgresql/data
+        bind: {}
+    healthcheck:
+      test: pg_isready -U ${DB_ADMIN_USER}
+      interval: 10s
+      timeout: 5s
+      retries: 5

@@ -67,7 +67,6 @@
         type (if (= :container deploy-type)
                "postgresql"
                (bp.util/get-settings-value settings (conj env-path :database :type)))
-        port (bp.util/get-settings-value settings (conj env-path :database :port))
         db (bp.util/get-settings-value settings (conj env-path :database :name))
         app-user (bp.util/get-settings-value settings (conj env-path :database :app-user :username))
         app-password (bp.util/get-settings-value settings (conj env-path :database :app-user :password))
@@ -75,31 +74,40 @@
         admin-user (bp.util/get-settings-value settings (conj env-path :database :admin-user :username))
         admin-password (bp.util/get-settings-value settings (conj env-path :database :admin-user :password))
         container-memory-limit (when (= :container deploy-type)
-                                 (bp.util/get-settings-value settings (conj env-path :database :memory-limit-mb)))]
+                                 (bp.util/get-settings-value settings (conj env-path :database :memory-limit-mb)))
+        persistent-data-dir (bp.util/get-settings-value settings (conj base-path :persistent-data-dir :?))]
     (merge {:APP_DB_TYPE type
             :APP_DB_HOST host
-            :APP_DB_PORT port
+            :APP_DB_PORT "5432"
             :APP_DB_NAME db
             :APP_DB_USER app-user
             :APP_DB_PASSWORD app-password
             :APP_DB_SCHEMA app-schema
             :DB_HOST host
-            :DB_PORT port
+            :DB_PORT "5432"
             :DB_NAME db
             :DB_ADMIN_USER admin-user
             :DB_ADMIN_PASSWORD admin-password}
            (when container-memory-limit
-             {:MEMORY_LIMIT_POSTGRES (str container-memory-limit "m")}))))
+             {:MEMORY_LIMIT_POSTGRES (str container-memory-limit "m")})
+           (when persistent-data-dir
+             {:PERSISTENT_DATA_DIR persistent-data-dir}))))
 
 (defn- build-docker-compose-files
   [settings]
   (let [common ["docker-compose.postgres.yml"]
         common-dev-ci ["docker-compose.postgres.common-dev-ci.yml"]
-        ci ["docker-compose.postgres.ci.yml"]]
+        ci ["docker-compose.postgres.ci.yml"]
+        to-deploy ["docker-compose.postgres.to-deploy.yml"]
+        dev-deployment-type (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-develop.?/deployment-type)
+        deploy-deployment-type (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-deploy.?/deployment-type)]
     (cond->  {:to-develop [] :ci [] :to-deploy []}
-      (= :container (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-develop.?/deployment-type))
+      (= :container dev-deployment-type)
       (assoc :to-develop (concat common common-dev-ci)
-             :ci (concat common common-dev-ci ci)))))
+             :ci (concat common common-dev-ci ci))
+
+      (= :container deploy-deployment-type)
+      (assoc :to-deploy (concat common to-deploy)))))
 
 (defn- build-docker-files-to-copy
   [settings]
@@ -110,15 +118,18 @@
 
 (defn- build-profile-env-outputs
   [settings env]
-  (when (and
-         (= :dev env)
-         (= :container (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-develop/value)))
-    {:deployment
-     {:to-develop
-      {:container
-       {:environment
-        {:dev
-         {:database {:host "postgres"}}}}}}}))
+  (let [dev-deployment-type (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-develop.?/deployment-type)
+        deploy-deployment-type (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-deploy.?/deployment-type)]
+    (cond-> {}
+      (and
+       (= :dev env)
+       (= :container dev-deployment-type))
+      (assoc-in [:deployment :to-develop :container :environment :dev :database] {:host "postgres"
+                                                                                  :port "5432"})
+
+      (= :container deploy-deployment-type)
+      (assoc-in [:deployment :to-develop :container :environment env :database] {:host "postgres"
+                                                                                 :port "5432"}))))
 
 (defn- replace-env-variable
   [settings environment [env-var-str env-var-name]]

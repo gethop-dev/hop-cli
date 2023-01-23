@@ -6,23 +6,3 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_ADMIN_USER}
       POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD}
-      DB_NAME:
-      DB_PORT:
-      DB_ADMIN_USER:
-      DB_ADMIN_PASSWORD:
-      APP_DB_USER:
-      APP_DB_PASSWORD:
-      APP_DB_SCHEMA:{{#project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.keycloak.enabled}}
-      KC_DB_USERNAME:
-      KC_DB_PASSWORD:
-      KC_DB_SCHEMA:{{/project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.keycloak.enabled}}{{#project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.grafana.enabled}}
-      GF_DATABASE_USER:
-      GF_DATABASE_PASSWORD:
-      GF_DATABASE_SCHEMA:{{/project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.grafana.enabled}}
-    volumes:
-      - type: volume
-        source: postgres_data
-        target: /var/lib/postgresql/data
-        volume: {}
-volumes:
-  postgres_data: {}
