@@ -16,7 +16,16 @@
                     :docstring [:span "Docker registry for storing the application's deployment Docker images."]
                     :type :single-choice-group
                     :value :aws
-                    :choices [{:name :aws
+                    :choices [{:name :custom
+                               :tag "Custom Registry Provider"
+                               :type :plain-group
+                               :value [{:name :app-repository-url
+                                        :type :string
+                                        ;; NOTE: This is going to be
+                                        ;; whichever Docker Registry
+                                        ;; URL the user wants to use
+                                        :value "local/app"}]}
+                              {:name :aws
                                :tag "Amazon Web Services Cloud Provider"
                                :type :plain-group
                                :value [{:name :app-repository-url
@@ -123,6 +132,45 @@
                       :tag "Frontend"
                       :type :plain-group
                       :value []}
+                     {:name :on-premises
+                      :tag "On-premises"
+                      :docstring [:span "Profile for setting up the project to be deployed On-premises."]
+                      :depends-on-profiles [:core]
+                      :type :plain-group
+                      :value [{:name :operating-system
+                               :tag "Operating System"
+                               :docstring [:span "The Operating System where the application will be deployed."]
+                               :type :plain-group
+                               :value [{:name :persistent-data-dir
+                                        :tag "Persistent data dir"
+                                        :type :string
+                                        :value "usr/local/hop/persistent-data-dir"}]}
+                              {:name :ssl-termination
+                               :value :nginx
+                               :type :single-choice-group
+                               :choices [{:name :nginx
+                                          :tag "NGINX configuration files"
+                                          :docstring [:span "This option only provides NGINX configurations file for setting up your own SSL termination flow."]
+                                          :type :plain-group
+                                          :value []}
+                                         {:name :https-portal
+                                          :tag "HTTPS Portal container"
+                                          :docstring [:span [:a {:href "https://github.com/SteveLTN/https-portal"} "HTTPS Portal"] " Docker container that provides SSL termination using Let's Encrypt certificates."]
+                                          :type :plain-group
+                                          :value [{:name :test
+                                                   :tag "Test"
+                                                   :type :plain-group
+                                                   :value [{:name :domain
+                                                            :tag "Domain"
+                                                            :type :ref
+                                                            :value :project.proxy.test/domain}]}
+                                                  {:name :prod
+                                                   :tag "Prod"
+                                                   :type :plain-group
+                                                   :value [{:name :domain
+                                                            :tag "Domain"
+                                                            :type :ref
+                                                            :value :project.proxy.prod/domain}]}]}]}]}
                      {:name :aws
                       :tag "Amazon Web Services profile"
                       :docstring [:span "Profile for setting up the project to be deployed in Amazon Web Services."]
@@ -208,6 +256,11 @@
                                          {:name :github-actions
                                           :tag "Github Actions"
                                           :type :plain-group
+                                          :value []}
+                                         {:name :custom
+                                          :tag "Custom"
+                                          :docstring [:span "Custom option does not assume any CI provider and only gives you generic CI scripts that are provider agnostic."]
+                                          :type :plain-group
                                           :value []}]}
                               {:name :continuous-deployment
                                :tag "Continuous Deployment"
@@ -226,7 +279,12 @@
                                         :docstring [:span "Cloud provider in which the application will be deployed."]
                                         :type :single-choice-group
                                         :value :aws
-                                        :choices [{:name :aws
+                                        :choices [{:name :on-premises
+                                                   :tag "On-premises"
+                                                   :docstring [:span "On-premises option does not assume any CD provider and only gives you generic CD scripts that are provider agnostic."]
+                                                   :type :plain-group
+                                                   :value []}
+                                                  {:name :aws
                                                    :tag "Amazon Web Services"
                                                    :type :plain-group
                                                    :value [{:name :eb-application-name
@@ -434,11 +492,6 @@
                                                                                        :type :string
                                                                                        :value "db"
                                                                                        :pattern "[^\\s]+"}
-                                                                                      {:name :port
-                                                                                       :tag "Port"
-                                                                                       :type :string
-                                                                                       :value "5432"
-                                                                                       :pattern "[0-9]{4}"}
                                                                                       {:name :memory-limit-mb
                                                                                        :tag "Container memory limit (mb)"
                                                                                        :type :integer
@@ -578,11 +631,6 @@
                                                                                        :type :string
                                                                                        :pattern "[^\\s]+"
                                                                                        :value "ebdb"}
-                                                                                      {:name :port
-                                                                                       :tag "Port"
-                                                                                       :type :string
-                                                                                       :pattern "[0-9]{4}"
-                                                                                       :value "5432"}
                                                                                       {:name :app-user
                                                                                        :tag "Clojure application user"
                                                                                        :docstring [:span "User that the Clojure application will use to connect to the database."]
@@ -657,8 +705,261 @@
                                         :tag "Deployment environments"
                                         :docstring [:span "Settings for the environments where the project is deployed."]
                                         :type :single-choice-group
-                                        :value :rds
-                                        :choices [{:name :rds
+                                        :value :docker
+                                        :choices [{:name :docker
+                                                   :tag "Docker"
+                                                   :type :plain-group
+                                                   :value [{:name :deployment-type
+                                                            :tag "Deployment type"
+                                                            :type :keyword
+                                                            :read-only? true
+                                                            :value :container}
+                                                           {:name :persistent-data-dir
+                                                            :tag "Persistent Data Dir"
+                                                            :type :single-choice-group
+                                                            :value :on-premises
+                                                            :choices [{:name :on-premises
+                                                                       :tag "On-premises profile"
+                                                                       :type :ref
+                                                                       :value :project.profiles.on-premises.operating-system/persistent-data-dir}]}
+                                                           {:name :environment
+                                                            :tag "Environment"
+                                                            :type :plain-group
+                                                            :value [{:name :test
+                                                                     :tag "Testing environment"
+                                                                     :type :plain-group
+                                                                     :value [{:name :database
+                                                                              :tag "Database"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Name"
+                                                                                       :type :string
+                                                                                       :value "db"
+                                                                                       :pattern "[^\\s]+"}
+                                                                                      {:name :memory-limit-mb
+                                                                                       :tag "Container memory limit (mb)"
+                                                                                       :type :integer
+                                                                                       :value 512}
+                                                                                      {:name :admin-user
+                                                                                       :tag "Admin user"
+                                                                                       :docstring [:span "Superuser for the Database instance."]
+                                                                                       :type :plain-group
+                                                                                       :value [{:name :username
+                                                                                                :tag "Username"
+                                                                                                :type :string
+                                                                                                :value "postgres"
+                                                                                                :pattern "[^\\s]+"}
+                                                                                               {:name :password
+                                                                                                :tag "Password"
+                                                                                                :type :auto-gen-password
+                                                                                                :value {:length 24}}]}
+                                                                                      {:name :app-user
+                                                                                       :tag "Clojure application user"
+                                                                                       :docstring [:span "User that the Clojure application will use to connect to the database."]
+                                                                                       :type :plain-group
+                                                                                       :value [{:name :username
+                                                                                                :tag "Username"
+                                                                                                :type :string
+                                                                                                :value "app"
+                                                                                                :pattern "[^\\s]+"}
+                                                                                               {:name :password
+                                                                                                :tag "Password"
+                                                                                                :type :auto-gen-password
+                                                                                                :value {:length 24}}
+                                                                                               {:name :schema
+                                                                                                :tag "Schema"
+                                                                                                :docstring [:span
+                                                                                                            [:a
+                                                                                                             {:href "https://www.postgresql.org/docs/current/ddl-schemas.html"
+                                                                                                              :target "_blank"}
+                                                                                                             "PostgreSQL schema"]
+                                                                                                            " for the Clojure application."]
+                                                                                                :type :string
+                                                                                                :pattern "[^\\s]+"
+                                                                                                :value "app"}]}
+                                                                                      {:name :other-users
+                                                                                       :tag "Other database users"
+                                                                                       :docstring [:span "Extra users needed by some of the other HOP profiles."]
+                                                                                       :type :multiple-choice-group
+                                                                                       :value []
+                                                                                       :choices [{:name :keycloak
+                                                                                                  :tag "Keycloak"
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :tag "Username"
+                                                                                                           :type :string
+                                                                                                           :pattern "[^\\s]+"
+                                                                                                           :value "keycloak"}
+                                                                                                          {:name :password
+                                                                                                           :tag  "Password"
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 24}}
+                                                                                                          {:name :schema
+                                                                                                           :tag "Schema"
+                                                                                                           :pattern "[^\\s]+"
+                                                                                                           :docstring [:span
+                                                                                                                       [:a
+                                                                                                                        {:href "https://www.postgresql.org/docs/current/ddl-schemas.html"
+                                                                                                                         :target "_blank"}
+                                                                                                                        "PostgreSQL schema"]
+                                                                                                                       " for Keycloak."]
+                                                                                                           :type :string
+                                                                                                           :value "keycloak"}]}
+                                                                                                 {:name :grafana
+                                                                                                  :tag "Grafana"
+                                                                                                  :docstring [:span "User that Grafana will use to store its data."]
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :tag "Username"
+                                                                                                           :type :string
+                                                                                                           :pattern "[^\\s]+"
+                                                                                                           :value "grafana"}
+                                                                                                          {:name :password
+                                                                                                           :tag "Password"
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 24}}
+                                                                                                          {:name :schema
+                                                                                                           :type :string
+                                                                                                           :pattern "[^\\s]+"
+                                                                                                           :value "grafana"
+                                                                                                           :tag "Schema"
+                                                                                                           :docstring [:span
+                                                                                                                       [:a
+                                                                                                                        {:href "https://www.postgresql.org/docs/current/ddl-schemas.html"
+                                                                                                                         :target "_blank"}
+                                                                                                                        "PostgreSQL schema"]
+                                                                                                                       " for the Grafana application."]}]}
+                                                                                                 {:name :grafana-datasource
+                                                                                                  :tag "Grafana datasource"
+                                                                                                  :docstring [:span "User that Grafana will use to interact with the database to fetch data needed in the Dashboards."]
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :tag "Username"
+                                                                                                           :type :string
+                                                                                                           :pattern "[^\\s]+"
+                                                                                                           :value "grafana_datasource"}
+                                                                                                          {:name :password
+                                                                                                           :tag "Password"
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 24}}]}]}]}]}
+                                                                    {:name :prod
+                                                                     :tag "Production environment"
+                                                                     :type :plain-group
+                                                                     :value [{:name :database
+                                                                              :tag "Database"
+                                                                              :type :plain-group
+                                                                              :value [{:name :name
+                                                                                       :tag "Name"
+                                                                                       :type :string
+                                                                                       :value "db"
+                                                                                       :pattern "[^\\s]+"}
+                                                                                      {:name :memory-limit-mb
+                                                                                       :tag "Container memory limit (mb)"
+                                                                                       :type :integer
+                                                                                       :value 512}
+                                                                                      {:name :admin-user
+                                                                                       :tag "Admin user"
+                                                                                       :docstring [:span "Superuser for the Database instance."]
+                                                                                       :type :plain-group
+                                                                                       :value [{:name :username
+                                                                                                :tag "Username"
+                                                                                                :type :string
+                                                                                                :value "postgres"
+                                                                                                :pattern "[^\\s]+"}
+                                                                                               {:name :password
+                                                                                                :tag "Password"
+                                                                                                :type :auto-gen-password
+                                                                                                :value {:length 24}}]}
+                                                                                      {:name :app-user
+                                                                                       :tag "Clojure application user"
+                                                                                       :docstring [:span "User that the Clojure application will use to connect to the database."]
+                                                                                       :type :plain-group
+                                                                                       :value [{:name :username
+                                                                                                :tag "Username"
+                                                                                                :type :string
+                                                                                                :value "app"
+                                                                                                :pattern "[^\\s]+"}
+                                                                                               {:name :password
+                                                                                                :tag "Password"
+                                                                                                :type :auto-gen-password
+                                                                                                :value {:length 24}}
+                                                                                               {:name :schema
+                                                                                                :tag "Schema"
+                                                                                                :docstring [:span
+                                                                                                            [:a
+                                                                                                             {:href "https://www.postgresql.org/docs/current/ddl-schemas.html"
+                                                                                                              :target "_blank"}
+                                                                                                             "PostgreSQL schema"]
+                                                                                                            " for the Clojure application."]
+                                                                                                :type :string
+                                                                                                :pattern "[^\\s]+"
+                                                                                                :value "app"}]}
+                                                                                      {:name :other-users
+                                                                                       :tag "Other database users"
+                                                                                       :docstring [:span "Extra users needed by some of the other HOP profiles."]
+                                                                                       :type :multiple-choice-group
+                                                                                       :value []
+                                                                                       :choices [{:name :keycloak
+                                                                                                  :tag "Keycloak"
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :tag "Username"
+                                                                                                           :type :string
+                                                                                                           :pattern "[^\\s]+"
+                                                                                                           :value "keycloak"}
+                                                                                                          {:name :password
+                                                                                                           :tag  "Password"
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 24}}
+                                                                                                          {:name :schema
+                                                                                                           :tag "Schema"
+                                                                                                           :pattern "[^\\s]+"
+                                                                                                           :docstring [:span
+                                                                                                                       [:a
+                                                                                                                        {:href "https://www.postgresql.org/docs/current/ddl-schemas.html"
+                                                                                                                         :target "_blank"}
+                                                                                                                        "PostgreSQL schema"]
+                                                                                                                       " for Keycloak."]
+                                                                                                           :type :string
+                                                                                                           :value "keycloak"}]}
+                                                                                                 {:name :grafana
+                                                                                                  :tag "Grafana"
+                                                                                                  :docstring [:span "User that Grafana will use to store its data."]
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :tag "Username"
+                                                                                                           :type :string
+                                                                                                           :pattern "[^\\s]+"
+                                                                                                           :value "grafana"}
+                                                                                                          {:name :password
+                                                                                                           :tag "Password"
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 24}}
+                                                                                                          {:name :schema
+                                                                                                           :type :string
+                                                                                                           :pattern "[^\\s]+"
+                                                                                                           :value "grafana"
+                                                                                                           :tag "Schema"
+                                                                                                           :docstring [:span
+                                                                                                                       [:a
+                                                                                                                        {:href "https://www.postgresql.org/docs/current/ddl-schemas.html"
+                                                                                                                         :target "_blank"}
+                                                                                                                        "PostgreSQL schema"]
+                                                                                                                       " for the Grafana application."]}]}
+                                                                                                 {:name :grafana-datasource
+                                                                                                  :tag "Grafana datasource"
+                                                                                                  :docstring [:span "User that Grafana will use to interact with the database to fetch data needed in the Dashboards."]
+                                                                                                  :type :plain-group
+                                                                                                  :value [{:name :username
+                                                                                                           :tag "Username"
+                                                                                                           :type :string
+                                                                                                           :pattern "[^\\s]+"
+                                                                                                           :value "grafana_datasource"}
+                                                                                                          {:name :password
+                                                                                                           :tag "Password"
+                                                                                                           :type :auto-gen-password
+                                                                                                           :value {:length 24}}]}]}]}]}]}]}
+                                                  {:name :rds
                                                    :tag "AWS RDS"
                                                    :docstring [:span "Amazon Web Services RDS instance provisioned by the Cloud Provider."]
                                                    :type :plain-group
@@ -2050,11 +2351,15 @@
                                                                               :pattern "[^\\s]+"
                                                                               :value ""}]}]}]}]}]}]}]}]}
  {:name :deployment-target
-  :tag "Cloud provider"
-  :docstring [:span "Cloud provider on which the HOP Application will be hosted. The HOP Command Line Interface tool will take care of the provisioning of the needed infrastructure."]
+  :tag "Deployment target"
+  :docstring [:span "Deployment target on which the HOP Application will be hosted. The HOP Command Line Interface tool will take care of the provisioning of the needed infrastructure."]
   :type :single-choice-group
   :value :aws
-  :choices [{:name :aws
+  :choices [{:name :on-premises
+             :tag "On-premises infrastructure"
+             :type :plain-group
+             :value []}
+            {:name :aws
              :tag "Amazon Web Services"
              :type :plain-group
              :value [{:name :account
