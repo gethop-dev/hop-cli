@@ -21,22 +21,24 @@
     (conj (mapv keyword (str/split (namespace kw) #"\.")) (keyword (name kw)))))
 
 (defn get-settings-value
-  [settings ks]
-  (cond
-    (keyword? ks)
-    (get-settings-value settings (settings-kw->settings-path ks))
+  ([settings ks]
+   (get-settings-value settings ks nil))
+  ([settings ks not-found]
+   (cond
+     (keyword? ks)
+     (get-settings-value settings (settings-kw->settings-path ks) not-found)
 
-    (some #{:?} ks)
-    (get-in settings
-            (reduce
-             (fn [acc k]
-               (if (= :? k)
-                 (conj acc (get-in settings (conj acc :value)))
-                 (conj acc k)))
-             []
-             ks))
-    :else
-    (get-in settings ks)))
+     (some #{:?} ks)
+     (get-in settings
+             (reduce
+              (fn [acc k]
+                (if (= :? k)
+                  (conj acc (get-in settings (conj acc :value) not-found))
+                  (conj acc k)))
+              []
+              ks))
+     :else
+     (get-in settings ks not-found))))
 
 (defn assoc-in-settings-value
   [settings ks v]
