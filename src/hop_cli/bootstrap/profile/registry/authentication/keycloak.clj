@@ -117,6 +117,7 @@
         common-dev-ci ["docker-compose.keycloak.common-dev-ci.yml"]
         ci ["docker-compose.keycloak.ci.yml"]
         aws ["docker-compose.keycloak.aws.yml"]
+        deployment-target (bp.util/get-settings-value settings :deployment-target/value)
         deployment-type-to-dev
         (bp.util/get-settings-value settings :project.profiles.auth-keycloak.deployment.to-develop.?/deployment-type)
         deployment-type-to-dep
@@ -129,7 +130,7 @@
       (= :container deployment-type-to-dep)
       (assoc :to-deploy common)
 
-      (and (= :aws (:deployment-target/value settings))
+      (and (= :aws deployment-target)
            (= :container deployment-type-to-dep))
       (update :to-deploy concat aws))))
 
