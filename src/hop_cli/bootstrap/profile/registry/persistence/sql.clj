@@ -142,10 +142,12 @@
 (defn build-environment-init-db-sql-string
   [settings environment]
   (let [project-dir (bp.util/get-settings-value settings :project/target-dir)
-        template-file (format "%s/postgres/init-scripts/%s/%s/01_create_schemas_and_roles.sql"
+        deployment-choice (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-deploy/value)
+        template-file (format "%s/postgres/init-scripts/%s/%s/%s/01_create_schemas_and_roles.sql"
                               project-dir
                               (name (bp.util/get-env-type environment))
-                              (name environment))
+                              (name environment)
+                              (name deployment-choice))
         template-content (slurp (fs/file template-file))]
     (str/replace template-content #"\$\{([^}]+)\}" #(replace-env-variable settings environment %1))))
 
