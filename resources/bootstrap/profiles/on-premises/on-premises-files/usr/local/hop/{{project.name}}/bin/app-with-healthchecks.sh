@@ -2,11 +2,7 @@
 
 set -eu -o pipefail
 
-# The port below is the reverse proxy's port. The entrypoint for HTTP
-# traffic for the application.
-#
-# FIXME: reverse proxy container host port should be configurable
-APP_HTTP_PORT=8080
+APP_HTTP_PORT=8081
 HEALTHCHECK_URL="http://localhost:${APP_HTTP_PORT}/api/config"
 HEALTHCHECK_CONNECT_TIMEOUT=5
 HEALTHCHECK_REQUEST_TIMEOUT=5
