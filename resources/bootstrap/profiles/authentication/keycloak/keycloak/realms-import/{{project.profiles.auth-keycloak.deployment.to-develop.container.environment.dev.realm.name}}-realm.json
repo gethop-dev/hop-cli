@@ -292,8 +292,8 @@
         "clientId": "<<project.profiles.auth-keycloak.deployment.to-develop.container.environment.dev.other-clients.grafana.id>>",
         "name": "",
         "description": "",
-        "rootUrl": "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>/grafana",
-        "adminUrl": "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>/grafana",
+        "rootUrl": "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>:8081/grafana/",
+        "adminUrl": "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>:8081/grafana/",
         "baseUrl": "",
         "surrogateAuthRequired": false,
         "enabled": true,
@@ -301,10 +301,10 @@
         "clientAuthenticatorType": "client-secret",
         "secret": "<<project.profiles.auth-keycloak.deployment.to-develop.container.environment.dev.other-clients.grafana.secret>>",
         "redirectUris": [
-            "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>/grafana/*"
+            "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>:8081/grafana/*"
         ],
         "webOrigins": [
-            "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>/grafana"
+            "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>:8081/grafana"
         ],
         "notBefore": 0,
         "bearerOnly": false,
@@ -346,18 +346,18 @@
         "clientId": "<<project.profiles.auth-keycloak.deployment.to-develop.container.environment.dev.app-client.id>>",
         "name": "",
         "description": "",
-        "rootUrl": "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>",
-        "adminUrl": "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>",
+        "rootUrl": "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>:8081",
+        "adminUrl": "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>:8081",
         "baseUrl": "",
         "surrogateAuthRequired": false,
         "enabled": true,
         "alwaysDisplayInConsole": false,
         "clientAuthenticatorType": "client-secret",
         "redirectUris": [
-            "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>/*"
+            "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>:8081/*"
         ],
         "webOrigins": [
-            "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>"
+            "<<project.proxy.dev.protocol>>://<<project.proxy.dev.domain>>:8081"
         ],
         "notBefore": 0,
         "bearerOnly": false,
