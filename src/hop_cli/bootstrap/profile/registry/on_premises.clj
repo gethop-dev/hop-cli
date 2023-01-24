@@ -12,13 +12,13 @@
 (defn- build-env-variables
   [settings environment]
   (let [base-path [:project :profiles :on-premises]
-        ssl-termination-choice (conj base-path :ssl-termination :value)
-        domain (bp.util/get-settings-value settings (conj base-path :ssl-termination :https-portal :domain environment))
+        ssl-termination-choice (bp.util/get-settings-value settings (conj base-path :ssl-termination :value))
+        domain (bp.util/get-settings-value settings (conj base-path :ssl-termination :https-portal environment :domain))
         persistent-data-dir (bp.util/get-settings-value settings (conj base-path :operating-system :persistent-data-dir))]
     (cond-> {:PERSISTENT_DATA_DIR persistent-data-dir}
-      (= :http-portal ssl-termination-choice)
+      (= :https-portal ssl-termination-choice)
       (assoc :HTTPS_PORTAL_STAGE "staging"
-             :HTTPS_PORTAL_DOMAINS (format "%s => https://%s, %s -> http://proxy:8080" domain domain domain)))))
+             :HTTPS_PORTAL_DOMAINS (format "%s => https://%s, %s -> http://proxy:8081" domain domain domain)))))
 
 (defmethod registry/pre-render-hook :on-premises
   [_ settings]
