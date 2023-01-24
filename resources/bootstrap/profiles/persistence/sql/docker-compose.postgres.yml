@@ -6,3 +6,8 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_ADMIN_USER}
       POSTGRES_PASSWORD: ${DB_ADMIN_PASSWORD}
+    healthcheck:
+      test: pg_isready -U ${DB_ADMIN_USER}
+      interval: 10s
+      timeout: 5s
+      retries: 5

@@ -12,8 +12,3 @@ services:
         source: ${PERSISTENT_DATA_DIR}/postgres-data-dir
         target: /var/lib/postgresql/data
         bind: {}
-    healthcheck:
-      test: pg_isready -U ${DB_ADMIN_USER}
-      interval: 10s
-      timeout: 5s
-      retries: 5
