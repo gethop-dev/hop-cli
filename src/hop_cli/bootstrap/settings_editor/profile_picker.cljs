@@ -16,6 +16,13 @@
     (doseq [{:keys [tag]} dependent-profiles]
       (println "  - " tag))))
 
+(defn- get-aws-on-premises-mutually-exclusive-error-msg
+  []
+  (with-out-str
+    (println "Amazon Web Services and On-premises are mutually exclusive. Choose only one.")
+    (println)
+    (println "Beware that Amazon Web Services dependent profiles will not be selectable if On-premises is selected and vice-versa.")))
+
 (defn- dependent-profile?
   [event-profile selected-profiles {:keys [name depends-on-profiles]}]
   (and (get (set depends-on-profiles) (:name event-profile))
@@ -41,8 +48,12 @@
                                   :else
                                   (remove #{(:name event-profile)} selected-profiles))]
       (cond
-        (get #{:core :aws} (:name event-profile))
+        (get #{:core} (:name event-profile))
         (js/alert "This profile is mandatory and can not be unchecked.")
+
+        (and (get (set new-selected-profiles) :on-premises)
+             (get (set new-selected-profiles) :aws))
+        (js/alert (get-aws-on-premises-mutually-exclusive-error-msg))
 
         (and (not checked?)
              (seq dependent-profiles))
