@@ -144,7 +144,7 @@
                                :value [{:name :persistent-data-dir
                                         :tag "Persistent data dir"
                                         :type :string
-                                        :value "usr/local/hop/persistent-data-dir"}]}
+                                        :value "usr/local/hop/hop/persistent-data-dir"}]}
                               {:name :ssl-termination
                                :value :nginx
                                :type :single-choice-group
