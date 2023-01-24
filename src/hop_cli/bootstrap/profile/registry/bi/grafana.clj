@@ -62,7 +62,7 @@
     :GF_SERVER_DOMAIN
     (bp.util/get-settings-value settings (conj env-path :server-domain))
     :GF_SERVER_HTTP_PORT "4000"
-    :GF_SERVER_ROOT_URL "%(protocol)s://%(domain)s/grafana/"
+    :GF_SERVER_ROOT_URL "%(protocol)s://%(domain)s:8081/grafana/"
     :GF_SERVER_SERVE_FROM_SUB_PATH "true"
     :GF_SNAPSHOTS_EXTERNAL_ENABLED "false"
     :GF_AUTH_ANONYMOUS_ENABLED "false"
