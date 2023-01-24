@@ -172,7 +172,7 @@
                                                             :type :ref
                                                             :value :project.proxy.prod/domain}]}]}]}]}
                      {:name :aws
-                      :tag "Amazon Web Services profile"
+                      :tag "Amazon Web Services"
                       :docstring [:span "Profile for setting up the project to be deployed in Amazon Web Services."]
                       :depends-on-profiles [:core]
                       :type :plain-group
