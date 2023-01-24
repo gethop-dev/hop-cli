@@ -119,7 +119,8 @@
 (defn- build-profile-env-outputs
   [settings env]
   (let [dev-deployment-type (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-develop.?/deployment-type)
-        deploy-deployment-type (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-deploy.?/deployment-type)]
+        deploy-deployment-type (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-deploy.?/deployment-type)
+        deploy-deployment-choice (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-deploy/value)]
     (cond-> {}
       (and
        (= :dev env)
@@ -128,8 +129,8 @@
                                                                                   :port "5432"})
 
       (= :container deploy-deployment-type)
-      (assoc-in [:deployment :to-develop :container :environment env :database] {:host "postgres"
-                                                                                 :port "5432"}))))
+      (assoc-in [:deployment :to-deploy deploy-deployment-choice :environment env :database] {:host "postgres"
+                                                                                             :port "5432"}))))
 
 (defn- replace-env-variable
   [settings environment [env-var-str env-var-name]]
