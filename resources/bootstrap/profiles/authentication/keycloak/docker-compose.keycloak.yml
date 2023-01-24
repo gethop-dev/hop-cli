@@ -23,7 +23,10 @@ services:
         source: ./keycloak/themes/
         target: /opt/keycloak/themes/
         read_only: true
-        bind: {}
+        bind: {}{{#project.profiles.auth-keycloak.deployment.to-deploy.container.depends-on-postgres?}}
+    depends_on:
+      postgres:
+        condition: service_healthy{{/project.profiles.auth-keycloak.deployment.to-deploy.container.depends-on-postgres?}}
   proxy:
     depends_on:
       keycloak:

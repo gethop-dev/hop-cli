@@ -151,7 +151,7 @@
    [{:src "bi/grafana/grafana" :dst "grafana"}
     {:src "bi/grafana/proxy" :dst "proxy"}]))
 
-(defn- build-dev-outputs
+(defn- build-outputs
   [settings]
   {:deployment
    {:to-develop
@@ -159,7 +159,13 @@
      {:depends-on-postgres?
       (= :container
          (bp.util/get-settings-value settings
-                                     :project.profiles.bi-grafana.deployment.to-develop.container/db-deployment-type))}}}})
+                                     :project.profiles.bi-grafana.deployment.to-develop.container/db-deployment-type))}}
+    :to-deploy
+    {:container
+     {:depends-on-postgres?
+      (= :container
+         (bp.util/get-settings-value settings
+                                     :project.profiles.bi-grafana.deployment.to-deploy.container/db-deployment-type))}}}})
 
 (defmethod registry/pre-render-hook :bi-grafana
   [_ settings]
@@ -176,4 +182,4 @@
                                                     "OIDC_SSO_APP_1_LOGIN_METHOD"
                                                     "OIDC_SSO_APP_1_LOGOUT_URL"
                                                     "OIDC_SSO_APP_1_LOGOUT_METHOD"]
-   :outputs (build-dev-outputs settings)})
+   :outputs (build-outputs settings)})

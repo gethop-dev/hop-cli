@@ -152,25 +152,23 @@
         project-domain (bp.util/get-settings-value settings [:project :proxy environment :domain])
         project-protocol (bp.util/get-settings-value settings [:project :proxy environment :protocol])
         keycloak-uri (bp.util/get-settings-value settings (conj env-path :uri))
+        db-deployment-type (bp.util/get-settings-value settings [:project :profiles :auth-keycloak :deployment env-type :container :db-deployment-type])
         external-uri (if (= :external deployment-type)
                        keycloak-uri
-                       (format "%s://%s/auth" project-protocol project-domain))
+                       (format "%s://%s:8081/auth" project-protocol project-domain))
         internal-uri (if (= :external deployment-type)
                        keycloak-uri
-                       "http://keycloak:8080")]
-    {:deployment
-     {env-type
-      {deployment-choice
-       {:environment
-        {environment
-         {:token-url
-          (format "%s/realms/%s/protocol/openid-connect/token" internal-uri realm-name)
-          :api-url
-          (format "%s/realms/%s/protocol/openid-connect/userinfo" internal-uri realm-name)
-          :auth-url
-          (format "%s/realms/%s/protocol/openid-connect/auth" external-uri realm-name)
-          :logout-url
-          (format "%s/realms/%s/protocol/openid-connect/logout" external-uri realm-name)}}}}}}))
+                       "http://keycloak:8080")
+        token-url (format "%s/realms/%s/protocol/openid-connect/token" internal-uri realm-name)
+        api-url (format "%s/realms/%s/protocol/openid-connect/userinfo" internal-uri realm-name)
+        auth-url (format "%s/realms/%s/protocol/openid-connect/auth" external-uri realm-name)
+        logout-url (format "%s/realms/%s/protocol/openid-connect/logout" external-uri realm-name)]
+    (-> {}
+        (assoc-in [:deployment env-type :container :depends-on-postgres?] (= :container db-deployment-type))
+        (assoc-in [:deployment env-type deployment-choice :environment environment] {:token-url token-url
+                                                                                     :api-url api-url
+                                                                                     :auth-url auth-url
+                                                                                     :logout-url logout-url}))))
 
 (defmethod registry/pre-render-hook :auth-keycloak
   [_ settings]

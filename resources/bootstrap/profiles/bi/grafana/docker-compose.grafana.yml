@@ -29,7 +29,10 @@ services:
       GF_DATABASE_SCHEMA:
       GF_DATABASE_USER:
       GF_DATABASE_PASSWORD:
-      GF_DATABASE_SSL_MODE:
+      GF_DATABASE_SSL_MODE:{{#project.profiles.bi-grafana.deployment.to-deploy.container.depends-on-postgres?}}
+    depends_on:
+      postgres:
+        condition: service_healthy{{/project.profiles.bi-grafana.deployment.to-deploy.container.depends-on-postgres?}}
   proxy:
     depends_on:
       grafana:

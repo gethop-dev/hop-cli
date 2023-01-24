@@ -1389,7 +1389,11 @@
                                                    :tag "Docker container"
                                                    :docstring [:span "The Grafana instance runs on a local Docker container."]
                                                    :type :plain-group
-                                                   :value [{:name :deployment-type
+                                                   :value [{:name :db-deployment-type
+                                                            :tag "Database deployment type"
+                                                            :type :ref
+                                                            :value :project.profiles.persistence-sql.deployment.to-deploy.?/deployment-type}
+                                                           {:name :deployment-type
                                                             :tag "Deployment type"
                                                             :type :keyword
                                                             :read-only? true
@@ -1743,6 +1747,10 @@
                                                             :type :keyword
                                                             :read-only? true
                                                             :value :container}
+                                                           {:name :db-deployment-type
+                                                            :tag "Database deployment type"
+                                                            :type :ref
+                                                            :value :project.profiles.persistence-sql.deployment.to-develop.?/deployment-type}
                                                            {:name :environment
                                                             :tag "Environment"
                                                             :type :plain-group
@@ -1903,6 +1911,10 @@
                                                             :type :keyword
                                                             :read-only? true
                                                             :value :container}
+                                                           {:name :db-deployment-type
+                                                            :tag "Database deployment type"
+                                                            :type :ref
+                                                            :value :project.profiles.persistence-sql.deployment.to-deploy.?/deployment-type}
                                                            {:name :environment
                                                             :tag "Environment"
                                                             :type :plain-group
