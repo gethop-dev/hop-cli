@@ -1,6 +1,8 @@
 (ns hop-cli.bootstrap.settings-editor
-  (:require [clojure.java.io :as io]
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [clojure.string :as str]
+            [hop-cli.bootstrap.settings-patcher :as bp.settings-patcher]
             [org.httpkit.server :as server])
   (:import (java.net URLDecoder)))
 
@@ -36,6 +38,24 @@
      :body (slurp body)}
     {:status 404}))
 
+(defn- validate-and-patch-settings-file
+  [req]
+  (if-let [body (:body req)]
+    (let [settings (edn/read-string (slurp body))]
+      (if-not (bp.settings-patcher/cli-and-settings-version-compatible? settings)
+        {:status 400
+         :headers {"Content-Type" "application/edn"}
+         :body (str {:success? false
+                     :reason :incompatible-cli-and-settings-version})}
+        (let [patched-settings (bp.settings-patcher/apply-patches settings)]
+          {:status 200
+           :headers {"Content-Type" "application/edn"}
+           :body (str {:success? true
+                       :settings patched-settings})})))
+    {:status 400
+     :body {:success? false
+            :reason :empty-request-body}}))
+
 (defn serve-settings-editor
   "Serves static assets using web server."
   [{:keys [port] :as opts}]
@@ -44,7 +64,7 @@
     (binding [*out* *err*]
       (println (str "Settings Editor running at http://localhost:" port)))
     (server/run-server
-     (fn [{:keys [uri]}]
+     (fn [{:keys [uri] :as req}]
        (let [f (URLDecoder/decode uri)
              index-file (str resources-path "/index.html")]
          (cond
@@ -53,6 +73,9 @@
 
            (= "/settings.edn" f)
            (response "bootstrap/settings.edn")
+
+           (= "/validate-and-patch" f)
+           (validate-and-patch-settings-file req)
 
            (str/ends-with? f ".cljs")
            (response (str src-path f))

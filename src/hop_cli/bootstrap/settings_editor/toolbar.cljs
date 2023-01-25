@@ -1,14 +1,29 @@
 (ns toolbar
-  (:require [cljs.pprint :as pprint]
+  (:require [ajax.core :refer [POST]]
+            [cljs.pprint :as pprint]
             [clojure.edn :as edn]
             [clojure.string :as str]
             [re-frame.core :as rf]
             [settings :as settings]))
 
+(rf/reg-fx
+ :validate-and-patch-settings-file-content
+ (fn [{:keys [content on-success-fn]}]
+   (POST "/validate-and-patch"
+     {:handler
+      (fn [response]
+        (on-success-fn (:settings (edn/read-string response))))
+      :error-handler (fn [{:keys [response]}]
+                       (if (= (:reason (edn/read-string response)) :incompatible-cli-and-settings-version)
+                         (js/alert "Your settings file version is incompatible with your current HOP CLI version.")
+                         (js/alert "Something went wrong!")))
+      :body content})))
+
 (rf/reg-event-fx
  ::settings-file-loaded
  (fn [_ [_ {:keys [content] :as _file}]]
-   {:fx [[:dispatch [::settings/set-settings (edn/read-string content)]]]}))
+   {:fx [[:validate-and-patch-settings-file-content {:content content
+                                                     :on-success-fn #(rf/dispatch [::settings/set-settings %])}]]}))
 
 (rf/reg-event-fx
  ::save-settings-to-file
@@ -105,7 +120,7 @@
       :on-click
       (fn [_]
         (let [settings @(rf/subscribe [::settings/settings])
-              {:keys [success? error-details]}(lookup-selected-refs settings)]
+              {:keys [success? error-details]} (lookup-selected-refs settings)]
           (cond
             (not (settings-form-valid?))
             (js/alert "Some setting configuration option values are invalid.")
