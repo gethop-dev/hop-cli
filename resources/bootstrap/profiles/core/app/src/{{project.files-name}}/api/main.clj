@@ -20,10 +20,7 @@
             [reitit.swagger-ui :as swagger-ui]))
 
 (def router-config
-  {;;:reitit.middleware/transform dev/print-request-diffs ;; pretty diffs
-   ;;:validate spec/validate ;; enable spec validation for route data
-   ;;:reitit.spec/wrap spell/closed ;; strict top-level validation
-   :exception pretty/exception
+  {:exception pretty/exception
    :data {:coercion (coercion.malli/create
                       {:error-keys #{:humanized}
                        :compile mu/closed-schema
