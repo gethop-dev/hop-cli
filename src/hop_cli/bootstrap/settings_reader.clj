@@ -8,6 +8,7 @@
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.walk :as walk]
+            [hop-cli.bootstrap.settings-patcher :as bp.settings-patcher]
             [hop-cli.bootstrap.util :as bp.util]
             [hop-cli.util :as util]
             [hop-cli.util.random :as util.random]
@@ -279,11 +280,16 @@
                       (io/reader)
                       (PushbackReader.)
                       (edn/read))]
-    (if (m/validate settings-schema settings)
-      {:success? true
-       :settings (->> settings
-                      (walk/prewalk (comp build-refs inject-auto-generated-passwords))
-                      (settings->settings-nested-map)
-                      (inject-project-files-name))}
+    (if-not (bp.settings-patcher/cli-and-settings-version-compatible? settings)
       {:success? false
-       :error-details (me/humanize (m/explain settings-schema settings))})))
+       :reason :incompatible-cli-and-settings-version}
+      (let [patched-settings (bp.settings-patcher/apply-patches settings)]
+        (if (m/validate settings-schema patched-settings)
+          {:success? true
+           :settings (->> patched-settings
+                          :value
+                          (walk/prewalk (comp build-refs inject-auto-generated-passwords))
+                          (settings->settings-nested-map)
+                          (inject-project-files-name))}
+          {:success? false
+           :error-details (me/humanize (m/explain settings-schema settings))})))))
