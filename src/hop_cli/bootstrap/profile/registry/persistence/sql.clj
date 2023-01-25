@@ -130,7 +130,7 @@
 
       (= :container deploy-deployment-type)
       (assoc-in [:deployment :to-deploy deploy-deployment-choice :environment env :database] {:host "postgres"
-                                                                                             :port "5432"}))))
+                                                                                              :port "5432"}))))
 
 (defn- replace-env-variable
   [settings environment [env-var-str env-var-name]]
