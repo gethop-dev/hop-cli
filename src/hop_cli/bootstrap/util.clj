@@ -91,3 +91,20 @@
        (set)
        (mapv (partial write-environment-variables-to-file! settings))))
 
+(defn swap-key-in-kw-path
+  [kw-path old-key new-key]
+  (map (fn [k]
+         (if (= k old-key)
+           new-key
+           k))
+       kw-path))
+
+(defn settings-path->settings-kw
+  [kw-path]
+  (keyword (reduce (fn [ns-name kw]
+                     (if-not (seq ns-name)
+                       (name kw)
+                       (str ns-name "." (name kw))))
+                   ""
+                   (butlast kw-path))
+           (name (last kw-path))))

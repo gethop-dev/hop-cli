@@ -25,4 +25,8 @@
 
 (defn get-version
   []
-  (str/trim (slurp (io/resource "version.txt"))))
+  (-> (io/resource "version.txt")
+      slurp
+      str/trim
+      ;; NOTE: for testing during development.
+      (str/replace #"-SNAPSHOT" "")))
