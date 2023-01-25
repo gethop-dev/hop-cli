@@ -117,7 +117,7 @@ TAR_FILE="${APPLICATION_NAME}-full-app-${VERSION_LABEL}.tar"
 echo "Creating the final application bundle..."
 (
     cd "${DOCKER_COMPOSE_TMPDIR}" &&
-    tar -cf "${TAR_FILE}" "${SOURCE_BUNDLE_FILES[@]}" docker-compose.yml
+        tar -cf "${TAR_FILE}" "${SOURCE_BUNDLE_FILES[@]}" docker-compose.yml
 )
 
 mv "${DOCKER_COMPOSE_TMPDIR}/${TAR_FILE}" .
