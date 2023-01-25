@@ -18,7 +18,7 @@
     (cond-> {:PERSISTENT_DATA_DIR persistent-data-dir}
       (= :https-portal ssl-termination-choice)
       (assoc :HTTPS_PORTAL_STAGE "staging"
-             :HTTPS_PORTAL_DOMAINS (format "%s => https://%s, %s -> http://proxy:8081" domain domain domain)))))
+             :HTTPS_PORTAL_DOMAINS (format "%s -> http://proxy:80" domain)))))
 
 (defmethod registry/pre-render-hook :on-premises
   [_ settings]
