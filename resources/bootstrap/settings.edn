@@ -30,7 +30,7 @@
                                         ;; URL the user wants to use
                                          :value "local/app"}]}
                                {:name :aws
-                                :tag "Amazon Web Services Cloud Provider"
+                                :tag "Amazon Web Services deployment target"
                                 :type :plain-group
                                 :value [{:name :app-repository-url
                                          :tag "Application Repository URL"
@@ -280,7 +280,7 @@
                                                   :value "main"}]}
                                         {:name :provider
                                          :tag "Provider"
-                                         :docstring [:span "Cloud provider in which the application will be deployed."]
+                                         :docstring [:span "Deployment target in which the application will be deployed."]
                                          :type :single-choice-group
                                          :value :aws
                                          :choices [{:name :on-premises
@@ -388,7 +388,7 @@
                                                   :value :provisioned
                                                   :choices [{:name :provisioned
                                                              :tag "Provisioned by HOP"
-                                                             :docstring [:span "When selected, the S3 Bucket provisioned in the Cloud Provider section is used."]
+                                                             :docstring [:span "When selected, the S3 Bucket provisioned in the Deployment Target section is used."]
                                                              :type :plain-group
                                                              :value [{:name :name
                                                                       :tag "Name"
@@ -412,7 +412,7 @@
                                                   :value :provisioned
                                                   :choices [{:name :provisioned
                                                              :tag "Provisioned by HOP"
-                                                             :docstring [:span "When selected, the S3 Bucket provisioned in the Cloud Provider section is used."]
+                                                             :docstring [:span "When selected, the S3 Bucket provisioned in the Deployment Target section is used."]
                                                              :type :plain-group
                                                              :value [{:name :name
                                                                       :tag "Name"
@@ -436,7 +436,7 @@
                                                   :value :provisioned
                                                   :choices [{:name :provisioned
                                                              :tag "Provisioned by HOP"
-                                                             :docstring [:span "When selected, the S3 Bucket provisioned in the Cloud Provider section is used."]
+                                                             :docstring [:span "When selected, the S3 Bucket provisioned in the Deployment Target section is used."]
                                                              :type :plain-group
                                                              :value [{:name :name
                                                                       :tag "Name"
@@ -965,7 +965,7 @@
                                                                                                             :value {:length 24}}]}]}]}]}]}]}
                                                    {:name :rds
                                                     :tag "AWS RDS"
-                                                    :docstring [:span "Amazon Web Services RDS instance provisioned by the Cloud Provider."]
+                                                    :docstring [:span "Amazon Web Services RDS instance provisioned by the Deployment Target."]
                                                     :type :plain-group
                                                     :value [{:name :deployment-type
                                                              :tag "Deployment type"
@@ -2211,7 +2211,7 @@
                                                   :value :provisioned
                                                   :choices [{:name :provisioned
                                                              :tag "Provisioned by HOP"
-                                                             :docstring [:span "If selected, the Cognito User Pool provisioned by the Cloud Provider will be used."]
+                                                             :docstring [:span "If selected, the Cognito User Pool provisioned by the Deployment Target will be used."]
                                                              :type :plain-group
                                                              :value [{:name :id
                                                                       :tag "Id"
@@ -2265,7 +2265,7 @@
                                                   :value :provisioned
                                                   :choices [{:name :provisioned
                                                              :tag "Provisioned by HOP"
-                                                             :docstring [:span "If selected, the Cognito User Pool provisioned by the Cloud Provider will be used."]
+                                                             :docstring [:span "If selected, the Cognito User Pool provisioned by the Deployment Target will be used."]
                                                              :type :plain-group
                                                              :value [{:name :id
                                                                       :tag "Id"
@@ -2319,7 +2319,7 @@
                                                   :value :provisioned
                                                   :choices [{:name :provisioned
                                                              :tag "Provisioned by HOP"
-                                                             :docstring [:span "If selected, the Cognito User Pool provisioned by the Cloud Provider will be used."]
+                                                             :docstring [:span "If selected, the Cognito User Pool provisioned by the Deployment Target will be used."]
                                                              :type :plain-group
                                                              :value [{:name :id
                                                                       :tag "Id"
@@ -2367,7 +2367,7 @@
                                                                                :pattern "[^\\s]+"
                                                                                :value ""}]}]}]}]}]}]}]}]}
   {:name :deployment-target
-   :tag "Deployment target"
+   :tag "Deployment Target"
    :docstring [:span "Deployment target on which the HOP Application will be hosted. The HOP Command Line Interface tool will take care of the provisioning of the needed infrastructure."]
    :type :single-choice-group
    :value :aws
