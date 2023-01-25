@@ -67,5 +67,5 @@
     (fn [settings]
       (let [visible-ids (set @visible-ids)]
         [:div.sidebar
-         (for [node settings]
+         (for [node (:value settings)]
            (sidebar-element node {:visible-ids visible-ids}))]))))

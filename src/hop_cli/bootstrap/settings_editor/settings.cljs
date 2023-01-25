@@ -32,6 +32,9 @@
     (vector? node)
     node
 
+    (= (:type node) :root)
+    (:value node)
+
     (= (:type node) :plain-group)
     (:value node)
 
@@ -48,6 +51,9 @@
   (cond
     (vector? node)
     node
+
+    (= (:type node) :root)
+    (:value node)
 
     (= (:type node) :plain-group)
     (:value node)
@@ -69,7 +75,7 @@
 
 (defn get-node-path
   [settings node-name-path]
-  (loop [settings settings
+  (loop [settings (:value settings)
          node-name-path node-name-path
          path []]
     (if-not (seq node-name-path)
@@ -114,11 +120,14 @@
                     node
                     (case (:type node)
                       :root
-                      (vec (map-indexed (fn [idx child-node]
-                                          (assoc child-node
-                                                 :path [idx]
-                                                 :node-name-path [(:name child-node)]))
-                                        (:value node)))
+                      (update node
+                              :value
+                              (fn [value]
+                                (vec (map-indexed (fn [idx child-node]
+                                                    (assoc child-node
+                                                           :path [idx]
+                                                           :node-name-path [(:name child-node)]))
+                                                  value))))
 
                       :plain-group
                       (add-path-to-children node :value)
@@ -127,8 +136,7 @@
                       (add-path-to-children node :choices)
 
                       node)))
-                {:type :root
-                 :value settings}))
+                settings))
 
 (defn remove-paths
   [settings]
@@ -141,8 +149,8 @@
 (defn get-selected-refs
   [node]
   (cond
-    (vector? node)
-    (mapcat get-selected-refs node)
+    (= (:type node) :root)
+    (mapcat get-selected-refs (:value node))
 
     (= (:type node) :ref)
     [node]
@@ -160,7 +168,7 @@
 
 (defn lookup-ref
   [settings node-name-path]
-  (loop [node settings
+  (loop [node (:value settings)
          node-name-path node-name-path]
     (if-not (seq node-name-path)
       {:success? true}
@@ -193,7 +201,7 @@
 (rf/reg-event-db
  ::update-settings-value
  (fn [db [_ path value]]
-   (assoc-in db (cons :settings (conj path :value)) value)))
+   (assoc-in db (concat [:settings :value] (conj path :value)) value)))
 
 (rf/reg-sub
  ::visible-settings-node-ids

@@ -197,7 +197,13 @@
     ::setting-schema]))
 
 (def settings-schema
-  (m/schema [:vector {:min 1} setting-schema]))
+  (m/schema
+   [:map
+    [:name keyword?]
+    [:type [:enum :root]]
+    [:version string?]
+    [:value
+     [:vector {:min 1} setting-schema]]]))
 
 (defprotocol RefLike
   (ref-key [r] "Return the key of the reference.")

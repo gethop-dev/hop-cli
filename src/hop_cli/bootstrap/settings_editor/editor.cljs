@@ -330,6 +330,6 @@
          [:form.editor__form
           {:id "settings-editor-form"}
           (doall
-           (for [node @settings]
+           (for [node (:value @settings)]
              ^{:key (:name node)}
              (form-component node {:settings @settings})))]]))))

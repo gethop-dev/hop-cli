@@ -67,7 +67,7 @@
   (let [settings (rf/subscribe [::settings/settings])]
     (fn []
       (let [profile-node-path (settings/get-node-path @settings [:project :profiles])
-            profile-node (get-in @settings profile-node-path)]
+            profile-node (get-in (:value @settings) profile-node-path)]
         (when profile-node
           [:div.profile-picker
            [:div]
