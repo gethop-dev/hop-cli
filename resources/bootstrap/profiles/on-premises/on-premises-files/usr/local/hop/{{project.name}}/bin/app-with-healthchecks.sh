@@ -26,12 +26,12 @@ EOF
 
 function start() {
     cd "${HOME}/app-files"
-    ./start-app-prod.sh
+    ./start-app.sh
 }
 
 function stop() {
     cd "${HOME}/app-files"
-    ./stop-app-prod.sh
+    ./stop-app.sh
 }
 
 function do_healthcheck() {
