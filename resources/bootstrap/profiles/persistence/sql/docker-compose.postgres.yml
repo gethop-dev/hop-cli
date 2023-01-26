@@ -11,3 +11,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  app:
+    depends_on:
+      postgres:
+        condition: service_healthy
