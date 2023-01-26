@@ -109,7 +109,7 @@
      project-path
      {:visit-file
       (fn [path _]
-        (when (or (get #{"edn" "clj" "cljs" "cljc" "json" "sh" "yaml" "yml" "sql" "html"} (fs/extension path))
+        (when (or (get #{"edn" "clj" "cljs" "cljc" "json" "sh" "yaml" "yml" "sql" "html" "service"} (fs/extension path))
                   (get #{"Dockerfile"} (fs/file-name path)))
           (let [update-file-fn (fn [file-content]
                                  (->> file-content
