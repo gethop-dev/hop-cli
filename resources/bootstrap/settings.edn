@@ -154,8 +154,8 @@
                                 :value :nginx
                                 :type :single-choice-group
                                 :choices [{:name :nginx
-                                           :tag "NGINX configuration files"
-                                           :docstring [:span "This option only provides NGINX configurations file for setting up your own SSL termination flow."]
+                                           :tag "NGINX configuration file"
+                                           :docstring [:span "This option only provides NGINX configuration file for setting up your own SSL termination flow."]
                                            :type :plain-group
                                            :value []}
                                           {:name :https-portal
