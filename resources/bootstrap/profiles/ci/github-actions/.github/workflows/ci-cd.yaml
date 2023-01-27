@@ -36,7 +36,7 @@ jobs:
         run: ./ci/lint-and-test.sh
 
       - name: Build app prod docker image
-        run: ./ci/build-app-prod-docker-image.sh<<#cloud-provider.aws.enabled>>
+        run: ./ci/build-app-prod-docker-image.sh<<#deployment-target.aws.enabled>>
 
       - name: ECR login
         run: ./ci/aws/ecr-login.sh
@@ -45,4 +45,4 @@ jobs:
         run: ./ci/publish-app-prod-docker-image.sh
 
       - name: Deploy to AWS test environment
-        run: ./ci/aws/deploy-to-test-env.sh<</cloud-provider.aws.enabled>>
+        run: ./ci/aws/deploy-to-test-env.sh<</deployment-target.aws.enabled>>
