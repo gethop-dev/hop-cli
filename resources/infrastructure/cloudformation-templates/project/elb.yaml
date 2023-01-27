@@ -23,7 +23,7 @@ Resources:
         - Description: "HTTP"
           IpProtocol: "tcp"
           FromPort: 80
-          ToPort: 8081
+          ToPort: 80
           CidrIp: "0.0.0.0/0"
         - Description: "HTTPS"
           IpProtocol: "tcp"

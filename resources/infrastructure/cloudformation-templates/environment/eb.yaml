@@ -44,7 +44,7 @@ Resources:
       SecurityGroupIngress:
         - Description: "Load balancer"
           IpProtocol: "tcp"
-          FromPort: 80
+          FromPort: 8081
           ToPort: 8081
           SourceSecurityGroupId: !Ref "ElbSecurityGroupId"
       Tags:
@@ -128,6 +128,9 @@ Resources:
         - Namespace: aws:elbv2:listener:443
           OptionName: Rules
           Value: "default"
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: Port
+          Value: "8081"
         # Software
         - Namespace: aws:elasticbeanstalk:managedactions
           OptionName: ManagedActionsEnabled
