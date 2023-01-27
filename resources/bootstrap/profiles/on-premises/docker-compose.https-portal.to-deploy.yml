@@ -16,6 +16,6 @@ services:
       PERSISTENT_DATA_DIR:
     volumes:
       - type: bind
-        source: ${PERSISTENT_DATA_DIR}/https-portal-data
+        source: ${PERSISTENT_DATA_DIR}/https-portal-data-dir
         target: /var/lib/https-portal
         bind: {}
