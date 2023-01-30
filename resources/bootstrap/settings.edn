@@ -1225,7 +1225,7 @@
                                                                       :tag "Development environment"
                                                                       :type :plain-group
                                                                       :value [{:name :server-domain
-                                                                               :type :ref
+                                                                               :type :string
                                                                                :tag "Server domain"
                                                                                :value "localhost"}
                                                                               {:name :sso
