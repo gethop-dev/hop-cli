@@ -1227,7 +1227,7 @@
                                                                       :value [{:name :server-domain
                                                                                :type :ref
                                                                                :tag "Server domain"
-                                                                               :value :project.proxy.dev/domain}
+                                                                               :value "localhost"}
                                                                               {:name :sso
                                                                                :type :boolean
                                                                                :tag "Single Sign On"

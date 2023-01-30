@@ -45,78 +45,80 @@
        :OIDC_SSO_APP_1_LOGOUT_URL (format "%s/logout" grafana-uri)))))
 
 (defn- build-container-env-variables
-  [settings env-path]
-  (cond->
-   {;; Adapter configuration
-    :DS_MANAGER_URI "http://grafana:4000"
-    :DS_MANAGER_CREDENTIALS_USER
-    (bp.util/get-settings-value settings (conj env-path :app-integration :username))
-    :DS_MANAGER_CREDENTIALS_PASSWORD
-    (bp.util/get-settings-value settings (conj env-path :app-integration :password))
+  [settings environment env-path]
+  (let [server-domain (bp.util/get-settings-value settings (conj env-path :server-domain))]
+    (cond->
+     {;; Adapter configuration
+      :DS_MANAGER_URI "http://grafana:4000"
+      :DS_MANAGER_CREDENTIALS_USER
+      (bp.util/get-settings-value settings (conj env-path :app-integration :username))
+      :DS_MANAGER_CREDENTIALS_PASSWORD
+      (bp.util/get-settings-value settings (conj env-path :app-integration :password))
 
     ;; Docker
-    :MEMORY_LIMIT_GRAFANA
-    (str (bp.util/get-settings-value settings (conj env-path :memory-limit-mb)) "m")
+      :MEMORY_LIMIT_GRAFANA
+      (str (bp.util/get-settings-value settings (conj env-path :memory-limit-mb)) "m")
     ;; General settings
-    :GF_SECURITY_ALLOW_EMBEDDING "false"
-    :GF_SERVER_DOMAIN
-    (bp.util/get-settings-value settings (conj env-path :server-domain))
-    :GF_SERVER_HTTP_PORT "4000"
-    :GF_SERVER_ROOT_URL "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
-    :GF_SERVER_SERVE_FROM_SUB_PATH "true"
-    :GF_SNAPSHOTS_EXTERNAL_ENABLED "false"
-    :GF_AUTH_ANONYMOUS_ENABLED "false"
+      :GF_SECURITY_ALLOW_EMBEDDING "false"
+      :GF_SERVER_DOMAIN (if (= :dev environment)
+                          (str "http://" server-domain)
+                          (str "https://" server-domain))
+      :GF_SERVER_HTTP_PORT "4000"
+      :GF_SERVER_ROOT_URL "%(domain)s/grafana/"
+      :GF_SERVER_SERVE_FROM_SUB_PATH "true"
+      :GF_SNAPSHOTS_EXTERNAL_ENABLED "false"
+      :GF_AUTH_ANONYMOUS_ENABLED "false"
 
     ;; Admin user
-    :GF_SECURITY_ADMIN_USER
-    (bp.util/get-settings-value settings (conj env-path :admin-user :username))
-    :GF_SECURITY_ADMIN_PASSWORD
-    (bp.util/get-settings-value settings (conj env-path :admin-user :password))
+      :GF_SECURITY_ADMIN_USER
+      (bp.util/get-settings-value settings (conj env-path :admin-user :username))
+      :GF_SECURITY_ADMIN_PASSWORD
+      (bp.util/get-settings-value settings (conj env-path :admin-user :password))
 
     ;; Database settings
-    :GF_DATABASE_SSL_MODE "disable"
-    :GF_DATABASE_TYPE "postgres"
-    :GF_DATABASE_HOST
-    (format "%s:%s"
-            (bp.util/get-settings-value settings (conj env-path :database :host))
-            (bp.util/get-settings-value settings (conj env-path :database :port)))
-    :GF_DATABASE_NAME
-    (bp.util/get-settings-value settings (conj env-path :database :name))
-    :GF_DATABASE_USER
-    (bp.util/get-settings-value settings (conj env-path :database :username))
-    :GF_DATABASE_PASSWORD
-    (bp.util/get-settings-value settings (conj env-path :database :password))
-    :GF_DATABASE_SCHEMA
-    (bp.util/get-settings-value settings (conj env-path :database :schema))
+      :GF_DATABASE_SSL_MODE "disable"
+      :GF_DATABASE_TYPE "postgres"
+      :GF_DATABASE_HOST
+      (format "%s:%s"
+              (bp.util/get-settings-value settings (conj env-path :database :host))
+              (bp.util/get-settings-value settings (conj env-path :database :port)))
+      :GF_DATABASE_NAME
+      (bp.util/get-settings-value settings (conj env-path :database :name))
+      :GF_DATABASE_USER
+      (bp.util/get-settings-value settings (conj env-path :database :username))
+      :GF_DATABASE_PASSWORD
+      (bp.util/get-settings-value settings (conj env-path :database :password))
+      :GF_DATABASE_SCHEMA
+      (bp.util/get-settings-value settings (conj env-path :database :schema))
 
     ;;OIDC
-    :GF_AUTH_GENERIC_OAUTH_TOKEN_URL
-    (bp.util/get-settings-value settings (conj env-path :oidc :? :token-url))
-    :GF_AUTH_GENERIC_OAUTH_API_URL
-    (bp.util/get-settings-value settings (conj env-path :oidc :? :api-url))
-    :GF_AUTH_GENERIC_OAUTH_AUTH_URL
-    (bp.util/get-settings-value settings (conj env-path :oidc :? :auth-url))
-    :GF_AUTH_SIGNOUT_REDIRECT_URL
-    (bp.util/get-settings-value settings (conj env-path :oidc :? :logout-url))
-    :GF_AUTH_GENERIC_OAUTH_CLIENT_ID
-    (bp.util/get-settings-value settings (conj env-path :oidc :? :client-id))
-    :GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
-    (bp.util/get-settings-value settings (conj env-path :oidc :? :client-secret))
-    :GF_AUTH_GENERIC_OAUTH_ENABLED "true"
-    :GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP "false"
-    :GF_AUTH_GENERIC_OAUTH_SCOPES "email openid"
-    :GF_AUTH_LOGIN_COOKIE_NAME "grafana_session_cookie"
-    :GF_AUTH_DISABLE_SIGNOUT_MENU "true"
-    :GF_AUTH_GENERIC_OAUTH_SIGN_UP "false"}
+      :GF_AUTH_GENERIC_OAUTH_TOKEN_URL
+      (bp.util/get-settings-value settings (conj env-path :oidc :? :token-url))
+      :GF_AUTH_GENERIC_OAUTH_API_URL
+      (bp.util/get-settings-value settings (conj env-path :oidc :? :api-url))
+      :GF_AUTH_GENERIC_OAUTH_AUTH_URL
+      (bp.util/get-settings-value settings (conj env-path :oidc :? :auth-url))
+      :GF_AUTH_SIGNOUT_REDIRECT_URL
+      (bp.util/get-settings-value settings (conj env-path :oidc :? :logout-url))
+      :GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+      (bp.util/get-settings-value settings (conj env-path :oidc :? :client-id))
+      :GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+      (bp.util/get-settings-value settings (conj env-path :oidc :? :client-secret))
+      :GF_AUTH_GENERIC_OAUTH_ENABLED "true"
+      :GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP "false"
+      :GF_AUTH_GENERIC_OAUTH_SCOPES "email openid"
+      :GF_AUTH_LOGIN_COOKIE_NAME "grafana_session_cookie"
+      :GF_AUTH_DISABLE_SIGNOUT_MENU "true"
+      :GF_AUTH_GENERIC_OAUTH_SIGN_UP "false"}
 
     ;; Single sign on
-    (bp.util/get-settings-value settings (conj env-path :sso))
-    (assoc :GF_AUTH_OAUTH_AUTO_LOGIN "true"
-           :OIDC_SSO_APP_1_NAME "grafana"
-           :OIDC_SSO_APP_1_LOGIN_METHOD "GET"
-           :OIDC_SSO_APP_1_LOGIN_URL "/grafana/login"
-           :OIDC_SSO_APP_1_LOGOUT_METHOD "GET"
-           :OIDC_SSO_APP_1_LOGOUT_URL "/grafana/logout")))
+      (bp.util/get-settings-value settings (conj env-path :sso))
+      (assoc :GF_AUTH_OAUTH_AUTO_LOGIN "true"
+             :OIDC_SSO_APP_1_NAME "grafana"
+             :OIDC_SSO_APP_1_LOGIN_METHOD "GET"
+             :OIDC_SSO_APP_1_LOGIN_URL "/grafana/login"
+             :OIDC_SSO_APP_1_LOGOUT_METHOD "GET"
+             :OIDC_SSO_APP_1_LOGOUT_URL "/grafana/logout"))))
 
 (defn- build-env-variables
   [settings environment]
@@ -126,7 +128,7 @@
         env-path (conj base-path :environment environment)]
     (if (= :external deployment-type)
       (build-external-env-variables settings env-path)
-      (build-container-env-variables settings env-path))))
+      (build-container-env-variables settings environment env-path))))
 
 (defn- build-docker-compose-files
   [settings]
