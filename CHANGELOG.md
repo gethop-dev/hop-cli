@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 
+## [0.1.3] - 2023-01-30
+
+- Fix Grafana `:server-domain` option type in `:to-develop` configuration tree.
+
 ## [0.1.2] - 2023-01-30
 
 - Refactor `:cloud-provider` key to `:deployment-target`.
