@@ -11,11 +11,6 @@ services:
       resources:
         limits:
           memory: ${MEMORY_LIMIT_PROXY}
-    ports:
-      - mode: ingress
-        target: 80
-        published: 8081
-        protocol: tcp
     depends_on:
       app:
         condition: service_started

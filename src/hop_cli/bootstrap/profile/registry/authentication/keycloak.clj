@@ -75,7 +75,7 @@
         project-domain (bp.util/get-settings-value settings [:project :proxy environment :domain])
         keycloak-uri (bp.util/get-settings-value settings (conj env-path :uri))
         external-keycloak-uri (if (= :container deployment-type)
-                                (format "%s://%s:8081/auth" project-protocol project-domain)
+                                (format "%s://%s/auth" project-protocol project-domain)
                                 keycloak-uri)
         internal-keycloak-uri (if (= :container deployment-type)
                                 "http://keycloak:8080"
@@ -156,7 +156,7 @@
         db-deployment-type (bp.util/get-settings-value settings [:project :profiles :auth-keycloak :deployment env-type :container :db-deployment-type])
         external-uri (if (= :external deployment-type)
                        keycloak-uri
-                       (format "%s://%s:8081/auth" project-protocol project-domain))
+                       (format "%s://%s/auth" project-protocol project-domain))
         internal-uri (if (= :external deployment-type)
                        keycloak-uri
                        "http://keycloak:8080")

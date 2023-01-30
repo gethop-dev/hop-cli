@@ -34,3 +34,9 @@ services:
         source: ~/.m2
         target: /home/hop/.m2
         bind: {}
+  proxy:
+    ports:
+      - mode: ingress
+        target: 80
+        published: 80
+        protocol: tcp

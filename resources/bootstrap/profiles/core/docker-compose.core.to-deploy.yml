@@ -1,3 +1,9 @@
 services:
   app:
     image: {{#lambdas.resolve-choices}}project.docker.registry.?.app-repository-url{{/lambdas.resolve-choices}}:latest
+  proxy:
+    ports:
+      - mode: ingress
+        target: 80
+        published: 8081
+        protocol: tcp
