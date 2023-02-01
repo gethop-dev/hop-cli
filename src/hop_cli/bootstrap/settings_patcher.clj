@@ -45,7 +45,8 @@
   [{:patch-schema [:and
                    versions-schema
                    [:fn '(fn [{:keys [cli-version settings-version]}]
-                           (and (zero? (compare cli-version "0.1.2"))
+                           (and (or (zero? (compare cli-version "0.1.2"))
+                                    (pos-int? (compare cli-version "0.1.2")))
                                 (neg-int? (compare settings-version "1.0"))))]]
     :patch-fn cloud-provider->deployment-target}])
 
@@ -66,15 +67,20 @@
       ;; data structure.
       (apply comp appliable-patches-fns))))
 
-(def ^:private cli-settings-version-compatibility-mapping
-  {"0.1.2" #(or (neg-int? (compare % "1.0"))
-                (zero? (compare % "1.0")))})
-
 (defn cli-and-settings-version-compatible?
   [settings]
   (let [cli-version (util/get-version)
         settings-version (:version settings)]
-    ((get cli-settings-version-compatibility-mapping cli-version nil?) settings-version)))
+    ;; cli-version >= 0.1.2
+    ;; and
+    ;; settings-version <= 1.0 or settings-version >= 1.0
+    (and (or (zero? (compare cli-version "0.1.2"))
+             (pos-int? (compare cli-version "0.1.2")))
+         (or (zero? (compare settings-version "1.0"))
+             ;; For a future scenario where we have a higher
+             ;; incompatible version of settings.edn.
+             (pos-int? (compare settings-version "1.0"))
+             (neg-int? (compare settings-version "1.0"))))))
 
 (defn apply-patches
   [settings]
