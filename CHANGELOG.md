@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 
+## [0.1.4] - 2023-02-01
+
+- Fix `cli-and-settings-version-compatible?` logic to consider newer CLI versions.
+
 ## [0.1.3] - 2023-01-30
 
 - Fix Grafana `:server-domain` option type in `:to-develop` configuration tree.
@@ -28,7 +32,8 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.3...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.4...HEAD
+[0.1.4]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.4
 [0.1.3]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.3
 [0.1.2]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.2
 [0.1.1]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.1
