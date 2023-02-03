@@ -29,6 +29,9 @@ services:
       GF_DATABASE_SCHEMA:
       GF_DATABASE_USER:
       GF_DATABASE_PASSWORD:
+      GF_SNAPSHOTS_EXTERNAL_ENABLED:
+      GF_AUTH_DISABLE_SIGNOUT_MENU:
+      GF_AUTH_LOGIN_COOKIE_NAME:
       GF_DATABASE_SSL_MODE:{{#project.profiles.bi-grafana.deployment.to-deploy.container.depends-on-postgres?}}
     depends_on:
       postgres:
