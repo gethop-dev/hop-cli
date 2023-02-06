@@ -19,11 +19,7 @@ services:
       KC_HOSTNAME_PATH:
       KC_HOSTNAME_ADMIN_URL:
     volumes:
-      - type: bind
-        source: ./keycloak/themes/
-        target: /opt/keycloak/themes/
-        read_only: true
-        bind: {}{{#project.profiles.auth-keycloak.deployment.to-deploy.container.depends-on-postgres?}}
+      - "./keycloak/themes/:/opt/keycloak/themes/:ro"{{#project.profiles.auth-keycloak.deployment.to-deploy.container.depends-on-postgres?}}
     depends_on:
       postgres:
         condition: service_healthy{{/project.profiles.auth-keycloak.deployment.to-deploy.container.depends-on-postgres?}}

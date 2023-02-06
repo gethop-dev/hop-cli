@@ -4,11 +4,7 @@ services:
       - start-dev
       - --import-realm
     volumes:
-      - type: bind
-        source: ./keycloak/realms-import
-        target: /opt/keycloak/data/import
-        read_only: true
-        bind: {}
+      - "./keycloak/realms-import:/opt/keycloak/data/import:ro"
     depends_on:
       postgres:
         condition: service_healthy

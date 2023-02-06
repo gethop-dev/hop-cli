@@ -15,8 +15,4 @@ services:
       app:
         condition: service_started
     volumes:
-      - type: bind
-        source: ./proxy/conf.d
-        target: /etc/nginx/conf.d
-        read_only: true
-        bind: {}
+      - "./proxy/conf.d:/etc/nginx/conf.d:ro"

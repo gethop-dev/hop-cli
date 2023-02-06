@@ -1,10 +1,7 @@
 services:
   grafana:
     volumes:
-      - type: bind
-        source: ./grafana/dashboards
-        target: /etc/grafana/provisioning/dashboards
-        bind: {}{{#project.profiles.bi-grafana.deployment.to-develop.container.depends-on-postgres?}}
+      - "./grafana/dashboards:/etc/grafana/provisioning/dashboards"{{#project.profiles.bi-grafana.deployment.to-develop.container.depends-on-postgres?}}
     depends_on:
       postgres:
         condition: service_healthy{{/project.profiles.bi-grafana.deployment.to-develop.container.depends-on-postgres?}}

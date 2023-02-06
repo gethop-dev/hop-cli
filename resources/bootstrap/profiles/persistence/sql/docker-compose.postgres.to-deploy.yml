@@ -8,7 +8,4 @@ services:
     environment:
       PERSISTENT_DATA_DIR:
     volumes:
-      - type: bind
-        source: ${PERSISTENT_DATA_DIR}/postgres-data-dir
-        target: /var/lib/postgresql/data
-        bind: {}
+      - "${PERSISTENT_DATA_DIR}/postgres-data-dir:/var/lib/postgresql/data"

@@ -15,7 +15,4 @@ services:
       STAGE: ${HTTPS_PORTAL_STAGE}
       PERSISTENT_DATA_DIR:
     volumes:
-      - type: bind
-        source: ${PERSISTENT_DATA_DIR}/https-portal-data-dir
-        target: /var/lib/https-portal
-        bind: {}
+      - "${PERSISTENT_DATA_DIR}/https-portal-data-dir:/var/lib/https-portal"

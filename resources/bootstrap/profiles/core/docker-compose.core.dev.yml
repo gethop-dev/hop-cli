@@ -22,18 +22,9 @@ services:
         published: 3449
         protocol: tcp
     volumes:
-      - type: bind
-        source: ./app
-        target: /app
-        bind: {}
-      - type: bind
-        source: ~/.m2
-        target: /root/.m2
-        bind: {}
-      - type: bind
-        source: ~/.m2
-        target: /home/hop/.m2
-        bind: {}
+      - "./app:/app"
+      - "~/.m2:/root/.m2"
+      - "~/.m2:/home/hop/.m2"
   proxy:
     ports:
       - mode: ingress

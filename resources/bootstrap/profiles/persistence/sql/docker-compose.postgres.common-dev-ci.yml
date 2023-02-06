@@ -20,15 +20,8 @@ services:
         published: {{project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.port}}
         protocol: tcp
     volumes:
-      - type: volume
-        source: postgres_data
-        target: /var/lib/postgresql/data
-        volume: {}
-      - type: bind
-        source: ./postgres/init-scripts/to-develop/dev
-        target: /docker-entrypoint-initdb.d
-        read_only: true
-        bind: {}
+      - "postgres_data:/var/lib/postgresql/data"
+      - "./postgres/init-scripts/to-develop/dev:/docker-entrypoint-initdb.d:ro"
 
 volumes:
   postgres_data: {}
