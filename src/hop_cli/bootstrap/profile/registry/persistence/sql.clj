@@ -13,7 +13,7 @@
   [settings]
   (let [project-name (bp.util/get-settings-value settings :project/name)]
     {[(keyword (format "%s.boundary.adapter.persistence/sql" project-name))
-      (keyword (format "%s.boundary.adapter.persistence/postgres" project-name))]
+      (keyword (format "%s.boundary.adapter.persistence.sql/postgres" project-name))]
      (tagged-literal 'ig/ref :duct.database/sql)}))
 
 (defn- hikaricp-config
