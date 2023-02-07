@@ -9,6 +9,11 @@
             [hop-cli.bootstrap.util :as bp.util]
             [meta-merge.core :refer [meta-merge]]))
 
+(defn- common-config
+  [settings]
+  (let [project-name (bp.util/get-settings-value settings :project/name)]
+    {:p-adapter (tagged-literal 'ig/ref (keyword (format "%s.boundary.adapter.persistence.sql/postgres" project-name)))}))
+
 (defn- sql-config
   [settings]
   (let [project-name (bp.util/get-settings-value settings :project/name)]
@@ -173,7 +178,8 @@
    :config-edn {:base (merge (sql-config settings)
                              (hikaricp-config settings)
                              (ragtime-config settings))
-                :dev (dev-ragtime-config settings)}
+                :dev (dev-ragtime-config settings)
+                :common-config (common-config settings)}
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
