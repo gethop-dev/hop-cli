@@ -104,7 +104,8 @@ function build_docker_compose_yml() {
         sed -e "s|${DOCKER_IMAGE_REPOSITORY}:latest|${DOCKER_IMAGE_REPOSITORY}:${TAG}|g" \
             -e "s|${CURR_DIR}|/var/app/current|g" \
             -e '/^[[:space:]]*environment: \[\]/d' \
-            -e '/^name: /d'
+            -e '/^name: /d' \
+            -e '/^version: /d'
 }
 
 build_docker_compose_yml >"${DOCKER_COMPOSE_TMPDIR}/docker-compose.yml"
