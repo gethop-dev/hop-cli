@@ -7,7 +7,7 @@ docker-compose down -t0
 
 # Make sure to check that we are not trying to use any environment
 # vars in docker-compose.yml that are not set.
-docker-compose up -d --force-recreate
+docker-compose up -d --force-recreate --renew-anon-volumes
 
 # And show the logs
 docker-compose logs -ft --no-color
