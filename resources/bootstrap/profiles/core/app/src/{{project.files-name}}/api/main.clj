@@ -24,7 +24,7 @@
    :data {:coercion (coercion.malli/create
                       {:error-keys #{:humanized}
                        :compile mu/closed-schema
-                       :skip-extra-keys true
+                       :strip-extra-keys true
                        :default-values true
                        :encode-error (fn [error]
                                        {:success? false
