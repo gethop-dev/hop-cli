@@ -58,7 +58,7 @@
     :strategy :raise-error
     :migrations-table "ragtime_migrations_dev"
     :fake-dependency-to-force-initialization-order
-    (build-ragtime-config-key settings :prod)
+    (tagged-literal 'ig/ref (build-ragtime-config-key settings :prod))
     :migrations []}})
 
 (defn- build-env-variables
