@@ -1,3 +1,6 @@
 services:
   grafana:
-    mem_limit: 256m
+    deploy:
+      resources:
+        limits:
+          memory: 256m
