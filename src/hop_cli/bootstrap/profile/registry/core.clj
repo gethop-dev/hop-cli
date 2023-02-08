@@ -29,6 +29,12 @@
    ["docker-compose.core.yml"
     "docker-compose.core.to-deploy.yml"]})
 
+(defn- get-deploy-files
+  [settings]
+  (cond-> ["proxy"]
+          (= :on-premises (bp.util/get-settings-value settings :deployment-target/value))
+          (conj "docker")))
+
 (defmethod registry/pre-render-hook :core
   [_ settings]
   {:files [{:src "core"}]
@@ -37,4 +43,4 @@
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
    :docker-compose docker-compose-files
-   :deploy-files ["proxy"]})
+   :deploy-files (get-deploy-files settings)})
