@@ -13,7 +13,7 @@ docker build --target ci --tag lint-and-test .
 docker-compose up -d
 
 echo "clj-kondo"
-time docker-compose exec -T app clj-kondo --lint src --lint test
+time docker-compose exec -T app clj-kondo --lint src --lint test --lint dev
 
 echo "cljfmt"
 time docker-compose exec -T app lein cljfmt check

@@ -2,6 +2,9 @@
 ;; If a copy of the MIT license was not distributed with this
 ;; file, You can obtain one at https://opensource.org/licenses/MIT
 (ns dev
+  {:clj-kondo/config '{:linters {:refer-all {:exclude #{clojure.repl}}
+                                 :unused-referred-var {:level :off}
+                                 :unused-namespace {:level :off}}}}
   (:refer-clojure :exclude [test])
   (:require [clojure.repl :refer :all]
             [fipp.edn :refer [pprint]]
