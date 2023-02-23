@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 
+## [0.1.5] - 2023-02-23
+- Fix Docker Compose version in the merged to deploy `docker-compose` file.
+- Fix persistence profile generating wrong `persistence` adapter key name.
+- Fix development migrations being executed before the production migrations.
+- Fix typo in `reitit` `strip-extra-keys` configuration parameter.
+- Fix Bitbucket Pipelines incompatibility because of the usage of the Docker Compose volumes long syntax.
+- Fix using wrong Docker Compose configuration for container memory limits.
+- Add missing Grafana environment variables in `docker-compose`.
+- Add `app` specific `.gitignore` file.
+- Add `persistence` adapter to the `config.edn` `common-config`.
+- Add `docker` utility scripts to the `on-premises` deployment bundle.
+- Improve `clj-kondo` and `lsp` configuration `.gitignore`s.
+
 ## [0.1.4] - 2023-02-01
 
 - Fix `cli-and-settings-version-compatible?` logic to consider newer CLI versions.
