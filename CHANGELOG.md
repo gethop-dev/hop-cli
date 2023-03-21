@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 
+## [0.1.6] - 2023-03-21
+- [core] Dockerfile: bump curl version to 7.74.0-1.3+deb11u7
+
 ## [0.1.5] - 2023-02-23
 - Fix Docker Compose version in the merged to deploy `docker-compose` file.
 - Fix persistence profile generating wrong `persistence` adapter key name.
