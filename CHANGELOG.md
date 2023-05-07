@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 
+## [0.1.7] - 2023-05-07
+ - Fix permissions in the deployment bundle files. Certain CI environments set an overly permissive umask and bundle files and directories were being created with 'group' and 'other' write permission.
+
 ## [0.1.6] - 2023-03-21
 - [core] Dockerfile: bump curl version to 7.74.0-1.3+deb11u7
 
