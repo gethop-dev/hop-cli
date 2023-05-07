@@ -11,6 +11,13 @@ if [[ "${BRANCH:=}" != "${DEPLOYMENT_BRANCH}" ]]; then
     exit 0
 fi
 
+# Set umask to remove the write permission to group and others.
+# Certain CI enviroments have a 0000 umask, and the checkout and any
+# created files during the CI job have full permissions for
+# everybody. Which is a big no, no if those files end up in the
+# deployment bundle!
+umask 0022
+
 # Use a temporary directory for all intermediate working files, and
 # cleanup it up no matter the outcome.
 DOCKER_COMPOSE_TMPDIR=$(realpath "$(mktemp -d ./tmp.XXXXXXXX)")
@@ -118,6 +125,7 @@ TAR_FILE="${APPLICATION_NAME}-full-app-${VERSION_LABEL}.tar"
 echo "Creating the final application bundle..."
 (
     cd "${DOCKER_COMPOSE_TMPDIR}" &&
+        find . -exec chmod go-w {} ";" &&
         tar -cf "${TAR_FILE}" "${SOURCE_BUNDLE_FILES[@]}" docker-compose.yml
 )
 
