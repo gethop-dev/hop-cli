@@ -95,7 +95,7 @@ function build_docker_compose_yml() {
         .services[].environment?
         |=
         map_values(
-            . | select(. | contains("$") | not) | . = null
+            . | select(. | test("\$[{a-zA-Z_]") | not) | . = null
         )' "${COMPOSE_MERGED_FILE}"
 
     # Build a bash array with each individual compose file as an entry.
