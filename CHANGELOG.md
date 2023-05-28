@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 
+## [0.1.8] - 2023-05-28
+- Fix incorrect management of environment entries with '$' chars in them
+- Fix: "reset" volume paths that are supposed to be relative, instead of using arbitrarily made up absolute paths.
+
 ## [0.1.7] - 2023-05-07
  - Fix permissions in the deployment bundle files. Certain CI environments set an overly permissive umask and bundle files and directories were being created with 'group' and 'other' write permission.
 
@@ -51,7 +55,8 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.7...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.8...HEAD
+[0.1.8]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.8
 [0.1.7]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.7
 [0.1.6]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.6
 [0.1.5]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.5
