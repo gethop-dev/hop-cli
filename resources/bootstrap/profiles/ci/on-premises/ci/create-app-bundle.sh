@@ -106,10 +106,13 @@ function build_docker_compose_yml() {
         # Do final cleanup on the merged file:
         #  - Replace the "latest" image tag with the commit tag.
         #  - Remove empty environment sections produced by the "un-interpolate" process.
-        #  - Remove the top-level "name" key added by docker-compose v2.x  if present.
+        #  - "reset" volume paths that are supposed to be relative, back to it's relative
+        #    path (docker-compose expands them to full paths as part of the merge process)
+        #  - Remove the top-level "name" key added by docker-compose v2.x, if present.
+        #  - Remove the top-level "version" key added by docker-compose v2.x, if present.
         sed -e "s|${DOCKER_IMAGE_REPOSITORY}:latest|${DOCKER_IMAGE_REPOSITORY}:${TAG}|g" \
             -e '/^[[:space:]]*environment: \[\]/d' \
-            -e "s|${CURR_DIR}|/usr/local/hop/{{project.name}}/app-files|g" \
+            -e "s|${CURR_DIR}|.|g" \
             -e '/^name: /d' \
             -e '/^version: /d'
 }
