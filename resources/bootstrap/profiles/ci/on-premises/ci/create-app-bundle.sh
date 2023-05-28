@@ -6,7 +6,7 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 # shellcheck disable=SC1090,SC1091
 . "${SCRIPT_DIR}/common-vars.sh"
 
-# Skip updating if branch is not main
+# Skip bundle creation if branch is not the deployment branch
 if [[ "${BRANCH:=}" != "${DEPLOYMENT_BRANCH}" ]]; then
     exit 0
 fi
