@@ -32,7 +32,7 @@ Resources:
             Action: "kms:*"
             Resource: "*"
             Principal:
-              AWS: 
+              AWS:
                 - !Ref "ConsumerRoleARN"
                 - !Join ["", ["arn:aws:iam::", !Ref "AWS::AccountId", ":root"]]
       Tags:
