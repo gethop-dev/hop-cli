@@ -82,7 +82,8 @@
               :stack-name-kw :deployment-target.aws.environment.test/stack-name
               :environment "test"
               :input-parameter-mapping
-              {:deployment-target.aws.environment.test.optional-services.rds/version :DatabaseEngineVersion
+              {:deployment-target.aws.environment.test.kms/key-alias :KmsKeyAlias
+               :deployment-target.aws.environment.test.optional-services.rds/version :DatabaseEngineVersion
                :deployment-target.aws.environment.test.optional-services.rds/port :DatabasePort
                :deployment-target.aws.environment.test.optional-services.rds/name :DatabaseName
                :deployment-target.aws.environment.test.optional-services.rds.admin-user/password :DatabasePassword
@@ -118,7 +119,8 @@
               :stack-name-kw :deployment-target.aws.environment.prod/stack-name
               :environment "prod"
               :input-parameter-mapping
-              {:deployment-target.aws.environment.prod.optional-services.rds/version :DatabaseEngineVersion
+              {:deployment-target.aws.environment.prod.kms/key-alias :KmsKeyAlias
+               :deployment-target.aws.environment.prod.optional-services.rds/version :DatabaseEngineVersion
                :deployment-target.aws.environment.prod.optional-services.rds/port :DatabasePort
                :deployment-target.aws.environment.prod.optional-services.rds/name :DatabaseName
                :deployment-target.aws.environment.prod.optional-services.rds.admin-user/password :DatabasePassword

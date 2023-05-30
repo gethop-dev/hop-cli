@@ -12,6 +12,9 @@ Parameters:
       - "dev"
       - "test"
       - "prod"
+  KmsKeyAlias:
+    Description: "KMS key alias"
+    Type: "String"
   ConsumerRoleARN:
     Type: "String"
 
@@ -37,12 +40,12 @@ Resources:
           Value: !Ref "ProjectName"
         - Key: "environment"
           Value: !Ref "Environment"
-  KmsKeyAlias:
+  KmsKeyAliasVal:
     Type: "AWS::KMS::Alias"
     Properties:
-      AliasName: !Sub "alias/${ProjectName}-${Environment}"
+      AliasName: !Ref "KmsKeyAlias"
       TargetKeyId: !Ref "KmsKey"
 
 Outputs:
   KmsKeyAlias:
-    Value: !Ref "KmsKeyAlias"
+    Value: !Ref "KmsKeyAliasVal"

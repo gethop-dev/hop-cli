@@ -14,6 +14,9 @@ Parameters:
     AllowedValues:
       - "test"
       - "prod"
+  KmsKeyAlias:
+    Description: "KMS key alias"
+    Type: "String"
   DatabaseEngineVersion:
     Type: "String"
     Default: "14"
@@ -140,6 +143,7 @@ Resources:
         ProjectName: !Ref "ProjectName"
         Environment: !Ref "Environment"
         ConsumerRoleARN: !GetAtt "IAM.Outputs.ConsumerRoleARN"
+        KmsKeyAlias: !Ref "KmsKeyAlias"
   EB:
     Type: "AWS::CloudFormation::Stack"
     Properties:
