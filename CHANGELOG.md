@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 
+## [0.1.9] - 2023-05-3081
+- Fix incorrect naming of AWS KMS key aliases [#18]
+
 ## [0.1.8] - 2023-05-28
 - Fix incorrect management of environment entries with '$' chars in them
 - Fix: "reset" volume paths that are supposed to be relative, instead of using arbitrarily made up absolute paths.
@@ -55,7 +58,8 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.8...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.9...HEAD
+[0.1.9]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.9
 [0.1.8]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.8
 [0.1.7]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.7
 [0.1.6]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.6
