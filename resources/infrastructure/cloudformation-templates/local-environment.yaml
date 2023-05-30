@@ -73,14 +73,6 @@ Resources:
         ProjectName: !Ref "ProjectName"
         Environment: !Ref "Environment"
         ConsumerRoleName: !GetAtt "IAM.Outputs.ConsumerRoleName"
-  KMS:
-    Type: "AWS::CloudFormation::Stack"
-    Properties:
-      TemplateURL: !Sub "${TemplateBucketURL}/environment/kms.yaml"
-      Parameters:
-        ProjectName: !Ref "ProjectName"
-        Environment: !Ref "Environment"
-        ConsumerRoleARN: !GetAtt "IAM.Outputs.ConsumerRoleARN"
   Cloudwatch:
     Type: "AWS::CloudFormation::Stack"
     Condition: "IncludeCloudwatchCond"
@@ -103,8 +95,6 @@ Outputs:
   CognitoSPAClientId:
     Condition: "IncludeCognitoCond"
     Value: !GetAtt "Cognito.Outputs.UserPoolSPAClientId"
-  KmsKeyAlias:
-    Value: !GetAtt "KMS.Outputs.KmsKeyAlias"
   S3BucketName:
     Condition: "IncludeS3Cond"
     Value: !GetAtt "S3.Outputs.BucketName"
