@@ -2,15 +2,15 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :min-lein-version "2.9.8"
-  :dependencies [[org.clojure/clojure "1.11.0"]
+  :dependencies [[org.clojure/clojure "1.11.1"]
                  [duct/core "0.8.0"]
                  [ring "1.9.6"]
                  [duct/server.http.http-kit "0.1.4"]
                  [duct/module.logging "0.5.0"]
                  [duct/logger.timbre "0.5.0"]
-                 [metosin/reitit "0.5.18"]
-                 [metosin/malli "0.9.2"]
                  [metosin/jsonista "0.3.8"]
+                 [metosin/reitit "0.6.0"]
+                 [metosin/malli "0.13.0"]
                  {{#project.dependencies}}{{&.}}{{/project.dependencies}}]
   :plugins [[duct/lein-duct "0.12.3"]]
   :main ^:skip-aot {{project.files-name}}.main
@@ -32,8 +32,8 @@
                          :debug [:progress :time]}
               :resource-paths ["dev/resources"]
               :source-paths ["dev/src"]
-              :plugins [[lein-cljfmt "0.8.0"]
-                        [jonase/eastwood "1.2.3"]]
+              :plugins [[dev.weavejester/lein-cljfmt "0.11.2"]
+                        [jonase/eastwood "1.4.0"]]
               :dependencies [[integrant/repl "0.3.2"]
                              [hawk "0.2.11"]
                              [eftest "0.5.9"]
