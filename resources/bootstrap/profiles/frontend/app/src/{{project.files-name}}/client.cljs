@@ -5,6 +5,7 @@
 {{=<< >>=}}
 (ns ^:figwheel-hooks <<project.name>>.client
   (:require [<<project.name>>.client.config :as client.config]
+            [<<project.name>>.client.localization :as localization]
             [<<project.name>>.client.routes :as routes]
             [<<project.name>>.client.view :as view]
             [day8.re-frame.http-fx]
@@ -27,7 +28,8 @@
  ::load-app
  (fn [_ _]
    {:db {}
-    :dispatch [::client.config/load-config [::on-config-loaded]]}))
+    :fx [[:dispatch [::client.config/load-config [::on-config-loaded]]]
+         [:dispatch [::localization/set-browser-language]]]}))
 
 (defn app []
   [:div.app-container

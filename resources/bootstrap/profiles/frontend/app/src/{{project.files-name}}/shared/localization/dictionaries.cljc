@@ -10,3 +10,5 @@
   {:en dictionaries.en/registry})
 
 (def ^:const default-language :en)
+
+(def ^:const languages (set (keys dictionaries)))
