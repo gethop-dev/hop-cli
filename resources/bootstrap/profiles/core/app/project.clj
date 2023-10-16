@@ -4,14 +4,13 @@
   :min-lein-version "2.9.8"
   :dependencies [[org.clojure/clojure "1.11.0"]
                  [duct/core "0.8.0"]
-                 [duct/module.web "0.7.3" :exclusions [[ring/ring-core]
-                                                       [ring/ring-devel]
-                                                       [ring/ring-jetty-adapter]]]
                  [ring "1.9.6"]
+                 [duct/server.http.http-kit "0.1.4"]
                  [duct/module.logging "0.5.0"]
                  [duct/logger.timbre "0.5.0"]
                  [metosin/reitit "0.5.18"]
                  [metosin/malli "0.9.2"]
+                 [metosin/jsonista "0.3.8"]
                  {{#project.dependencies}}{{&.}}{{/project.dependencies}}]
   :plugins [[duct/lein-duct "0.12.3"]]
   :main ^:skip-aot {{project.files-name}}.main

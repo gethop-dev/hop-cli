@@ -2,7 +2,10 @@
 {:duct.profile/base
  {:duct.core/project-ns <<project.name>>
 
-  :duct.server.http/jetty {:handler #ig/ref :<<project.name>>.api/main}
+  :duct.server.http/http-kit
+  {:handler #ig/ref :<<project.name>>.api/main
+   :logger #ig/ref :duct/logger
+   :port 3000}
 
   :<<project.name>>.api/main {:routes [<<#project.config-edn.routes>><<&.>><</project.config-edn.routes>>]
                               :api-routes [#ig/ref :<<project.name>>.api/config
@@ -21,6 +24,5 @@
  :duct.profile/prod {}
 
  :duct.module/logging {}
- :duct.module.web/site {}
 
  <<#project.config-edn.modules>><<&.>><</project.config-edn.modules>>}
