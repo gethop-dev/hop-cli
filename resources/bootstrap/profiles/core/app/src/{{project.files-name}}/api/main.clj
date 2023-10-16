@@ -11,74 +11,83 @@
             [reitit.coercion.spec]
             [reitit.dev.pretty :as pretty]
             [reitit.ring :as reitit.ring]
-            [reitit.ring.coercion :as coercion]
-            [reitit.ring.middleware.exception :as exception]
-            [reitit.ring.middleware.multipart :as multipart]
-            [reitit.ring.middleware.muuntaja :as muuntaja]
-            [reitit.ring.middleware.parameters :as parameters]
+            [reitit.ring.coercion :as mid.coercion]
+            [reitit.ring.middleware.exception :as mid.exception]
+            [reitit.ring.middleware.multipart :as mid.multipart]
+            [reitit.ring.middleware.muuntaja :as mid.muuntaja]
+            [reitit.ring.middleware.parameters :as mid.parameters]
+            [reitit.ring.spec :as reitit.spec]
             [reitit.swagger :as swagger]
             [reitit.swagger-ui :as swagger-ui]))
 
-(def router-config
+(defn- build-router-config
+  [_opts]
   {:exception pretty/exception
+   :validate reitit.spec/validate
+   :reitit.ring/default-options-endpoint {:no-doc true
+                                          :handler reitit.ring/default-options-handler}
    :data {:coercion (coercion.malli/create
-                      {:error-keys #{:humanized}
-                       :compile mu/closed-schema
-                       :strip-extra-keys true
-                       :default-values true
-                       :encode-error (fn [error]
-                                       {:success? false
-                                        :reason :bad-parameter-type-or-format
-                                        :error-details (:humanized error)})})
+                     {:error-keys #{:humanized}
+                      :compile mu/closed-schema
+                      :strip-extra-keys true
+                      :default-values true
+                      :encode-error (fn [error]
+                                      {:success? false
+                                       :reason :bad-parameter-type-or-format
+                                       :error-details (:humanized error)})})
           :muuntaja m/instance
           :middleware [;; swagger feature
                        swagger/swagger-feature
-                       ;; query-params & form-params
-                       parameters/parameters-middleware
                        ;; content-negotiation
-                       muuntaja/format-negotiate-middleware
+                       mid.muuntaja/format-negotiate-middleware
                        ;; encoding response body
-                       muuntaja/format-response-middleware
+                       mid.muuntaja/format-response-middleware
                        ;; exception handling
-                       exception/exception-middleware
+                       mid.exception/exception-middleware
+                       ;; coercing response body
+                       mid.coercion/coerce-response-middleware
+                       ;; query-params & form-params
+                       mid.parameters/parameters-middleware
                        ;; decoding request body
-                       muuntaja/format-request-middleware
-                       ;; coercing response bodys
-                       coercion/coerce-response-middleware
+                       mid.muuntaja/format-request-middleware
                        ;; coercing request parameters
-                       coercion/coerce-request-middleware
+                       mid.coercion/coerce-request-middleware
                        ;; multipart
-                       multipart/multipart-middleware]}})
+                       mid.multipart/multipart-middleware]}})
 
-(def swagger-docs
-  ["/swagger.json"
-   {:get
-    {:no-doc true
-     :swagger {:info {:title "<<project.name>> API reference"
-                      :description "The <<project.name>> API"
-                      :version "1.0.0"}}
-     :handler (swagger/create-swagger-handler)}}])
+(defn- build-docs-routes
+  [_opts]
+  [["/docs"
+    ["/ui/*"
+     {:get
+      {:no-doc true
+       :handler (swagger-ui/create-swagger-ui-handler
+                 {:url "/api/docs/specification/full-api.json"
+                  :config {:validatorUrl nil}})}}]
+    ["/specification"
+     ["/full-api.json"
+      {:get
+       {:no-doc true
+        :swagger {:info {:title "<<project.name>> API reference"}}
+        :handler (swagger/create-swagger-handler)}}]]]])
 
-(def ^:const api-context
-  ["/api"])
+(defn- build-router
+  [{:keys [routes api-routes] :as opts}]
+  (reitit.ring/router
+   [routes
+    ["/api"
+     (build-docs-routes opts)
+     api-routes]]
+   (build-router-config opts)))
 
-(defn build-api-routes
-  [routes]
-  (reduce conj (conj api-context swagger-docs) routes))
+(defn- build-default-handler
+  [_opts]
+  (reitit.ring/routes
+   (reitit.ring/create-resource-handler {:path "/" :root "<<project.files-name>>/public"})
+   (reitit.ring/create-default-handler)))
 
 (defmethod ig/init-key :<<project.name>>.api/main
-  [_ {:keys [routes api-routes]}]
+  [_ opts]
   (reitit.ring/ring-handler
-   (reitit.ring/router
-    (concat
-     routes
-     [(build-api-routes api-routes)])
-    router-config)
-   (reitit.ring/routes
-    (swagger-ui/create-swagger-ui-handler {:path "/api/docs"
-                                           :url "/api/swagger.json"
-                                           :validatorUrl nil
-                                           :apisSorter "alpha"
-                                           :operationsSorter "alpha"})
-    (reitit.ring/create-resource-handler {:path "/" :root "<<project.files-name>>/public"})
-    (reitit.ring/create-default-handler))))
+   (build-router opts)
+   (build-default-handler opts)))
