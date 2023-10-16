@@ -1,5 +1,5 @@
 # base =========================================================================
-FROM debian:bullseye-slim AS base
+FROM debian:bookworm-slim AS base
 
 # The AWS SDK library makes some illegal reflections code access. According
 # to the devs it won't be fixed because they are working in the v2 of the
@@ -25,9 +25,9 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 RUN set -ex; \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    libsodium23=1.0.18-1 libfreetype6=2.10.4+dfsg-1+deb11u1 \
-    fontconfig=2.13.1-4.2 poppler-utils=20.09.0-3.1+deb11u1 \
-    imagemagick=8:6.9.11.60+dfsg-1.3 && \
+    libsodium23=1.0.18-1 libfreetype6=2.12.1+dfsg-5 \
+    fontconfig=2.14.1-4 poppler-utils=22.12.0-2+b1 \
+    imagemagick=8:6.9.11.60+dfsg-1.6 && \
     apt-get -y autoremove && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
@@ -48,8 +48,8 @@ ENV BINARIES_INSTALL_PATH=/usr/local/bin
 RUN set -eux; \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    ca-certificates=20210119 runit=2.1.2-41 \
-    curl=7.74.0-1.3+deb11u7 unzip=6.0-26+deb11u1 && \
+    ca-certificates=20230311 runit=2.1.2-54 \
+    curl=7.88.1-10+deb12u4 unzip=6.0-28 && \
     useradd --home-dir /home/hop --create-home --shell /bin/bash --user-group hop && \
     curl -sL -o "${BINARIES_INSTALL_PATH}/lein" "https://codeberg.org/leiningen/leiningen/raw/tag/${LEIN_VERSION}/bin/lein-pkg" && \
     chmod 755 "${BINARIES_INSTALL_PATH}/lein" && \
