@@ -27,3 +27,15 @@
 (defn filter-map
   [m pred]
   (select-keys m (for [[k v] m :when (pred [k v])] k)))
+
+(defn update-if-exists
+  [m k update-fn & args]
+  (if-not (= ::not-found (get m k ::not-found))
+    (apply update m k update-fn args)
+    m))
+
+(defn update-if-not-nil
+  [m k update-fn & args]
+  (if-not (nil? (get m k))
+    (apply update m k update-fn args)
+    m))
