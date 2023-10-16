@@ -5,7 +5,8 @@
 {{=<< >>=}}
 (ns <<project.name>>.main
   (:gen-class)
-  (:require [duct.core :as duct]))
+  (:require [duct.core :as duct]
+            [<<project.name>>.duct.env]))
 
 (duct/load-hierarchy)
 
