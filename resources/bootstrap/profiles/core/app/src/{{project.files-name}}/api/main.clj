@@ -4,7 +4,8 @@
 
 {{=<< >>=}}
 (ns <<project.name>>.api.main
-  (:require [integrant.core :as ig]
+  (:require [<<project.name>>.api.middleware.nested-query-parameters :as mid.nested-query-parameters]
+            [integrant.core :as ig]
             [malli.util :as mu]
             [muuntaja.core :as m]
             [reitit.coercion.malli :as coercion.malli]
@@ -48,6 +49,8 @@
                        mid.coercion/coerce-response-middleware
                        ;; query-params & form-params
                        mid.parameters/parameters-middleware
+                       ;; Flat query-params to nested
+                       mid.nested-query-parameters/nested-query-parameters-middleware
                        ;; decoding request body
                        mid.muuntaja/format-request-middleware
                        ;; coercing request parameters
