@@ -11,6 +11,7 @@
                  [metosin/jsonista "0.3.8"]
                  [metosin/reitit "0.6.0"]
                  [metosin/malli "0.13.0"]
+                 [com.widdindustries/cljc.java-time "0.1.21"]
                  {{#project.dependencies}}{{&.}}{{/project.dependencies}}]
   :plugins [[duct/lein-duct "0.12.3"]]
   :main ^:skip-aot {{project.files-name}}.main
