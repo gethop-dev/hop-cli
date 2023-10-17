@@ -173,7 +173,7 @@
 
 (defmethod registry/pre-render-hook :auth-keycloak
   [_ settings]
-  {:dependencies '[[dev.gethop/buddy-auth.jwt-oidc "0.10.4"]
+  {:dependencies '[[dev.gethop/buddy-auth.jwt-oidc "0.10.6"]
                    [duct/middleware.buddy "0.2.0"]
                    [io.github.cljsjs/keycloak-js "20.0.1-0"]]
    :config-edn {:base (merge

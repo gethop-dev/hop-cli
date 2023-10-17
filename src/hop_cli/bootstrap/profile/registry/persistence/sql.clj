@@ -173,8 +173,8 @@
   [_ settings]
   {:dependencies '[[duct/migrator.ragtime "0.3.2"]
                    [dev.gethop/database.sql.hikaricp "0.4.1"]
-                   [dev.gethop/sql-utils "0.4.13"]
-                   [org.postgresql/postgresql "42.3.3"]]
+                   [com.github.seancorfield/next.jdbc "1.3.894"]
+                   [org.postgresql/postgresql "42.6.0"]]
    :config-edn {:base (merge (sql-config settings)
                              (hikaricp-config settings)
                              (ragtime-config settings))
