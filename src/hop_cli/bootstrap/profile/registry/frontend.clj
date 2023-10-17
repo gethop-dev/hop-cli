@@ -47,6 +47,7 @@
                    [io.github.cljsjs/js-joda "5.5.2-0"]
                    [io.github.cljsjs/js-joda-timezone "2.17.2-0"]]
    :dev-dependencies '[[day8.re-frame/re-frame-10x "1.2.7"]]
+   :dev-requires '[[duct.repl.figwheel :refer [cljs-repl]]]
    :config-edn {:routes (routes settings)
                 :modules (cljs-module)
                 :base (merge

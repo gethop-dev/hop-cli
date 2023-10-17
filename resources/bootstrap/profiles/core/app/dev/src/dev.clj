@@ -7,15 +7,15 @@
                                  :unused-referred-var {:level :off}
                                  :unused-namespace {:level :off}}}}
   (:refer-clojure :exclude [test])
-  (:require [<<project.name>>.duct.env]
-            [clojure.repl :refer :all]
-            [fipp.edn :refer [pprint]]
-            [clojure.tools.namespace.repl :refer [refresh]]
+  (:require <<#project.dev-requires>><<&.>><</project.dev-requires>>
+            [<<project.name>>.duct.env]
             [clojure.java.io :as io]
+            [clojure.repl :refer :all]
+            [clojure.tools.namespace.repl :refer [refresh]]
             [duct.core :as duct]
-            [duct.core.repl :as duct-repl :refer [auto-reset]]<<#cljs?>>
-            [duct.repl.figwheel :refer [cljs-repl]]<</cljs?>>
+            [duct.core.repl :as duct-repl :refer [auto-reset]]
             [eftest.runner :as eftest]
+            [fipp.edn :refer [pprint]]
             [integrant.core :as ig]
             [integrant.repl :refer [clear halt go init prep reset]]
             [integrant.repl.state :refer [config system]]))
