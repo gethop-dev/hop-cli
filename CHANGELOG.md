@@ -2,6 +2,26 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+- Fix CLI complaining settings file is not compatible when it really is.
+- [core profile] Add some utility namespaces: `shared.utils`,
+  `shared.utils.string`, `shared.utils.transit`,
+  `domain.miscellaneous`.
+- [core profile] Add Duct configuration `keyword` and `edn` reader tag.
+- [core profile] Upgrade base Docker image to use Debian bookworm.
+- [core profile] Remove duct.module/web dependency.
+- [core profile] Switch to httpkit server instead of Jetty by default.
+- [core profile] Improve and fix Reitit middlewares configuration.
+- [core profile] Add nested-query-params Reitit middleware.
+- [core profile] Use custom Malli coercer in Reitit to improve string
+  parameters support.
+- [core profile] Use custom Transit decoders/encoders with Muuntaja to
+  handle time Instants using `cljc.java-time`.
+- [frontend profile] Introduce `cljc.java-time` for time handling.
+- [frontend profile] Improve view navigation machinery.
+- [frontend profile] Use custom Transit decoders/encoders to handle
+  time Instants using `cljc.java-time`.
+- [auth keycloak] Improve and extend FE session management code.
+- [auth keycloak/cognito] Improve authentication middleware.
 
 ## [0.1.9] - 2023-05-3081
 - Fix incorrect naming of AWS KMS key aliases [#18]
