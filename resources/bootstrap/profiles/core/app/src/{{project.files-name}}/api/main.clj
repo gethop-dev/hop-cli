@@ -5,10 +5,9 @@
 {{=<< >>=}}
 (ns <<project.name>>.api.main
   (:require [<<project.name>>.api.middleware.nested-query-parameters :as mid.nested-query-parameters]
+            [<<project.name>>.shared.util.malli-coercion :as util.malli-coercion]
             [integrant.core :as ig]
-            [malli.util :as mu]
             [muuntaja.core :as m]
-            [reitit.coercion.malli :as coercion.malli]
             [reitit.coercion.spec]
             [reitit.dev.pretty :as pretty]
             [reitit.ring :as reitit.ring]
@@ -27,15 +26,7 @@
    :validate reitit.spec/validate
    :reitit.ring/default-options-endpoint {:no-doc true
                                           :handler reitit.ring/default-options-handler}
-   :data {:coercion (coercion.malli/create
-                     {:error-keys #{:humanized}
-                      :compile mu/closed-schema
-                      :strip-extra-keys true
-                      :default-values true
-                      :encode-error (fn [error]
-                                      {:success? false
-                                       :reason :bad-parameter-type-or-format
-                                       :error-details (:humanized error)})})
+   :data {:coercion util.malli-coercion/custom-reitit-malli-coercer
           :muuntaja m/instance
           :middleware [;; swagger feature
                        swagger/swagger-feature
