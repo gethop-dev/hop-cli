@@ -4,60 +4,51 @@
 
 {{=<< >>=}}
 (ns <<project.name>>.client.routes
-  (:require [<<project.name>>.client.landing :as landing]
-            [<<project.name>>.shared.util.routing :as util.routing]
+  (:require [<<project.name>>.client.navigation :as nav]
+            [<<project.name>>.client.view.landing :as view.landing]
+            [<<project.name>>.client.view.not-found :as view.not-found]
+            [<<project.name>>.shared.util.malli-coercion :as util.malli-coercion]
             [re-frame.core :as rf]
             [reitit.frontend :as reitit.fr]
             [reitit.frontend.controllers :as reitit.frc]
             [reitit.frontend.easy :as reitit.fre]))
 
-(rf/reg-fx
- :push-state
- (fn [route]
-   (apply reitit.fre/push-state route)))
-
-(rf/reg-event-fx
- ::push-state
- (fn [_ [_ & route]]
-   {:push-state route}))
-
 (rf/reg-event-db
- ::navigated
+ ::apply-nav-route
  (fn [db [_ new-match]]
-   (let [old-match   (:current-route db)
+   (let [old-match (:current-route db)
          controllers (reitit.frc/apply-controllers (:controllers old-match) new-match)]
      (assoc db :current-route (assoc new-match :controllers controllers)))))
 
-(defn href
-  "Return relative url for given route. Url can be used in HTML links."
-  ([k]
-   (href k nil nil))
-  ([k params]
-   (href k params nil))
-  ([k params query]
-   (reitit.fre/href k params query)))
+(rf/reg-event-fx
+ ::navigated
+ (fn [_ [_ new-match]]
+   {:fx [[:dispatch [::apply-nav-route new-match]]]}))
 
 (def routes
   ["/"
-   ["landing"
-    {:name ::landing/view
-     :controllers [{:start (fn [& _params] (js/console.log "Entering Landing"))
-                    :stop  (fn [& _params] (js/console.log "Leaving Landing"))}]}]])
+   ["" view.landing/route-config]])
 
 (defn on-navigate [new-match]
-  (when new-match
-    (rf/dispatch [::navigated new-match])))
+  (if new-match
+    (rf/dispatch [::navigated new-match])
+    (rf/dispatch [::nav/push-state (:name view.not-found/route-config)])))
 
 (def router
   (reitit.fr/router
    routes
-   {:data {:coercion util.routing/custom-malli-coercion}}))
+   {:data {:coercion util.malli-coercion/custom-reitit-malli-coercer}}))
 
-(defn init-routes! []
-  (js/console.log "initializing routes")
-  (reitit.fre/start!
-   router
-   on-navigate
-   {:use-fragment true                                      ;; using "true" for easier route debugging without SSR.
-    :on-coercion-error (fn [_ _] (js/alert "Coercion error!"))})
-  (rf/dispatch [::push-state ::landing/view]))
+(rf/reg-fx
+ :do-init-routes
+ (fn [_]
+   (reitit.fre/start!
+    router
+    on-navigate
+    {:use-fragment false
+     :on-coercion-error (fn [_ _] (js/alert "Coercion error!"))})))
+
+(rf/reg-event-fx
+ ::init-routes
+ (fn [_ _]
+   {:fx [[:do-init-routes]]}))

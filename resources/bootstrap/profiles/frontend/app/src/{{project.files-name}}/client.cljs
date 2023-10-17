@@ -23,7 +23,8 @@
  (fn [_ _]
    {:fx [<<#project.load-frontend-app.events>>
          <<&.>>
-         <</project.load-frontend-app.events>>]}))
+         <</project.load-frontend-app.events>>
+         [:dispatch [::routes/init-routes]]]}))
 
 (rf/reg-event-fx
  ::load-app
@@ -60,5 +61,4 @@
 (defn ^:export init []
   (dev-setup)
   (rf/dispatch-sync [::load-app])
-  (routes/init-routes!)
   (mount-root))

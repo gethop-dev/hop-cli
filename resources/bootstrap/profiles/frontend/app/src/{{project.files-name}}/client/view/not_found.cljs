@@ -3,16 +3,16 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 {{=<< >>=}}
-(ns <<project.name>>.client.landing
+(ns <<project.name>>.client.view.not-found
   (:require [<<project.name>>.client.view :as view]))
 
-(defn- main []
-  [:div.landing
-   [:a {:href "https://www.gethop.dev/"
-        :target "_blank"}
-    [:img.landing__logo {:src "images/hop-logo.svg"}]]
-   [:h1.landing__title "Your application is up and running!"]])
+(def ^:const route-config
+  {:name [:not-found]})
 
-(defmethod view/view-display ::view
+(defn- main []
+  [:div
+   [:span "Not found"]])
+
+(defmethod view/view-display (:name route-config)
   [_]
   [main])
