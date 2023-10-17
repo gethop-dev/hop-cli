@@ -22,6 +22,8 @@ All notable changes to this project will be documented in this file. This change
   time Instants using `cljc.java-time`.
 - [auth keycloak] Improve and extend FE session management code.
 - [auth keycloak/cognito] Improve authentication middleware.
+- [persistence] Include next.jdbc instead of gethop/sql-utils
+- Upgrade external dependencies of multiple libraries
 
 ## [0.1.9] - 2023-05-3081
 - Fix incorrect naming of AWS KMS key aliases [#18]
