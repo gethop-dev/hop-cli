@@ -3,7 +3,8 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.bootstrap.settings-patcher
-  (:require [clojure.walk :as walk]
+  (:require [clojure.string :as str]
+            [clojure.walk :as walk]
             [hop-cli.bootstrap.util :as bp.util]
             [hop-cli.util :as util]
             [malli.core :as m]))
@@ -67,6 +68,22 @@
       ;; data structure.
       (apply comp appliable-patches-fns))))
 
+(defn- version-str>version-vector
+  [version-str]
+  ;;NOTE the comparation treats all alpha versions as the same
+  ;;version. It has to be improved.
+  (->> (-> version-str
+           (str/replace #"-.+" "")
+           (str/split #"\."))
+       (map #(Integer/parseInt %))
+       vec))
+
+(defn- compare-versions
+  [version-a version-b]
+  (compare
+   (version-str>version-vector version-a)
+   (version-str>version-vector version-b)))
+
 (defn cli-and-settings-version-compatible?
   [settings]
   (let [cli-version (util/get-version)
@@ -74,13 +91,13 @@
     ;; cli-version >= 0.1.2
     ;; and
     ;; settings-version <= 1.0 or settings-version >= 1.0
-    (and (or (zero? (compare cli-version "0.1.2"))
-             (pos-int? (compare cli-version "0.1.2")))
-         (or (zero? (compare settings-version "1.0"))
+    (and (or (zero? (compare-versions cli-version "0.1.2"))
+             (pos-int? (compare-versions cli-version "0.1.2")))
+         (or (zero? (compare-versions settings-version "1.0"))
              ;; For a future scenario where we have a higher
              ;; incompatible version of settings.edn.
-             (pos-int? (compare settings-version "1.0"))
-             (neg-int? (compare settings-version "1.0"))))))
+             (pos-int? (compare-versions settings-version "1.0"))
+             (neg-int? (compare-versions settings-version "1.0"))))))
 
 (defn apply-patches
   [settings]
