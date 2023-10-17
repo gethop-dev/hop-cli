@@ -48,7 +48,8 @@
   "(rf/reg-event-fx
    ::init-keycloak
    (fn [{:keys [db]} _]
-     {:init-and-try-to-authenticate {:oidc (get-in db [:config :keycloak])}}))")
+     {:init-and-try-to-authenticate
+      {:config {:oidc (get-in db [:config :keycloak])}}}))")
 
 (defn- build-external-env-variables
   [settings env-path]

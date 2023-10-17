@@ -4,9 +4,11 @@
 
 {{=<< >>=}}
 (ns <<project.name>>.client.session
-  (:require [<<project.name>>.client.session.oidc-sso :as oidc-sso]
+  (:require [<<project.name>>.client.localization :as localization]
+            [<<project.name>>.client.session.oidc-sso :as oidc-sso]
             [<<project.name>>.client.session.user :as user]
             [cljsjs.keycloak-js]
+            [goog.object :as g]
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
@@ -27,7 +29,7 @@
 ;; there). So after an internal discussion, we have decided that the
 ;; least hacky way of doing it is storing the Keycloak object in a
 ;; Reagent atom.
-(def keycloak (r/atom nil))
+(defonce keycloak (r/atom nil))
 
 (rf/reg-event-fx
  ::set-auth-error
@@ -37,16 +39,29 @@
 (rf/reg-sub
  ::auth-error
  (fn [db]
-   (:auth-error db)))
+   (get db :auth-error)))
 
-(defn- handle-keycloak-obj-change [keycloak-obj]
-  (let [jwt-token (.-idToken keycloak-obj)
-        token-exp (-> keycloak-obj .-idTokenParsed .-exp)]
+(defn- handle-keycloak-obj-change
+  [keycloak-obj]
+  (let [token-exp (g/getValueByKeys keycloak-obj "idTokenParsed" "exp")]
     ;; See comment at the top of this file to see
     ;; why we manage the keycloak object this way.
     (reset! keycloak keycloak-obj)
-    (rf/dispatch [::set-token jwt-token])
+    (rf/dispatch [::oidc-sso/trigger-sso-apps])
     (rf/dispatch [::schedule-token-refresh token-exp])))
+
+(defn- session-cofx
+  [cofx _]
+  (let [keycloak-state @keycloak
+        session (when-let [jwt-token (g/getValueByKeys keycloak-state "idToken")]
+                  (let [token-exp (g/getValueByKeys keycloak-state "idTokenParsed" "exp")
+                        user-type (g/getValueByKeys keycloak-state "idTokenParsed" "user_type")]
+                    {:jwt-token jwt-token
+                     :token-exp token-exp
+                     :user-type (keyword user-type)}))]
+    (assoc cofx :session session)))
+
+(rf/reg-cofx :session session-cofx)
 
 (rf/reg-fx
  ::refresh-token-keycloak
@@ -93,15 +108,9 @@
       :dispatch-later [{:ms (* 1000 half-lifetime)
                         :dispatch [::refresh-token min-validity]}]})))
 
-(rf/reg-event-fx
- ::set-token
- (fn [{:keys [db]} [_ jwt-token]]
-   {:db (assoc db :jwt-token jwt-token)
-    :dispatch [::oidc-sso/trigger-sso-apps]}))
-
 (rf/reg-fx
  :init-and-try-to-authenticate
- (fn [config]
+ (fn [{:keys [config on-auth-success-evt on-auth-failure-evt]}]
    (let [{:keys [realm url client-id]} (get config :oidc)
          keycloak-obj (js/Keycloak #js {:realm realm
                                         :url url
@@ -112,22 +121,37 @@
                      "silentCheckSsoRedirectUri" (str js/window.location.origin "/silent-check.html")})
          (.then (fn [authenticated]
                   (reset! keycloak keycloak-obj)
-                  (when authenticated
-                    (handle-keycloak-obj-change keycloak-obj)
-                    (rf/dispatch [::user/fetch-user-data js/location.hash]))))
+                  (if authenticated
+                    (do
+                      (handle-keycloak-obj-change keycloak-obj)
+                      (rf/dispatch [::user/fetch-user-data :on-success-evt on-auth-success-evt]))
+                    (rf/dispatch on-auth-failure-evt))))
          (.catch (fn [_]
                    (rf/dispatch [::set-auth-error "Failed to initialize Keycloak"])))))))
 
 (rf/reg-fx
  ::login
- (fn [_]
+ (fn [opts]
    (when @keycloak
-     (.login @keycloak))))
+     (.login @keycloak (clj->js opts)))))
 
 (rf/reg-event-fx
  ::user-login
- (fn [{:keys [_]} [_]]
-   {::login []}))
+ (fn [{:keys [db]} [_ opts]]
+   (let [language (localization/get-language db)]
+     {::login (assoc opts :locale language)})))
+
+(rf/reg-fx
+ ::register
+ (fn [opts]
+   (when @keycloak
+     (.register @keycloak (clj->js opts)))))
+
+(rf/reg-event-fx
+ ::user-register
+ (fn [{:keys [db]} [_ opts]]
+   (let [language (localization/get-language db)]
+     {::register (assoc opts :locale language)})))
 
 (rf/reg-fx
  ::logout
@@ -141,6 +165,16 @@
 (rf/reg-event-fx
  ::user-logout
  (fn [{:keys [db]} [_]]
-   {:db (dissoc db :jwt-token)
-    ::logout []
+   {::logout []
     :dispatch [::oidc-sso/trigger-logout-apps]}))
+
+(rf/reg-fx
+ ::manage-account
+ (fn [_]
+   (when @keycloak
+     (.accountManagement @keycloak))))
+
+(rf/reg-event-fx
+ ::user-manage-account
+ (fn [_ _]
+   {::manage-account []}))

@@ -4,8 +4,8 @@
 
 {{=<< >>=}}
 (ns <<project.name>>.client.session.user
-  (:require [re-frame.core :as rf]
-            [<<project.name>>.client.util :as util]))
+  (:require [<<project.name>>.client.util :as util]
+            [re-frame.core :as rf]))
 
 (rf/reg-sub
  ::user-data
@@ -18,18 +18,19 @@
    (assoc-in db [:session :user] data)))
 
 (rf/reg-event-fx
- ::on-user-data-loaded
- (fn [{:keys [db]} [_ redirect-url {:keys [user]}]]
+ ::on-user-data-load-success
+ (fn [{:keys [db]} [_ on-success-evt {:keys [user]}]]
    (cond-> {:db (assoc-in db [:session :user] user)}
-     redirect-url
-     (assoc :redirect redirect-url))))
+     on-success-evt
+     (assoc :fx [[:dispatch on-success-evt]]))))
 
 (rf/reg-event-fx
  ::fetch-user-data
- (fn [{:keys [db]} [_ redirect-url]]
-   {:http-xhrio {:headers {"Authorization" (str "Bearer " (:jwt-token db))}
+ [(rf/inject-cofx :session)]
+ (fn [{:keys [session]} [_ & {:keys [on-success-evt]}]]
+   {:http-xhrio {:headers {"Authorization" (str "Bearer " (:jwt-token session))}
                  :method :get
                  :uri "/api/user"
                  :response-format (util/ajax-transit-response-format)
-                 :on-success [::on-user-data-loaded redirect-url]
+                 :on-success [::on-user-data-load-success on-success-evt]
                  :on-failure [::util/generic-error]}}))
