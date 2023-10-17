@@ -4,8 +4,7 @@
 
 {{=<< >>=}}
 (ns <<project.name>>.client.session.user
-  (:require [ajax.core :as ajax]
-            [re-frame.core :as rf]
+  (:require [re-frame.core :as rf]
             [<<project.name>>.client.util :as util]))
 
 (rf/reg-sub
@@ -31,7 +30,6 @@
    {:http-xhrio {:headers {"Authorization" (str "Bearer " (:jwt-token db))}
                  :method :get
                  :uri "/api/user"
-                 :format (ajax/json-request-format)
-                 :response-format (ajax/json-response-format {:keywords? true})
+                 :response-format (util/ajax-transit-response-format)
                  :on-success [::on-user-data-loaded redirect-url]
                  :on-failure [::util/generic-error]}}))

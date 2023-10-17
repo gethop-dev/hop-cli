@@ -5,7 +5,6 @@
 {{=<< >>=}}
 (ns <<project.name>>.client.config
   (:require [<<project.name>>.client.util :as util]
-            [ajax.core :as ajax]
             [re-frame.core :as rf]))
 
 (rf/reg-event-fx
@@ -21,7 +20,6 @@
  (fn [_ [_ on-success-evt]]
    {:http-xhrio {:method :get
                  :uri "/api/config"
-                 :format (ajax/transit-request-format)
-                 :response-format (ajax/transit-response-format)
+                 :response-format (util/ajax-transit-response-format)
                  :on-success [::config-loaded on-success-evt]
                  :on-failure [::util/generic-error]}}))

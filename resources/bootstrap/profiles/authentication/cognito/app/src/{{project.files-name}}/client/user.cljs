@@ -5,7 +5,6 @@
 {{=<< >>=}}
 (ns <<project.name>>.client.user
   (:require [<<project.name>>.client.util :as util]
-            [ajax.core :as ajax]
             [dev.gethop.session.re-frame.cognito.token :as session.token]
             [re-frame.core :as rf]))
 
@@ -27,8 +26,7 @@
   {:http-xhrio {:headers {"Authorization" (str "Bearer " (:id-token session))}
                 :method :get
                 :uri "/api/user"
-                :format (ajax/transit-request-format)
-                :response-format (ajax/transit-response-format)
+                :response-format (util/ajax-transit-response-format)
                 :on-success [::set-user-data]
                 :on-failure [::util/generic-error]}})
 
