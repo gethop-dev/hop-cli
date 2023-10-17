@@ -4,7 +4,8 @@
 
 {{=<< >>=}}
 (ns ^:figwheel-hooks <<project.name>>.client
-  (:require [<<project.name>>.client.config :as client.config]
+  (:require ["@js-joda/timezone"]
+            [<<project.name>>.client.config :as client.config]
             [<<project.name>>.client.localization :as localization]
             [<<project.name>>.client.routes :as routes]
             [<<project.name>>.client.view :as view]
