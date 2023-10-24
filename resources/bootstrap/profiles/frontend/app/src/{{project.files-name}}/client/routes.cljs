@@ -27,7 +27,8 @@
 
 (def routes
   ["/"
-   ["" view.landing/route-config]])
+   ["" view.landing/route-config]
+   ["not-found" view.not-found/route-config]])
 
 (defn on-navigate [new-match]
   (if new-match
