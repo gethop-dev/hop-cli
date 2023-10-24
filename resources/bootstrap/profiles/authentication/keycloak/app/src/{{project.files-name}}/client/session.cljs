@@ -9,8 +9,7 @@
             [<<project.name>>.client.session.user :as user]
             [cljsjs.keycloak-js]
             [goog.object :as g]
-            [re-frame.core :as rf]
-            [reagent.core :as r]))
+            [re-frame.core :as rf]))
 
 ;; Keycloak Javascript library is not designed to be used in a
 ;; functional way. When you create a keycloak object to interact with
@@ -29,7 +28,7 @@
 ;; there). So after an internal discussion, we have decided that the
 ;; least hacky way of doing it is storing the Keycloak object in a
 ;; Reagent atom.
-(defonce keycloak (r/atom nil))
+(defonce keycloak (atom nil))
 
 (rf/reg-event-fx
  ::set-auth-error
