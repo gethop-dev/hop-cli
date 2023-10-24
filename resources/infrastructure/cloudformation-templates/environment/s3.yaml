@@ -19,7 +19,6 @@ Resources:
   S3Bucket:
     Type: "AWS::S3::Bucket"
     Properties:
-      AccessControl: "Private"
       BucketName: !Sub "${ProjectName}-${Environment}-env"
       Tags:
         - Key: "project-name"
