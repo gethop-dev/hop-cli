@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file. This change
 - [auth keycloak] Improve and extend FE session management code.
 - [auth keycloak/cognito] Improve authentication middleware.
 - [persistence] Include next.jdbc instead of gethop/sql-utils
+- [on premises] Fix https-portal docker-compoose being always included.
 - Upgrade external dependencies of multiple libraries
 
 ## [0.1.9] - 2023-05-3081

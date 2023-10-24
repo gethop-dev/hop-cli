@@ -9,6 +9,13 @@
       (= :https-portal ssl-termination-choice)
       (update :to-deploy concat ["docker-compose.https-portal.to-deploy.yml"]))))
 
+(defn- build-docker-files-to-copy
+  [settings]
+  (bp.util/build-profile-docker-files-to-copy
+   (build-docker-compose-files settings)
+   "on-premises/"
+   []))
+
 (defn- build-env-variables
   [settings environment]
   (let [base-path [:project :profiles :on-premises]
@@ -22,7 +29,8 @@
 
 (defmethod registry/pre-render-hook :on-premises
   [_ settings]
-  {:files [{:src "on-premises"}]
+  {:files (concat [{:src "on-premises/on-premises-files"}]
+                  (build-docker-files-to-copy settings))
    :deploy-files ["on-premises-files"]
    :environment-variables {:test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
