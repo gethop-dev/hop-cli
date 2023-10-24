@@ -148,12 +148,10 @@
 (defn build-environment-init-db-sql-string
   [settings environment]
   (let [project-dir (bp.util/get-settings-value settings :project/target-dir)
-        deployment-choice (bp.util/get-settings-value settings :project.profiles.persistence-sql.deployment.to-deploy/value)
-        template-file (format "%s/postgres/init-scripts/%s/%s/%s/01_create_schemas_and_roles.sql"
+        template-file (format "%s/postgres/init-scripts/%s/%s/01_create_schemas_and_roles.sql"
                               project-dir
                               (name (bp.util/get-env-type environment))
-                              (name environment)
-                              (name deployment-choice))
+                              (name environment))
         template-content (slurp (fs/file template-file))]
     (str/replace template-content #"\$\{([^}]+)\}" #(replace-env-variable settings environment %1))))
 
@@ -171,36 +169,43 @@
 
 (defmethod registry/pre-render-hook :persistence-sql
   [_ settings]
-  {:dependencies '[[duct/migrator.ragtime "0.3.2"]
-                   [dev.gethop/database.sql.hikaricp "0.4.1"]
-                   [com.github.seancorfield/next.jdbc "1.3.894"]
-                   [org.postgresql/postgresql "42.6.0"]]
-   :config-edn {:base (merge (sql-config settings)
-                             (hikaricp-config settings)
-                             (ragtime-config settings))
-                :dev (dev-ragtime-config settings)
-                :common-config (common-config settings)}
-   :environment-variables {:dev (build-env-variables settings :dev)
-                           :test (build-env-variables settings :test)
-                           :prod (build-env-variables settings :prod)}
-   :files (concat [{:src "persistence/sql/app"
-                    :dst "app"}
-                   {:src "persistence/sql/postgres/init-scripts/to-deploy"
-                    :dst "postgres/init-scripts/to-deploy"}
-                   {:src "persistence/sql/postgres/init-scripts/to-develop/dev"
-                    :dst "postgres/init-scripts/to-develop/dev"}]
-                  (build-docker-files-to-copy settings))
-   :docker-compose (build-docker-compose-files settings)
-   :extra-app-docker-compose-environment-variables ["APP_DB_TYPE"
-                                                    "APP_DB_HOST"
-                                                    "APP_DB_PORT"
-                                                    "APP_DB_NAME"
-                                                    "APP_DB_USER"
-                                                    "APP_DB_PASSWORD"]
-   :outputs (meta-merge
-             (build-profile-env-outputs settings :dev)
-             (build-profile-env-outputs settings :test)
-             (build-profile-env-outputs settings :prod))})
+  (let [deployment-choice-name (-> (bp.util/get-settings-value
+                                    settings :project.profiles.persistence-sql.deployment.to-deploy/value)
+                                   (name))]
+    {:dependencies '[[duct/migrator.ragtime "0.3.2"]
+                     [dev.gethop/database.sql.hikaricp "0.4.1"]
+                     [com.github.seancorfield/next.jdbc "1.3.894"]
+                     [org.postgresql/postgresql "42.6.0"]]
+     :config-edn {:base (merge (sql-config settings)
+                               (hikaricp-config settings)
+                               (ragtime-config settings))
+                  :dev (dev-ragtime-config settings)
+                  :common-config (common-config settings)}
+     :environment-variables {:dev (build-env-variables settings :dev)
+                             :test (build-env-variables settings :test)
+                             :prod (build-env-variables settings :prod)}
+     :files (concat [{:src "persistence/sql/app"
+                      :dst "app"}
+                     {:src (str "persistence/sql/postgres/init-scripts/to-deploy/prod/"
+                                deployment-choice-name)
+                      :dst "postgres/init-scripts/to-deploy/prod"}
+                     {:src (str "persistence/sql/postgres/init-scripts/to-deploy/test/"
+                                deployment-choice-name)
+                      :dst "postgres/init-scripts/to-deploy/test"}
+                     {:src "persistence/sql/postgres/init-scripts/to-develop/dev"
+                      :dst "postgres/init-scripts/to-develop/dev"}]
+                    (build-docker-files-to-copy settings))
+     :docker-compose (build-docker-compose-files settings)
+     :extra-app-docker-compose-environment-variables ["APP_DB_TYPE"
+                                                      "APP_DB_HOST"
+                                                      "APP_DB_PORT"
+                                                      "APP_DB_NAME"
+                                                      "APP_DB_USER"
+                                                      "APP_DB_PASSWORD"]
+     :outputs (meta-merge
+               (build-profile-env-outputs settings :dev)
+               (build-profile-env-outputs settings :test)
+               (build-profile-env-outputs settings :prod))}))
 
 (defmethod registry/post-render-hook :persistence-sql
   [_ settings]
