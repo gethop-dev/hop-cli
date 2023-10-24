@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file. This change
 - [persistence] Fix both rds and docker init-scripts being included
   instead of just the selected one.
 - [on premises] Fix https-portal docker-compoose being always included.
+- [ci] Fix github-actions AWS environment variables being always included.
 - Upgrade external dependencies of multiple libraries
 
 ## [0.1.9] - 2023-05-3081

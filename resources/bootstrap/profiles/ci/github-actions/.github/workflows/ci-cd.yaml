@@ -14,13 +14,13 @@ jobs:
   ci-cd:
     runs-on: ubuntu-latest
     env:
+      DOCKER_BUILDKIT: 1<<#deployment-target.aws.enabled>>
       AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
       AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
       AWS_DEFAULT_REGION: ${{secrets.AWS_DEFAULT_REGION}}
       TEST_AWS_ACCESS_KEY_ID: ${{secrets.TEST_AWS_ACCESS_KEY_ID}}
       TEST_AWS_SECRET_ACCESS_KEY: ${{secrets.TEST_AWS_SECRET_ACCESS_KEY}}
-      TEST_AWS_DEFAULT_REGION: ${{secrets.TEST_AWS_DEFAULT_REGION}}
-      DOCKER_BUILDKIT: 1
+      TEST_AWS_DEFAULT_REGION: ${{secrets.TEST_AWS_DEFAULT_REGION}}<</deployment-target.aws.enabled>>
     steps:
       - name: Checkout
         uses: actions/checkout@v2
