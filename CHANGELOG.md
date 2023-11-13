@@ -86,7 +86,8 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.9...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.10...HEAD
+[0.1.10]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.10
 [0.1.9]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.9
 [0.1.8]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.8
 [0.1.7]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.7
