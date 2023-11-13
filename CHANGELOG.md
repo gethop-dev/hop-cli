@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+
+## [0.1.10] - 2023-11-13
 - Fix CLI complaining settings file is not compatible when it really is.
 - [core profile] Add some utility namespaces: `shared.utils`,
   `shared.utils.string`, `shared.utils.transit`,
@@ -29,7 +31,7 @@ All notable changes to this project will be documented in this file. This change
 - [ci] Fix github-actions AWS environment variables being always included.
 - Upgrade external dependencies of multiple libraries
 
-## [0.1.9] - 2023-05-3081
+## [0.1.9] - 2023-05-30
 - Fix incorrect naming of AWS KMS key aliases [#18]
 
 ## [0.1.8] - 2023-05-28
