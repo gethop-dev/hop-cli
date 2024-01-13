@@ -111,9 +111,9 @@
  :init-and-try-to-authenticate
  (fn [{:keys [config on-auth-success-evt on-auth-failure-evt]}]
    (let [{:keys [realm url client-id]} (get config :oidc)
-         keycloak-obj (js/Keycloak #js {:realm realm
-                                        :url url
-                                        :clientId client-id})]
+         keycloak-obj (js/Keycloak. #js {:realm realm
+                                         :url url
+                                         :clientId client-id})]
      (-> keycloak-obj
          (.init #js {"onLoad" "check-sso"
                      "promiseType" "native"
