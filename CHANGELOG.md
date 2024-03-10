@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+- [deployment S3]: Fixed incomplete S3 policy [issue #19]
 
 ## [0.1.10] - 2023-11-13
 - Fix CLI complaining settings file is not compatible when it really is.
