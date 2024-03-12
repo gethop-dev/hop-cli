@@ -37,8 +37,9 @@
   (let [encode-result (encode-request request)]
     (if-not (:success? encode-result)
       encode-result
-      (let [response @(http/request (:request encode-result))]
-        (if-not (<= 200 (:status response) 299)
+      (let [{:keys [status] :as response}
+            @(http/request (:request encode-result))]
+        (if-not (and status (<= 200 status 299))
           {:success? false
            :error-details response}
           (decode-response response))))))
