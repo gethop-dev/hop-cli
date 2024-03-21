@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file. This change
 ## [UNRELEASED]
 - [deployment S3]: Fixed incomplete S3 policy [issue #19]
 - [cli]: Fixed the cli http client hiding certain failed http request errors [issue #21]
+- [auth]: Upgraded buddy-auth.jwt-oidc to latest version (includes several fixes)
 
 ## [0.1.10] - 2023-11-13
 - Fix CLI complaining settings file is not compatible when it really is.
