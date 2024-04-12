@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+
+## [0.1.11] - 2024-04-12
 - [deployment S3]: Fixed incomplete S3 policy [issue #19]
 - [cli]: Fixed the cli http client hiding certain failed http request errors [issue #21]
 - [auth]: Upgraded buddy-auth.jwt-oidc to latest version (includes several fixes)
