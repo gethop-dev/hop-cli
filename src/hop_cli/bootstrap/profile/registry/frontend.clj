@@ -43,7 +43,7 @@
                    [reagent/reagent "1.1.1"]
                    [com.taoensso/tempura "1.5.3"]
                    [dev.gethop/duct.module.cljs-compiler "0.1.0"]
-                   [duct/compiler.sass "0.2.1"]
+                   [duct/compiler.sass "0.3.0"]
                    [io.github.cljsjs/js-joda "5.5.2-0"]
                    [io.github.cljsjs/js-joda-timezone "2.17.2-0"]]
    :dev-dependencies '[[day8.re-frame/re-frame-10x "1.2.7"]]
