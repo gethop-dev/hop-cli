@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file. This change
 - [cli]: Fixed the cli http client hiding certain failed http request errors [issue #21]
 - [auth]: Upgraded buddy-auth.jwt-oidc to latest version (includes several fixes)
 - [frontend profile]: Upgrade duct/compiler.sass to 0.3.0 [issue #22][#issue 20]
+- [ci][core profile] Upgrade clj-kondo and babashka versions
+- [aws profile] Make sure we use the same babashka version as the core profile [issue #16]
 
 ## [0.1.10] - 2023-11-13
 - Fix CLI complaining settings file is not compatible when it really is.
