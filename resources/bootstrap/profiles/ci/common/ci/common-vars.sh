@@ -4,7 +4,7 @@
 set -eu -o pipefail
 
 # Tag to be used when creating the Docker image.
-TAG="$(git rev-parse --short HEAD)"
+TAG="$(git rev-parse --short=10 HEAD)"
 
 # Branch on which the current image is being build.
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
