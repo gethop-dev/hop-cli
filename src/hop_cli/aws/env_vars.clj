@@ -27,7 +27,10 @@
 
 (defn- env-var->string-env-var
   [{:keys [name value]}]
-  (format "%s=%s" name value))
+  (let [env-file-quoted-val (-> value
+                                (str/replace "\\" "\\\\")
+                                (str/replace "'" "\\'"))]
+    (format "%s='%s'" name env-file-quoted-val)))
 
 (defn- get-env-var-diff
   [ssm-env-vars file-env-vars]

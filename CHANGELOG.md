@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+- [aws profile] Correctly handle environment variables with '$'
+  characters in them (and other potentially problematic characters in
+  them) [issue #24]
 
 ## [0.1.11] - 2024-04-12
 - [deployment S3]: Fixed incomplete S3 policy [issue #19]
