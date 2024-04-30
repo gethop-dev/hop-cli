@@ -2,7 +2,7 @@
 
 set -eu -o pipefail
 
-HOP_CLI_VERSION=0.1.11
+HOP_CLI_VERSION=0.1.12
 HOP_CLI_NAME=hop-cli.jar
 INSTALL_DIR="/usr/local/hop-cli"
 DOWNLOAD_DIR="${INSTALL_DIR}/${HOP_CLI_VERSION}"
