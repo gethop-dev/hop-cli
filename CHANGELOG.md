@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+- [frontend profile] Add browser history replace-state re-frame events
 
 ## [0.1.12] - 2024-04-30
 - [aws profile] Correctly handle environment variables with '$'

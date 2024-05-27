@@ -17,6 +17,16 @@
  (fn [_ [_ & route]]
    {:do-push-state route}))
 
+(rf/reg-fx
+ :do-replace-state
+ (fn [route]
+   (apply reitit.fre/replace-state route)))
+
+(rf/reg-event-fx
+ ::replace-state
+ (fn [_ [_ & route]]
+   {:do-replace-state route}))
+
 (defn href
   "Return relative url for given route. Url can be used in HTML links."
   ([k]
