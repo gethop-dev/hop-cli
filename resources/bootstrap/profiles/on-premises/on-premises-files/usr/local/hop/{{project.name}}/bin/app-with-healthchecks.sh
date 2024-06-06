@@ -37,7 +37,7 @@ function stop() {
 function do_healthcheck() {
     # Add '--insecure' if using self-signed certificate
     curl --silent --output /dev/null --fail \
-        --connect-time "${HEALTHCHECK_CONNECT_TIMEOUT}" \
+        --connect-timeout "${HEALTHCHECK_CONNECT_TIMEOUT}" \
         --max-time "${HEALTHCHECK_REQUEST_TIMEOUT}" "${HEALTHCHECK_URL}"
 }
 
