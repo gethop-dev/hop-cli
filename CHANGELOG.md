@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file. This change
 ## [UNRELEASED]
 - [frontend profile] Add browser history replace-state re-frame events
 - [object-storage profile] Upgrade object-storage.s3 dependency version
+- [core profile] Explicitly set http-kit version instead of using transitive dependencies
 
 ## [0.1.12] - 2024-04-30
 - [aws profile] Correctly handle environment variables with '$'

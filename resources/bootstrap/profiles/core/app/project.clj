@@ -5,7 +5,9 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [duct/core "0.8.0"]
                  [ring "1.9.6"]
-                 [duct/server.http.http-kit "0.1.4"]
+                 [duct/server.http.http-kit "0.1.4"
+                  :exclusions [[http-kit]]]
+                 [http-kit "2.8.0"]
                  [duct/module.logging "0.5.0"]
                  [duct/logger.timbre "0.5.0"]
                  [metosin/jsonista "0.3.8"]
