@@ -18,7 +18,7 @@
 
 (defmethod registry/pre-render-hook :object-storage-s3
   [_ settings]
-  {:dependencies '[[dev.gethop/object-storage.s3 "0.7.2"]]
+  {:dependencies '[[dev.gethop/object-storage.s3 "0.7.3"]]
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
