@@ -22,7 +22,7 @@ jobs:
       - name: Print the Cloud Formation Linter Version & run Linter.
         run: |
           cfn-lint --version
-          cfn-lint resources/infrastructure/cloudformation-templates/**/*.yaml --format=pretty
+          cfn-lint -t resources/infrastructure/cloudformation-templates/**/*.yaml --format=pretty
   clojure-code:
     runs-on: ubuntu-latest
     permissions:

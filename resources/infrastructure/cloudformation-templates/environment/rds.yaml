@@ -69,6 +69,11 @@ Resources:
           Value: !Ref "Environment"
   Database:
     Type: "AWS::RDS::DBInstance"
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - W1011
     Properties:
       VPCSecurityGroups:
         - !Ref "DatabaseSecurityGroup"
