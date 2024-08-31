@@ -463,7 +463,7 @@
                                 :value [{:name :version
                                          :tag "Postgres version"
                                          :type :string
-                                         :value "12"
+                                         :value "16"
                                          :pattern "[^\\s]+"}]}
                                {:name :deployment
                                 :tag "Deployment"
