@@ -2,8 +2,10 @@
 
 set -eu -o pipefail
 
+SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+
 function get_missing_env_vars() {
-    DOCKER_COMPOSE_VERSION="$(docker-compose --version | sed 's/.* version \([^ ,]*\).*/\1/g')"
+    DOCKER_COMPOSE_VERSION="$("${SCRIPT_DIR}/docker-compose.sh" version --short)"
 
     case "${DOCKER_COMPOSE_VERSION}" in
     1.*)
@@ -14,7 +16,7 @@ function get_missing_env_vars() {
         ;;
     esac
 
-    docker-compose "${DOCKER_COMPOSE_ARGS[@]}" |
+    "${SCRIPT_DIR}/docker-compose.sh" "${DOCKER_COMPOSE_ARGS[@]}" |
         docker run --rm -i mikefarah/yq '.services[].environment?
             |=
             (

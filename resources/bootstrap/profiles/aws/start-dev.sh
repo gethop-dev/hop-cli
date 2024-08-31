@@ -25,7 +25,7 @@ export COMPOSE_FILE="{{project.docker-compose.to-develop}}"
 compose_project="$(docker/compose-project-name.sh)"
 
 # Stop any containers still running. Don't wait for them to finish :-)
-docker-compose down --timeout 0
+docker/docker-compose.sh down --timeout 0
 
 # Clean up any left overs from previous runs, to make sure we start
 # with a clean environment (stale Docker containers, stale Clojure
@@ -55,7 +55,7 @@ fi
 # (because it is a bind mount point). And that is going to prevent
 # lein from downloading any dependencies!
 mkdir -p ~/.m2/
-docker-compose run --no-deps --rm app lein clean
+docker/docker-compose.sh run --no-deps --rm app lein clean
 
 # Finally launch the application itself, using the development
 # environment user credentials. Also make sure to check that we are
@@ -77,8 +77,8 @@ aws-vault exec "${PROFILE_PREFIX}/${PROJECT}-dev-env" --duration 12h -- env \
     TEST_AWS_SECRET_ACCESS_KEY="${TEST_AWS_SECRET_ACCESS_KEY}" \
     bash -c \
     'set -eu;
-     ./docker/docker-env-vars.sh;
-     docker-compose up --build --detach --force-recreate --renew-anon-volumes'
+     docker/docker-env-vars.sh;
+     docker/docker-compose.sh up --build --detach --force-recreate --renew-anon-volumes'
 
 # And show the logs
-docker-compose logs --follow --timestamps
+docker/docker-compose.sh logs --follow --timestamps

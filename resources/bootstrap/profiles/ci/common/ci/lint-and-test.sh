@@ -10,18 +10,18 @@ export COMPOSE_FILE="{{project.docker-compose.ci}}"
 
 docker build --target ci --tag lint-and-test .
 
-docker-compose up -d
+docker/docker-compose.sh up -d
 
 echo "clj-kondo"
-time docker-compose exec -T app clj-kondo --lint src --lint test --lint dev
+time docker/docker-compose.sh exec -T app clj-kondo --lint src --lint test --lint dev
 
 echo "cljfmt"
-time docker-compose exec -T app lein cljfmt check
+time docker/docker-compose.sh exec -T app lein cljfmt check
 
 echo "eastwood"
-time docker-compose exec -T app lein eastwood
+time docker/docker-compose.sh exec -T app lein eastwood
 
 echo "tests"
-time docker-compose exec -T app lein test :all
+time docker/docker-compose.sh exec -T app lein test :all
 
-docker-compose down -t0
+docker/docker-compose.sh down -t0

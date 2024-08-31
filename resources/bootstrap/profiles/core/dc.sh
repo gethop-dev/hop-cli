@@ -7,4 +7,4 @@ set -eu -o pipefail
 # See https://docs.docker.com/compose/reference/envvars/#compose_file
 export COMPOSE_FILE="{{project.docker-compose.to-develop}}"
 
-docker-compose "$@"
+docker/docker-compose.sh "$@"

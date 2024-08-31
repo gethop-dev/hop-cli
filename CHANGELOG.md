@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file. This change
 - [core profile] Add thread-transactions utility function
 - [ci] Upgrade bob container image version (linting tools)
 - [settings editor] Upgrade default Postgresql version to 16
+- Add support for both `docker-compose` (v1) and `docker compose` (v2)
 
 ## [0.1.12] - 2024-04-30
 - [aws profile] Correctly handle environment variables with '$'
