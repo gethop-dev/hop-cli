@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file. This change
 - [ci] Upgrade bob container image version (linting tools)
 - [settings editor] Upgrade default Postgresql version to 16
 - Add support for both `docker-compose` (v1) and `docker compose` (v2)
+- [core profile] Upgraded JDK to Java 21 (latest LTS at the moment).
+- [core profile] Upgraded leiningen and clj-kondo versions (to 2.11.2 and 2024.08.29 respectively)
 
 ## [0.1.12] - 2024-04-30
 - [aws profile] Correctly handle environment variables with '$'
