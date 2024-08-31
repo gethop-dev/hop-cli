@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file. This change
 - [object-storage profile] Upgrade object-storage.s3 dependency version
 - [core profile] Explicitly set http-kit version instead of using transitive dependencies
 - [core profile] Add thread-transactions utility function
+- [ci] Upgrade bob container image version (linting tools)
 
 ## [0.1.12] - 2024-04-30
 - [aws profile] Correctly handle environment variables with '$'
