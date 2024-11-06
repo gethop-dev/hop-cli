@@ -29,7 +29,7 @@
 
 (defmethod registry/pre-render-hook :observability-cloudwatch-logging
   [_ settings]
-  {:dependencies '[[dev.gethop/timbre.appenders.cloudwatch "0.1.0"]]
+  {:dependencies '[[dev.gethop/timbre.appenders.cloudwatch "0.1.2"]]
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
