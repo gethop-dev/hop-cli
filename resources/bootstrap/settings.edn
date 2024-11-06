@@ -2535,7 +2535,7 @@
                                                              :tag "Version"
                                                              :type :string
                                                              :pattern "[^\\s]+"
-                                                             :value "12"}
+                                                             :value "16"}
                                                             {:name :port
                                                              :tag "Port"
                                                              :type :string
@@ -2629,7 +2629,7 @@
                                                              :tag "Version"
                                                              :type :string
                                                              :pattern "[^\\s]+"
-                                                             :value "12"}
+                                                             :value "16"}
                                                             {:name :port
                                                              :tag "Port"
                                                              :type :string
