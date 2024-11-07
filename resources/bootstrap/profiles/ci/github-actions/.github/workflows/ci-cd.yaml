@@ -25,6 +25,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install Babashka
+        uses: DeLaGuardo/setup-clojure@12.5
+        with:
+          bb: 1.12.194
+
+      - name: Check Babashka
+        run: bb --version
+
       - name: Bob checks
         run: |
           docker run --rm \
