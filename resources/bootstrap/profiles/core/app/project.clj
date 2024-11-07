@@ -4,7 +4,7 @@
   :min-lein-version "2.11.2"
   :dependencies [[org.clojure/clojure "1.12.0"]
                  [duct/core "0.8.1"]
-                 [ring/ring "1.13.0"]
+                 [ring/ring "1.10.0"]
                  [duct/server.http.http-kit "0.1.4"
                   :exclusions [[http-kit]]]
                  [http-kit/http-kit "2.8.0"]
