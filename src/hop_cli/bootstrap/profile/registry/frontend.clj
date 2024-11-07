@@ -43,7 +43,14 @@
                    [reagent/reagent "1.2.0"]
                    [com.taoensso/tempura "1.5.4"]
                    [dev.gethop/duct.module.cljs-compiler "0.1.0"]
-                   [duct/compiler.sass "0.3.0"]]
+                   [duct/compiler.sass "0.3.0"]
+                   ;; NOTE: The `js-joda` and `js-joda-timezones` dependencies
+                   ;; are required to load time zone related data from the library.
+                   ;; We need that data when dealing with time zones related operations.
+                   ;; Without this `cljc.java-time` functions don't work as expected
+                   ;; when dealing with time zones.
+                   [io.github.cljsjs/js-joda "5.6.3-0"]
+                   [io.github.cljsjs/js-joda-timezone "2.21.1-0"]]
    :dev-dependencies '[[day8.re-frame/re-frame-10x "1.9.10"]]
    :dev-requires '[[duct.repl.figwheel :refer [cljs-repl]]]
    :config-edn {:routes (routes settings)
