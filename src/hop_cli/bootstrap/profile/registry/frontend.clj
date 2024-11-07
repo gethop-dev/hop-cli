@@ -43,8 +43,7 @@
                    [reagent/reagent "1.2.0"]
                    [com.taoensso/tempura "1.5.4"]
                    [dev.gethop/duct.module.cljs-compiler "0.1.0"]
-                   [duct/compiler.sass "0.3.0"]
-                   [com.widdindustries/cljc.java-time "0.1.21"]]
+                   [duct/compiler.sass "0.3.0"]]
    :dev-dependencies '[[day8.re-frame/re-frame-10x "1.9.10"]]
    :dev-requires '[[duct.repl.figwheel :refer [cljs-repl]]]
    :config-edn {:routes (routes settings)
