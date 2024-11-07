@@ -1,7 +1,7 @@
 (defproject {{project.name}} "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
-  :min-lein-version "2.12.2"
+  :min-lein-version "2.11.2"
   :dependencies [[org.clojure/clojure "1.11.4"]
                  [duct/core "0.8.1"]
                  [ring/ring "1.13.0"]
