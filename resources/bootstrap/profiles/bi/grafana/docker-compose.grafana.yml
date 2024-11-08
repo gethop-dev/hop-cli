@@ -4,7 +4,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: ${MEMORY_LIMIT_GRAFANA}
+          memory: ${MEMORY_LIMIT_GRAFANA:-1024m}
     environment:
       GF_SERVER_DOMAIN:
       GF_SERVER_HTTP_PORT:

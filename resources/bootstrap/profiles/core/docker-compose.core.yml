@@ -3,14 +3,14 @@ services:
     deploy:
       resources:
         limits:
-          memory: ${MEMORY_LIMIT_APP}
+          memory: ${MEMORY_LIMIT_APP:-4096m}
 {{#project.extra-app-docker-compose-environment-variables}}{{&.}}{{/project.extra-app-docker-compose-environment-variables}}
   proxy:
     image: nginx:1.21.3-alpine
     deploy:
       resources:
         limits:
-          memory: ${MEMORY_LIMIT_PROXY}
+          memory: ${MEMORY_LIMIT_PROXY:-128m}
     depends_on:
       app:
         condition: service_started

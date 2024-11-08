@@ -1,6 +1,10 @@
 services:
   postgres:
     image: postgres:{{project.profiles.persistence-sql.database.version}}
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT_POSTGRES:-512m}
     environment:
       POSTGRES_PORT: ${DB_PORT}
       POSTGRES_DB: ${DB_NAME}
