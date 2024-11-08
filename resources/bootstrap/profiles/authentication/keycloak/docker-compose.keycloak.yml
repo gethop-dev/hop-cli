@@ -22,8 +22,10 @@ services:
       - "./keycloak/themes/:/opt/keycloak/themes/:ro"{{#project.profiles.auth-keycloak.deployment.to-deploy.container.depends-on-postgres?}}
     depends_on:
       postgres:
-        condition: service_healthy{{/project.profiles.auth-keycloak.deployment.to-deploy.container.depends-on-postgres?}}
+        condition: service_healthy
+    restart: unless-stopped{{/project.profiles.auth-keycloak.deployment.to-deploy.container.depends-on-postgres?}}
   proxy:
     depends_on:
       keycloak:
         condition: service_started
+    restart: unless-stopped
