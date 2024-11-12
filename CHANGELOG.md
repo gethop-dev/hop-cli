@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+
+## [0.1.13] - 2024-11-12
 - [frontend profile] Add browser history replace-state re-frame events
 - [object-storage profile] Upgrade object-storage.s3 dependency version
 - [core profile] Explicitly set http-kit version instead of using transitive dependencies
