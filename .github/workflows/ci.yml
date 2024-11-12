@@ -56,7 +56,7 @@ jobs:
           ./bb uberjar hop-cli.jar --main hop-cli.main
 
       - name: Release Uberjar
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: contains(github.ref, 'refs/tags/')
         with:
           files: hop-cli.jar
