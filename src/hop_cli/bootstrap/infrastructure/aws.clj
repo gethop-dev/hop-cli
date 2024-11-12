@@ -263,7 +263,7 @@
                     :stack-name stack-name
                     :s3-bucket-name bucket-name
                     :region region)
-        _log (println (format "Provisioning cloudformation %s stack. This will take a while. Please, be patient..." stack-name))
+        _log (println (format "Provisioning Cloudformation stack '%s'. This will take a while. Please, be patient..." stack-name))
         result (aws.cloudformation/create-stack opts)]
     (if (:success? result)
       (let [wait-result (wait-for-stack-completion opts)]
@@ -293,7 +293,7 @@
       (let [outputs (get-in result [:stack :outputs])
             new-settings (select-and-rename-keys outputs output-parameter-mapping)
             updated-settings (meta-merge settings new-settings)]
-        (println "Skipping account stack creation because it already exists")
+        (println (format "Skipping Cloudformation stack '%s' creation because it already exists." stack-name))
         {:success? true
          :settings updated-settings})
       (provision-cfn-stack settings template-opts))))
