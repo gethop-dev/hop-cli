@@ -51,22 +51,22 @@
                                 (neg-int? (compare settings-version "1.0"))))]]
     :patch-fn cloud-provider->deployment-target}])
 
-(defn- build-appliable-patches-fn
+(defn- build-applicable-patches-fn
   [settings]
   (let [cli-version (util/get-version)
         settings-version (:version settings)
-        appliable-patches-fns (reduce (fn [patch-fns {:keys [patch-schema patch-fn]}]
-                                        (if (m/validate patch-schema {:cli-version cli-version
-                                                                      :settings-version settings-version})
-                                          (conj patch-fns patch-fn)
-                                          patch-fns))
-                                      []
-                                      patches)]
-    (when (seq appliable-patches-fns)
+        applicable-patches-fns (reduce (fn [patch-fns {:keys [patch-schema patch-fn]}]
+                                         (if (m/validate patch-schema {:cli-version cli-version
+                                                                       :settings-version settings-version})
+                                           (conj patch-fns patch-fn)
+                                           patch-fns))
+                                       []
+                                       patches)]
+    (when (seq applicable-patches-fns)
       ;; Beware that the order of execution is reversed with
       ;; `comp`. So it won't follow the same order as in `patches`
       ;; data structure.
-      (apply comp appliable-patches-fns))))
+      (apply comp applicable-patches-fns))))
 
 (defn- version-str>version-vector
   [version-str]
@@ -101,9 +101,9 @@
 
 (defn apply-patches
   [settings]
-  (let [appliable-patches-fn (build-appliable-patches-fn settings)]
-    (-> (if (fn? appliable-patches-fn)
-          (walk/prewalk appliable-patches-fn settings)
+  (let [applicable-patches-fn (build-applicable-patches-fn settings)]
+    (-> (if (fn? applicable-patches-fn)
+          (walk/prewalk applicable-patches-fn settings)
           settings)
         ;; Special patch that adds a root node to settings if it does
         ;; not have it.
