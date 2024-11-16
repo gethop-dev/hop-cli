@@ -267,6 +267,10 @@
         project-files-name (str/replace project-name #"\-" "_")]
     (bp.util/assoc-in-settings-value settings :project/files-name project-files-name)))
 
+(defn- inject-hop-cli-version
+  [settings]
+  (bp.util/assoc-in-settings-value settings :hop/cli-version (util/get-version)))
+
 (defn- build-refs
   [{:keys [type value] :as node}]
   (if (= :ref type)
@@ -290,6 +294,7 @@
                           :value
                           (walk/prewalk (comp build-refs inject-auto-generated-passwords))
                           (settings->settings-nested-map)
-                          (inject-project-files-name))}
+                          (inject-project-files-name)
+                          (inject-hop-cli-version))}
           {:success? false
            :error-details (me/humanize (m/explain settings-schema settings))})))))
