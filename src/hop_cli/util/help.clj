@@ -3,7 +3,8 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.util.help
-  (:require [clojure.pprint :as pprint]
+  (:require [babashka.cli :as cli]
+            [clojure.pprint :as pprint]
             [clojure.string :as str]
             [hop-cli.util :as util]))
 
@@ -22,6 +23,21 @@
       (clojure.string/split #" ")
       (->> (pprint/cl-format nil (str "~{~<~%~1," wrap-size ":;~A~> ~}")))
       (str/split #"\n")))
+
+(defn with-help-spec
+  [specs]
+  (conj specs
+        [:help {:desc "Show this help."
+                ;; Hack to handle `--help` in the error fn.
+                :validate (constantly false)}]))
+
+(defn print-cmd-help
+  [cmd-path cmd]
+  (println (format "Version: %s" (util/get-version)))
+  (println (pprint/cl-format nil "Usage:~{ ~A~} <options>" cmd-path))
+  (println)
+  (println "Options")
+  (println (cli/format-opts cmd)))
 
 (defn print-help
   ([cmds]
