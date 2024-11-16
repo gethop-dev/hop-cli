@@ -32,8 +32,8 @@
 (defn- get-deploy-files
   [settings]
   (cond-> ["proxy"]
-          (= :on-premises (bp.util/get-settings-value settings :deployment-target/value))
-          (conj "docker")))
+    (= :on-premises (bp.util/get-settings-value settings :deployment-target/value))
+    (conj "docker")))
 
 (defmethod registry/pre-render-hook :core
   [_ settings]
