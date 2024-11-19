@@ -8,7 +8,7 @@
    :type :plain-group
    :value [{:name :name
             :tag "Name"
-            :docstring [:span "Single word or composite name separated by dashes or underscores."]
+            :docstring [:span "Single word or composite name separated by hyphenes or underscores."]
             :type :string
             :value "hop"
             :pattern "[a-zA-Z_-]+"}
@@ -2458,7 +2458,7 @@
                                 :tag "Development environment"
                                 :type :plain-group
                                 :value [{:name :stack-name
-                                         :tag "Stack name"
+                                         :tag "Cloudformation stack name"
                                          :type :string
                                          :pattern "[^\\s]+"
                                          :value "hop-project-dev"}
@@ -2493,7 +2493,7 @@
                                 :tag "Testing environment"
                                 :type :plain-group
                                 :value [{:name :stack-name
-                                         :tag "Stack name"
+                                         :tag "Cloudformation stack name"
                                          :type :string
                                          :pattern "[^\\s]+"
                                          :value "hop-project-test"}
@@ -2587,7 +2587,7 @@
                                 :tag "Production environment"
                                 :type :plain-group
                                 :value [{:name :stack-name
-                                         :tag "Stack name"
+                                         :tag "Cloudformation Stack name"
                                          :type :string
                                          :pattern "[^\\s]+"
                                          :value "hop-project-prod"}
