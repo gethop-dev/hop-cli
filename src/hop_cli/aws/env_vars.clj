@@ -4,7 +4,6 @@
 
 (ns hop-cli.aws.env-vars
   (:require [babashka.fs :as fs]
-            [clojure.pprint :as pprint]
             [clojure.string :as str]
             [hop-cli.aws.api.eb :as api.eb]
             [hop-cli.aws.api.ssm :as api.ssm]

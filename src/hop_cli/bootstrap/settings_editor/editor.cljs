@@ -248,7 +248,7 @@
                   " profile"))]
     (if origin
       (str "Obtained from " origin)
-      (str "Obtained automatically"))))
+      "Obtained automatically")))
 
 (defmethod form-component :ref
   [node opts]

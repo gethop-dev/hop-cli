@@ -350,7 +350,6 @@
               :reason :could-not-get-eb-docker-platform-arn
               :error-details result})))}
       {:txn-fn
-       #_{:clj-kondo/ignore [:unresolved-symbol]}
        (fn upload-cloudformation-templates
          [{:keys [settings]}]
          (if-let [jar-file-path (util.file/get-jar-file-path)]
