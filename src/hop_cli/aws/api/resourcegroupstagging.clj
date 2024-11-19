@@ -23,8 +23,8 @@
         args {:op :GetResources
               :request request}
         result (aws/invoke client args)]
-    (if (:ResourceTagMappingList result)
-      {:success? true
-       :resources (map api-resource->resource (:ResourceTagMappingList result))}
+    (if (:cognitect.anomalies/category result)
       {:success? false
-       :error-details result})))
+       :error-details result}
+      {:success? true
+       :resources (map api-resource->resource (:ResourceTagMappingList result))})))

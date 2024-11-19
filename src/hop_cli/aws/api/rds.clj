@@ -13,11 +13,11 @@
         args {:op :DescribeDBInstances
               :request request}
         result (aws/invoke client args)]
-    (if (= 1 (count (:DBInstances result)))
-      {:success? true
-       :instance (-> result :DBInstances first)}
+    (if (:cognitect.anomalies/category result)
       {:success? false
-       :error-details result})))
+       :error-details result}
+      {:success? true
+       :instance (-> result :DBInstances first)})))
 
 (defn get-instance-connection-details
   [opts]

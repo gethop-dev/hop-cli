@@ -13,9 +13,9 @@
         args {:op :CreateAccessKey
               :request request}
         result (aws/invoke iam-client args)]
-    (if-let [access-key (:AccessKey result)]
-      {:success? true
-       :access-key {:access-key-id (:AccessKeyId access-key)
-                    :secret-access-key (:SecretAccessKey access-key)}}
+    (if (:cognitect.anomalies/category result)
       {:success? false
-       :reason result})))
+       :reason result}
+      {:success? true
+       :access-key {:access-key-id (-> result :AccessKey :AccessKeyId)
+                    :secret-access-key (-> result :AccessKey :SecretAccessKey)}})))

@@ -16,10 +16,11 @@
         args {:op :UpdateEnvironment
               :request request}
         result (aws/invoke eb-client args)]
-    (if (:category result)
+    (if (:cognitect.anomalies/category result)
       {:success? false
        :error-details result}
-      result)))
+      {:success? true
+       :result result})))
 
 (defn get-latest-eb-docker-platform-arn
   [opts]
@@ -30,7 +31,9 @@
         args {:op :ListPlatformVersions
               :request request}
         result (aws/invoke eb-client args)]
-    (if (:PlatformSummaryList result)
+    (if (:cognitect.anomalies/category result)
+      {:success? false
+       :error-details result}
       (if-let [platform-arn (->> (:PlatformSummaryList result)
                                  (sort-by :PlatformVersion (complement comp))
                                  (first)
@@ -39,6 +42,4 @@
          :platform-arn platform-arn}
         {:success? false
          :reason :docker-platform-arn-not-found
-         :error-details result})
-      {:success? false
-       :error-details result})))
+         :error-details result}))))

@@ -14,8 +14,8 @@
         args {:op :ImportCertificate
               :request request}
         result (aws/invoke acm-client args)]
-    (if-let [certificate-arn (:CertificateArn result)]
-      {:success? true
-       :certificate-arn certificate-arn}
+    (if (:cognitect.anomalies/category result)
       {:success? false
-       :error-details result})))
+       :error-details result}
+      {:success? true
+       :certificate-arn (:CertificateArn result)})))

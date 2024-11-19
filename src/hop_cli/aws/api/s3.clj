@@ -13,10 +13,10 @@
         args {:op :HeadBucket
               :request request}
         result (aws/invoke s3-client args)]
-    (if (= {} result)
-      {:success? true}
+    (if (:cognitect.anomalies/category result)
       {:success? false
-       :error-details result})))
+       :error-details result}
+      {:success? true})))
 
 (defn create-bucket
   [{:keys [bucket-name region] :as opts}]
@@ -26,7 +26,7 @@
         args {:op :CreateBucket
               :request request}
         result (aws/invoke s3-client args)]
-    (if (:Error result)
+    (if (:cognitect.anomalies/category result)
       {:success? false
        :error-details result}
       {:success? true})))
@@ -38,7 +38,7 @@
         args {:op :DeleteBucket
               :request request}
         result (aws/invoke s3-client args)]
-    (if (:Error result)
+    (if (:cognitect.anomalies/category result)
       {:success? false
        :error-details result}
       {:success? true})))
@@ -52,7 +52,7 @@
         args {:op :PutObject
               :request request}
         result (aws/invoke s3-client args)]
-    (if (:category result)
+    (if (:cognitect.anomalies/category result)
       {:success? false
        :error-details {:result result}}
       {:success? true})))

@@ -25,11 +25,11 @@
         args {:op :AdminCreateUser
               :request request}
         result (aws/invoke idp-client args)]
-    (if-let [user (:User result)]
-      {:success? true
-       :user user}
+    (if (:cognitect.anomalies/category result)
       {:success? false
-       :error-details result})))
+       :error-details result}
+      {:success? true
+       :user (:User result)})))
 
 (defn admin-set-user-password
   [{:keys [user-pool-id username password temporary?] :as opts}]
@@ -41,10 +41,10 @@
         args {:op :AdminSetUserPassword
               :request request}
         result (aws/invoke idp-client args)]
-    (if (empty? result)
-      {:success? true}
+    (if (:cognitect.anomalies/category result)
       {:success? false
-       :error-details result})))
+       :error-details result}
+      {:success? true})))
 
 (defn get-tokens
   [{:keys [user-pool-id client-id username password] :as opts}]
@@ -57,10 +57,13 @@
         args {:op :AdminInitiateAuth
               :request request}
         result (aws/invoke idp-client args)]
-    (if (:AuthenticationResult result)
-      {:success? true
-       :tokens {:id-token (get-in result [:AuthenticationResult :IdToken])
-                :access-token (get-in result [:AuthenticationResult :AccessToken])
-                :refresh-token (get-in result [:AuthenticationResult :RefreshToken])}}
+    (if (:cognitect.anomalies/category result)
       {:success? false
-       :error-details result})))
+       :error-details result}
+      (if (:ChallengeName result)
+        {:success? false
+         :error-details result}
+        {:success? true
+         :tokens {:id-token (get-in result [:AuthenticationResult :IdToken])
+                  :access-token (get-in result [:AuthenticationResult :AccessToken])
+                  :refresh-token (get-in result [:AuthenticationResult :RefreshToken])}}))))

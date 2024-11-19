@@ -47,10 +47,10 @@
         args {:op :PutParameter
               :request request}
         result (aws/invoke ssm-client args)]
-    (if (:Version result)
-      {:success? true}
+    (if (:cognitect.anomalies/category result)
       {:success? false
-       :error-details result})))
+       :error-details result}
+      {:success? true})))
 
 (defn put-parameters*
   [config opts parameters]
@@ -87,15 +87,20 @@
           args {:op :GetParametersByPath
                 :request request}
           result (aws/invoke ssm-client args)]
-      (if-let [new-params (:Parameters result)]
-        (let [all-params (concat params (map api-param->param new-params))]
+      (if (:cognitect.anomalies/category result)
+        (if-not (= "ThrottlingException" (:__type result))
+          {:success? false
+           :error-details {:result result
+                           :succesfully-got-params (count params)}}
+          (do
+            (println "SSM Rate limit exceeded. Retrying in 3s...")
+            (Thread/sleep 3000)
+            (recur params next-token)))
+        (let [all-params (concat params (map api-param->param (:Parameters result)))]
           (if-let [next-token (:NextToken result)]
             (recur all-params next-token)
             {:success? true
-             :params all-params}))
-        {:success? false
-         :error-details {:result result
-                         :succesfully-got-params (count params)}}))))
+             :params all-params}))))))
 
 (defn delete-parameters
   [config parameters]
@@ -113,9 +118,11 @@
               args {:op :DeleteParameters
                     :request request}
               result (aws/invoke ssm-client args)]
-          (if (:category result)
+          (if (:cognitect.anomalies/category result)
             {:success? false
              :error-details {:result result
                              :deleted-params deleted-params
                              :invalid-params invalid-params}}
-            (recur (nthnext params 10) (:DeletedParameters result) (:InvalidParameters result))))))))
+            (recur (nthnext params 10)
+                   (into deleted-params (:DeletedParameters result))
+                   (into invalid-params (:InvalidParameters result)))))))))

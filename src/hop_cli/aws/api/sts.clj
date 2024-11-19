@@ -12,7 +12,7 @@
         request {:op :GetCallerIdentity
                  :request {}}
         result (aws/invoke sts-client request)]
-    (if (:category result)
+    (if (:cognitect.anomalies/category result)
       {:success? false
        :error-details {:result result}}
       {:success? true

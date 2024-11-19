@@ -28,8 +28,8 @@
         args {:op :DescribeInstances
               :request request}
         result (aws/invoke client args)]
-    (if (:Reservations result)
-      {:success? true
-       :instances (api-reservations->instances (:Reservations result))}
+    (if (:cognitect.anomalies/category result)
       {:success? false
-       :error-details result})))
+       :error-details result}
+      {:success? true
+       :instances (api-reservations->instances (:Reservations result))})))
