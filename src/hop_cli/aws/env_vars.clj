@@ -103,16 +103,23 @@
    ;; Comment lines with optional initial whitespace
    (re-matches #"^\s*#.*$" line)))
 
+(defn- read-env-vars-file
+  [file]
+  (try
+    (->> file
+         (fs/file)
+         (fs/read-all-lines)
+         (remove non-env-var-line?))
+    (catch java.nio.file.NoSuchFileException _
+      nil)))
+
 (defn sync-env-vars
   [{:keys [file] :as config}]
-  (let [string-env-vars (->>
-                         (fs/file file)
-                         (fs/read-all-lines)
-                         (remove non-env-var-line?))]
+  (if-let [string-env-vars (read-env-vars-file file)]
     (if-not (m/validate string-env-vars-schema string-env-vars)
-      (do
-        (prn "File contains invalid environment variable format: ")
-        (pprint/pprint (m/explain string-env-vars-schema string-env-vars)))
+      {:success? false
+       :reason :file-contains-invalid-environment-variable-format
+       :error-details (m/explain string-env-vars-schema string-env-vars)}
       (let [result (api.ssm/get-parameters config)]
         (if-not (:success? result)
           {:success? false
@@ -122,7 +129,9 @@
                 file-env-vars (map string-env-var->env-var string-env-vars)
                 env-var-diff (get-env-var-diff ssm-env-vars file-env-vars)
                 result (sync-env-vars* config env-var-diff)]
-            (assoc result :sync-details env-var-diff)))))))
+            (assoc result :sync-details env-var-diff)))))
+    {:success? false
+     :error :file-not-found}))
 
 (defn download-env-vars
   [{:keys [file] :as config}]
