@@ -25,9 +25,9 @@
                                 :type :plain-group
                                 :value [{:name :app-repository-url
                                          :type :string
-                                        ;; NOTE: This is going to be
-                                        ;; whichever Docker Registry
-                                        ;; URL the user wants to use
+                                         ;; NOTE: This is going to be
+                                         ;; whichever Docker Registry
+                                         ;; URL the user wants to use
                                          :value "local/app"}]}
                                {:name :aws
                                 :tag "Amazon Web Services deployment target"
