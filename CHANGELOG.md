@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+- Upgrade external dependencies of multiple libraries
+- Added cljfmt linting for the HOP CLI source code.
+- Made AWS platform prebuild script always use the same HOP CLI as the one that was used to create the proejct. [issue #15]
+- Added `--help` support for all the HOP CLI commands and sub-commands
 
 ## [0.1.13] - 2024-11-12
 - [frontend profile] Add browser history replace-state re-frame events
@@ -10,7 +14,7 @@ All notable changes to this project will be documented in this file. This change
 - [core profile] Add thread-transactions utility function
 - [ci] Upgrade bob container image version (linting tools)
 - [settings editor] Upgrade default Postgresql version to 16
-- Add support for both `docker-compose` (v1) and `docker compose` (v2)
+- Add support for both `docker-compose` (v1) and `docker compose` (v2) [issue #]
 - [core profile] Upgraded JDK to Java 21 (latest LTS at the moment).
 - [core profile] Upgraded leiningen and clj-kondo versions (to 2.11.2 and 2024.08.29 respectively)
 - [aws profile] Fixed one cloudformation stack description.
