@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+
+## [0.1.14] - 2024-11-20
 - Upgrade external dependencies of multiple libraries
 - Added cljfmt linting for the HOP CLI source code.
 - Made AWS platform prebuild script always use the same HOP CLI as the one that was used to create the proejct. [issue #15]
