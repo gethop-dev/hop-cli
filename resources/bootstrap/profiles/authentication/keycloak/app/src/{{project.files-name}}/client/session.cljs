@@ -122,7 +122,6 @@
                                          :clientId client-id})]
      (-> keycloak-obj
          (.init #js {"onLoad" "check-sso"
-                     "promiseType" "native"
                      "pkceMethod" "S256"
                      "silentCheckSsoRedirectUri" (str js/window.location.origin "/silent-check.html")})
          (.then (fn [authenticated]
