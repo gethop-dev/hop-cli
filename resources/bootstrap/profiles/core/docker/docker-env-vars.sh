@@ -17,7 +17,7 @@ function get_missing_env_vars() {
     esac
 
     "${SCRIPT_DIR}/docker-compose.sh" "${DOCKER_COMPOSE_ARGS[@]}" |
-        docker run --rm -i mikefarah/yq '.services[].environment?
+        docker run --rm --interactive mikefarah/yq '.services[].environment?
             |=
             (
                 with(select(. == null);

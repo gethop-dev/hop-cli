@@ -24,7 +24,7 @@ CONTAINERS=$(docker ps --all --quiet --filter "status=exited" --filter "status=d
 if [[ -n "${CONTAINERS}" ]]; then
     echo "Removing exited/dead containers..."
     #shellcheck disable=SC2086
-    docker rm -v ${CONTAINERS}
+    docker rm --volumes ${CONTAINERS}
 fi
 VOLUMES=$(docker volume ls --quiet \
     --filter "label=com.docker.compose.project=${compose_project}")
