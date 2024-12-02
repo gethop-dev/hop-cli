@@ -29,7 +29,8 @@
 
 (defmethod registry/pre-render-hook :on-premises
   [_ settings]
-  {:files (concat [{:src "on-premises/on-premises-files"}]
+  {:files (concat [{:src "on-premises/on-premises-files"
+                    :dst "on-premises-files"}]
                   (build-docker-files-to-copy settings))
    :deploy-files ["on-premises-files"]
    :environment-variables {:test (build-env-variables settings :test)
