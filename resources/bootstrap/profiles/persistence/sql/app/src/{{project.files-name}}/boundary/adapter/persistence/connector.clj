@@ -5,4 +5,4 @@
 {{=<< >>=}}
 (ns <<project.name>>.boundary.adapter.persistence.connector)
 
-(defrecord Sql [db-spec])
+(defrecord Sql [db-spec logger])

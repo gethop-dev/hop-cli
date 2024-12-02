@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+- Various profiles: Backported a bunch of utility functions from various customer projects.
 
 ## [0.1.14] - 2024-11-20
 - Upgrade external dependencies of multiple libraries

@@ -7,6 +7,7 @@
   (:require [<<project.name>>.client.localization :as localization]
             [<<project.name>>.client.session.oidc-sso :as oidc-sso]
             [<<project.name>>.client.session.user :as user]
+            [<<project.name>>.shared.util :as util]
             [cljsjs.keycloak-js]
             [goog.object :as g]
             [re-frame.core :as rf]))
@@ -49,15 +50,20 @@
     (rf/dispatch [::oidc-sso/trigger-sso-apps])
     (rf/dispatch [::schedule-token-refresh token-exp])))
 
+(defn get-session
+  []
+  (let [keycloak-state @keycloak]
+    (when-let [jwt-token (g/getValueByKeys keycloak-state "idToken")]
+      (let [token-exp (g/getValueByKeys keycloak-state "idTokenParsed" "exp")
+            user-type (g/getValueByKeys keycloak-state "idTokenParsed" "user_type")]
+        {:jwt-token jwt-token
+         :token-exp token-exp
+         :user-id (util/uuid (g/getValueByKeys keycloak-state "subject"))
+         :user-type (keyword user-type)}))))
+
 (defn- session-cofx
   [cofx _]
-  (let [keycloak-state @keycloak
-        session (when-let [jwt-token (g/getValueByKeys keycloak-state "idToken")]
-                  (let [token-exp (g/getValueByKeys keycloak-state "idTokenParsed" "exp")
-                        user-type (g/getValueByKeys keycloak-state "idTokenParsed" "user_type")]
-                    {:jwt-token jwt-token
-                     :token-exp token-exp
-                     :user-type (keyword user-type)}))]
+  (let [session (get-session)]
     (assoc cofx :session session)))
 
 (rf/reg-cofx :session session-cofx)
@@ -178,3 +184,14 @@
  ::user-manage-account
  (fn [_ _]
    {::manage-account []}))
+
+(rf/reg-fx
+ ::change-password
+ (fn [_]
+   (when @keycloak
+     (.login @keycloak (clj->js {:action "UPDATE_PASSWORD"})))))
+
+(rf/reg-event-fx
+ ::user-change-password
+ (fn [_ _]
+   {::change-password []}))

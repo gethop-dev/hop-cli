@@ -5,7 +5,13 @@
 {{=<< >>=}}
 (ns <<project.name>>.boundary.adapter.persistence.sql
   (:require [integrant.core :as ig]
-            [<<project.name>>.boundary.adapter.persistence.connector :as connector]))
+            [<<project.name>>.boundary.adapter.persistence.connector :as connector]
+            [<<project.name>>.boundary.adapter.persistence.sql.jdbc-util :as sql.jdbc-util]))
 
-(defmethod ig/init-key :<<project.name>>.boundary.adapter.persistence/sql [_ {:keys [spec]}]
-  (connector/->Sql spec))
+(defn init-sql-adapter
+  [{:keys [db-spec logger]}]
+  (connector/->Sql (sql.jdbc-util/with-jdbc-utils db-spec logger) logger))
+
+(defmethod ig/init-key :<<project.name>>.boundary.adapter.persistence/sql
+  [_ {:keys [duct-adapter logger]}]
+  (init-sql-adapter {:db-spec (:spec duct-adapter) :logger logger}))

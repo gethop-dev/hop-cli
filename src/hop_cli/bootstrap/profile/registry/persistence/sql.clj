@@ -175,6 +175,8 @@
     {:dependencies '[[duct/migrator.ragtime "0.3.2"]
                      [dev.gethop/database.sql.hikaricp "0.4.1"]
                      [com.github.seancorfield/next.jdbc "1.3.955"]
+                     [camel-snake-kebab/camel-snake-kebab "0.4.3"]
+                     [dev.weavejester/medley "1.8.1"]
                      [org.postgresql/postgresql "42.7.4"]]
      :config-edn {:base (merge (sql-config settings)
                                (hikaricp-config settings)

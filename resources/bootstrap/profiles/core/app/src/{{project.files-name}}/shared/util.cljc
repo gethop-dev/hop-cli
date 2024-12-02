@@ -4,7 +4,9 @@
 
 {{=<< >>=}}
 (ns <<project.name>>.shared.util
-  (:refer-clojure :exclude [uuid]))
+  (:refer-clojure :exclude [uuid])
+  (:require [clojure.string :as str]
+            [<<project.name>>.shared.util.string :as util.string]))
 
 (defn uuid
   "If no argument is passed, creates a random UUID. If the passed
@@ -39,3 +41,54 @@
   (if-not (nil? (get m k))
     (apply update m k update-fn args)
     m))
+
+(defn paginate-coll
+  [{:keys [page page-size] :as _pagination} coll]
+  (subvec
+   (vec coll)
+   (* page page-size)
+   (min
+    (count coll)
+    (+ (* page page-size) page-size))))
+
+(defn normalize-str-for-search
+  [s]
+  (-> (str s)
+      (util.string/->nfc-normalized-unicode)
+      (str/trim)
+      (str/lower-case)))
+
+(defn- search-match?
+  [search-string search-keys m]
+  (if (empty? search-string)
+    true
+    (some
+     (fn [[_ v]]
+       (str/includes? (normalize-str-for-search v) search-string))
+     (select-keys m search-keys))))
+
+(defn filter-search-coll
+  [search-string search-keys coll]
+  (let [search-string (normalize-str-for-search search-string)]
+    (filter (partial search-match? search-string search-keys) coll)))
+
+(defn remove-at-index
+  "Remove element in coll by index."
+  [coll idx]
+  (vec (concat (subvec coll 0 idx)
+               (subvec coll (inc idx)))))
+
+(defn add-at-index
+  "Add element in coll by index."
+  [coll idx element]
+  (concat (subvec coll 0 idx)
+          [element]
+          (subvec coll idx)))
+
+(defn move-at-index
+  "Move element in coll by index"
+  [coll from-idx to-idx]
+  (let [element-idx (nth coll from-idx)]
+    (if (= from-idx to-idx)
+      coll
+      (into [] (add-at-index (remove-at-index coll from-idx) to-idx element-idx)))))
