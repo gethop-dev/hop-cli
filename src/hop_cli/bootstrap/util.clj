@@ -70,6 +70,26 @@
    (let [target-dir (get-settings-value settings :project/target-dir)]
      (str (fs/normalize target-dir) fs/file-separator subpath))))
 
+(defn env-var->string-env-var
+  [[k v]]
+  (let [quoted-val (-> v
+                       (str/replace "\\" "\\\\")
+                       (str/replace "'" "\\'"))]
+    (format "%s='%s'" (name k) quoted-val)))
+
+(def ^:const ^:private vars-file-preamble
+  ["# WARNING! Make sure all the variable values defined in this file"
+   "# are quoted using single quotes. And escape any single quote characters"
+   "# that may be present in the variable values, by prefixing them with"
+   "# with a backslash character. Which means that you should also quote"
+   "# any backslash character present in the values, by doubling them."
+   ""])
+
+(defn write-variables-to-file!
+  [env-vars-file vars-lines]
+  (fs/write-lines env-vars-file vars-file-preamble)
+  (fs/write-lines env-vars-file (sort vars-lines) {:append true}))
+
 (defn write-environment-variables-to-file!
   ([settings environment]
    (write-environment-variables-to-file! settings
@@ -78,11 +98,10 @@
   ([settings environment file-name]
    (let [env-variables (get-settings-value settings
                                            [:project :environment-variables])
-         target-file (build-target-project-path settings file-name)]
-     (->> (get env-variables environment)
-          (map #(format "%s=%s" (name (first %)) (second %)))
-          sort
-          (fs/write-lines target-file)))))
+         target-file (build-target-project-path settings file-name)
+         env-vars-lines (->> (get env-variables environment)
+                             (mapv env-var->string-env-var))]
+     (write-variables-to-file! target-file env-vars-lines))))
 
 (defn write-environments-env-vars-to-file!
   [settings]

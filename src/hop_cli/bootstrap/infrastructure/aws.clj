@@ -6,7 +6,6 @@
   (:require [babashka.fs :as fs]
             [clojure.java.io :as io]
             [clojure.set :as set]
-            [clojure.walk :as walk]
             [hop-cli.aws.api.eb :as aws.eb]
             [hop-cli.aws.api.ssm :as api.ssm]
             [hop-cli.aws.api.sts :as api.sts]
@@ -446,11 +445,15 @@
                 (bp.util/get-settings-value settings :deployment-target.aws.account/region)}
         ssm-env-vars (->> (bp.util/get-settings-value settings :project/environment-variables)
                           environment
-                          walk/stringify-keys
-                          (map zipmap (repeat [:name :value]))
-                          (map #(update % :value str))
-                          (filter (comp seq :value)))
-        result (api.ssm/put-parameters config {:new? true} ssm-env-vars)]
+                          ;; Remove vars with empty values. This produces a seq of
+                          ;; MapEntry (tuples).
+                          (filter (fn [[k v]] (when v [k v])))
+                          ;; Make sure all values are strings (AWS SSM Parameter Store
+                          ;; needs this).
+                          (map (fn [[k v]] [k (str v)]))
+                          ;; Turn the seq of MapEntry back into a map.
+                          (into {}))
+        result (api.ssm/put-env-vars-as-parameters config {:new? true} ssm-env-vars)]
     (if (:success? result)
       result
       {:success? false
