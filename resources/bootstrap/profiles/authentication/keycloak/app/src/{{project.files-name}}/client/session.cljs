@@ -169,7 +169,7 @@
 
 (rf/reg-event-fx
  ::user-logout
- (fn [{:keys [db]} [_]]
+ (fn [_ _]
    {::logout []
     :dispatch [::oidc-sso/trigger-logout-apps]}))
 
