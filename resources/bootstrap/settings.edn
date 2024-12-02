@@ -1195,7 +1195,7 @@
                                 :tag "Grafana version"
                                 :type :string
                                 :pattern "[^\\s]+"
-                                :value "9.2.6"}
+                                :value "11.3.1"}
                                {:name :deployment
                                 :tag "Deployment"
                                 :docstring [:span "The settings of the profile are splitted between two sets of deployment groups: development and deployment."]
