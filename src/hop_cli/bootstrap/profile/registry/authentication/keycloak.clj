@@ -92,16 +92,17 @@
 
      ;; Keycloak service related environment variables
      :MEMORY_LIMIT_KEYCLOAK (str memory-limit "m")
-     :KC_ADMIN keycloak-admin-username
-     :KC_ADMIN_PASSWORD keycloak-admin-pwd
+     :KC_BOOTSTRAP_ADMIN_USERNAME keycloak-admin-username
+     :KC_BOOTSTRAP_ADMIN_PASSWORD keycloak-admin-pwd
      :KC_DB "postgres"
      :KC_DB_URL (format "jdbc:postgresql://%s:%s/%s" db-host db-port db-name)
      :KC_DB_SCHEMA db-schema
      :KC_DB_USERNAME db-username
      :KC_DB_PASSWORD db-pwd
-     :KC_PROXY "edge"
-     :KC_HOSTNAME_PATH "/auth"
-     :KC_HOSTNAME_ADMIN_URL external-keycloak-uri}))
+     :KC_PROXY_HEADERS "xforwarded"
+     :KC_HTTP_ENABLED "true"
+     :KC_HOSTNAME external-keycloak-uri
+     :KC_HOSTNAME_ADMIN external-keycloak-uri}))
 
 (defn- build-env-variables
   [settings environment]

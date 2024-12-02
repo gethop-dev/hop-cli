@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. This change
 - Various profiles: Backported a bunch of utility functions from various customer projects.
 - [core profile] Correctly handle environment variables with '$' (and other potentially problematic characters) in them [issue #24]
 - [settings editor] Upgraded default Grafana version.
+- [settings editor] Upgraded default Keycloak version.
 
 ## [0.1.14] - 2024-11-20
 - Upgrade external dependencies of multiple libraries
