@@ -72,7 +72,11 @@
       (update-in [:project :config-edn]
                  util/update-map-vals coll->formatted-string {:recursive? false})
       (update-in [:project :load-frontend-app]
-                 util/update-map-vals coll->formatted-string {:recursive? false})
+                 (fn [load-frontend-app]
+                   (into {}
+                         (map (fn [[k v]]
+                                [k (util/update-map-vals v coll->formatted-string {:recursive? false})]))
+                         load-frontend-app)))
       (update-in [:project :docker-compose]
                  util/update-map-vals #(str/join ":" %))
       (update-in [:project :deploy-files] coll->escaped-string)

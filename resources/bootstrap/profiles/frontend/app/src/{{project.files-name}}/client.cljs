@@ -12,18 +12,18 @@
             [day8.re-frame.http-fx]
             [re-frame.core :as rf]
             [reagent.dom :as rd]
-            <<#project.load-frontend-app.requires>><<&.>><</project.load-frontend-app.requires>>))
+            <<#project.load-frontend-app.client.requires>><<&.>><</project.load-frontend-app.client.requires>>))
 
-<<#project.load-frontend-app.code>>
+<<#project.load-frontend-app.client.code>>
 <<&.>>
-<</project.load-frontend-app.code>>
+<</project.load-frontend-app.client.code>>
 
 (rf/reg-event-fx
  ::on-config-loaded
  (fn [_ _]
-   {:fx [<<#project.load-frontend-app.events>>
+   {:fx [<<#project.load-frontend-app.client.events>>
          <<&.>>
-         <</project.load-frontend-app.events>>
+         <</project.load-frontend-app.client.events>>
          [:dispatch [::routes/init-routes]]]}))
 
 (rf/reg-event-fx

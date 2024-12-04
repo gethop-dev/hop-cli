@@ -47,7 +47,7 @@
   (let [project-name (bp.util/get-settings-value settings :project/name)]
     [(tagged-literal 'ig/ref (keyword (str project-name ".api/user")))]))
 
-(def ^:private load-frontend-app-code
+(def ^:private load-frontend-app-client-code
   "(rf/reg-event-fx
    ::init-cognito
    (fn [{:keys [db]} _]
@@ -78,9 +78,9 @@
                 :common-config (common-config)
                 :config (cognito-config)
                 :api-routes (api-routes settings)}
-   :load-frontend-app {:requires '[[dev.gethop.session.re-frame.cognito :as session]]
-                       :events ["[:dispatch [::init-cognito]]"]
-                       :code [load-frontend-app-code]}
+   :load-frontend-app {:client {:requires '[[dev.gethop.session.re-frame.cognito :as session]]
+                                :events ["[:dispatch [::init-cognito]]"]
+                                :code [load-frontend-app-client-code]}}
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
