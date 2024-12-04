@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. This change
 - [settings editor] Upgraded default Grafana version.
 - [settings editor] Upgraded default Keycloak version.
 - [on-premises profile] Fixed on-premises-files copying. They were being copied to the wrong directory.
+- [keycloak profile] Fix front-end routing when using Keycloak.
 
 ## [0.1.14] - 2024-11-20
 - Upgrade external dependencies of multiple libraries

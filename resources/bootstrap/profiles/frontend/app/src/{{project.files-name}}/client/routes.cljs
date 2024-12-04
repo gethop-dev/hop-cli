@@ -8,6 +8,7 @@
             [<<project.name>>.client.view.landing :as view.landing]
             [<<project.name>>.client.view.not-found :as view.not-found]
             [<<project.name>>.shared.util.malli-coercion :as util.malli-coercion]
+            <<#project.load-frontend-app.routes.requires>><<&.>><</project.load-frontend-app.routes.requires>>
             [re-frame.core :as rf]
             [reitit.frontend :as reitit.fr]
             [reitit.frontend.controllers :as reitit.frc]
@@ -20,10 +21,14 @@
          controllers (reitit.frc/apply-controllers (:controllers old-match) new-match)]
      (assoc db :current-route (assoc new-match :controllers controllers)))))
 
+<<#project.load-frontend-app.routes.navigated-event>>
+<<&.>>
+<</project.load-frontend-app.routes.navigated-event>><<^project.load-frontend-app.routes.navigated-event>>
 (rf/reg-event-fx
  ::navigated
  (fn [_ [_ new-match]]
    {:fx [[:dispatch [::apply-nav-route new-match]]]}))
+<</project.load-frontend-app.routes.navigated-event>>
 
 (def routes
   ["/"

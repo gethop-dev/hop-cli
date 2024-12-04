@@ -44,12 +44,45 @@
   (let [project-name (bp.util/get-settings-value settings :project/name)]
     [(tagged-literal 'ig/ref (keyword (str project-name ".api/user")))]))
 
-(def ^:private load-frontend-app-code
+(def ^:private load-frontend-app-client-code
   "(rf/reg-event-fx
-   ::init-keycloak
-   (fn [{:keys [db]} _]
-     {:init-and-try-to-authenticate
-      {:config {:oidc (get-in db [:config :keycloak])}}}))")
+    ::on-auth-failure
+    (fn [_ _]
+      {:fx [[:dispatch [::routes/init-routes]]]}))
+
+   (rf/reg-event-fx
+    ::on-auth-success
+    (fn [_ _]
+      {:fx [[:dispatch [::routes/init-routes]]]}))
+
+   (rf/reg-event-fx
+    ::init-keycloak
+    (fn [{:keys [db]} _]
+      {:init-and-try-to-authenticate
+       {:config {:oidc (get-in db [:config :keycloak])}
+        :on-auth-success-evt [::on-auth-success]
+        :on-auth-failure-evt [::on-auth-failure]}}))")
+
+(def ^:private navigated-event-code
+  "(rf/reg-event-fx
+    ::navigated
+    [(rf/inject-cofx :session)]
+    (fn [{{:keys [jwt-token]} :session} [_ new-match]]
+      (cond
+        (and (= :required (get-in new-match [:data :authentication])) jwt-token)
+        {:dispatch [::apply-nav-route new-match]}
+
+        (= :optional (get-in new-match [:data :authentication]))
+        {:dispatch [::apply-nav-route new-match]}
+
+        (and (= :not-allowed (get-in new-match [:data :authentication])) jwt-token)
+        {:fx [[:dispatch [::nav/push-state (:name view.forbidden/route-config)]]]}
+
+        (and (= :not-allowed (get-in new-match [:data :authentication])) (not jwt-token))
+        {:dispatch [::apply-nav-route new-match]}
+
+        :else
+        {:fx [[:dispatch [::session/user-login]]]})))")
 
 (defn- build-external-env-variables
   [settings env-path]
@@ -185,9 +218,11 @@
                 :common-config (common-config)
                 :config (keycloak-config)
                 :api-routes (api-routes settings)}
-   :load-frontend-app {:requires [[(symbol (str (bp.util/get-settings-value settings :project/name) ".client.session"))]]
-                       :events ["[:dispatch [::init-keycloak]]"]
-                       :code [load-frontend-app-code]}
+   :load-frontend-app {:client {:events ["[:dispatch [::init-keycloak]]"]
+                                :code [load-frontend-app-client-code]}
+                       :routes {:requires [[(symbol (str (bp.util/get-settings-value settings :project/name) ".client.session")) :as (symbol "session")]
+                                           [(symbol (str (bp.util/get-settings-value settings :project/name) ".client.view.forbidden")) :as (symbol "view.forbidden")]]
+                                :navigated-event [navigated-event-code]}}
    :environment-variables {:dev (build-env-variables settings :dev)
                            :test (build-env-variables settings :test)
                            :prod (build-env-variables settings :prod)}
