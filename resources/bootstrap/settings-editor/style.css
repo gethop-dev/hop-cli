@@ -268,6 +268,11 @@ html, body, #app {
   align-items: center;
 }
 
+.sidebar-element--non-collapsible {
+  width: 25px;
+  heigth: 25px;
+}
+
 .sidebar-element__collapse-btn {
   width: 25px;
   heigth: 25px;

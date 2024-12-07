@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file. This change
 - [on-premises profile] Fixed on-premises-files copying. They were being copied to the wrong directory.
 - [keycloak profile] Fix front-end routing when using Keycloak.
 - [settings editor] Upgraded default Postgresql version to 17 (now that AWS RDS supports it)
+- [settings editor] Added a visual marker to non-collapsible sections in the settings editor.
 
 ## [0.1.14] - 2024-11-20
 - Upgrade external dependencies of multiple libraries

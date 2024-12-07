@@ -22,12 +22,14 @@
          {:class [(:class opts)]
           :id (str "sidebar__" element-id)}
          [:div.sidebar-element__title-container
-          (when (seq children)
+          (if (seq children)
             [:img.sidebar-element__collapse-btn
              {:src "img/left-arrow.svg"
               :on-click #(swap! collapsed? not)
               :class (when @collapsed?
-                       "sidebar-element__collapse-btn--collapsed")}])
+                       "sidebar-element__collapse-btn--collapsed")}]
+            [:img.sidebar-element--non-collapsible
+             {:src "img/non-collapsible.svg"}])
           [:span.sidebar-element__title
            {:on-click #(rf/dispatch [::view/scroll-to-element  element-id])
             :class (when (get (:visible-ids opts) element-id)
