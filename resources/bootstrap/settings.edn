@@ -463,7 +463,7 @@
                                 :value [{:name :version
                                          :tag "Postgres version"
                                          :type :string
-                                         :value "16"
+                                         :value "17"
                                          :pattern "[^\\s]+"}]}
                                {:name :deployment
                                 :tag "Deployment"
@@ -2535,7 +2535,7 @@
                                                              :tag "Version"
                                                              :type :string
                                                              :pattern "[^\\s]+"
-                                                             :value "16"}
+                                                             :value "17"}
                                                             {:name :port
                                                              :tag "Port"
                                                              :type :string
@@ -2629,7 +2629,7 @@
                                                              :tag "Version"
                                                              :type :string
                                                              :pattern "[^\\s]+"
-                                                             :value "16"}
+                                                             :value "17"}
                                                             {:name :port
                                                              :tag "Port"
                                                              :type :string
