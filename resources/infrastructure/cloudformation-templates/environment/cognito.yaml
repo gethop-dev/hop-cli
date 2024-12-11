@@ -28,6 +28,10 @@ Parameters:
     Default: false
   ConsumerRoleName:
     Type: "String"
+
+Conditions:
+  IsDevEnv: !Equals ["dev", !Ref "Environment"]
+
 Resources:
   UserPool:
     Type: "AWS::Cognito::UserPool"
@@ -86,9 +90,18 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
-            - "cognito-idp:AdminCreateUser"
-            - "cognito-idp:AdminDeleteUser"
-            - "cognito-idp:AdminUpdateUserAttributes"
+              - "cognito-idp:AdminCreateUser"
+              - "cognito-idp:AdminDeleteUser"
+              - "cognito-idp:AdminUpdateUserAttributes"
+              # We grant the two extra permissions below for local development only.
+              - !If
+                - IsDevEnv
+                - "cognito-idp:AdminSetUserPassword"
+                - !Ref AWS::NoValue
+              - !If
+                - IsDevEnv
+                - "cognito-idp:AdminResetUserPassword"
+                - !Ref AWS::NoValue
             Resource: !GetAtt "UserPool.Arn"
       Roles:
         - !Ref "ConsumerRoleName"
