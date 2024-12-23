@@ -23,7 +23,7 @@ jobs:
       TEST_AWS_DEFAULT_REGION: ${{secrets.TEST_AWS_DEFAULT_REGION}}<</deployment-target.aws.enabled>>
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install Babashka
         uses: DeLaGuardo/setup-clojure@12.5
