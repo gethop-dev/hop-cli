@@ -73,12 +73,11 @@
 
 (defn- is-constraint-violation?
   [^PSQLException exception constraint]
-  (let [message (ex-message exception)]
-    (and
-     (= (get integrity-constraint-violation-state-codes (:type constraint))
-        (.getSQLState exception))
-     (seq message)
-     (str/includes? message (:name constraint)))))
+  (and (= (get integrity-constraint-violation-state-codes (:type constraint))
+          (.getSQLState exception))
+       (= (:name constraint) (-> exception
+                                 .getServerErrorMessage
+                                 .getConstraint))))
 
 (defn with-constraint-violation-check-fn
   [constraints body-fn]
