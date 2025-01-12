@@ -61,6 +61,13 @@ Resources:
       ApplicationName: !Ref "EbApplicationName"
       PlatformArn: !Ref "PlatformARN"
       OptionSettings:
+        # Temporary hack to force the usage of LaunchTemplates,
+        # instead of the obsolete LaunchConfigurations, while AWS
+        # makes this the default. See
+        # https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-cfg-autoscaling-launch-templates.html
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: RootVolumeType
+          Value: "gp3"
         # Capacity
         - Namespace: aws:elasticbeanstalk:environment
           OptionName: EnvironmentType
@@ -71,6 +78,7 @@ Resources:
         - Namespace: aws:autoscaling:asg
           OptionName: MaxSize
           Value: "1"
+        # Instance type
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: InstanceType
           Value: !Ref "InstanceType"
