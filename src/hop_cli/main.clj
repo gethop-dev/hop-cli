@@ -35,4 +35,13 @@
 
 (defn -main
   [& args]
-  (cli/dispatch (cli-cmd-table args) args))
+  (let [args (into [] args)]
+    (try
+      (cli/dispatch (cli-cmd-table args) args)
+      (catch clojure.lang.ExceptionInfo e
+        (println "Incomplete or incorrect command requested. See help below.\n")
+        (let [{:keys [cause all-commands]} (ex-data e)
+              help-cmd [(first args) "--help"]]
+          (when (and (get #{:input-exhausted :no-match} cause)
+                     (seq all-commands))
+            (cli/dispatch (cli-cmd-table help-cmd) help-cmd)))))))
