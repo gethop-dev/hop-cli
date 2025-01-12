@@ -445,9 +445,9 @@
                 (bp.util/get-settings-value settings :deployment-target.aws.account/region)}
         ssm-env-vars (->> (bp.util/get-settings-value settings :project/environment-variables)
                           environment
-                          ;; Remove vars with empty values. This produces a seq of
-                          ;; MapEntry (tuples).
-                          (filter (fn [[k v]] (when v [k v])))
+                          ;; Remove vars with empty values (but keep boolean `false`
+                          ;; values!). This produces a seq of MapEntry (tuples).
+                          (filter (fn [[k v]] (when (nil? v) [k v])))
                           ;; Make sure all values are strings (AWS SSM Parameter Store
                           ;; needs this).
                           (map (fn [[k v]] [k (str v)]))
