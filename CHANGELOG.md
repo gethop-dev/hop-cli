@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 - [aws profile] Added permissions to the local development role to be able to change or reset the Cognito users' password (but only for the local development User Pool).
+- [persistence-profile] Make constraint violation check more robust
+- Enhance error handling when missing sub-commands
+- [aws profile] Only remove from SSM variables with empty values (but not vars with "falsy" values)
+- [aws profile] Use Launch Templates when creating ElasticBeanstalk environments, instead of the obsolete Launch Configurations. 
 
 ## [0.1.15] - 2024-12-07
 - Various profiles: Backported a bunch of utility functions from various customer projects.
