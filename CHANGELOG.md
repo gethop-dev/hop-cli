@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+
+## [0.1.16] - 2025-01-15
 - [aws profile] Added permissions to the local development role to be able to change or reset the Cognito users' password (but only for the local development User Pool).
 - [persistence-profile] Make constraint violation check more robust
 - Enhance error handling when missing sub-commands
