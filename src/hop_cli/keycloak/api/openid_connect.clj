@@ -7,13 +7,15 @@
             [hop-cli.util.http :as util.http]))
 
 (defn get-token
-  [{:keys [base-url username password realm-name client-id]}]
+  [{:keys [base-url username password realm-name client-id client-secret]}]
   (let [url (format "%s/realms/%s/protocol/openid-connect/token" base-url realm-name)
-        params {:username username
-                :password password
-                :grant_type "password"
-                :client_id client-id
-                :scope "openid"}
+        params (cond-> {:username username
+                        :password password
+                        :grant_type "password"
+                        :client_id client-id
+                        :scope "openid"}
+                 client-secret
+                 (assoc :client_secret client-secret))
         request {:method :post
                  :url url
                  :form-params params}
@@ -37,6 +39,7 @@
   (let [opts (set/rename-keys opts {:admin-username :username
                                     :admin-password :password
                                     :admin-client-id :client-id
+                                    :admin-client-secret :client-secret
                                     :admin-realm-name :realm-name})
         result (get-token opts)]
     (if (:success? result)

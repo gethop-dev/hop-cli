@@ -43,6 +43,10 @@
      :default "admin-cli"
      :default-desc "(Optional, default value: admin-cli)"
      :desc "Client Id to use with the 'admin-realm-name'."}]
+   [:admin-client-secret
+    {:alias :acs
+     :default-desc "(Optional, default empty)"
+     :desc "Client Secret to use with the 'admin-realm-name'."}]
    [:admin-username
     {:alias :au
      :require true
@@ -142,6 +146,11 @@
               {:alias :c
                :require true
                :desc "Client ID to use to get the Identity token."}]
+             [:client-secret
+              {:alias :cs
+               :require false
+               :desc "Client Secret to use to get the Identity token."
+               :default-desc "(Optional, default empty)"}]
              [:username
               {:alias :u
                :require true
