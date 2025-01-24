@@ -136,7 +136,11 @@
                      :require true
                      :desc "What username to perform the operation for."}]]))}
    {:cmds ["get-id-token"]
-    :fn #(pprint (api.openid-connect/get-id-token (:opts %1)))
+    :fn (fn [{:keys [opts] :as x}]
+          (let [result (api.openid-connect/get-id-token opts)]
+            (if (:raw opts)
+              (println (:id-token result))
+              (pprint result))))
     :error-fn (partial error/generic-error-handler [main-cmd "get-id-token"])
     :desc "Get an OpenID Connect Identity token for the specified user."
     :spec (help/with-help-spec
@@ -158,7 +162,12 @@
              [:password
               {:alias :p
                :require true
-               :desc "The username's password."}]])}
+               :desc "The username's password."}]
+             [:raw
+              {:require false
+               :default false
+               :coerce boolean
+               :desc "Output id-token in raw format."}]])}
    {:cmds []
     :fn print-help-handler}])
 
