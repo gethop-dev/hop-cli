@@ -11,27 +11,23 @@
   #?(:clj (:import [java.io ByteArrayOutputStream]
                    [java.time Instant])))
 
-(def time-formatter jt.formatter/iso-instant)
-
 (def instant-write-handler
   (transit/write-handler
-   (constantly "biotz/Instant")
+   (constantly "hop/Instant")
    (fn [instant]
-     (jt.formatter/format time-formatter instant))))
+     (jt.formatter/format jt.formatter/iso-instant instant))))
 
 (def instant-read-handler
   (transit/read-handler
    (fn [iso-string]
-     (->> (jt.formatter/parse time-formatter iso-string)
+     (->> (jt.formatter/parse jt.formatter/iso-instant iso-string)
           (jt.instant/from)))))
 
 (def custom-write-handlers
-  {#?(:clj Instant :cljs js/Date)
-   instant-write-handler})
+  {#?(:clj Instant :cljs js/Date) instant-write-handler})
 
 (def custom-read-handlers
-  {"biotz/Instant"
-   instant-read-handler})
+  {"hop/Instant" instant-read-handler})
 
 (defn encode-transit-json
   [x]
