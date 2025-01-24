@@ -7,7 +7,7 @@
 
 (defn create-user
   [{:keys [base-url access-token realm-name username temporary-password
-           first-name last-name attributes email email-verified]}]
+           first-name last-name attributes email email-verified insecure-connection]}]
   (let [url (format "%s/admin/realms/%s/users" base-url realm-name)
         user (cond-> {:enabled true
                       :username username}
@@ -32,14 +32,15 @@
         request {:url url
                  :method :post
                  :headers headers
-                 :body user}
+                 :body user
+                 :insecure? insecure-connection}
         result (util.http/make-request request)]
     (if (:success? result)
       {:success? true}
       result)))
 
 (defn get-user
-  [{:keys [base-url access-token realm-name username]}]
+  [{:keys [base-url access-token realm-name username insecure-connection]}]
   (let [url (format "%s/admin/realms/%s/users" base-url realm-name)
         opts {:exact true
               :username username}
@@ -47,7 +48,8 @@
         request {:url url
                  :method :get
                  :headers headers
-                 :query-params opts}
+                 :query-params opts
+                 :insecure? insecure-connection}
         result (util.http/make-request request)]
     (if (:success? result)
       (if (= 1 (count (get-in result [:response :body])))
@@ -59,7 +61,7 @@
       result)))
 
 (defn set-user-password
-  [{:keys [base-url access-token realm-name user-id password temporary?]}]
+  [{:keys [base-url access-token realm-name user-id password temporary? insecure-connection]}]
   (let [url (format "%s/admin/realms/%s/users/%s/reset-password"
                     base-url realm-name user-id)
         cred {:type "password"
@@ -70,7 +72,8 @@
         request {:url url
                  :method :put
                  :headers headers
-                 :body cred}
+                 :body cred
+                 :insecure? insecure-connection}
         result (util.http/make-request request)]
     (if (:success? result)
       {:success? true}

@@ -25,15 +25,8 @@
 
 (declare print-help-handler)
 
-(def ^:const base-url-spec
-  [:base-url
-   {:alias :bu
-    :require true
-    :desc "Base URL for the Keycloak instance."}])
-
 (def ^:const admin-auth-spec
-  [base-url-spec
-   [:admin-realm-name
+  [[:admin-realm-name
     {:alias :ar
      :default "master"
      :default-desc "(Optional, default value: master)"
@@ -56,6 +49,21 @@
      :require true
      :desc "Password for the `admin-username`."}]])
 
+(def ^:const common-params-spec
+  [[:base-url
+    {:alias :bu
+     :require true
+     :desc "Base URL for the Keycloak instance."}]
+   [:realm-name
+    {:alias :r
+     :require true
+     :desc "Keycloak Realm to use for the action."}]
+   [:insecure-connection
+    {:alias :k
+     :require false
+     :desc "Skip SSL certificate verification step."
+     :default-desc "(Optional)"}]])
+
 (def ^:const realm-name-spec
   [:realm-name
    {:alias :r
@@ -72,35 +80,36 @@
     :error-fn (partial error/generic-error-handler [main-cmd "create-user"])
     :desc "Create a user in the specified Keycloak Realm."
     :spec (help/with-help-spec
-            (into admin-auth-spec
-                  [realm-name-spec
-                   [:username
-                    {:alias :u
-                     :require true
-                     :desc "Username for the new user to be created."}]
-                   [:temporary-password
-                    {:alias :p
-                     :require true
-                     :desc "Temporary password assigned to the user. It will have to be changed on first login."}]
-                   [:attributes
-                    {:alias :a
-                     :coerce []
-                     :desc "User attributes in the form of 'ATTRIBUTE1=VAL1 ATTRIBUTE2=VAL2'"
-                     :default-desc "(Optional, default empty)"}]
-                   [:first-name
-                    {:desc "First name for the new user to be created."
-                     :default-desc "(Optional, default empty)"}]
-                   [:last-name
-                    {:desc "Last name for the new user to be created."
-                     :default-desc "(Optional, default empty)"}]
-                   [:email
-                    {:desc "Email address for the new user to be created."
-                     :default-desc "(Optional, default empty)"}]
-                   [:email-verified
-                    {:desc "Set the new use email address as verified."
-                     :coerce boolean
-                     :default false
-                     :default-desc "(Optional, default false)"}]]))}
+            (concat
+             common-params-spec
+             admin-auth-spec
+             [[:username
+               {:alias :u
+                :require true
+                :desc "Username for the new user to be created."}]
+              [:temporary-password
+               {:alias :p
+                :require true
+                :desc "Temporary password assigned to the user. It will have to be changed on first login."}]
+              [:attributes
+               {:alias :a
+                :coerce []
+                :desc "User attributes in the form of 'ATTRIBUTE1=VAL1 ATTRIBUTE2=VAL2'"
+                :default-desc "(Optional, default empty)"}]
+              [:first-name
+               {:desc "First name for the new user to be created."
+                :default-desc "(Optional, default empty)"}]
+              [:last-name
+               {:desc "Last name for the new user to be created."
+                :default-desc "(Optional, default empty)"}]
+              [:email
+               {:desc "Email address for the new user to be created."
+                :default-desc "(Optional, default empty)"}]
+              [:email-verified
+               {:desc "Set the new use email address as verified."
+                :coerce boolean
+                :default false
+                :default-desc "(Optional, default false)"}]]))}
    {:cmds ["set-user-password"]
     :fn #(-> (:opts %1)
              (with-access-token api.user/set-user-password)
@@ -108,20 +117,21 @@
     :error-fn (partial error/generic-error-handler [main-cmd "set-user-password"])
     :desc "Change the password of the specified user."
     :spec (help/with-help-spec
-            (into admin-auth-spec
-                  [realm-name-spec
-                   [:user-id
-                    {:alias :u
-                     :require true
-                     :desc "Keycloak internal ID for the user (you can get it with the 'get-user' command)."}]
-                   [:password
-                    {:alias :p
-                     :require true
-                     :desc "New password to be assigned to the user"}]
-                   [:temporary?
-                    {:alias :t
-                     :coerce boolean
-                     :desc "Whether the new password is temporary. If so, it will have to be changed on first login."}]]))}
+            (concat
+             common-params-spec
+             admin-auth-spec
+             [[:user-id
+               {:alias :u
+                :require true
+                :desc "Keycloak internal ID for the user (you can get it with the 'get-user' command)."}]
+              [:password
+               {:alias :p
+                :require true
+                :desc "New password to be assigned to the user"}]
+              [:temporary?
+               {:alias :t
+                :coerce boolean
+                :desc "Whether the new password is temporary. If so, it will have to be changed on first login."}]]))}
    {:cmds ["get-user"]
     :fn #(-> (:opts %1)
              (with-access-token api.user/get-user)
@@ -129,12 +139,13 @@
     :error-fn (partial error/generic-error-handler [main-cmd "get-user"])
     :desc "Get the details about the specified Keycloak user."
     :spec (help/with-help-spec
-            (into admin-auth-spec
-                  [realm-name-spec
-                   [:username
-                    {:alias :u
-                     :require true
-                     :desc "What username to perform the operation for."}]]))}
+            (concat
+             common-params-spec
+             admin-auth-spec
+             [[:username
+               {:alias :u
+                :require true
+                :desc "What username to perform the operation for."}]]))}
    {:cmds ["get-id-token"]
     :fn (fn [{:keys [opts]}]
           (let [result (api.openid-connect/get-id-token opts)]
@@ -144,30 +155,31 @@
     :error-fn (partial error/generic-error-handler [main-cmd "get-id-token"])
     :desc "Get an OpenID Connect Identity token for the specified user."
     :spec (help/with-help-spec
-            [base-url-spec
-             realm-name-spec
-             [:client-id
-              {:alias :c
-               :require true
-               :desc "Client ID to use to get the Identity token."}]
-             [:client-secret
-              {:alias :cs
-               :require false
-               :desc "Client Secret to use to get the Identity token."
-               :default-desc "(Optional, default empty)"}]
-             [:username
-              {:alias :u
-               :require true
-               :desc "What username to get the token for."}]
-             [:password
-              {:alias :p
-               :require true
-               :desc "The username's password."}]
-             [:raw
-              {:require false
-               :default false
-               :coerce boolean
-               :desc "Output id-token in raw format."}]])}
+            (concat
+             common-params-spec
+             [[:client-id
+               {:alias :c
+                :require true
+                :desc "Client ID to use to get the Identity token."}]
+              [:client-secret
+               {:alias :cs
+                :require false
+                :desc "Client Secret to use to get the Identity token."
+                :default-desc "(Optional, default empty)"}]
+              [:username
+               {:alias :u
+                :require true
+                :desc "What username to get the token for."}]
+              [:password
+               {:alias :p
+                :require true
+                :desc "The username's password."}]
+              [:raw
+               {:require false
+                :default false
+                :coerce boolean
+                :desc "Output id-token in raw format."
+                :default-desc "(Optional)"}]]))}
    {:cmds []
     :fn print-help-handler}])
 
