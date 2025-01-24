@@ -136,9 +136,9 @@
                      :require true
                      :desc "What username to perform the operation for."}]]))}
    {:cmds ["get-id-token"]
-    :fn (fn [{:keys [opts] :as x}]
+    :fn (fn [{:keys [opts]}]
           (let [result (api.openid-connect/get-id-token opts)]
-            (if (:raw opts)
+            (if (and (:raw opts) (:success? result))
               (println (:id-token result))
               (pprint result))))
     :error-fn (partial error/generic-error-handler [main-cmd "get-id-token"])
