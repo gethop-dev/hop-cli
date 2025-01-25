@@ -155,7 +155,8 @@
   (let [type (.getType v)
         value (.getValue v)]
     (if (and value (get #{"json" "jsonb"} type))
-      (with-meta (util.json/<-json value {:decode-key-fn ->kebab-case-keyword}) {:pgtype type})
+      (let [opts {:decode-key-fn #(->kebab-case-keyword % :separator \_)}]
+        (util.json/<-json value opts))
       value)))
 
 ;; NOTE
