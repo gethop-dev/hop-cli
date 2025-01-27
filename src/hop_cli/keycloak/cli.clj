@@ -4,6 +4,7 @@
 
 (ns hop-cli.keycloak.cli
   (:require [babashka.cli :as cli]
+            [babashka.fs :as fs]
             [clojure.pprint :refer [pprint]]
             [hop-cli.keycloak.api.openid-connect :as api.openid-connect]
             [hop-cli.keycloak.api.user :as api.user]
@@ -60,8 +61,19 @@
      :desc "Keycloak Realm to use for the action."}]
    [:insecure-connection
     {:alias :k
+     :coerce :boolean
      :require false
      :desc "Skip SSL certificate verification step."
+     :default-desc "(Optional)"}]
+   [:cacert
+    {:ref "<path>"
+     :require false
+     :validate {:pred (fn [path]
+                        (and (fs/exists? path) (fs/readable? path)))
+                :ex-msg (fn [m]
+                          (format "'%s' does not point to a file that can be read."
+                                  (:value m)))}
+     :desc "The file at <path> contains the CA certificates (in PEM format) that will be used to validate the Keycloak server certificate."
      :default-desc "(Optional)"}]])
 
 (def ^:const realm-name-spec

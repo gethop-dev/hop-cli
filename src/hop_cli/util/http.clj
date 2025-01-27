@@ -4,16 +4,48 @@
 
 (ns hop-cli.util.http
   (:require [cheshire.core :as json]
-            [org.httpkit.client :as http]))
+            [clojure.java.io :as io]
+            [org.httpkit.client :as http])
+  (:import (java.security KeyStore)
+           (java.security.cert CertificateFactory X509Certificate)
+           (javax.net.ssl SSLContext)
+           (javax.net.ssl SSLContext TrustManagerFactory)))
+
+(defn- custom-ssl-engine
+  [cacert]
+  (let [ca-is (-> cacert
+                  (io/file)
+                  (io/input-stream))
+        ca-certs (-> (CertificateFactory/getInstance "x509")
+                     (.generateCertificates ca-is))
+        keystore (doto (KeyStore/getInstance (KeyStore/getDefaultType))
+                   (.load nil nil))
+        _ (dorun (map (fn [^X509Certificate cert counter]
+                        (.setCertificateEntry keystore
+                                              (str "cacert-alias-" counter)
+                                              cert))
+                      ca-certs
+                      (range)))
+        default-alg (TrustManagerFactory/getDefaultAlgorithm)
+        trustmanager-factory (doto (TrustManagerFactory/getInstance default-alg)
+                               (.init keystore))
+        trustmanagers (.getTrustManagers trustmanager-factory)
+        sslcontext (doto (SSLContext/getInstance "TLS")
+                     (.init nil trustmanagers nil))]
+    (http/make-ssl-engine sslcontext)))
 
 (defn- encode-request
-  [request]
+  [{:keys [cacert] :as request}]
   (try
     {:success? true
      :request
      (cond-> request
        (= "application/json" (get-in request [:headers "Content-Type"]))
-       (update :body json/generate-string))}
+       (update :body json/generate-string)
+
+       cacert
+       (-> (assoc :sslengine (custom-ssl-engine cacert))
+           (dissoc :cacert)))}
     (catch Exception e
       {:success? false
        :reason :could-not-encode-request
