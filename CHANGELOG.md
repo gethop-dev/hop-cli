@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file. This change
 - [keycloak cli] Added 'raw' flag to 'get-id-token' command to return the id-token in raw format.
 - [keycloak cli] Added 'client-secret' parameter to work with clients that require a secret.
 - [core profile] Fixed Transit custom tags for Instants.
+- [persistence] Refactored <-pgvalue to make it work with scalar JSON(B) values (number, string, boolean)
+- [keycloak cli] Added 'cacert' parameter to support custom CA certificates
 
 ## [0.1.16] - 2025-01-15
 - [aws profile] Added permissions to the local development role to be able to change or reset the Cognito users' password (but only for the local development User Pool).
