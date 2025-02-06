@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+
+## [0.1.17] - 2025-02-06
 - [keycloak cli] Added 'insecure-connection' flag to skip the SSL certificate verification step on API calls.
 - [keycloak cli] Added 'raw' flag to 'get-id-token' command to return the id-token in raw format.
 - [keycloak cli] Added 'client-secret' parameter to work with clients that require a secret.
@@ -143,7 +145,14 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.10...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.17...HEAD
+[0.1.17]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.17
+[0.1.16]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.16
+[0.1.15]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.15
+[0.1.14]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.14
+[0.1.13]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.13
+[0.1.12]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.12
+[0.1.11]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.11
 [0.1.10]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.10
 [0.1.9]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.9
 [0.1.8]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.8
