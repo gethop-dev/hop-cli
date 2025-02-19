@@ -6,6 +6,7 @@
 (ns <<project.name>>.boundary.adapter.persistence.sql.jdbc-util
   (:require [<<project.name>>.domain.types :as dom.types]
             [<<project.name>>.shared.util.json :as util.json]
+            [<<project.name>>.shared.util.malli-coercion :as util.malli-coercion]
             [camel-snake-kebab.core :refer [->kebab-case ->kebab-case-keyword
                                             ->snake_case]]
             [camel-snake-kebab.extras :as cske]
@@ -104,12 +105,23 @@
      ~constraints
      (fn [] ~@body)))
 
+(defn- json-map-key-decoder
+  [schema _]
+  (when-not (::skip-key-transformation (m/properties schema))
+    {:leave
+     (fn [x]
+       (update-keys x #(->kebab-case % :separator \_)))}))
+
 (defn decode-json-value
   [schema value]
   (m/decode
    schema
    (cske/transform-keys ->kebab-case value)
-   mt/string-transformer))
+   (mt/transformer
+    (mt/string-transformer)
+    util.malli-coercion/custom-string-transformer
+    {:name ::custom-json-transformer
+     :decoders {:map {:compile json-map-key-decoder}}})))
 
 (defn decode-json-sequence-value
   [schema value]
