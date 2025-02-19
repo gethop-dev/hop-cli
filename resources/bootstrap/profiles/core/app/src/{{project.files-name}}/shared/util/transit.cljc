@@ -6,10 +6,11 @@
 (ns <<project.name>>.shared.util.transit
   (:require [cljc.java-time.format.date-time-formatter :as jt.formatter]
             [cljc.java-time.instant :as jt.instant]
+            [cljc.java-time.local-date :as jt.local-date]
             [cognitect.transit :as transit]
             #?(:clj [clojure.java.io :as io]))
   #?(:clj (:import [java.io ByteArrayOutputStream]
-                   [java.time Instant])))
+                   [java.time Instant LocalDate])))
 
 (def instant-write-handler
   (transit/write-handler
@@ -23,11 +24,27 @@
      (->> (jt.formatter/parse jt.formatter/iso-instant iso-string)
           (jt.instant/from)))))
 
+(def local-date-write-handler
+  (transit/write-handler
+   (constantly "hop/LocalDate")
+   (fn [local-date]
+     (jt.formatter/format jt.formatter/iso-local-date local-date))))
+
+(def local-date-read-handler
+  (transit/read-handler
+   (fn [iso-string]
+     (->> (jt.formatter/parse jt.formatter/iso-local-date iso-string)
+          (jt.local-date/from)))))
+
 (def custom-write-handlers
-  {#?(:clj Instant :cljs js/Date) instant-write-handler})
+  {#?(:clj Instant :cljs js/java.time.Instant)
+   instant-write-handler
+   #?(:clj LocalDate :cljs js/java.time.LocalDate)
+   local-date-write-handler})
 
 (def custom-read-handlers
-  {"hop/Instant" instant-read-handler})
+  {"hop/Instant" instant-read-handler
+   "hop/LocalDate" local-date-read-handler})
 
 (defn encode-transit-json
   [x]
