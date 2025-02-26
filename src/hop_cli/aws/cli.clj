@@ -137,7 +137,7 @@
              (update password-spec 1 (fn [m] (assoc m :desc "New password to be assigned to the user.")))
              [:temporary?
               {:alias :t
-               :coerce boolean
+               :coerce :boolean
                :desc "Whether the new password is temporary. If so, it will have to be changed on first login."}]
              region-spec])}
    {:cmds ["cognito" "get-id-token"]

@@ -119,7 +119,7 @@
                 :default-desc "(Optional, default empty)"}]
               [:email-verified
                {:desc "Set the new use email address as verified."
-                :coerce boolean
+                :coerce :boolean
                 :default false
                 :default-desc "(Optional, default false)"}]]))}
    {:cmds ["set-user-password"]
@@ -142,7 +142,7 @@
                 :desc "New password to be assigned to the user"}]
               [:temporary?
                {:alias :t
-                :coerce boolean
+                :coerce :boolean
                 :desc "Whether the new password is temporary. If so, it will have to be changed on first login."}]]))}
    {:cmds ["get-user"]
     :fn #(-> (:opts %1)
@@ -189,7 +189,7 @@
               [:raw
                {:require false
                 :default false
-                :coerce boolean
+                :coerce :boolean
                 :desc "Output id-token in raw format."
                 :default-desc "(Optional)"}]]))}
    {:cmds []
