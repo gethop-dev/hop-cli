@@ -47,7 +47,8 @@
 
 (def kms-key-alias-spec
   [:kms-key-alias
-   {:alias :k :require true
+   {:alias :k
+    :require true
     :desc "Alias of the AWS KMS Key that will be used to encrypt or decrypt the environment variables."}])
 (def ^:const file-spec
   [:file
