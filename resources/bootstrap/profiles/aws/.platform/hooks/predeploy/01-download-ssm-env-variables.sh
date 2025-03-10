@@ -35,7 +35,7 @@ TEMP_FILE=$(mktemp)
 
 trap 'rm -f ${TEMP_FILE}' EXIT ERR
 
-bb /usr/local/hop-cli/hop-cli.jar \
+/usr/local/bin/bb /usr/local/hop-cli/hop-cli.jar \
     aws \
     env-vars \
     download \
