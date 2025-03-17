@@ -29,8 +29,26 @@ Parameters:
   ConsumerRoleName:
     Type: "String"
 
-Conditions:
-  IsDevEnv: !Equals ["dev", !Ref "Environment"]
+Mappings:
+  EnvToCognitoIdpPermissions:
+    dev:
+      permissions:
+        - "cognito-idp:AdminCreateUser"
+        - "cognito-idp:AdminDeleteUser"
+        - "cognito-idp:AdminUpdateUserAttributes"
+        # We grant the two extra permissions for local development only.
+        - "cognito-idp:AdminSetUserPassword"
+        - "cognito-idp:AdminResetUserPassword"
+    test:
+      permissions:
+        - "cognito-idp:AdminCreateUser"
+        - "cognito-idp:AdminDeleteUser"
+        - "cognito-idp:AdminUpdateUserAttributes"
+    prod:
+      permissions:
+        - "cognito-idp:AdminCreateUser"
+        - "cognito-idp:AdminDeleteUser"
+        - "cognito-idp:AdminUpdateUserAttributes"
 
 Resources:
   UserPool:
@@ -93,21 +111,9 @@ Resources:
       PolicyDocument:
         Version: 2012-10-17
         Statement:
-          - Effect: Allow
-            Action:
-              - "cognito-idp:AdminCreateUser"
-              - "cognito-idp:AdminDeleteUser"
-              - "cognito-idp:AdminUpdateUserAttributes"
-              # We grant the two extra permissions below for local development only.
-              - !If
-                - IsDevEnv
-                - "cognito-idp:AdminSetUserPassword"
-                - !Ref AWS::NoValue
-              - !If
-                - IsDevEnv
-                - "cognito-idp:AdminResetUserPassword"
-                - !Ref AWS::NoValue
-            Resource: !GetAtt "UserPool.Arn"
+          Effect: Allow
+          Action: !FindInMap [EnvToCognitoIdpPermissions, !Ref "Environment", permissions]
+          Resource: !GetAtt "UserPool.Arn"
       Roles:
         - !Ref "ConsumerRoleName"
 
