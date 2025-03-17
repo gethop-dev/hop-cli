@@ -41,6 +41,8 @@ Resources:
       UserPoolName: !Sub "${ProjectName}-${Environment}"
       UsernameAttributes:
         - "email"
+      AutoVerifiedAttributes:
+        - "email"
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: true
       Policies:
