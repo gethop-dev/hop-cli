@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 
+## [0.1.18] - 2025-03-17
+- [aws profile] Allow Cognito to automatically send messages to verify and confirm user email
+- [aws profile] Don't rely on $PATH to find bb executable. Ut seems the latest Amazon Linux 2 AMI instances don't add /usr/local/bin to the $PATH by default.
+- [aws profile] [keycloak profile] Fix --temporary? option handling when changing the user password.
+
 ## [0.1.17] - 2025-02-06
 - [keycloak cli] Added 'insecure-connection' flag to skip the SSL certificate verification step on API calls.
 - [keycloak cli] Added 'raw' flag to 'get-id-token' command to return the id-token in raw format.
@@ -145,7 +150,8 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.17...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.18...HEAD
+[0.1.18]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.18
 [0.1.17]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.17
 [0.1.16]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.16
 [0.1.15]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.15
