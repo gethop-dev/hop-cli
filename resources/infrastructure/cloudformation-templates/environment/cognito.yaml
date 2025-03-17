@@ -43,6 +43,9 @@ Resources:
         - "email"
       AutoVerifiedAttributes:
         - "email"
+      UserAttributeUpdateSettings:
+        AttributesRequireVerificationBeforeUpdate:
+          - "email"
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: true
       Policies:
