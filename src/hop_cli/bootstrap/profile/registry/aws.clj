@@ -60,10 +60,24 @@
         (println "The account AWS stack was already created, so no new CI/CD AWS user was created.")
         (println "You can reuse the credentials created in previous projects, or create new ones.")))))
 
+(defn- build-docker-compose-files
+  [_settings]
+  {:to-develop ["docker-compose.aws.common-dev-ci.yml" "docker-compose.aws.dev.yml"]
+   :ci ["docker-compose.aws.common-dev-ci.yml" "docker-compose.aws.ci.yml"]
+   :to-deploy []})
+
+(defn- build-docker-files-to-copy
+  [settings]
+  (-> (build-docker-compose-files settings)
+      (bp.util/build-profile-docker-files-to-copy "aws/" [])))
+
 (defmethod registry/pre-render-hook :aws
   [_ settings]
-  {:files [{:src "aws/.platform" :dst ".platform"}
-           {:src "aws/start-dev.sh" :dst "start-dev.sh"}]
+  {:files (into [{:src "aws/.platform" :dst ".platform"}
+                 {:src "aws/start-dev.sh" :dst "start-dev.sh"}]
+                (build-docker-files-to-copy settings))
+   :docker-compose (build-docker-compose-files settings)
+   :extra-app-docker-compose-environment-variables []
    :environment-variables {:dev (build-dev-env-variables settings)}
    :deploy-files [".platform"]})
 

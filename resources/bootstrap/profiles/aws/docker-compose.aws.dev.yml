@@ -1,0 +1,10 @@
+services:
+  app:
+    environment:
+      # AWS credentials, used to access services like S3, SSM
+      # Parameter store, etc. They are taken from the environment,
+      # they shouldn't be specified in .env!!!
+      #
+      # These are the ones we only use when running the application
+      # in local development using an IAM role.
+      AWS_SESSION_TOKEN:

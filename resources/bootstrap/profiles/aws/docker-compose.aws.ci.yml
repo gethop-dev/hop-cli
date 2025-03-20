@@ -1,0 +1,4 @@
+services:
+  app:
+    environment:
+      AWS_ROLE_ARN:

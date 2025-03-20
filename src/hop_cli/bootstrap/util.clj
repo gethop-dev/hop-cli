@@ -58,9 +58,11 @@
         (->> docker-compose-files
              (vals)
              (apply concat)
-             (map (fn [file] {:src (str profile-root-path file)})))]
+             (into #{})
+             (mapv (fn [file]
+                     {:src (str profile-root-path file)})))]
     (if (and (seq compose-files) (seq extra-docker-files))
-      (concat compose-files extra-docker-files)
+      (into compose-files extra-docker-files)
       compose-files)))
 
 (defn build-target-project-path
