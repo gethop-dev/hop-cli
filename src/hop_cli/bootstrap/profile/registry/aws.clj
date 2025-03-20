@@ -8,7 +8,7 @@
 
 (defn- build-dev-env-variables
   [settings]
-  {:AWS_ROLE_ARN (bp.util/get-settings-value settings :project.profiles.aws.credentials.local-dev-user/arn)})
+  {:AWS_ROLE_ARN (bp.util/get-settings-value settings :project.profiles.aws.credentials.local-dev-user/role-arn)})
 
 (defn- build-setup-aws-vault-local-dev-user-instructions
   [settings]
