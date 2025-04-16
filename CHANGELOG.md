@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. This change
 - [aws profile] Fix AWS_ROLE_ARN value. We were setting it to the local development IAM *User* ARN. But we need
 to set it to the local development IAM *Role* ARN.
 - [aws profile] Make the AWS profile inject AWS env variables for local development
+- [aws profile][core profile] Make sure we run 'lein clean' in the start-dev.sh scripts with enough permissions to do its job.
 
 ## [0.1.18] - 2025-03-17
 - [aws profile] Allow Cognito to automatically send messages to verify and confirm user email

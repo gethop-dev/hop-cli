@@ -55,7 +55,23 @@ fi
 # (because it is a bind mount point). And that is going to prevent
 # lein from downloading any dependencies!
 mkdir -p ~/.m2/
-docker/docker-compose.sh run --no-deps --rm app lein clean
+
+# NOTE: we are overwriting the entrypoint here because otherwise "lein
+# clean" would run with the "hop" user permissions due to the
+# "docker/run-as-user.sh" entrypoint script of the "Dockerfile", and
+# it's a problem. This is a problem when, for various $REASONS, new
+# files or folders are created inside the "app/target" folder with the
+# "root" user. When that happens it prevents the cleanup of
+# "app/target" folder because some files/folders are owned by the
+# "root" user and the "hop" user has no permissions to delete those
+# files. Moreover, "lein clean" fails silently in those cases and its
+# exit code is not propagated by Docker, so the script continues
+# executing the next commands like nothing happened. So, to prevent
+# that we overwrite the entrypoint, which skips the "hop" user
+# configuration and thus the "lein clean" command is run by the "root"
+# user which will ensure we always succeed on cleaning the
+# "app/target" folder.
+docker/docker-compose.sh run --no-deps --entrypoint /bin/bash --rm app lein clean
 
 # Finally launch the application itself, using the development
 # environment user credentials. Also make sure to check that we are
