@@ -17,7 +17,7 @@ function get_missing_env_vars() {
     esac
 
     "${SCRIPT_DIR}/docker-compose.sh" "${DOCKER_COMPOSE_ARGS[@]}" |
-        docker run --rm --interactive mikefarah/yq '.services[].environment?
+        docker run --rm --interactive mikefarah/yq@sha256:48f0bd428026b782dfae8e8e07e03b5b385bb957035963c5383ca4cea46d82d4 '.services[].environment?
             |=
             (
                 with(select(. == null);
@@ -27,10 +27,10 @@ function get_missing_env_vars() {
                 to_entries
                 |
                 map(
-                    select((.value == null))
-                    |
-                    .key + "=" + ">>HOP_ENV_VAR_MISSING_VALUE<<"
+                    (.[] | select(. == null)) |= ">>HOP_ENV_VAR_MISSING_VALUE<<"
                 )
+                |
+                from_entries
             )' |
         awk -F'=' '/>>HOP_ENV_VAR_MISSING_VALUE<</ {print $1}'
 }
