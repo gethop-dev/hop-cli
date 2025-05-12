@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+
+## [0.1.19] - 2025-05-12
 - [aws profile] Fix AWS_ROLE_ARN value. We were setting it to the local development IAM *User* ARN. But we need
 to set it to the local development IAM *Role* ARN.
 - [aws profile] Make the AWS profile inject AWS env variables for local development
@@ -155,7 +157,8 @@ to set it to the local development IAM *Role* ARN.
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.18...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.19...HEAD
+[0.1.19]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.19
 [0.1.18]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.18
 [0.1.17]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.17
 [0.1.16]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.16
