@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 
+## [0.1.20] - 2025-05-14
 - Updated most dependencies to latest versions.
 - [aws profile] Added 'raw' flag to 'get-id-token' command to return the id-token in raw format.
 
