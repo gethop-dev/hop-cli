@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file. This change
 ## [UNRELEASED]
 
 - Updated most dependencies to latest versions.
+- [aws profile] Added 'raw' flag to 'get-id-token' command to return the id-token in raw format.
 
 ## [0.1.19] - 2025-05-12
 - [aws profile] Fix AWS_ROLE_ARN value. We were setting it to the local development IAM *User* ARN. But we need

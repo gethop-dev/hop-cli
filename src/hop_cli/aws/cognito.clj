@@ -17,6 +17,8 @@
   [opts]
   (let [result (api.cognito-idp/get-tokens opts)]
     (if (:success? result)
-      {:success? true
-       :id-token (get-in result [:tokens :id-token])}
+      (if (:raw opts)
+        (get-in result [:tokens :id-token])
+        {:success? true
+         :id-token (get-in result [:tokens :id-token])})
       result)))

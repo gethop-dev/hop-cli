@@ -18,7 +18,10 @@
 
 (defn- generic-handler-wrapper
   [handler-fn {:keys [opts]}]
-  (pprint (handler-fn opts)))
+  (let [result (handler-fn opts)]
+    (if (:raw opts)
+      (println result)
+      (pprint result))))
 
 (defn- cognito-create-user-handler
   [{:keys [opts]}]
@@ -153,7 +156,13 @@
                :desc "Client ID to use to get the Identity token."}]
              username-spec
              (update password-spec 1 (fn [m] (assoc m :desc "Password of the AWS Cognito account.")))
-             region-spec])}
+             region-spec
+             [:raw
+              {:require false
+               :default false
+               :coerce :boolean
+               :desc "Output id-token in raw format."
+               :default-desc "(Optional)"}]])}
 
    ;; RDS
    {:cmds ["rds" "start-port-forwarding-session"]
