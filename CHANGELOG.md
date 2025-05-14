@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 
+## [0.1.22] - 2025-05-14
+- Fixed some linting error that made CI fail.
+
 ## [0.1.21] - 2025-05-14
 - Updated linting tools to latest versions
 
@@ -164,7 +167,8 @@ to set it to the local development IAM *Role* ARN.
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.21...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.22...HEAD
+[0.1.22]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.22
 [0.1.21]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.21
 [0.1.20]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.20
 [0.1.19]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.19
