@@ -16,11 +16,6 @@
 
 (defn get-id-token
   [opts]
-  ;; timbre/with-level is deprecated upstream (one should use
-  ;; timbre/with-min-level), but babashka doesn't expose it. It only
-  ;; exposes timbre/with-level. Thus, we need to tell clj-kondo not to
-  ;; complain about it in this case.
-  #_{:clj-kondo/ignore [:deprecated-var]}
   (timbre/with-level :warn
     (let [result (api.cognito-idp/get-tokens opts)]
       (if (:success? result)
