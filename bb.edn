@@ -1,29 +1,28 @@
 {:paths ["src" "resources"]
  :min-bb-version "1.3.189"
- :deps {metosin/malli {:mvn/version "0.17.0"}
-        org.babashka/cli {:mvn/version "0.8.62"}
-        babashka/fs {:mvn/version "0.5.24"}
-        com.cognitect.aws/elasticbeanstalk {:mvn/version "869.2.1687.0"}
-        com.cognitect.aws/endpoints {:mvn/version "1.1.12.772"}
-        com.cognitect.aws/ssm {:mvn/version "869.2.1687.0"}
-        com.cognitect.aws/cloudformation {:mvn/version "869.2.1687.0"}
-        com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                             :git/sha "e5513349a2fd8a980a62bbe0d45a0d55bfcea141"}
-        org.babashka/spec.alpha {:git/url "https://github.com/babashka/spec.alpha"
-                                 :git/sha "b6eb0f2208ab036c0a5d0e7235cb0b09d2feabb7"}
-        com.cognitect.aws/s3 {:mvn/version "869.2.1687.0"}
-        com.cognitect.aws/sts {:mvn/version "857.2.1574.0"}
-        com.cognitect.aws/cognito-idp {:mvn/version "869.2.1687.0"}
-        com.cognitect.aws/iam {:mvn/version "869.2.1687.0"}
-        com.cognitect.aws/acm {:mvn/version "869.2.1687.0"}
-        com.cognitect.aws/resourcegroupstaggingapi {:mvn/version "847.2.1365.0"}
-        com.cognitect.aws/rds {:mvn/version "869.2.1687.0"}
-        com.cognitect.aws/ec2 {:mvn/version "869.2.1687.0"}
-        zprint/zprint {:mvn/version "1.2.9"}
+ :deps {babashka/fs {:mvn/version "0.5.25"}
         cljfmt/cljfmt {:mvn/version "0.9.2"}
-        pogonos/pogonos {:mvn/version "0.2.1"}
+        com.cognitect.aws/endpoints {:mvn/version "871.2.31.23"}
+        com.cognitect.aws/acm {:mvn/version "871.2.29.35"}
+        com.cognitect.aws/cloudformation {:mvn/version "871.2.31.23"}
+        com.cognitect.aws/cognito-idp {:mvn/version "871.2.31.23"}
+        com.cognitect.aws/ec2 {:mvn/version "871.2.31.23"}
+        com.cognitect.aws/elasticbeanstalk {:mvn/version "871.2.29.35"}
+        com.cognitect.aws/iam {:mvn/version "871.2.30.22"}
+        com.cognitect.aws/rds {:mvn/version "871.2.31.23"}
+        com.cognitect.aws/resourcegroupstaggingapi {:mvn/version "871.2.29.35"}
+        com.cognitect.aws/s3 {:mvn/version "871.2.31.23"}
+        com.cognitect.aws/ssm {:mvn/version "871.2.31.23"}
+        com.cognitect.aws/sts {:mvn/version "871.2.29.52"}
+        com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
+                             :git/sha "e5513349a2fd8a980a62bbe0d45a0d55bfcea141"
+                             :git/tag "v0.8.84"}
+        http-kit/http-kit {:mvn/version "2.8.0"}
         meta-merge/meta-merge {:mvn/version "1.0.0"}
-        http-kit/http-kit {:mvn/version "2.8.0"}}
+        metosin/malli {:mvn/version "0.18.0"}
+        pogonos/pogonos {:mvn/version "0.2.1"}
+        org.babashka/cli {:mvn/version "0.8.65"}
+        zprint/zprint {:mvn/version "1.2.9"}}
  :tasks {cli {:doc "HOP CLI"
               :requires ([hop-cli.main :as cli])
               :task (apply cli/-main *command-line-args*)}}}
