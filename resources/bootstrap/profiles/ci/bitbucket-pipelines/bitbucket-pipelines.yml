@@ -1,4 +1,4 @@
-image: magnetcoop/bob:6ba126e0f0
+image: magnetcoop/bob:229edfdbdb
 
 pipelines:
   default:
