@@ -11,7 +11,7 @@
             :docstring [:span "Single word or composite name separated by hyphenes or underscores."]
             :type :string
             :value "hop"
-            :pattern "[a-zA-Z_-]+"}
+            :pattern "[a-zA-Z_\\-]+"}
            {:name :docker
             :tag "Docker"
             :type :plain-group
