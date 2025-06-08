@@ -26,10 +26,10 @@ RUN set -ex; \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     libsodium23=1.0.18-1 \
-    libfreetype6=2.12.1+dfsg-5+deb12u3 \
+    libfreetype6=2.12.1+dfsg-5+deb12u4 \
     fontconfig=2.14.1-4 \
-    poppler-utils=22.12.0-2+b1 \
-    imagemagick=8:6.9.11.60+dfsg-1.6+deb12u2 && \
+    poppler-utils=22.12.0-2+deb12u1 \
+    imagemagick=8:6.9.11.60+dfsg-1.6+deb12u3 && \
     apt-get -y autoremove && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
