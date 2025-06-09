@@ -16,6 +16,7 @@ services:
       GF_DATABASE_SCHEMA:{{/project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.other-users.grafana.enabled}}
     ports:
       - mode: ingress
+        host_ip: 127.0.0.1
         target: {{project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.port}}
         published: {{project.profiles.persistence-sql.deployment.to-develop.container.environment.dev.database.port}}
         protocol: tcp

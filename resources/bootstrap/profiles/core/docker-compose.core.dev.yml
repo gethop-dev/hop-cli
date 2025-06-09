@@ -10,14 +10,17 @@ services:
       - :headless
     ports:
       - mode: ingress
+        host_ip: 127.0.0.1
         target: 3000
         published: 3000
         protocol: tcp
       - mode: ingress
+        host_ip: 127.0.0.1
         target: 4001
         published: 4001
         protocol: tcp
       - mode: ingress
+        host_ip: 127.0.0.1
         target: 3449
         published: 3449
         protocol: tcp
@@ -28,6 +31,7 @@ services:
   proxy:
     ports:
       - mode: ingress
+        host_ip: 127.0.0.1
         target: 80
         published: 80
         protocol: tcp

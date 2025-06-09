@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+- Make all local development containers only listen on 127.0.0.1, so they are not reachable from computers on the same network (this is a know Docker issue).
 
 ## [0.1.22] - 2025-05-14
 - Fixed some linting error that made CI fail.
