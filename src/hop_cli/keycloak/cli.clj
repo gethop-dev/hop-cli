@@ -106,7 +106,7 @@
               [:attributes
                {:alias :a
                 :coerce []
-                :desc "User attributes in the form of 'ATTRIBUTE1=VAL1 ATTRIBUTE2=VAL2'"
+                :desc "User attributes in the form of 'ATTRIBUTE=VAL'. Use multiple times to set multiple attributes."
                 :default-desc "(Optional, default empty)"}]
               [:first-name
                {:desc "First name for the new user to be created."
