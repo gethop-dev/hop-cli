@@ -139,7 +139,7 @@
                        :type :plain-group
                        :value []}
                       {:name :on-premises
-                       :tag "On-premises"
+                       :tag "Deploy to On-premises"
                        :docstring [:span "Profile for setting up the project to be deployed On-premises."]
                        :depends-on-profiles [:core]
                        :type :plain-group
@@ -179,7 +179,7 @@
                                                              :type :ref
                                                              :value :project.proxy.prod/domain}]}]}]}]}
                       {:name :aws
-                       :tag "Amazon Web Services"
+                       :tag "Deploy to Amazon Web Services"
                        :docstring [:span "Profile for setting up the project to be deployed in Amazon Web Services."]
                        :depends-on-profiles [:core]
                        :type :plain-group
