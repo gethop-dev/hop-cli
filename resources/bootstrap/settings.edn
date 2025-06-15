@@ -134,6 +134,8 @@
                                                   :value 4096}]}]}]}
                       {:name :frontend
                        :tag "Frontend"
+                       :docstring [:span "Provides a minimal front-end using re-frame and reagent."]
+                       :depends-on-profile [:core]
                        :type :plain-group
                        :value []}
                       {:name :on-premises
