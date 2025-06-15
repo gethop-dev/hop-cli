@@ -33,8 +33,9 @@
 (def ^:const region-spec
   [:region
    {:alias :r
-    :desc "AWS Region where the resource is defined."
-    :default-desc "Optional (default empty)"}])
+    :require true
+    :coerce :string
+    :desc "AWS Region where the resource is defined."}])
 
 (def ^:const project-name-spec
   [:project-name
