@@ -9,7 +9,6 @@
             [<<project.name>>.shared.util.malli-coercion :as util.malli-coercion]
             [integrant.core :as ig]
             [reitit.coercion.spec]
-            [reitit.dev.pretty :as pretty]
             [reitit.ring :as reitit.ring]
             [reitit.ring.coercion :as mid.coercion]
             [reitit.ring.middleware.exception :as mid.exception]
@@ -22,8 +21,7 @@
 
 (defn- build-router-config
   [_opts]
-  {:exception pretty/exception
-   :validate reitit.spec/validate
+  {:validate reitit.spec/validate
    :reitit.ring/default-options-endpoint {:no-doc true
                                           :handler reitit.ring/default-options-handler}
    :data {:coercion util.malli-coercion/custom-reitit-malli-coercer
