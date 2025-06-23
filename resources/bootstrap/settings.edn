@@ -2439,7 +2439,7 @@
                                          :type :plain-group
                                          :value [{:name :cidr
                                                   :tag "CIDR"
-                                                  :docstring [:span "IP block that will be used in your subnet-1. Make sure the subnet IP CIDR align with the VPC CIDR block and that it does not conflict with other subnets CIDRs."]
+                                                  :docstring [:span "IP block that will be used in your subnet-1. Make sure the subnet IP CIDR aligns with the VPC CIDR block configured above, and that it does not conflict with other subnets CIDRs."]
                                                   :type :string
                                                   :pattern "[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}\\/[0-9]{1,2}"
                                                   :value "172.31.0.0/24"}]}
@@ -2448,7 +2448,7 @@
                                          :type :plain-group
                                          :value [{:name :cidr
                                                   :tag "CIDR"
-                                                  :docstring [:span "IP block that will be used in your subnet-2. Make sure the subnet IP CIDR align with the VPC CIDR block and that it does not conflict with other subnets CIDRs."]
+                                                  :docstring [:span "IP block that will be used in your subnet-2. Make sure the subnet IP CIDR aligns with the VPC CIDR block configured above, and that it does not conflict with other subnets CIDRs."]
                                                   :type :string
                                                   :pattern "[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}\\/[0-9]{1,2}"
                                                   :value "172.31.1.0/24"}]}]}]}
