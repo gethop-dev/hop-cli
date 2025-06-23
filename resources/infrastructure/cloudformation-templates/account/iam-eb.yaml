@@ -9,7 +9,7 @@ Resources:
   EbServiceRole:
     Type: "AWS::IAM::Role"
     Properties:
-      RoleName: !Sub "${ResourceNamePrefix}-aws-elasticbeanstalk-service-role"
+      RoleName: !Sub "${ResourceNamePrefix}-eb-srv-role"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:

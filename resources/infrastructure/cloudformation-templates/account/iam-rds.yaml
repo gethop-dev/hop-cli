@@ -9,7 +9,7 @@ Resources:
   RDSMonitoringRole:
     Type: "AWS::IAM::Role"
     Properties:
-      RoleName: !Sub "${ResourceNamePrefix}-rds-monitoring-role"
+      RoleName: !Sub "${ResourceNamePrefix}-rds-monit-role"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
