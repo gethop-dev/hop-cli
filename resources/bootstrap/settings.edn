@@ -10,7 +10,7 @@
             :tag "Name"
             :docstring [:span "Single word or composite name separated by hyphenes or underscores. Maximum length is 48 characters. May only use letters (upper or lower case letters from the ASCII alphabet), or numbers. But cannot start with a number."]
             :type :string
-            :value "hop"
+            :value "hop-project-name"
             :pattern "[a-zA-Z_\\-][a-zA-Z_\\-]{0,47}"}
            {:name :docker
             :tag "Docker"
@@ -64,7 +64,7 @@
                              {:name :domain
                               :tag "Domain"
                               :type :string
-                              :value "app.test.invalid"
+                              :value "app.test.domain.invalid"
                               :pattern "[^\\s]+"}]}
                     {:name :prod
                      :tag "Production environment"
@@ -77,7 +77,7 @@
                              {:name :domain
                               :tag "Domain"
                               :type :string
-                              :value "app.invalid"
+                              :value "app.domain.invalid"
                               :pattern "[^\\s]+"}]}]}
            {:name :profiles
             :tag "Profiles"
@@ -196,7 +196,7 @@
                                          :tag "Profile prefix"
                                          :docstring [:span "Prefix for the AWS profiles used to run the project. The prefix will be used in the following notation: <prefix>/<name>"]
                                          :type :string
-                                         :value "hop"
+                                         :value "aws-vault-profile-prefix"
                                          :pattern "[^\\s]+"}]}
                                {:name :credentials
                                 :type :plain-group
@@ -1789,7 +1789,7 @@
                                                                                         :tag "Id"
                                                                                         :type :string
                                                                                         :pattern "[^\\s]+"
-                                                                                        :value "hop-spa-XXXXXXXX"}]}
+                                                                                        :value "hop-project-name-spa"}]}
                                                                               {:name :other-clients
                                                                                :tag "Other clients"
                                                                                :docstring [:span "Extra OIDC clients used by some of the other HOP profiles."]
@@ -1802,7 +1802,7 @@
                                                                                                    :tag "Id"
                                                                                                    :type :string
                                                                                                    :pattern "[^\\s]+"
-                                                                                                   :value "hop-grafana-XXXXXXX"}
+                                                                                                   :value "hop-project-name-grafana"}
                                                                                                   {:name :secret
                                                                                                    :tag "Secret"
                                                                                                    :type :auto-gen-password
@@ -1814,7 +1814,7 @@
                                                                                         :tag "Name"
                                                                                         :type :string
                                                                                         :pattern "[^\\s]+"
-                                                                                        :value "hop"}]}
+                                                                                        :value "keycloak-realm-name"}]}
                                                                               {:name :theme
                                                                                :tag "Theme"
                                                                                :type :plain-group
@@ -1822,7 +1822,7 @@
                                                                                         :tag "Name"
                                                                                         :type :string
                                                                                         :pattern "[^\\s]+"
-                                                                                        :value "hop"}]}
+                                                                                        :value "keycloak-theme-name"}]}
                                                                               {:name :database
                                                                                :tag "Database"
                                                                                :docstring [:span "Database for Keycloak data persistence. It uses the persistence-sql HOP profile, so make sure it is also enabled and configured."]
@@ -1952,7 +1952,7 @@
                                                                                         :tag "Id"
                                                                                         :type :string
                                                                                         :pattern "[^\\s]+"
-                                                                                        :value "hop-spa-XXXXXXXX"}]}
+                                                                                        :value "hop-project-name-spa"}]}
                                                                               {:name :other-clients
                                                                                :tag "Other clients"
                                                                                :docstring [:span "Extra OIDC clients used by some of the other HOP profiles."]
@@ -1965,7 +1965,7 @@
                                                                                                    :tag "Id"
                                                                                                    :type :string
                                                                                                    :pattern "[^\\s]+"
-                                                                                                   :value "hop-grafana-XXXXXXX"}
+                                                                                                   :value "hop-project-name-grafana"}
                                                                                                   {:name :secret
                                                                                                    :tag "Secret"
                                                                                                    :type :auto-gen-password
@@ -1977,7 +1977,7 @@
                                                                                         :tag "Name"
                                                                                         :type :string
                                                                                         :pattern "[^\\s]+"
-                                                                                        :value "hop"}]}
+                                                                                        :value "keycloak-realm-name"}]}
                                                                               {:name :theme
                                                                                :tag "Theme"
                                                                                :type :plain-group
@@ -1985,7 +1985,7 @@
                                                                                         :tag "Name"
                                                                                         :type :string
                                                                                         :pattern "[^\\s]+"
-                                                                                        :value "hop"}]}
+                                                                                        :value "keycloak-theme-name"}]}
                                                                               {:name :database
                                                                                :tag "Database"
                                                                                :docstring [:span "Database for Keycloak data persistence. It uses the persistence-sql HOP profile, so make sure it is also enabled and configured."]
@@ -2041,7 +2041,7 @@
                                                                                         :tag "Id"
                                                                                         :type :string
                                                                                         :pattern "[^\\s]+"
-                                                                                        :value "hop-spa-XXXXXXXX"}]}
+                                                                                        :value "hop-project-name-spa"}]}
                                                                               {:name :other-clients
                                                                                :tag "Other clients"
                                                                                :docstring [:span "Extra OIDC clients used by some of the other HOP profiles."]
@@ -2054,7 +2054,7 @@
                                                                                                    :tag "Id"
                                                                                                    :type :string
                                                                                                    :pattern "[^\\s]+"
-                                                                                                   :value "hop-grafana-XXXXXXX"}
+                                                                                                   :value "hop-project-name-grafana"}
                                                                                                   {:name :secret
                                                                                                    :tag "Secret"
                                                                                                    :type :auto-gen-password
@@ -2066,7 +2066,7 @@
                                                                                         :tag "Name"
                                                                                         :type :string
                                                                                         :pattern "[^\\s]+"
-                                                                                        :value "hop"}]}
+                                                                                        :value "keycloak-realm-name"}]}
                                                                               {:name :theme
                                                                                :tag "Theme"
                                                                                :type :plain-group
@@ -2074,7 +2074,7 @@
                                                                                         :tag "Name"
                                                                                         :type :string
                                                                                         :pattern "[^\\s]+"
-                                                                                        :value "hop"}]}
+                                                                                        :value "keycloak-theme-name"}]}
                                                                               {:name :database
                                                                                :tag "Database"
                                                                                :docstring [:span "Database for Keycloak data persistence. It uses the persistence-sql HOP profile, so make sure it is also enabled and configured."]
@@ -2430,7 +2430,7 @@
                                              "check the documentation."]]
                                 :type :string
                                 :pattern "[^\\s]+"
-                                :value "hop-project"}
+                                :value "aws-project-name"}
                                {:name :vpc
                                 :tag "VPC"
                                 :type :plain-group
@@ -2463,7 +2463,7 @@
                                          :tag "Cloudformation stack name"
                                          :type :string
                                          :pattern "[^\\s]+"
-                                         :value "hop-project-dev"}
+                                         :value "aws-project-name-dev"}
                                         {:name :optional-services
                                          :type :multiple-choice-group
                                          :tag "Optional services"
@@ -2485,7 +2485,7 @@
                                                              :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                              :type :string
                                                              :pattern "[^\\s]+"
-                                                             :value "/aws/eb/hop-dev"}
+                                                             :value "/aws/eb/aws-project-name-dev"}
                                                             {:name :retention-days
                                                              :tag "Retention days"
                                                              :docstring [:span "The amount of days after which the logs will be deleted."]
@@ -2498,12 +2498,12 @@
                                          :tag "Cloudformation stack name"
                                          :type :string
                                          :pattern "[^\\s]+"
-                                         :value "hop-project-test"}
+                                         :value "aws-project-name-test"}
                                         {:name :notifications-email
                                          :tag "Notifications email"
                                          :docstring [:span "Email address used to receive ElasticBeanstalk notifications about a specific environment."]
                                          :type :email
-                                         :value "devops+test@mail.invalid"}
+                                         :value "devops+aws-project-name-test@domain.invalid"}
                                         {:name :eb
                                          :tag "ElasticBeanstalk"
                                          :type :plain-group
@@ -2569,7 +2569,7 @@
                                                              :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                              :type :string
                                                              :pattern "[^\\s]+"
-                                                             :value "/aws/eb/hop-test"}
+                                                             :value "/aws/eb/aws-project-name-test"}
                                                             {:name :retention-days
                                                              :tag "Retention days"
                                                              :docstring [:span "The amount of days after which the logs will be deleted."]
@@ -2584,7 +2584,7 @@
                                                   :docstring [:span "Alias of the KMS key. It should have a shape of: alias/<name>"]
                                                   :type :string
                                                   :pattern "alias\\/[^\\s]+"
-                                                  :value "alias/hop-test"}]}]}
+                                                  :value "alias/aws-project-name-test"}]}]}
                                {:name :prod
                                 :tag "Production environment"
                                 :type :plain-group
@@ -2592,12 +2592,12 @@
                                          :tag "Cloudformation Stack name"
                                          :type :string
                                          :pattern "[^\\s]+"
-                                         :value "hop-project-prod"}
+                                         :value "aws-project-name-prod"}
                                         {:name :notifications-email
                                          :tag "Notifications email"
                                          :docstring [:span "Email address used to receive ElasticBeanstalk notifications about a specific environment."]
                                          :type :email
-                                         :value "devops+prod@mail.invalid"}
+                                         :value "devops+aws-project-name-prod@domain.invalid"}
                                         {:name :eb
                                          :tag "ElasticBeanstalk"
                                          :type :plain-group
@@ -2663,7 +2663,7 @@
                                                              :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                              :type :string
                                                              :pattern "[^\\s]+"
-                                                             :value "/aws/eb/hop-prod"}
+                                                             :value "/aws/eb/aws-project-name-prod"}
                                                             {:name :retention-days
                                                              :tag "Retention days"
                                                              :docstring [:span "The amount of days after which the logs will be deleted."]
@@ -2678,4 +2678,4 @@
                                                   :docstring [:span "Alias of the KMS key. It should have a shape of: alias/<name>"]
                                                   :type :string
                                                   :pattern "alias\\/[^\\s]+"
-                                                  :value "alias/hop-prod"}]}]}]}]}]}]}
+                                                  :value "alias/aws-project-name-prod"}]}]}]}]}]}]}
