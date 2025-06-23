@@ -1735,7 +1735,7 @@
                                 :tag "Version"
                                 :type :string
                                 :pattern "[^\\s]+"
-                                :value "26.0.7"}
+                                :value "26.2.0"}
                                {:name :deployment
                                 :tag "Deployment"
                                 :docstring [:span "The settings of the profile are splitted between two sets of deployment groups: development and deployment."]
