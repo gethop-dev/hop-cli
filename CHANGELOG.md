@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+
+## [0.1.23] - 2025-06-23
 - Make all local development containers only listen on 127.0.0.1, so they are not reachable from computers on the same network (this is a know Docker issue).
 - [aws profile] **BREAKING CHANGE**: Make `--region` argument mandatory. While some AWS services may work without specifying a region (that's why we make this argument optional at the beginning), others need it. Instead of letting the end user figure out in which cases it's needed and in which cases is not, we've decided to make it mandatory in all cases (and reduce the possible confusion).
 - [core profile] **POTENTIALLY BREAKING CHANGE**: We now impose a limit on the size of the project name. The project name maximum length is now 48 characters. The reason for this it that quite a few AWS resource names have a limit of 64 characters. And we use the project name, with some extra suffixes, to build those AWS resource names. We are reserving 16 characters for those suffixes, so that limits the project name to 48 characters max.
@@ -170,7 +172,8 @@ to set it to the local development IAM *Role* ARN.
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.22...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.23...HEAD
+[0.1.23]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.23
 [0.1.22]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.22
 [0.1.21]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.21
 [0.1.20]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.20
