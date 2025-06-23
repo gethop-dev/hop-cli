@@ -314,8 +314,9 @@ html, body, #app {
 }
 
 .form__docstring {
-  font-size: 12px;
-  color: gray;
+  font-size: 13px;
+  color: #6a6a6a;
+  
 }
 
 .form__input-label {
