@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file. This change
 ## [UNRELEASED]
 - Make all local development containers only listen on 127.0.0.1, so they are not reachable from computers on the same network (this is a know Docker issue).
 - [aws profile] **BREAKING CHANGE**: Make `--region` argument mandatory. While some AWS services may work without specifying a region (that's why we make this argument optional at the beginning), others need it. Instead of letting the end user figure out in which cases it's needed and in which cases is not, we've decided to make it mandatory in all cases (and reduce the possible confusion).
+- [core profile] **POTENTIALLY BREAKING CHANGE**: We now impose a limit on the size of the project name. The project name maximum length is now 48 characters. The reason for this it that quite a few AWS resource names have a limit of 64 characters. And we use the project name, with some extra suffixes, to build those AWS resource names. We are reserving 16 characters for those suffixes, so that limits the project name to 48 characters max.
 
 ## [0.1.22] - 2025-05-14
 - Fixed some linting error that made CI fail.
