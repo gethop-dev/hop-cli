@@ -194,7 +194,7 @@
                                 :type :plain-group
                                 :value [{:name :profile-prefix
                                          :tag "Profile prefix"
-                                         :docstring [:span "Prefix for the AWS profiles used to run the project. The prefix will be used in the following notation: <prefix>/<name>"]
+                                         :docstring [:span "Prefix for the AWS profiles used to run the project. The prefix will be used to create profiles with the following notation: <profile-prefix>/<name>"]
                                          :type :string
                                          :value "aws-vault-profile-prefix"
                                          :pattern "[^\\s]+"}]}
