@@ -25,7 +25,7 @@ export COMPOSE_FILE="{{project.docker-compose.to-deploy}}"
 readarray -d ':' -t COMPOSE_FILES_ARRAY < <(echo -n "${COMPOSE_FILE}")
 
 env PERSISTENT_DATA_DIR="/non/existent/path" \
-    "${SCRIPT_DIR}/merge-docker-compose-files.clj" \
+    "${SCRIPT_DIR}/../merge-docker-compose-files.clj" \
     "${COMPOSE_FILES_ARRAY[@]}" \
     >"${DOCKER_COMPOSE_TMPDIR}/docker-compose.yml"
 

@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file. This change
 ## [UNRELEASED]
 
 - [core profile] Stop using `reitit.dev.pretty/exception` in the reitit router-config. Use the default exception handler instead.
+- [aws profile] Fix a bug that prevented the CI/CD script from deploying the application to ElasticBeanstalk.
 
 ## [0.1.23] - 2025-06-23
 - Make all local development containers only listen on 127.0.0.1, so they are not reachable from computers on the same network (this is a know Docker issue).
