@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file. This change
 
 ## [UNRELEASED]
 
+## [0.1.24] - 2025-06-27
 - [core profile] Stop using `reitit.dev.pretty/exception` in the reitit router-config. Use the default exception handler instead.
 - [aws profile] Fix a bug that prevented the CI/CD script from deploying the application to ElasticBeanstalk.
 
@@ -175,7 +176,8 @@ to set it to the local development IAM *Role* ARN.
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.23...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.24...HEAD
+[0.1.24]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.24
 [0.1.23]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.23
 [0.1.22]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.22
 [0.1.21]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.21
