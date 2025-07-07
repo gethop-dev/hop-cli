@@ -41,7 +41,7 @@
             :docstring [:span "Settings for setting up the application's reverse proxy."]
             :type :plain-group
             :value [{:name :dev
-                     :tag "Development environment"
+                     :tag "Local development environment"
                      :type :plain-group
                      :value [{:name :protocol
                               :tag "Protocol"
@@ -94,7 +94,7 @@
                                 :type :plain-group
                                 :value [{:name :dev
                                          :tag "Development environment"
-                                         :docstring [:span "Local development environment's configuration."]
+                                         :docstring [:span "Local development environment configuration."]
                                          :type :plain-group
                                          :value [{:name :nginx-memory-limit-mb
                                                   :tag "Nginx memory limit (mb)"
@@ -333,7 +333,7 @@
                                 :tag "Environment"
                                 :type :plain-group
                                 :value [{:name :dev
-                                         :tag "Development environment"
+                                         :tag "Local development environment"
                                          :type :plain-group
                                          :value [{:name :log-group-name
                                                   :tag "Log group name"
@@ -383,7 +383,7 @@
                                 :tag "Environment"
                                 :type :plain-group
                                 :value [{:name :dev
-                                         :tag "Development environment"
+                                         :tag "Local development environment"
                                          :type :plain-group
                                          :value [{:name :bucket
                                                   :tag "Bucket"
@@ -469,11 +469,11 @@
                                          :pattern "[^\\s]+"}]}
                                {:name :deployment
                                 :tag "Deployment"
-                                :docstring [:span "The settings of the profile are splitted between two sets of deployment groups: development and deployment."]
+                                :docstring [:span "The settings of the profile are split between two sets of deployment groups: development and deployment."]
                                 :type :plain-group
                                 :value [{:name :to-develop
-                                         :tag "Development environments"
-                                         :docstring [:span "Settings for the environments that are used at development."]
+                                         :tag "Local development environment"
+                                         :docstring [:span "Settings for the local development environment."]
                                          :type :single-choice-group
                                          :value :container
                                          :choices [{:name :container
@@ -489,7 +489,7 @@
                                                              :tag "Environment"
                                                              :type :plain-group
                                                              :value [{:name :dev
-                                                                      :tag "Development environment"
+                                                                      :tag "Local development environment"
                                                                       :type :plain-group
                                                                       :value [{:name :database
                                                                                :tag "Database"
@@ -618,7 +618,7 @@
                                                              :tag "Environment"
                                                              :type :plain-group
                                                              :value [{:name :dev
-                                                                      :tag "Development environment"
+                                                                      :tag "Local development environment"
                                                                       :type :plain-group
                                                                       :value [{:name :database
                                                                                :tag "Database"
@@ -1200,12 +1200,12 @@
                                 :value "11.3.1"}
                                {:name :deployment
                                 :tag "Deployment"
-                                :docstring [:span "The settings of the profile are splitted between two sets of deployment groups: development and deployment."]
+                                :docstring [:span "The settings of the profile are split between two sets of deployment groups: development and deployment."]
                                 :type :plain-group
                                 :value [{:name :to-develop
                                          :type :single-choice-group
-                                         :tag "Development environments"
-                                         :docstring [:span "Settings for the environments that are used at development."]
+                                         :tag "Local development environment"
+                                         :docstring [:span "Settings for the environments that is use for local development."]
                                          :value :container
                                          :choices [{:name :container
                                                     :tag "Docker container"
@@ -1224,7 +1224,7 @@
                                                              :tag "Environment"
                                                              :type :plain-group
                                                              :value [{:name :dev
-                                                                      :tag "Development environment"
+                                                                      :tag "Local development environment"
                                                                       :type :plain-group
                                                                       :value [{:name :server-domain
                                                                                :type :string
@@ -1365,7 +1365,7 @@
                                                              :tag "Environment"
                                                              :type :plain-group
                                                              :value [{:name :dev
-                                                                      :tag "Development environment"
+                                                                      :tag "Local development environment"
                                                                       :type :plain-group
                                                                       :value [{:name :uri
                                                                                :docstring [:span "E.g., http://localhost/grafana"]
@@ -1738,11 +1738,11 @@
                                 :value "26.2.0"}
                                {:name :deployment
                                 :tag "Deployment"
-                                :docstring [:span "The settings of the profile are splitted between two sets of deployment groups: development and deployment."]
+                                :docstring [:span "The settings of the profile are split between two sets of deployment groups: development and deployment."]
                                 :type :plain-group
                                 :value [{:name :to-develop
-                                         :tag "Development environments"
-                                         :docstring [:span "Settings for the environments that are used at development."]
+                                         :tag "Local development environment"
+                                         :docstring [:span "Settings for the environment that is use for local development."]
                                          :type :single-choice-group
                                          :value :container
                                          :choices [{:name :container
@@ -1762,7 +1762,7 @@
                                                              :tag "Environment"
                                                              :type :plain-group
                                                              :value [{:name :dev
-                                                                      :tag "Development environment"
+                                                                      :tag "Local development environment"
                                                                       :type :plain-group
                                                                       :value [{:name :admin
                                                                                :tag "Admin user"
@@ -1864,7 +1864,7 @@
                                                              :tag "Environment"
                                                              :type :plain-group
                                                              :value [{:name :dev
-                                                                      :tag "Development environment"
+                                                                      :tag "Local development environment"
                                                                       :type :plain-group
                                                                       :value [{:name :realm
                                                                                :tag "Realm"
@@ -2206,7 +2206,7 @@
                                 :tag "Environment"
                                 :type :plain-group
                                 :value [{:name :dev
-                                         :tag "Development environment"
+                                         :tag "Local development environment"
                                          :type :plain-group
                                          :value [{:name :user-pool
                                                   :tag "User pool"
@@ -2457,7 +2457,7 @@
                        :docstring [:span "Provisioning of resources needed to run a specific environment belonging to a HOP Application."]
                        :type :plain-group
                        :value [{:name :dev
-                                :tag "Development environment"
+                                :tag "Local development environment"
                                 :type :plain-group
                                 :value [{:name :stack-name
                                          :tag "Cloudformation stack name"
