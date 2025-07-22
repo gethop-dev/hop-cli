@@ -10,6 +10,9 @@ on:
       - "LICENSE"
       - ".gitignore"
 
+permissions:
+  read
+
 jobs:
   ci-cd:
     runs-on: ubuntu-latest
