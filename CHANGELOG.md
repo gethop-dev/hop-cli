@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+
+## [0.1.25] - 2025-07-22
 - [core] Fixed the display of SVG images.
 
 ## [0.1.24] - 2025-06-27
@@ -177,7 +179,8 @@ to set it to the local development IAM *Role* ARN.
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.24...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.25...HEAD
+[0.1.25]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.25
 [0.1.24]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.24
 [0.1.23]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.23
 [0.1.22]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.22
