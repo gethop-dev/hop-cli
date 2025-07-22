@@ -15,6 +15,7 @@
   {"cljs" "application/x-scittle"
    "css" "text/css"
    "edn" "application/edn"
+   "svg" "image/svg+xml"
    "html" "text/html"})
 
 ;; https://github.com/ring-clojure/ring/blob/master/ring-core/src/ring/util/mime_type.clj

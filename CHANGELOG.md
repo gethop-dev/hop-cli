@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+- [core] Fixed the display of SVG images.
 
 ## [0.1.24] - 2025-06-27
 - [core profile] Stop using `reitit.dev.pretty/exception` in the reitit router-config. Use the default exception handler instead.
