@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+- [core profile] Make sure Babashka scripts get the executable permission set.
 - [aws profile] Fix predeploy script. It was missing the now mandatory --region flag.
 
 ## [0.1.25] - 2025-07-22

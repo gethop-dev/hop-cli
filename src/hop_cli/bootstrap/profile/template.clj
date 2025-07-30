@@ -6,6 +6,7 @@
   (:require [babashka.fs :as fs]
             [cljfmt.core :as cljfmt]
             [clojure.pprint :refer [pprint]]
+            [clojure.set :as set]
             [clojure.string :as str]
             [hop-cli.bootstrap.util :as bp.util]
             [hop-cli.util :as util]
@@ -106,23 +107,48 @@
     :else
     content))
 
+(def file-exts-to-render
+  #{"edn"
+    "clj"
+    "cljs"
+    "cljc"
+    "bb"
+    "json"
+    "sh"
+    "yaml"
+    "yml"
+    "sql"
+    "html"
+    "service"})
+
+(def file-names-to-render
+  #{"Dockerfile"
+    ".bashrc"})
+
+(def file-exts-to-make-executable
+  #{"sh"
+    "bb"})
+
 (defn render-profile-templates!
   [settings project-path]
-  (let [renderer (mustache-template-renderer settings)]
+  (let [renderer (mustache-template-renderer settings)
+        files-to-render (set/union file-exts-to-render file-names-to-render)]
     (fs/walk-file-tree
      project-path
      {:visit-file
       (fn [path _]
-        (when (or (get #{"edn" "clj" "cljs" "cljc" "json" "sh" "yaml" "yml" "sql" "html" "service"} (fs/extension path))
-                  (get #{"Dockerfile" ".bashrc"} (fs/file-name path)))
-          (let [update-file-fn (fn [file-content]
-                                 (->> file-content
-                                      (renderer)
-                                      (format-file-content path)))
-                _ (util.file/update-file-content! path update-file-fn)
-                new-path (util.file/update-file-name! path renderer)]
-            (when (= "sh" (fs/extension new-path))
-              (fs/set-posix-file-permissions new-path "rwxr-xr-x"))))
+        (let [new-path (or
+                        (when (get files-to-render (fs/extension path))
+                          (let [update-file-fn (fn [file-content]
+                                                 (->> file-content
+                                                      (renderer)
+                                                      (format-file-content path)))]
+                            (util.file/update-file-content! path update-file-fn)
+                            (util.file/update-file-name! path renderer)
+                            path))
+                        path)]
+          (when (get file-exts-to-make-executable (fs/extension new-path))
+            (fs/set-posix-file-permissions new-path "rwxr-xr-x")))
         :continue)
       :post-visit-dir
       (fn [path _]
