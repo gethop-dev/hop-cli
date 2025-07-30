@@ -35,6 +35,27 @@ TEMP_FILE=$(mktemp)
 
 trap 'rm -f ${TEMP_FILE}' EXIT ERR
 
+# Use instance meta-data service (IMDSv2) to get the instance region.
+# See
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html#instance-metadata-v2-how-it-works
+# and
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
+# for details. Gettting a token that only lasts 60 seconds should be more than enough.
+IMDSv2_TOKEN_DURATION_SECS=60
+IMDSv2_TOKEN="$(curl -X PUT "http://169.254.169.254/latest/api/token" \
+    -H "X-aws-ec2-metadata-token-ttl-seconds: ${IMDSv2_TOKEN_DURATION_SECS}")"
+if [[ -z "${IMDSv2_TOKEN}" ]]; then
+    echo "Could not get a IMDSv2 Token to try and determine EC2 instance AWS Region."
+    echo "Aborting..."
+    exit 1
+fi
+
+REGION="$(curl -H "X-aws-ec2-metadata-token: ${IMDSv2_TOKEN}" http://169.254.169.254/latest/meta-data/placement/region)"
+if [[ -z "${REGION}" ]]; then
+    echo "Could not determine EC2 instance AWS Region. Aborting..."
+    exit 1
+fi
+
 /usr/local/bin/bb /usr/local/hop-cli/hop-cli.jar \
     aws \
     env-vars \
@@ -42,6 +63,7 @@ trap 'rm -f ${TEMP_FILE}' EXIT ERR
     --project-name "${PROJECT_NAME}" \
     --environment "${ENVIRONMENT}" \
     --kms-key-alias "${KMS_KEY_ALIAS}" \
-    --file "${TEMP_FILE}"
+    --file "${TEMP_FILE}" \
+    --region "${REGION}"
 
 cat "${TEMP_FILE}" >>"${NEW_ENV_FILE_PATH}"
