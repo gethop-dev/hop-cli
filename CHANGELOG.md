@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. This change
 - [core profile] Make sure Babashka scripts get the executable permission set.
 - [aws profile] Fix predeploy script. It was missing the now mandatory --region flag.
 - Bumped minimum supported babashka version to 1.12.207. We need some additional Java classes to implement the support for client secrets in the Cognito get-id-token command.
+- [aws profile] awyeah-api library is no longer used. Cognitect AWS API version 0.8.762 has gained built-in support for Babashka!
 
 ## [0.1.25] - 2025-07-22
 - [core] Fixed the display of SVG images.

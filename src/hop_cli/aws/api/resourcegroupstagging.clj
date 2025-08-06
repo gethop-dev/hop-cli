@@ -3,7 +3,7 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns hop-cli.aws.api.resourcegroupstagging
-  (:require [com.grzm.awyeah.client.api :as aws]
+  (:require [cognitect.aws.client.api :as aws]
             [hop-cli.aws.api.client :as aws.client]))
 
 (defn- api-resource->resource

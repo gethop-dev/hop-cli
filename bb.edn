@@ -7,6 +7,7 @@
         com.cognitect.aws/cloudformation {:mvn/version "871.2.31.23"}
         com.cognitect.aws/cognito-idp {:mvn/version "871.2.31.23"}
         com.cognitect.aws/ec2 {:mvn/version "871.2.31.23"}
+        com.cognitect.aws/api {:mvn/version "0.8.762"}
         com.cognitect.aws/elasticbeanstalk {:mvn/version "871.2.29.35"}
         com.cognitect.aws/iam {:mvn/version "871.2.30.22"}
         com.cognitect.aws/rds {:mvn/version "871.2.31.23"}
@@ -14,9 +15,6 @@
         com.cognitect.aws/s3 {:mvn/version "871.2.31.23"}
         com.cognitect.aws/ssm {:mvn/version "871.2.31.23"}
         com.cognitect.aws/sts {:mvn/version "871.2.29.52"}
-        com.grzm/awyeah-api {:git/url "https://github.com/grzm/awyeah-api"
-                             :git/sha "e5513349a2fd8a980a62bbe0d45a0d55bfcea141"
-                             :git/tag "v0.8.84"}
         http-kit/http-kit {:mvn/version "2.8.0"}
         meta-merge/meta-merge {:mvn/version "1.0.0"}
         metosin/malli {:mvn/version "0.18.0"}

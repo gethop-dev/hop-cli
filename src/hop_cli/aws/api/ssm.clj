@@ -4,7 +4,7 @@
 
 (ns hop-cli.aws.api.ssm
   (:require [clojure.string :as str]
-            [com.grzm.awyeah.client.api :as aws]
+            [cognitect.aws.client.api :as aws]
             [hop-cli.aws.api.client :as aws.client]))
 
 (defn- api-name->name
