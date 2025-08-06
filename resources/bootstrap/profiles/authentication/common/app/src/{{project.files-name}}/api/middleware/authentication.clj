@@ -52,12 +52,3 @@
              (if (authenticated? req)
                (handler req)
                (util.r/unauthorized {:reason :invalid-or-missing-id-token})))))))})
-
-(defn authentication-required
-  "This would be the middleware after `auth-middleware` to check if the
-  token verification was successfull."
-  [handler]
-  (fn [req]
-    (if (authenticated? req)
-      (handler req)
-      (util.r/unauthorized {:error "Authentication required"}))))
