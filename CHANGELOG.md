@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file. This change
 ## [UNRELEASED]
 - [core profile] Make sure Babashka scripts get the executable permission set.
 - [aws profile] Fix predeploy script. It was missing the now mandatory --region flag.
+- Bumped minimum supported babashka version to 1.12.207. We need some additional Java classes to implement the support for client secrets in the Cognito get-id-token command.
 
 ## [0.1.25] - 2025-07-22
 - [core] Fixed the display of SVG images.
