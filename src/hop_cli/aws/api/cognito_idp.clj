@@ -4,7 +4,9 @@
 
 (ns hop-cli.aws.api.cognito-idp
   (:require [cognitect.aws.client.api :as aws]
-            [hop-cli.aws.api.client :as aws.client]))
+            [hop-cli.aws.api.client :as aws.client]
+            [hop-cli.util :as util])
+  (:import (java.util Base64)))
 
 (defn- attributes->api-attributes
   [attributes]
@@ -46,14 +48,25 @@
        :error-details result}
       {:success? true})))
 
+(defn- compute-secret-hash
+  [client-id client-secret username]
+  (let [hmac (util/hmac-sha256
+              (.getBytes client-secret "UTF-8")
+              (.getBytes (str username client-id) "UTF-8"))]
+    (.encodeToString (Base64/getEncoder) hmac)))
+
 (defn get-tokens
-  [{:keys [user-pool-id client-id username password] :as opts}]
+  [{:keys [user-pool-id client-id client-secret username password] :as opts}]
   (let [idp-client (aws.client/gen-client :cognito-idp opts)
-        request {:UserPoolId user-pool-id
-                 :ClientId client-id
-                 :AuthFlow "ADMIN_USER_PASSWORD_AUTH"
-                 :AuthParameters {:USERNAME username
-                                  :PASSWORD password}}
+        request (cond-> {:UserPoolId user-pool-id
+                         :ClientId client-id
+                         :AuthFlow "ADMIN_USER_PASSWORD_AUTH"
+                         :AuthParameters {:USERNAME username
+                                          :PASSWORD password}}
+                  (some? client-secret)
+                  (update :AuthParameters
+                          assoc :SECRET_HASH
+                          (compute-secret-hash client-id client-secret username)))
         args {:op :AdminInitiateAuth
               :request request}
         result (aws/invoke idp-client args)]

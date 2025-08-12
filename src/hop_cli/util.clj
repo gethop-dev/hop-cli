@@ -5,7 +5,17 @@
 (ns hop-cli.util
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.walk :as walk]))
+            [clojure.walk :as walk])
+  (:import (javax.crypto Mac)
+           (javax.crypto.spec SecretKeySpec)))
+
+(defn hmac-sha256
+  "Both `key` and `data` *must* be byte-arrays"
+  [^bytes key ^bytes data]
+  (let [algo "HmacSHA256"
+        mac (Mac/getInstance algo)]
+    (.init mac (SecretKeySpec. key algo))
+    (.doFinal mac data)))
 
 (defn cli-stdin-map->map
   [stdin-parameters]

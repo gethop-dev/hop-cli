@@ -155,9 +155,16 @@
              [:client-id
               {:alias :c
                :require true
+               :coerce :string
                :desc "Client ID to use to get the Identity token."}]
+             [:client-secret
+              {:alias :s
+               :require false
+               :coerce :string
+               :desc "Client Secret to use to get the Identity token."
+               :default-desc "(Optional)"}]
              username-spec
-             (update password-spec 1 (fn [m] (assoc m :desc "Password of the AWS Cognito account.")))
+             (update password-spec 1 (fn [m] (assoc m :desc "Password of the user.")))
              region-spec
              [:raw
               {:require false
