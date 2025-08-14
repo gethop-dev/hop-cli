@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file. This change
 - [aws profile] awyeah-api library is no longer used. Cognitect AWS API version 0.8.762 has gained built-in support for Babashka!
 - [aws profile] Add support for client secrets to Cognito get-id-token command.
 - [core profile] Add a new /api/health API endpoint, to check the health status of the application.
+- [persistence profile] Add the `Transactionable` protocol to the persistence adapter. This protocol lets the service layer tell the persistence adapter that it wants to run a set of adapter calls inside a database transaction, without having to know the specific low level details of how that can be achieved.
 
 ## [0.1.25] - 2025-07-22
 - [core] Fixed the display of SVG images.

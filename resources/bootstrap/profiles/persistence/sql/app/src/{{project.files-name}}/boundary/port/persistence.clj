@@ -5,7 +5,10 @@
 {{=<< >>=}}
 (ns <<project.name>>.boundary.port.persistence)
 
-;; (defprotocol SomeProtocolName
-;;   (some-method-name [db logger other-method-params...]))
 (defprotocol Health
   (get-status [spec opts]))
+
+(defprotocol Transactionable
+  (with-transaction
+    [db-spec config body-fn body-fn-argv]
+    [db-spec config body-fn body-fn-argv rollback-check-fn]))
