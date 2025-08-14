@@ -36,8 +36,7 @@
   [settings]
   (let [selected-profiles (bp.util/get-settings-value settings [:project :profiles :value])
         selected-profile-set (set selected-profiles)]
-    (->> profile.registry-loader/profile-list
-         (filterv #(get selected-profile-set %)))))
+    (filterv selected-profile-set profile.registry-loader/profile-list)))
 
 (defn- execute-profile-hook
   [settings profiles hook-fn]
