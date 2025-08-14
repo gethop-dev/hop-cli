@@ -32,7 +32,11 @@
 
 (defn- kv->formatted-string
   [[k v]]
-  (str k "\n" (str/replace (with-out-str (pprint v)) #"," "")))
+  (str k
+       "\n"
+       (-> (with-out-str (pprint v))
+           (str/trim-newline)
+           (str/replace #"," ""))))
 
 (defn- map->formatted-strings
   [m]
