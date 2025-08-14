@@ -34,23 +34,26 @@
   [[k v]]
   (str k "\n" (str/replace (with-out-str (pprint v)) #"," "")))
 
-(defn- map->formatted-string
+(defn- map->formatted-strings
   [m]
   (->> m
        (map kv->formatted-string)
        (interpose "\n\n")))
 
-(defn- sequential-coll->formatted-string
+(defn- sequential-coll->formatted-strings
   [coll]
   (->> coll
-       (map #(if (string? %) % (with-out-str (pprint %))))
+       (map (fn [v]
+              (if (string? v)
+                v
+                (str/trim-newline (with-out-str (pprint v))))))
        (interpose "\n")))
 
-(defn- coll->formatted-string
+(defn- coll->formatted-strings
   [coll]
   (if (map? coll)
-    (map->formatted-string coll)
-    (sequential-coll->formatted-string coll)))
+    (map->formatted-strings coll)
+    (sequential-coll->formatted-strings coll)))
 
 (defn- coll->escaped-string
   [coll]
@@ -71,12 +74,12 @@
   [settings]
   (-> settings
       (update-in [:project :config-edn]
-                 util/update-map-vals coll->formatted-string {:recursive? false})
+                 util/update-map-vals coll->formatted-strings {:recursive? false})
       (update-in [:project :load-frontend-app]
                  (fn [load-frontend-app]
                    (into {}
                          (map (fn [[k v]]
-                                [k (util/update-map-vals v coll->formatted-string {:recursive? false})]))
+                                [k (util/update-map-vals v coll->formatted-strings {:recursive? false})]))
                          load-frontend-app)))
       (update-in [:project :docker-compose]
                  util/update-map-vals #(str/join ":" %))
