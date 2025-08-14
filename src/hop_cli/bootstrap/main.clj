@@ -12,70 +12,75 @@
             [hop-cli.util.thread-transactions :as tht]))
 
 (defn bootstrap-hop
-  [{:keys [settings-file-path target-project-dir environments]}]
-  (->
-   [{:txn-fn
-     (fn read-settings [_]
-       (print "Reading settings file...")
-       (let [result (sr/read-settings settings-file-path)]
-         (if (:success? result)
-           (do
-             (println "Done.")
-             {:success? true
-              :settings
-              (-> (:settings result)
-                  (assoc-in [:project :target-dir] target-project-dir)
-                  (assoc-in [:project :environments] environments))})
-           {:success? false
-            :reason :could-not-read-settings
-            :error-details result})))}
-    {:txn-fn
-     (fn provision-infrastructure
-       [{:keys [settings]}]
-       (println "Provisioning infrastructure")
-       (let [result (infrastructure/provision-initial-infrastructure settings)]
-         (if (:success? result)
-           {:success? true
-            :settings (:settings result)}
-           {:success? false
-            :reason :failed-to-provision-infrastructure
-            :error-details result})))}
-    {:txn-fn
-     (fn execute-profiles
-       [{:keys [settings]}]
-       (print "Generating project...")
-       (let [result (profile/execute-profiles! settings)]
-         (if (:success? result)
-           (do
-             (println "Done.")
-             {:success? true
-              :settings (:settings result)})
-           {:success? false
-            :reason :could-not-execute-profiles
-            :error-details result})))}
-    {:txn-fn
-     (fn save-environment-variables
-       [{:keys [settings]}]
-       (print "Saving environment variables...")
-       (let [result (infrastructure/save-environment-variables settings)]
-         (if (:success? result)
-           (do
-             (println "Done.")
-             {:success? true
-              :settings settings})
-           {:success? false
-            :reason :could-not-save-env-variables
-            :error-details result})))}
-    {:txn-fn
-     (fn post-installation-messages
-       [{:keys [settings]}]
-       (println "\nProject generation finished. Now follow these manual steps to complete the bootstrap.")
-       (doseq [environment environments
-               :let [messages (bp.util/get-settings-value settings [:project :post-installation-messages environment])]
-               :when (seq messages)]
-         (println (format "\nSteps to complete the %s environment setup\n" (str/upper-case (name environment))))
-         (doseq [[n msg] (map-indexed vector messages)]
-           (println (format "Step #%s\n" n))
-           (println msg)))
-       {:success? true})}]
-   (tht/thread-transactions {})))
+  [{:keys [settings-file-path target-project-dir environments output-settings]}]
+  (let [result
+        (-> [{:txn-fn
+              (fn read-settings [_]
+                (print "Reading settings file...")
+                (let [result (sr/read-settings settings-file-path)]
+                  (if (:success? result)
+                    (do
+                      (println "Done.")
+                      {:success? true
+                       :settings
+                       (-> (:settings result)
+                           (assoc-in [:project :target-dir] target-project-dir)
+                           (assoc-in [:project :environments] environments))})
+                    {:success? false
+                     :reason :could-not-read-settings
+                     :error-details result})))}
+             {:txn-fn
+              (fn provision-infrastructure
+                [{:keys [settings]}]
+                (println "Provisioning infrastructure")
+                (let [result (infrastructure/provision-initial-infrastructure settings)]
+                  (if (:success? result)
+                    {:success? true
+                     :settings (:settings result)}
+                    {:success? false
+                     :reason :failed-to-provision-infrastructure
+                     :error-details result})))}
+             {:txn-fn
+              (fn execute-profiles
+                [{:keys [settings]}]
+                (print "Generating project...")
+                (let [result (profile/execute-profiles! settings)]
+                  (if (:success? result)
+                    (do
+                      (println "Done.")
+                      {:success? true
+                       :settings (:settings result)})
+                    {:success? false
+                     :reason :could-not-execute-profiles
+                     :error-details result})))}
+             {:txn-fn
+              (fn save-environment-variables
+                [{:keys [settings]}]
+                (print "Saving environment variables...")
+                (let [result (infrastructure/save-environment-variables settings)]
+                  (if (:success? result)
+                    (do
+                      (println "Done.")
+                      {:success? true
+                       :settings settings})
+                    {:success? false
+                     :reason :could-not-save-env-variables
+                     :error-details result})))}
+             {:txn-fn
+              (fn post-installation-messages
+                [{:keys [settings]}]
+                (println "\nProject generation finished. Now follow these manual steps to complete the bootstrap.")
+                (doseq [environment environments
+                        :let [messages (bp.util/get-settings-value settings [:project :post-installation-messages environment])]
+                        :when (seq messages)]
+                  (println (format "\nSteps to complete the %s environment setup\n" (str/upper-case (name environment))))
+                  (doseq [[n msg] (map-indexed vector messages)]
+                    (println (format "Step #%s\n" n))
+                    (println msg)))
+                {:success? true
+                 :settings settings})}]
+            (tht/thread-transactions {}))]
+    (if (and (:success? result)
+             (not output-settings))
+      {:success? true}
+      result)))

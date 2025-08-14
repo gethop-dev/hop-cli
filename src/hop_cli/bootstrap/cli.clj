@@ -45,7 +45,10 @@
                                    :desc "Directory in which the new project will be created."
                                    :require true
                                    :validate (comp not fs/exists? fs/file)
-                                   :error-msgs {:validate "Project directory already exists. Please input a different directory."}}]])}
+                                   :error-msgs {:validate "Project directory already exists. Please input a different directory."}}]
+             [:output-settings {:alias :o
+                                :desc "Output (as EDN) the settings used to build the new project. Mostly useful for debugging."
+                                :require false}]])}
    {:cmds ["create-settings-file"]
     :fn copy-settings-handler
     :error-fn (partial error/generic-error-handler [main-cmd "create-settings-handler"])
@@ -76,7 +79,10 @@
                                    :desc "Directory where the project is located."
                                    :require true
                                    :validate (comp fs/exists? fs/file)
-                                   :error-msgs {:validate "Project directory must exist. Please input a different directory."}}]])}
+                                   :error-msgs {:validate "Project directory must exist. Please input a different directory."}}]
+             [:output-settings {:alias :o
+                                :desc "Output (as EDN) the settings used to build the new project. Mostly useful for debugging."
+                                :require false}]])}
    {:cmds ["open-settings-editor"]
     :fn open-settings-editor-handler
     :error-fn (partial error/generic-error-handler [main-cmd "open-settings-editor"])
