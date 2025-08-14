@@ -7,3 +7,5 @@
 
 ;; (defprotocol SomeProtocolName
 ;;   (some-method-name [db logger other-method-params...]))
+(defprotocol Health
+  (get-status [spec opts]))

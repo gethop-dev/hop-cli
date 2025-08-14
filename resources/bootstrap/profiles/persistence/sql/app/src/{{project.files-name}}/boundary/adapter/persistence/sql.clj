@@ -6,6 +6,7 @@
 (ns <<project.name>>.boundary.adapter.persistence.sql
   (:require [integrant.core :as ig]
             [<<project.name>>.boundary.adapter.persistence.connector :as connector]
+            [<<project.name>>.boundary.adapter.persistence.sql.health]
             [<<project.name>>.boundary.adapter.persistence.sql.jdbc-util :as sql.jdbc-util]))
 
 (defn init-sql-adapter

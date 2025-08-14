@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. This change
 - Bumped minimum supported babashka version to 1.12.207. We need some additional Java classes to implement the support for client secrets in the Cognito get-id-token command.
 - [aws profile] awyeah-api library is no longer used. Cognitect AWS API version 0.8.762 has gained built-in support for Babashka!
 - [aws profile] Add support for client secrets to Cognito get-id-token command.
+- [core profile] Add a new /api/health API endpoint, to check the health status of the application.
 
 ## [0.1.25] - 2025-07-22
 - [core] Fixed the display of SVG images.
