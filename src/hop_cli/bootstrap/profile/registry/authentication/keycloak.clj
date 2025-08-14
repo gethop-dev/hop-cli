@@ -58,7 +58,7 @@
    (rf/reg-event-fx
     ::init-keycloak
     (fn [{:keys [db]} _]
-      {:init-and-try-to-authenticate
+      {::session/init-and-try-to-authenticate
        {:config {:oidc (get-in db [:config :keycloak])}
         :on-auth-success-evt [::on-auth-success]
         :on-auth-failure-evt [::on-auth-failure]}}))")
