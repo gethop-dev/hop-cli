@@ -13,7 +13,9 @@
 (defn- build-env-variables
   [settings environment]
   (let [base-path [:project :profiles :core :environment environment]]
-    {:MEMORY_LIMIT_APP
+    {:CORS_ALLOWED_ORIGINS "https://url.of.the.client.app"
+     :CORS_ALLOWED_METHODS [:get :post :put :delete :patch]
+     :MEMORY_LIMIT_APP
      (str (bp.util/get-settings-value settings (conj base-path :app-memory-limit-mb)) "m")
      :MEMORY_LIMIT_PROXY
      (str (bp.util/get-settings-value settings (conj base-path :nginx-memory-limit-mb)) "m")}))

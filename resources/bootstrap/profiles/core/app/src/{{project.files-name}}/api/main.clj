@@ -4,14 +4,14 @@
 
 {{=<< >>=}}
 (ns <<project.name>>.api.main
-  (:require [<<project.name>>.api.middleware.nested-query-parameters :as mid.nested-query-parameters]
+  (:require [<<project.name>>.api.middleware.exception :as mid.exception]
+            [<<project.name>>.api.middleware.nested-query-parameters :as mid.nested-query-parameters]
             [<<project.name>>.api.muuntaja.instance :as muuntaja.instance]
             [<<project.name>>.shared.util.malli-coercion :as util.malli-coercion]
             [integrant.core :as ig]
             [reitit.coercion.spec]
             [reitit.ring :as reitit.ring]
             [reitit.ring.coercion :as mid.coercion]
-            [reitit.ring.middleware.exception :as mid.exception]
             [reitit.ring.middleware.multipart :as mid.multipart]
             [reitit.ring.middleware.muuntaja :as mid.muuntaja]
             [reitit.ring.middleware.parameters :as mid.parameters]
@@ -20,20 +20,22 @@
             [reitit.swagger-ui :as swagger-ui]))
 
 (defn- build-router-config
-  [_opts]
+  [{:keys [cors-middleware logger]}]
   {:validate reitit.spec/validate
    :reitit.ring/default-options-endpoint {:no-doc true
                                           :handler reitit.ring/default-options-handler}
    :data {:coercion util.malli-coercion/custom-reitit-malli-coercer
           :muuntaja (muuntaja.instance/build-muuntaja-instance)
-          :middleware [;; swagger feature
+          :middleware [;; cors
+                       cors-middleware
+                       ;; swagger feature
                        swagger/swagger-feature
                        ;; content-negotiation
                        mid.muuntaja/format-negotiate-middleware
                        ;; encoding response body
                        mid.muuntaja/format-response-middleware
                        ;; exception handling
-                       mid.exception/exception-middleware
+                       (mid.exception/create-exception-middleware logger)
                        ;; coercing response body
                        mid.coercion/coerce-response-middleware
                        ;; query-params & form-params
