@@ -10,7 +10,7 @@
 
 (defn init-sql-adapter
   [{:keys [db-spec logger]}]
-  (connector/->Sql (sql.jdbc-util/with-jdbc-utils db-spec logger) logger))
+  (connector/->Sql (sql.jdbc-util/with-options+logging db-spec logger) logger))
 
 (defmethod ig/init-key :<<project.name>>.boundary.adapter.persistence/sql
   [_ {:keys [duct-adapter logger]}]

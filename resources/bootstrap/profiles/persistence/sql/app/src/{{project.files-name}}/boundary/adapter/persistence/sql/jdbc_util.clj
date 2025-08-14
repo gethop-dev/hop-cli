@@ -48,7 +48,7 @@
       (log logger :trace :jdbc-util/sql-success
            (assoc log-details :result result)))))
 
-(defn with-jdbc-utils
+(defn with-options+logging
   [spec logger]
   (-> spec
       (jdbc/with-logging (partial sql-logger logger) (partial result-logger logger))
