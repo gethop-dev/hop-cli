@@ -11,9 +11,10 @@
                  [duct/module.logging "0.5.0"]
                  [duct/logger.timbre "0.5.0"]
                  [com.taoensso/timbre "6.6.1"]
-                 [metosin/jsonista "0.3.12"]
-                 [metosin/reitit "0.7.2"]
-                 [metosin/malli "0.16.4"]
+                 [metosin/jsonista "0.3.13"]
+                 [metosin/reitit "0.9.1"]
+                 [metosin/ring-swagger-ui "5.20.0"]
+                 [metosin/malli "0.19.1"]
                  [com.widdindustries/cljc.java-time "0.1.21"]
                  {{#project.dependencies}}{{&.}}{{/project.dependencies}}]
   :plugins [[duct/lein-duct "0.12.3"]]
@@ -22,7 +23,7 @@
   :middleware [lein-duct.plugin/middleware]
   :profiles {:dev [:project/dev :profiles/dev]
              :repl {:prep-tasks ^:replace ["javac" "compile"]
-                    :dependencies [[cider/piggieback "0.5.3"]]
+                    :dependencies [[cider/piggieback "0.6.0"]]
                     :jvm-opts ["-Djdk.attach.allowAttachSelf"]
                     :repl-options {:init-ns user
                                    :nrepl-middleware [cider.piggieback/wrap-cljs-repl]
@@ -36,11 +37,10 @@
                                       :debug [:progress :time]}
                            :resource-paths ["dev/resources"]
                            :source-paths ["dev/src"]
-                           :plugins [[dev.weavejester/lein-cljfmt "0.13.0"]
+                           :plugins [[dev.weavejester/lein-cljfmt "0.13.1"]
                                      [jonase/eastwood "1.4.3"]]
                            :dependencies [[integrant/repl "0.4.0"]
                                           [hawk/hawk "0.2.11"]
-                                          [eftest/eftest "0.6.0"]
                                           [ring/ring-mock "0.4.0"]
                                           {{#project.dev-dependencies}}{{&.}}{{/project.dev-dependencies}}]}}
   :uberjar-name "{{project.name}}-standalone.jar"

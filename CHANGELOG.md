@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file. This change
 - [aws profile] Add support for client secrets to Cognito get-id-token command.
 - [core profile] Add a new /api/health API endpoint, to check the health status of the application.
 - [persistence profile] Add the `Transactionable` protocol to the persistence adapter. This protocol lets the service layer tell the persistence adapter that it wants to run a set of adapter calls inside a database transaction, without having to know the specific low level details of how that can be achieved.
+- Updated most dependencies to latest versions.
 
 ## [0.1.25] - 2025-07-22
 - [core] Fixed the display of SVG images.
