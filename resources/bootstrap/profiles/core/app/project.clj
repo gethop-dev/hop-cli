@@ -1,4 +1,4 @@
-(defproject {{project.name}} "0.1.0-SNAPSHOT"
+(defproject {{project.name}} "1.0.0"
   :min-lein-version "2.11.2"
   :dependencies [[org.clojure/clojure "1.12.0"]
                  [duct/core "0.8.1"]
