@@ -1,1 +1,8 @@
-{}
+;; This Source Code Form is subject to the terms of the Mozilla Public
+;; License, v. 2.0. If a copy of the MPL was not distributed with this
+;; file, You can obtain one at http://mozilla.org/MPL/2.0/
+
+{{=<< >>=}}
+{:duct.profile.base/api [:duct.profile/base]<<#project.profiles.persistence-sql.enabled>>
+ :duct.profile.base/migrations [:duct.profile/base]
+ :duct.profile.dev/migrations [:duct.profile/dev]<</project.profiles.persistence-sql.enabled>>}

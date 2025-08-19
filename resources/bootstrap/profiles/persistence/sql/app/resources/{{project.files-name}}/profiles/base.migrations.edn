@@ -1,0 +1,10 @@
+{{=<< >>=}}
+{[:duct.migrator/ragtime :<<project.name>>/to-deploy]
+ {:database #ig/ref :duct.database/sql
+  :logger #ig/ref :duct/logger
+  :strategy :raise-error
+  :migrations-table "ragtime_migrations"
+  :migrations [#ig/ref :<<project-name>>.migration.to-deploy/_000-create-initial-schema]}
+
+ [:duct.migrator.ragtime/sql :<<project-name>>.migration.to-deploy/_000-create-initial-schema]
+ {:up [#duct/resource "<<project.files-name>>/migrations/000-create-initial-schema.up.sql"]}}

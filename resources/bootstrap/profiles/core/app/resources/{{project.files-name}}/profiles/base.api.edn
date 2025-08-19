@@ -1,0 +1,26 @@
+;; This Source Code Form is subject to the terms of the Mozilla Public
+;; License, v. 2.0. If a copy of the MPL was not distributed with this
+;; file, You can obtain one at http://mozilla.org/MPL/2.0/
+
+{{=<< >>=}}
+{:<<project.name>>.api/main
+ {:routes [<<#project.config-edn.routes>><<&.>><</project.config-edn.routes>>]
+  :openapi {<<#project.http-router.auth.enabled>>:oidc-token-configs [{:display-name #duct/env ["OIDC_DISPLAY_NAME" Str]
+                                                                       :authorization-url #duct/env ["OIDC_AUTHORIZATION_URL" Str]
+                                                                       :token-url #duct/env ["OIDC_TOKEN_URL" Str]}]<</project.http-router.auth.enabled>>}
+  <<#project.http-router.auth.enabled>>:auth-middleware #ig/ref :duct.middleware.buddy/authentication
+  <</project.http-router.auth.enabled>><<#project.cors.enabled>>:cors-middleware #ig/ref :<<project.name>>.api.middleware/cors
+  <</project.cors.enabled>>
+  :logger #ig/ref :duct/logger
+  :api-routes [#ig/ref :<<project.name>>.api/health
+               <<#project.config-edn.api-routes>><<&.>><</project.config-edn.api-routes>>]}
+
+ <<#project.cors.enabled>>:<<project.name>>.api.middleware/cors
+ {:allowed-origins #duct/env ["CORS_ALLOWED_ORIGINS" Str]
+  :allowed-methods #duct/env ["CORS_ALLOWED_METHODS" Edn]}
+
+ <</project.cors.enabled>>
+ :<<project.name>>.api/health
+ #ig/ref :<<project.name>>/common-config
+
+ <<#project.config-edn.base-api>><<&.>><</project.config-edn.base-api>>}

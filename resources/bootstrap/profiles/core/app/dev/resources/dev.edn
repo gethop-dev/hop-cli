@@ -1,5 +1,11 @@
+;; This Source Code Form is subject to the terms of the Mozilla Public
+;; License, v. 2.0. If a copy of the MPL was not distributed with this
+;; file, You can obtain one at http://mozilla.org/MPL/2.0/
+
 {{=<< >>=}}
-{
+{<<#project.profiles.persistence-sql.enabled>>
+ :duct.profile.dev/migrations #duct/include "<<project.files-name>>/profiles/dev.migrations.edn"<</project.profiles.persistence-sql.enabled>>
+
  <<#project.config-edn.dev>><<&.>><</project.config-edn.dev>>
 
-}
+ }

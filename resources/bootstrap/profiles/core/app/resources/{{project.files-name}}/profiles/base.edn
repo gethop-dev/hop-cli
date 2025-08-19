@@ -1,0 +1,12 @@
+{{=<< >>=}}
+{:duct.core/project-ns <<project.name>>
+
+ :duct.server.http/http-kit
+ {:handler #ig/ref :<<project.name>>.api/main
+  :logger #ig/ref :duct/logger
+  :port 3000}
+
+ [:duct/const :<<project.name>>/common-config]
+ {<<#project.config-edn.common-config>><<&.>><</project.config-edn.common-config>>}
+
+ <<#project.config-edn.base>><<&.>><</project.config-edn.base>>}

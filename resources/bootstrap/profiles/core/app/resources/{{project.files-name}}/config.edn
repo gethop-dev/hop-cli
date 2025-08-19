@@ -1,23 +1,11 @@
+;; This Source Code Form is subject to the terms of the Mozilla Public
+;; License, v. 2.0. If a copy of the MPL was not distributed with this
+;; file, You can obtain one at http://mozilla.org/MPL/2.0/
+
 {{=<< >>=}}
-{:duct.profile/base
- {:duct.core/project-ns <<project.name>>
-
-  :duct.server.http/http-kit
-  {:handler #ig/ref :<<project.name>>.api/main
-   :logger #ig/ref :duct/logger
-   :port 3000}
-
-  :<<project.name>>.api/main {:routes [<<#project.config-edn.routes>><<&.>><</project.config-edn.routes>>]
-                              :api-routes [#ig/ref :<<project.name>>.api/config
-                                           <<#project.config-edn.api-routes>><<&.>><</project.config-edn.api-routes>>]}
-
-  :<<project.name>>.api/config
-  {<<#project.config-edn.config>><<&.>><</project.config-edn.config>>}
-
-  [:duct/const :<<project.name>>/common-config]
-  {<<#project.config-edn.common-config>><<&.>><</project.config-edn.common-config>>}
-
-  <<#project.config-edn.base>><<&.>><</project.config-edn.base>>}
+{:duct.profile/base #duct/include "<<project.files-name>>/profiles/base.edn"
+ :duct.profile.base/api #duct/include "<<project.files-name>>/profiles/base.api.edn"<<#project.profiles.persistence-sql.enabled>>
+ :duct.profile.base/migrations #duct/include "<<project.files-name>>/profiles/base.migrations.edn"<</project.profiles.persistence-sql.enabled>>
 
  :duct.profile/dev #duct/include "dev.edn"
  :duct.profile/local #duct/include "local.edn"

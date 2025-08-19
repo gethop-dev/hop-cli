@@ -35,32 +35,6 @@
     :minimum-idle 10
     :maximum-pool-size 25}})
 
-(defn- build-ragtime-config-key
-  [settings environment]
-  (let [project-name (bp.util/get-settings-value settings :project/name)]
-    [:duct.migrator/ragtime
-     (keyword (format "%s/%s" project-name (name environment)))]))
-
-(defn- ragtime-config
-  [settings]
-  {(build-ragtime-config-key settings :prod)
-   {:database (tagged-literal 'ig/ref :duct.database/sql)
-    :logger (tagged-literal 'ig/ref :duct/logger)
-    :strategy :raise-error
-    :migrations-table "ragtime_migrations"
-    :migrations []}})
-
-(defn- dev-ragtime-config
-  [settings]
-  {(build-ragtime-config-key settings :dev)
-   {:database (tagged-literal 'ig/ref :duct.database/sql)
-    :logger (tagged-literal 'ig/ref :duct/logger)
-    :strategy :raise-error
-    :migrations-table "ragtime_migrations_dev"
-    :fake-dependency-to-force-initialization-order
-    (tagged-literal 'ig/ref (build-ragtime-config-key settings :prod))
-    :migrations []}})
-
 (defn- build-env-variables
   [settings environment]
   (let [base-path [:project :profiles :persistence-sql :deployment (bp.util/get-env-type environment) :?]
@@ -179,9 +153,7 @@
                      [dev.weavejester/medley "1.8.1"]
                      [org.postgresql/postgresql "42.7.4"]]
      :config-edn {:base (merge (sql-config settings)
-                               (hikaricp-config settings)
-                               (ragtime-config settings))
-                  :dev (dev-ragtime-config settings)
+                               (hikaricp-config settings))
                   :common-config (common-config settings)}
      :environment-variables {:dev (build-env-variables settings :dev)
                              :test (build-env-variables settings :test)
