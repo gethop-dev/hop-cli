@@ -19,9 +19,9 @@
    (assoc db :user user)))
 
 (defn- fetch-user-data-event-fx
-  "This event handler gets jwt-token from session cofx instead of appdb.
-  It is so because at times the token may not be present in appdb yet when
-  ::ensure-data is called."
+  "This event handler gets `id-token` from session cofx instead of appdb.
+  It is so because at times the token may not be present in appdb yet,
+  when ::fetch-user-data is called."
   [{:keys [session] :as _cofx} _]
   {:http-xhrio {:headers {"Authorization" (str "Bearer " (:id-token session))}
                 :method :get

@@ -28,7 +28,7 @@
  ::fetch-user-data
  [(rf/inject-cofx :session)]
  (fn [{:keys [session]} [_ & {:keys [on-success-evt]}]]
-   {:http-xhrio {:headers {"Authorization" (str "Bearer " (:jwt-token session))}
+   {:http-xhrio {:headers {"Authorization" (str "Bearer " (:id-token session))}
                  :method :get
                  :uri "/api/user"
                  :response-format (util/ajax-transit-response-format)

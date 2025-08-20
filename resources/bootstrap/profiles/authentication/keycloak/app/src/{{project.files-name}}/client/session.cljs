@@ -53,10 +53,10 @@
 (defn get-session
   []
   (let [keycloak-state @keycloak]
-    (when-let [jwt-token (g/getValueByKeys keycloak-state "idToken")]
+    (when-let [id-token (g/getValueByKeys keycloak-state "idToken")]
       (let [token-exp (g/getValueByKeys keycloak-state "idTokenParsed" "exp")
             user-type (g/getValueByKeys keycloak-state "idTokenParsed" "user_type")]
-        {:jwt-token jwt-token
+        {:id-token id-token
          :token-exp token-exp
          :user-id (util/uuid (g/getValueByKeys keycloak-state "subject"))
          :user-type (keyword user-type)}))))
