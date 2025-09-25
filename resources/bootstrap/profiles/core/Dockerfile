@@ -1,5 +1,5 @@
 # base =========================================================================
-FROM debian:bookworm-slim AS base
+FROM debian:trixie-slim AS base
 
 # The AWS SDK library makes some illegal reflections code access. According
 # to the devs it won't be fixed because they are working in the v2 of the
@@ -25,17 +25,16 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 RUN set -ex; \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    libsodium23=1.0.18-1 \
-    libfreetype6=2.12.1+dfsg-5+deb12u4 \
-    fontconfig=2.14.1-4 \
-    poppler-utils=22.12.0-2+deb12u1 \
-    imagemagick=8:6.9.11.60+dfsg-1.6+deb12u3 && \
+    libsodium23=1.0.18-1+b2 \
+    libfreetype6=2.13.3+dfsg-1 \
+    fontconfig=2.15.0-2.3 \
+    poppler-utils=25.03.0-5 \
+    imagemagick=8:7.1.1.43+dfsg1-1+deb13u2 && \
     apt-get -y autoremove && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir --parents "${JAVA_HOME}/lib" && \
-    printf 'version=1\nsequence.allfonts=default\n' > "${JAVA_HOME}/lib/fontconfig.properties" && \
-    sed -i -e 's|<policy domain="coder" rights="none" pattern="PDF" />|<policy domain="coder" rights="write" pattern="PDF" />|g' /etc/ImageMagick-6/policy.xml
+    printf 'version=1\nsequence.allfonts=default\n' > "${JAVA_HOME}/lib/fontconfig.properties"
 
 # dev ==========================================================================
 FROM base AS dev
@@ -43,22 +42,18 @@ FROM base AS dev
 # hadolint ignore=DL3022
 COPY --from=eclipse-temurin:21-jdk $JAVA_HOME $JAVA_HOME
 
-ENV LEIN_VERSION=2.11.2
 ENV CLJ_KONDO_VERSION=2024.11.14
 ENV BINARIES_INSTALL_PATH=/usr/local/bin
 
 RUN set -eux; \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    ca-certificates=20230311 \
-    runit=2.1.2-54 \
-    curl=7.88.1-10+deb12u12 \
-    unzip=6.0-28 && \
+    leiningen=2.10.0-5 \
+    ca-certificates=20250419 \
+    runit=2.2.0-3 \
+    curl=8.14.1-2 \
+    unzip=6.0-29 && \
     useradd --home-dir /home/hop --create-home --shell /bin/bash --user-group hop && \
-    curl -sL -o "${BINARIES_INSTALL_PATH}/lein" "https://codeberg.org/leiningen/leiningen/raw/tag/${LEIN_VERSION}/bin/lein-pkg" && \
-    chmod 755 "${BINARIES_INSTALL_PATH}/lein" && \
-    mkdir -p /usr/share/java && \
-    curl -sL -o "/usr/share/java/leiningen-$LEIN_VERSION-standalone.jar" "https://codeberg.org/leiningen/leiningen/releases/download/$LEIN_VERSION/leiningen-$LEIN_VERSION-standalone.jar" && \
     curl -sL -o /tmp/install-clj-kondo "https://raw.githubusercontent.com/clj-kondo/clj-kondo/master/script/install-clj-kondo" && \
     chmod 755 /tmp/install-clj-kondo && \
     ./tmp/install-clj-kondo --version "${CLJ_KONDO_VERSION}" --dir "${BINARIES_INSTALL_PATH}" && \
