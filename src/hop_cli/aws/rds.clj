@@ -25,7 +25,9 @@
       {:success? true}
       (catch Exception e
         {:success? false
-         :error-details {:exit-code (:exit (ex-data e))}}))))
+         :error-details (cond-> {:exception-message (.getMessage e)}
+                          (seq (ex-data e))
+                          (assoc :exit-code (:exit (ex-data e))))}))))
 
 (defn- find-rds-instance
   [{:keys [project-name environment region]}]
