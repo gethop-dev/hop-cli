@@ -23,13 +23,13 @@
     :token-name "Bearer"
     :authfn (tagged-literal 'ig/ref :dev.gethop.buddy-auth/jwt-oidc)}})
 
-(defn keycloak-config
+(defn- keycloak-config
   []
   {:keycloak {:realm (tagged-literal 'duct/env ["KEYCLOAK_REALM" 'Str])
               :url (tagged-literal 'duct/env ["KEYCLOAK_URI" 'Str])
               :client-id (tagged-literal 'duct/env ["KEYCLOAK_APP_CLIENT_ID" 'Str])}})
 
-(defn user-api-config
+(defn- user-api-config
   [settings]
   (let [project-name (bp.util/get-settings-value settings :project/name)]
     {(keyword (str project-name ".api/user"))
