@@ -13,7 +13,7 @@
    {{:keys [host port]} :connection-details :as _rds-instance}
    local-port]
   (let [target-cmd (format "aws ssm start-session
-                            --target %s
+                            --target '%s'
                             --document-name AWS-StartPortForwardingSessionToRemoteHost
                             --parameters '{\"host\":[\"%s\"],
                                            \"portNumber\":[\"%s\"],
