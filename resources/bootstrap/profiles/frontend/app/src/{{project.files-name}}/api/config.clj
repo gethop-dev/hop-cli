@@ -16,5 +16,6 @@
   [_ config]
   ["/config"
    {:get {:summary "Return application's configuration"
-          :swagger {:tags ["configuration"]}
+          :authentication :none
+          :openapi {:tags ["configuration" "developer-api"]}
           :handler (partial config-handler config)}}])

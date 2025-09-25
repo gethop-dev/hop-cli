@@ -31,6 +31,17 @@
   (let [project-name (bp.util/get-settings-value settings :project/name)]
     [(tagged-literal 'ig/ref (keyword (str project-name ".static/root")))]))
 
+(defn base-api
+  [settings]
+  (let [project-name (bp.util/get-settings-value settings :project/name)]
+    {(keyword (str project-name ".api/config"))
+     (tagged-literal 'ig/ref (keyword project-name "common-config"))}))
+
+(defn- api-routes
+  [settings]
+  (let [project-name (bp.util/get-settings-value settings :project/name)]
+    [(tagged-literal 'ig/ref (keyword (str project-name ".api/config")))]))
+
 (defmethod registry/pre-render-hook :frontend
   [_ settings]
   {:files [{:src "frontend"}]
@@ -57,4 +68,6 @@
                 :modules (cljs-module)
                 :base (merge
                        (root-static-route settings)
-                       (sass-compiler))}})
+                       (sass-compiler))
+                :base-api (base-api settings)
+                :api-routes (api-routes settings)}})
