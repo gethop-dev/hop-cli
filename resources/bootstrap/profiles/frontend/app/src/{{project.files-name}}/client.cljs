@@ -21,9 +21,7 @@
 (rf/reg-event-fx
  ::on-config-loaded
  (fn [_ _]
-   {:fx [<<#project.load-frontend-app.client.events>>
-         <<&.>>
-         <</project.load-frontend-app.client.events>>
+   {:fx [<<#project.load-frontend-app.client.events>><<&.>><</project.load-frontend-app.client.events>>
          [:dispatch [::routes/init-routes]]]}))
 
 (rf/reg-event-fx
