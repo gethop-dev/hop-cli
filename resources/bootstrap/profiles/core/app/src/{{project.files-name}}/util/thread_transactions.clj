@@ -39,7 +39,7 @@
 ;; the reverse order) for all the "forward functions" that were
 ;; executed up to the point when we hit a failure. And for that we
 ;; need to keep track of those rollback functions in something that
-;; can work in a LIFO manner (to run then in the reverse order).
+;; can work in a LIFO manner (to run them in the reverse order).
 ;;
 ;; Than can be something that we manually manage ourselves[1] (and
 ;; then use `recur` or `trampoline` or whatever). Or simply use
