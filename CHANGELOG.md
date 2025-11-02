@@ -42,7 +42,7 @@ to set it to the local development IAM *Role* ARN.
 
 ## [0.1.18] - 2025-03-17
 - [aws profile] Allow Cognito to automatically send messages to verify and confirm user email
-- [aws profile] Don't rely on $PATH to find bb executable. Ut seems the latest Amazon Linux 2 AMI instances don't add /usr/local/bin to the $PATH by default.
+- [aws profile] Don't rely on $PATH to find bb executable. It seems the latest Amazon Linux 2 AMI instances don't add /usr/local/bin to the $PATH by default.
 - [aws profile] [keycloak profile] Fix --temporary? option handling when changing the user password.
 
 ## [0.1.17] - 2025-02-06
