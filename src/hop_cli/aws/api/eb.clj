@@ -27,7 +27,7 @@
   (let [eb-client (aws.client/gen-client :elasticbeanstalk opts)
         request {:Filters [{:Type "PlatformBranchName"
                             :Operator "="
-                            :Values ["Docker running on 64bit Amazon Linux 2"]}]}
+                            :Values ["Docker running on 64bit Amazon Linux 2023"]}]}
         args {:op :ListPlatformVersions
               :request request}
         result (aws/invoke eb-client args)]
