@@ -1,6 +1,11 @@
 # base =========================================================================
 FROM debian:trixie-slim AS base
 
+# Set the default LANG environment to C locale, with UTF-8 encoding,
+# but let the build process override it if needed.
+ARG LANG=C.UTF-8
+ENV LANG=$LANG
+
 # The AWS SDK library makes some illegal reflections code access. According
 # to the devs it won't be fixed because they are working in the v2 of the
 # SDK [1]. Previous JVM version were just generating a warning, but since we
