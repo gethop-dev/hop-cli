@@ -41,6 +41,12 @@ fi
 # point). And that is going to prevent downloading any dependencies!
 mkdir -p ~/.m2/
 
+# Download the Clojure deps as non-root user first. Otherwise running
+# `lein clean` in the next step as root (for the reasons stated there)
+# will download the deps as the root user, with root permissions. Which
+# will create further trouble down the road.
+docker/docker-compose.sh run --no-deps --rm backend lein deps
+
 # NOTE: we are overwriting the entrypoint here because otherwise "lein
 # clean" would run with the "hop" user permissions due to the
 # "docker/run-as-user.sh" entrypoint script of the "Dockerfile", and
