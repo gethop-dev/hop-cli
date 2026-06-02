@@ -19,7 +19,7 @@ Parameters:
     Type: "String"
   DatabaseEngineVersion:
     Type: "String"
-    Default: "14"
+    Default: "18"
   RDSMonitoringRoleARN:
     Type: "String"
   VpcId:
