@@ -2429,7 +2429,7 @@
                                               :target "_blank"}
                                              "check the documentation."]]
                                 :type :string
-                                :pattern "[^\\s]+"
+                                :pattern "[a-aA-Z][a-zA-Z0-9_\\-]+"
                                 :value "aws-project-name"}
                                {:name :vpc
                                 :tag "VPC"
@@ -2462,7 +2462,7 @@
                                 :value [{:name :stack-name
                                          :tag "Cloudformation stack name"
                                          :type :string
-                                         :pattern "[^\\s]+"
+                                         :pattern "[a-aA-Z][a-zA-Z0-9_\\-]+"
                                          :value "aws-project-name-dev"}
                                         {:name :optional-services
                                          :type :multiple-choice-group
@@ -2546,7 +2546,7 @@
                                                             {:name :name
                                                              :tag "Database name"
                                                              :type :string
-                                                             :pattern "[^\\s]+"
+                                                             :pattern "[a-aA-Z][a-zA-Z0-9_\\-]+"
                                                              :value "ebdb"}
                                                             {:name :admin-user
                                                              :tag "Admin user"
@@ -2555,7 +2555,7 @@
                                                              :value [{:name :username
                                                                       :tag "Username"
                                                                       :type :string
-                                                                      :pattern "[^\\s]+"
+                                                                      :pattern "[a-aA-Z][a-zA-Z0-9_\\-]+"
                                                                       :value "postgres"}
                                                                      {:name :password
                                                                       :tag "Password"
@@ -2568,7 +2568,7 @@
                                                              :tag "Log group name"
                                                              :docstring [:span "CloudWatch log group name where the logs will be sent to."]
                                                              :type :string
-                                                             :pattern "[^\\s]+"
+                                                             :pattern "[a-aA-Z][a-zA-Z0-9_\\-]+"
                                                              :value "/aws/eb/aws-project-name-test"}
                                                             {:name :retention-days
                                                              :tag "Retention days"
@@ -2583,7 +2583,7 @@
                                                   :tag "Key Alias"
                                                   :docstring [:span "Alias of the KMS key. It should have a shape of: alias/<name>"]
                                                   :type :string
-                                                  :pattern "alias\\/[^\\s]+"
+                                                  :pattern "alias\\/[a-aA-Z][a-zA-Z0-9_\\-]+"
                                                   :value "alias/aws-project-name-test"}]}]}
                                {:name :prod
                                 :tag "Production environment"
@@ -2591,7 +2591,7 @@
                                 :value [{:name :stack-name
                                          :tag "Cloudformation Stack name"
                                          :type :string
-                                         :pattern "[^\\s]+"
+                                         :pattern "[a-aA-Z][a-zA-Z0-9_\\-]+"
                                          :value "aws-project-name-prod"}
                                         {:name :notifications-email
                                          :tag "Notifications email"
