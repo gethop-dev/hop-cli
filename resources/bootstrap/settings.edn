@@ -2509,7 +2509,7 @@
                                          :type :plain-group
                                          :value [{:name :ec2-instance-type
                                                   :tag "EC2 Instance type"
-                                                  :docsting [:span "Type of Amazon Web Services EC2 Instance. For all possible values, please refer to the "
+                                                  :docstring [:span "Type of Amazon Web Services EC2 Instance. For all possible values, please refer to the "
                                                              [:a {:href "https://aws.amazon.com/ec2/instance-types/"
                                                                   :target "_blank"}
                                                               "AWS EC2 Instance types documentation"]]
@@ -2603,7 +2603,7 @@
                                          :type :plain-group
                                          :value [{:name :ec2-instance-type
                                                   :tag "EC2 Instance type"
-                                                  :docsting [:span "Type of Amazon Web Services EC2 Instance. For all possible values, please refer to the "
+                                                  :docstring [:span "Type of Amazon Web Services EC2 Instance. For all possible values, please refer to the "
                                                              [:a {:href "https://aws.amazon.com/ec2/instance-types/"
                                                                   :target "_blank"}
                                                               "AWS EC2 Instance types documentation"]]
