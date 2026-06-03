@@ -6,8 +6,7 @@ bootstraping and managing [HOP][] projects.
 
 All the available commands are described in the [documentation][].
 
-[HOP]: https://www.gethop.dev/
-[documentation]: https://docs.gethop.dev/en/stable/reference/hop-cli/main.html
+[documentation]: https://hop-documentation.readthedocs.io/en/stable/reference/hop-cli/main.html
 
 ## License
 
