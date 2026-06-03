@@ -23,7 +23,7 @@
        :result result})))
 
 (defn get-latest-eb-docker-platform-arn
-  [{:keys [region platform-branch ]:as _opts}]
+  [{:keys [region platform-branch] :as _opts}]
   (let [eb-client (aws.client/gen-client :elasticbeanstalk {:region region})
         request {:Filters [{:Type "PlatformBranchName"
                             :Operator "="
