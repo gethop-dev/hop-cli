@@ -321,7 +321,8 @@
 (defmethod infrastructure/provision-initial-infrastructure :aws
   [settings]
   (let [environments (set (bp.util/get-settings-value settings :project/environments))
-        region (bp.util/get-settings-value settings :deployment-target.aws.account/region)]
+        region (bp.util/get-settings-value settings :deployment-target.aws.account/region)
+        platform-branch (bp.util/get-settings-value settings :deployment-target.aws.eb.platform-branchbg)]
     (->
      [{:txn-fn
        (fn get-aws-account-identity
@@ -339,7 +340,8 @@
       {:txn-fn
        (fn get-eb-docker-platform-arn
          [{:keys [settings]}]
-         (let [result (aws.eb/get-latest-eb-docker-platform-arn {:region region})]
+         (let [result (aws.eb/get-latest-eb-docker-platform-arn {:region region
+                                                                 :platform-branch platform-branch})]
            (if (:success? result)
              {:success? true
               :settings (bp.util/assoc-in-settings-value settings

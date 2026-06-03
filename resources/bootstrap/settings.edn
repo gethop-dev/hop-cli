@@ -2452,6 +2452,17 @@
                                                   :type :string
                                                   :pattern "[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}\\/[0-9]{1,2}"
                                                   :value "172.31.1.0/24"}]}]}]}
+                      {:name :eb
+                       :tag "ElasticBeanstalk"
+                       :type :plain-group
+                       :value [{:name :platform-branch
+                                :tag "ElasticBeanstalk platform branch name"
+                                :docstring [:span "Type of Amazon Web Services ElasticBeanstalk platform branch name. For all possible values, use the AWS cli and execute the command: "
+                                            [:pre "aws elasticbeanstalk list-platform-branches --filter Attribute=PlatformName,Operator=in,Values=Docker Attribute=LifecycleState,Operator=in,Values=Supported"]
+                                            "You should specify one of the \"BranchName\" values from the list."]
+                                :type :string
+                                :pattern ".+"
+                                :value "Docker running on 64bit Amazon Linux 2023"}]}
                       {:name :environment
                        :tag "Environment"
                        :docstring [:span "Provisioning of resources needed to run a specific environment belonging to a HOP Application."]

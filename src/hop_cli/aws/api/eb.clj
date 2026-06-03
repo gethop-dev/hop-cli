@@ -23,11 +23,11 @@
        :result result})))
 
 (defn get-latest-eb-docker-platform-arn
-  [opts]
-  (let [eb-client (aws.client/gen-client :elasticbeanstalk opts)
+  [{:keys [region platform-branch ]:as _opts}]
+  (let [eb-client (aws.client/gen-client :elasticbeanstalk {:region region})
         request {:Filters [{:Type "PlatformBranchName"
                             :Operator "="
-                            :Values ["Docker running on 64bit Amazon Linux 2023"]}]}
+                            :Values [platform-branch]}]}
         args {:op :ListPlatformVersions
               :request request}
         result (aws/invoke eb-client args)]
