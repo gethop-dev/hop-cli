@@ -322,7 +322,7 @@
   [settings]
   (let [environments (set (bp.util/get-settings-value settings :project/environments))
         region (bp.util/get-settings-value settings :deployment-target.aws.account/region)
-        platform-branch (bp.util/get-settings-value settings :deployment-target.aws.eb.platform-branchbg)]
+        platform-branch (bp.util/get-settings-value settings :deployment-target.aws.eb/platform-branch)]
     (->
      [{:txn-fn
        (fn get-aws-account-identity
