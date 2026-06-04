@@ -2,9 +2,11 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+
+## [0.1.26] - 2026-06-04
 - [core profile] Make sure Babashka scripts get the executable permission set.
 - [aws profile] Fix predeploy script. It was missing the now mandatory --region flag.
-- Bumped minimum supported babashka version to 1.12.207. We need some additional Java classes to implement the support for client secrets in the Cognito get-id-token command.
+- Bumped minimum supported babashka version to 1.3.189. We need some additional Java classes to implement the support for client secrets in the Cognito get-id-token command.
 - [aws profile] awyeah-api library is no longer used. Cognitect AWS API version 0.8.762 has gained built-in support for Babashka!
 - [aws profile] Add support for client secrets to Cognito get-id-token command.
 - [core profile] Add a new /api/health API endpoint, to check the health status of the application.
@@ -187,7 +189,8 @@ to set it to the local development IAM *Role* ARN.
 ### Added
 - Initial stable HOP CLI version.
 
-[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.25...HEAD
+[UNRELEASED]:  https://github.com/gethop-dev/hop-cli/compare/0.1.26...HEAD
+[0.1.26]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.26
 [0.1.25]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.25
 [0.1.24]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.24
 [0.1.23]: https://github.com/gethop-dev/hop-cli/releases/tag/0.1.23
