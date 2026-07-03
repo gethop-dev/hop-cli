@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [UNRELEASED]
+- [aws profile] Configure and run Cloudwatch Agent through ElasticBeanstalk. To collect cpu, memory and disk usage metrics from the EC2 instances that ElasticBeanstalk uses to run the applications. See https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Agent-Configuration-File-Details.html, https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/metrics-collected-by-CloudWatch-agent.html and https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/start-CloudWatch-Agent-on-premise-SSM-onprem.html#start-CloudWatch-Agent-EC2-commands-fleet for extra details.
+- Bumped minimum supported babashka version to 1.12.217
 
 ## [0.1.26] - 2026-06-04
 - [core profile] Make sure Babashka scripts get the executable permission set.
