@@ -74,12 +74,13 @@
 (defmethod registry/pre-render-hook :aws
   [_ settings]
   {:files (into [{:src "aws/.platform" :dst ".platform"}
+                 {:src "aws/.ebextensions" :dst ".ebextensions"}
                  {:src "aws/start-dev.sh" :dst "start-dev.sh"}]
                 (build-docker-files-to-copy settings))
    :docker-compose (build-docker-compose-files settings)
    :extra-app-docker-compose-environment-variables []
    :environment-variables {:dev (build-dev-env-variables settings)}
-   :deploy-files [".platform"]})
+   :deploy-files [".platform" ".ebextensions"]})
 
 (defmethod registry/post-render-hook :aws
   [_ settings]
