@@ -47,7 +47,7 @@ FROM base AS dev
 # hadolint ignore=DL3022
 COPY --from=eclipse-temurin:21-jdk $JAVA_HOME $JAVA_HOME
 
-ENV CLJ_KONDO_VERSION=2024.11.14
+ENV CLJ_KONDO_VERSION=2026.05.25
 ENV BINARIES_INSTALL_PATH=/usr/local/bin
 
 RUN set -eux; \
