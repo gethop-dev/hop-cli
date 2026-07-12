@@ -52,7 +52,7 @@
         region (bp.util/get-settings-value settings :project.profiles.aws/region)]
     (if (and access-key-id secret-access-key)
       (with-out-str
-        (println (format "A new AWS user was created for CI/CD purposes. You will need to configure the credentials in your CI/CD provider."))
+        (println "A new AWS user was created for CI/CD purposes. You will need to configure the credentials in your CI/CD provider.")
         (println (format "    AWS_ACCESS_KEY_ID: %s" access-key-id))
         (println (format "    AWS_SECRET_ACCESS_KEY: %s" secret-access-key))
         (println (format "    AWS_DEFAULT_REGION: %s" region)))
