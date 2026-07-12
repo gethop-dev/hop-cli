@@ -2,16 +2,17 @@
 
 set -eu -o pipefail
 
-# This .env is new, created by AWS EB machinery and populated with the
-# environment variables we add from the AWS console. As of now
-# (2022-10-13) AWS puts the application in a staging folder
-# (/var/app/staging) and then copies everything to a current folder
+# This .env is a newly created file by AWS EB machinery and populated
+# with the environment variables we add from the AWS console. As of
+# now (2022-10-13) AWS puts the application in a "staging folder"
+# (/var/app/staging) and then copies everything to a "current folder"
 # (/var/app/current). This script is executed at the root of the
 # staging folder where the .env file is located. So, we are using this
 # .env file to get the environment variables required to call SSM
 # Parameter Store and retrieve all the environment variables for the
-# project. Finally we append the SSMPS result to the same .env file
-# which will be copied by the EB system to the current folder.
+# project. Finally we append what we get from the Parameter Store to
+# the original .env file. The resulting .env file is what will be
+# copied by the AWS EB machinery system to the "current folder".
 NEW_ENV_FILE_PATH="${PWD}/.env"
 
 get_var() {
