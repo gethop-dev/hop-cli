@@ -2,8 +2,8 @@
 
 set -eu -o pipefail
 
-HOP_CLI_VERSION={{hop.cli-version}}
-HOP_CLI_NAME=hop-cli.jar
+HOP_CLI_VERSION="{{hop.cli-version}}"
+HOP_CLI_NAME="hop-cli.jar"
 INSTALL_DIR="/usr/local/hop-cli"
 DOWNLOAD_DIR="${INSTALL_DIR}/${HOP_CLI_VERSION}"
 DOWNLOAD_PATH="${DOWNLOAD_DIR}/${HOP_CLI_NAME}"
