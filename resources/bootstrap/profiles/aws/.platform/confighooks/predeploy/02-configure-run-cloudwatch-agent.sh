@@ -1,0 +1,1 @@
+../../hooks/predeploy/02-configure-run-cloudwatch-agent.sh
