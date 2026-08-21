@@ -17,7 +17,7 @@ PROJECT_ENV="$(/opt/elasticbeanstalk/bin/get-config environment -k ENVIRONMENT)"
 cat >"${CWAGENT_CONFIG_FILE}" <<EOF
 {
   "agent": {
-    "metrics_collection_interval": 60,
+    "metrics_collection_interval": 300,
     "run_as_user": "root"
   },
   "metrics": {
